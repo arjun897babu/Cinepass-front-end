@@ -1,4 +1,4 @@
-import { Dispatch, FormEvent, SetStateAction, useState } from "react";
+import { Dispatch, FormEvent, SetStateAction } from "react";
 
 interface Data {
   [key: string]: string;
@@ -6,7 +6,6 @@ interface Data {
 
 export const useFormSubmit = (
   formData: Data,
-  inputError: Data,
   setInputError: Dispatch<SetStateAction<Data>>
 ) => {
   const handleSubmit = (e: FormEvent) => {

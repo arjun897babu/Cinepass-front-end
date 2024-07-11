@@ -11,19 +11,24 @@ export interface LoginData {
 
 export interface IInitialStateError{
   error:string
-  field:string
   message:string
 }
 
 export interface ResponseData {
   status: ResponseStatus;
   message: string;
-  error?:Error
+  error?:IInitialStateError|null,
+  data?:any[],
+  redirectURL:string
 }
 
 export interface OTPVerification {
   email: string;
   otp: string
+}
+export enum ResponseStatus {
+  SUCCESS = 'Success',
+  ERROR = 'Error',
 }
 
 

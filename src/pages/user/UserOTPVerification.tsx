@@ -1,30 +1,52 @@
-import React from "react"
+import React, { useEffect } from "react"
 import backgroundImage from '/Iconic Movie Posters Collage.webp'
 import { useForm } from "../../hooks/UseForm";
 import { useFormSubmit } from "../../hooks/UseFormSubmitt";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
+import { verifyUser } from "../../redux/actions/userAction";
+import { ResponseStatus } from "../../interface/Interface";
+import { useLocation, useNavigate } from "react-router-dom";
+import { clearError } from "../../redux/reducers/userReducer";
 
 
 export const UserOTPVerification: React.FC = (): JSX.Element => {
-  // const dispatch = useDispatch<AppDispatch>()
-  const { error, loading } = useSelector((state: RootState) => state.user);
-  console.log('otp veification',error,loading)
+
+  const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate();
+  const location = useLocation()
+
+
+  const { error, user } = useSelector((state: RootState) => state.user);
+
   const { formData, inputError, handleChange, setInputError } = useForm({
     otp: ''
   });
 
-  const { handleSubmit } = useFormSubmit(formData, inputError, setInputError);
+  // useEffect(() => {
+  //   dispatch(clearError())
+  // }, [ ]);
 
-  const onSubmit = (event: React.FormEvent) => {
-   const  isValid=  handleSubmit(event);
-    if (isValid) {
-      // dispatch((formData)).then((result) => {
-      //   console.log('response in submitting', result);
-      // });
+  const { handleSubmit } = useFormSubmit(formData, setInputError);
+
+  const onSubmit = async (event: React.FormEvent) => {
+    try {
+      const isValid = handleSubmit(event);
+      if (isValid) {
+
+        if (user) {
+          const response = await dispatch(verifyUser({ ...formData, email: user[0]?.email })).unwrap();
+          if (response.status === ResponseStatus.SUCCESS) {
+            navigate(response.redirectURL)
+          }
+        }
+
+      }
+    } catch (err) {
+      console.log('verification error :', err, error)
     }
-  };
 
+  };
   const backgroundImagePath = { backgroundImage: `url(${backgroundImage})` };
   return (
     <>
@@ -57,6 +79,7 @@ export const UserOTPVerification: React.FC = (): JSX.Element => {
                   onChange={handleChange}
                 />
                 {inputError.otp && <small className='text-red-600 capitalize absolute bottom-0 left-0'>{inputError.otp}</small>}
+                {error?.error === 'otp' && <small className='text-red-600 capitalize absolute bottom-0 left-0'>{error.message}</small>}
               </div>
               <button className="bg-black rounded-xl text-white py-2  ">
                 Verify OTP

@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../redux/store';
 import { useForm } from '../../hooks/UseForm';
 import { useFormSubmit } from '../../hooks/UseFormSubmitt';
-import { signupTheaters } from '../../redux/actions/theatersReducer';
+
 
 
 
@@ -32,11 +32,7 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
   });
   console.log('theater form data', formData);
 
-  const { isValid, handleSubmit } = useFormSubmit(formData, inputError, setInputError);
-
-  if (isValid) {
-    const result = dispatch(signupTheaters(formData))
-  }
+  const { handleSubmit } = useFormSubmit(formData, setInputError);
 
 
 

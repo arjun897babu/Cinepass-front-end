@@ -1,5 +1,5 @@
 
-import React, { FormEvent } from 'react';
+import React, { FormEvent, useEffect } from 'react';
 import '../../index.css';
 import { Link, useNavigate } from 'react-router-dom'
 import backGroundImage from '/Iconic Movie Posters Collage.webp';
@@ -9,19 +9,21 @@ import { signUpUser } from '../../redux/actions/userAction';
 import { useForm } from '../../hooks/UseForm';
 import { useFormSubmit } from '../../hooks/UseFormSubmitt';
 import { userEndPoints } from '../../services/endpoints/endPoints';
+import { clearError } from '../../redux/reducers/userReducer';
 
 
 export const UserSignUp: React.FC = (): JSX.Element => {
+
   const navigate = useNavigate()
+
   let background_image_path = { backgroundImage: `url(${backGroundImage})` };
 
   const dispatch = useDispatch<AppDispatch>();
-
-  const { error, loading } = useSelector((state: RootState) => state.user);
-
-  console.log('state in login page', error, loading)
-
-
+  
+  useEffect(() => {
+    dispatch(clearError())
+  }, [])
+  const { error } = useSelector((state: RootState) => state.user);
 
   const { formData, handleChange, inputError, setInputError } = useForm({
     name: '',
@@ -31,16 +33,18 @@ export const UserSignUp: React.FC = (): JSX.Element => {
     confirm_password: ''
   })
 
-  const { handleSubmit } = useFormSubmit(formData, inputError, setInputError);
+  const { handleSubmit } = useFormSubmit(formData, setInputError);
 
   const onSubmit = async (event: FormEvent) => {
-    const isValid =  handleSubmit(event);
+
+    const isValid = handleSubmit(event);
 
     if (isValid) {
       try {
-        const result = await dispatch(signUpUser(formData)).unwrap();
-        if (result.status === 'Success') {
-          navigate(userEndPoints.verifyOTP)
+        const response = await dispatch(signUpUser(formData)).unwrap();
+        console.log(response)
+        if (response.status === 'Success') {
+          navigate(response.redirectURL)
         }
       } catch (err) {
         console.log(err)

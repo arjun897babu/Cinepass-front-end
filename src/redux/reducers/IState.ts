@@ -4,5 +4,6 @@ export interface IInitialState {
   
   loading: boolean;
   error: IInitialStateError | null;
-  token: string | null;
+  isUser:boolean
+  
 }

@@ -1,4 +1,4 @@
-import { LoginData, ResponseData } from "../Interface";
+import { LoginData } from "../Interface";
 
 
 export interface UserSingUpData extends LoginData {
@@ -6,9 +6,5 @@ export interface UserSingUpData extends LoginData {
   confirm_password?: string;
 }
 
-export interface SignUpResponse extends ResponseData{
-  data:{
-    email:string;
-  }
-}
+
 

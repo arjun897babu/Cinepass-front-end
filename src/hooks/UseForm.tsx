@@ -20,13 +20,13 @@ export const useForm = <T extends Record<string, any>>(initialValue: T) => {
   const [inputError, setInputError] = useState<ValidateError<T>>({});
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target)
+     
     event.stopPropagation()
     const { name, value } = event.target;
     setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
 
     let validationResponse = checkInputValue(name, value, formData.password);
-    console.log(validationResponse)
+     
     if (!validationResponse.isValid) {
 
       setInputError((prevErrors) => ({
@@ -54,7 +54,7 @@ export const useForm = <T extends Record<string, any>>(initialValue: T) => {
 };
 
 function checkInputValue(name: string, value: string, value2?: string) {
-  console.log('calling validation')
+
   let validationResponse;
   switch (name) {
     case "name":

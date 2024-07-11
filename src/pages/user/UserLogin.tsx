@@ -1,7 +1,7 @@
 
 import React, { FormEvent, useEffect } from 'react';
 import '../../index.css';
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { FaArrowLeft } from "react-icons/fa";
 import backGroundImage from '/Iconic Movie Posters Collage.webp';
 import { useForm } from '../../hooks/UseForm';
@@ -9,42 +9,53 @@ import { useFormSubmit } from '../../hooks/UseFormSubmitt';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../redux/store';
 import { loginUser } from '../../redux/actions/userAction';
+import { ResponseStatus } from '../../interface/Interface';
+import { isErrorResponse } from '../../utils/customError';
 import { clearError } from '../../redux/reducers/userReducer';
+
 
 
 export const UserLogin: React.FC = (): JSX.Element => {
 
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const location = useLocation()
 
-  const { error, loading, user } = useSelector((state: RootState) => state.user);
-  console.log('error', error)
-  console.log('user login :', typeof error, loading)
+  const { error } = useSelector((state: RootState) => state.user);
+
   const { formData, inputError, handleChange, setInputError } = useForm({
     email: '',
     password: ''
   });
-  console.log(user);
 
+  useEffect(()=>{
+    dispatch(clearError())
+  },[ ])
 
-
-  const { handleSubmit } = useFormSubmit(formData, inputError, setInputError);
+  const { handleSubmit } = useFormSubmit(formData, setInputError);
 
   const onSubmit = async (event: FormEvent) => {
 
-    const isValid =  handleSubmit(event);
+    const isValid = handleSubmit(event);
 
     if (isValid) {
 
       try {
         const result = await dispatch(loginUser(formData)).unwrap();
-        console.log(result)
-        if (result.status === 'Success') {
+        console.log('response from user login', result)
+        if (result.status === ResponseStatus.SUCCESS) {
           navigate('/')
         }
+
       } catch (err) {
-        console.log(err)
+        console.log(error)
+        if (isErrorResponse(err)) {
+          console.log(err)
+          navigate(err.redirectURL);
+        }
       }
+
+
     }
   }
 
