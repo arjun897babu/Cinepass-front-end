@@ -7,16 +7,19 @@ import { RxCross1 } from "react-icons/rx";
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '../../redux/store'
 import { logoutUser } from '../../redux/actions/userAction'
+ import { useLoggedUser } from '../../hooks/useLoggedUser'
 
 
 const UserNavBar: React.FC = (): JSX.Element => {
+
   const { user } = useSelector((state: RootState) => state.user);
   let menuRef = useRef<HTMLDivElement>(null)
-  const [toggle, setToggle] = useState(true);
-  const [open, setOpen] = useState(false);
+  const [toggle, setToggle] = useState(true); // State for hamburger menu toggle
+  const [open, setOpen] = useState(false); // State for dropdown menu toggle
   const dispatch = useDispatch<AppDispatch>()
-  const navigate = useNavigate()
-
+  const navigate = useNavigate();
+  const loggedUser = useLoggedUser();// state for logged in user
+  
   useEffect(() => {
     
     let handler = (e: globalThis.MouseEvent): void => {
@@ -32,10 +35,10 @@ const UserNavBar: React.FC = (): JSX.Element => {
 
   }, [])
 
+  // Handle logout
   const logoutHandle = async (e: MouseEvent) => {
     e.preventDefault();
-    const result = await dispatch(logoutUser());
-    console.log('logout result : ',result);
+    await dispatch(logoutUser());
     navigate('/login')
   }
 
@@ -75,7 +78,7 @@ const UserNavBar: React.FC = (): JSX.Element => {
           {!user ?
             <Link to={'/login'}>
               <div className="px-6 py-3 text-white  rounded-md bg-black max-md:px-5">
-                Sign Up
+                Log In
               </div>
             </Link>
             :
@@ -84,13 +87,13 @@ const UserNavBar: React.FC = (): JSX.Element => {
               <div onClick={() => setOpen(!open)} className="cursor-pointer">
                 <img
                   className="w-12 h-12 mx-auto rounded-full aspect-square cursor-pointer"
-                  src={user?.profile_picture ?? 'https://t4.ftcdn.net/jpg/03/40/12/49/240_F_340124934_bz3pQTLrdFpH92ekknuaTHy8JuXgG7fi.jpg'}
+                  src={loggedUser?.profile_picture ?? 'https://t4.ftcdn.net/jpg/03/40/12/49/240_F_340124934_bz3pQTLrdFpH92ekknuaTHy8JuXgG7fi.jpg'}
                   alt="user avatar"
 
                 />
               </div>
               <div className={`dropdown-menu ${open ? 'active' : 'inactive'} bg-white rounded-md shadow-lg py-2 mt-2 w-48 absolute right-0`}>
-                <h3 className="text-black px-4 py-2">{user?.name ?? 'Arjun'}</h3>
+                <h3 className="text-black px-4 py-2">{loggedUser?.name ?? 'Arjun'}</h3>
                 <hr className="my-1" />
                 <ul className='list-none'>
                   <Link to={'/profile'}>

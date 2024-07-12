@@ -17,15 +17,15 @@ export const UserOTPVerification: React.FC = (): JSX.Element => {
   const location = useLocation()
 
 
-  const { error, user } = useSelector((state: RootState) => state.user);
+  const { error, tempMail } = useSelector((state: RootState) => state.user);
 
   const { formData, inputError, handleChange, setInputError } = useForm({
     otp: ''
   });
 
-  // useEffect(() => {
-  //   dispatch(clearError())
-  // }, [ ]);
+  useEffect(() => {
+    dispatch(clearError())
+  }, [ ]);
 
   const { handleSubmit } = useFormSubmit(formData, setInputError);
 
@@ -34,8 +34,8 @@ export const UserOTPVerification: React.FC = (): JSX.Element => {
       const isValid = handleSubmit(event);
       if (isValid) {
 
-        if (user) {
-          const response = await dispatch(verifyUser({ ...formData, email: user[0]?.email })).unwrap();
+        if (tempMail) {
+          const response = await dispatch(verifyUser({ ...formData, email:tempMail })).unwrap();
           if (response.status === ResponseStatus.SUCCESS) {
             navigate(response.redirectURL)
           }

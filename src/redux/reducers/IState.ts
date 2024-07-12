@@ -5,5 +5,6 @@ export interface IInitialState {
   loading: boolean;
   error: IInitialStateError | null;
   isUser:boolean
+  tempMail:string|null
   
 }

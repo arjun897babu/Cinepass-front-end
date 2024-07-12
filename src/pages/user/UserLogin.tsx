@@ -19,7 +19,7 @@ export const UserLogin: React.FC = (): JSX.Element => {
 
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const location = useLocation()
+  // const location = useLocation()
 
   const { error } = useSelector((state: RootState) => state.user);
 

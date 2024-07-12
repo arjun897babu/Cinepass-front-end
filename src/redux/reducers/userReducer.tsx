@@ -2,19 +2,21 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { loginUser, logoutUser, signUpUser, verifyUser } from "../actions/userAction";
 import { IInitialState } from "./IState";
 import { IInitialStateError, ResponseData, ResponseStatus } from "../../interface/Interface";
-import { ErrorResponse, isErrorResponse } from "../../utils/customError";
+import { isErrorResponse } from "../../utils/customError";
+import { LoggedUser } from "../../interface/user/IUserData";
 
 
 
 export interface UserState extends IInitialState {
-  user: { [key: string]: string }[] | null;
+  user: LoggedUser | null;
 }
 
 const initialState: UserState = {
   user: null,
   loading: false,
   error: null,
-  isUser: false
+  isUser: false,
+  tempMail:null
 
 };
 
@@ -54,7 +56,8 @@ const userSlice = createSlice({
         state.isUser = action.payload.status === ResponseStatus.SUCCESS
         if (action.payload.data) {
           console.log(action.payload.data)
-        }
+        };
+        state.user = action.payload.data ? action.payload.data[0] : null
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -62,7 +65,7 @@ const userSlice = createSlice({
           console.log('actin.payload', action.payload.error)
           console.log('actin.payload', action.payload.data)
           state.error = action.payload.error as IInitialStateError
-          state.user = action.payload.data ? action.payload.data : null
+          // state.tempMail = action.payload.data ?action.payload.data:undefined
         }
 
       })
