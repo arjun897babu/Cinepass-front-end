@@ -3,12 +3,15 @@ import { LoggedUser } from "../interface/user/IUserData";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
+interface LoggedUserState {
+  loggedUser: LoggedUser | null
+  isAuthenticated: boolean
+}
 
-export const useLoggedUser = (): LoggedUser | null => {
+export const useLoggedUser = (): LoggedUserState  => {
 
-  const { user, isUser } = useSelector((state: RootState) => state.user);
+  const { user, isAuthenticated } = useSelector((state: RootState) => state.user);
   const [loggedUser, setLoggedUser] = useState<LoggedUser | null>(null);
-
   // loggedUser when user state changes
   useEffect(() => {
     if (user) {
@@ -19,5 +22,5 @@ export const useLoggedUser = (): LoggedUser | null => {
     }
   }, [user])
 
-  return loggedUser
+  return { isAuthenticated , loggedUser }
 }

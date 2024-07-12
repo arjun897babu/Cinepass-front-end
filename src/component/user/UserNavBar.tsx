@@ -4,24 +4,23 @@ import { Link, useNavigate } from 'react-router-dom'
 import logo from '/cinepass logo.png'
 import { GiHamburgerMenu } from "react-icons/gi"
 import { RxCross1 } from "react-icons/rx";
-import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch, RootState } from '../../redux/store'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from '../../redux/store'
 import { logoutUser } from '../../redux/actions/userAction'
- import { useLoggedUser } from '../../hooks/useLoggedUser'
+import { useLoggedUser } from '../../hooks/useLoggedUser'
 
 
 const UserNavBar: React.FC = (): JSX.Element => {
 
-  const { user } = useSelector((state: RootState) => state.user);
   let menuRef = useRef<HTMLDivElement>(null)
   const [toggle, setToggle] = useState(true); // State for hamburger menu toggle
   const [open, setOpen] = useState(false); // State for dropdown menu toggle
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate();
-  const loggedUser = useLoggedUser();// state for logged in user
-  
+  const { loggedUser, isAuthenticated } = useLoggedUser();// state for logged in user
+ console.log('navbar component')
   useEffect(() => {
-    
+
     let handler = (e: globalThis.MouseEvent): void => {
       if (!menuRef.current?.contains(e.target as Node)) {
         setOpen(false)
@@ -75,7 +74,7 @@ const UserNavBar: React.FC = (): JSX.Element => {
 
         <div className="auth-section hidden pl-6 text-base font-bold leading-6 text-center">
 
-          {!user ?
+          {!isAuthenticated ?
             <Link to={'/login'}>
               <div className="px-6 py-3 text-white  rounded-md bg-black max-md:px-5">
                 Log In
@@ -116,7 +115,7 @@ const UserNavBar: React.FC = (): JSX.Element => {
         {/* <div className="fixed inset-0 bg-red-300">
 
         </div> */}
-
+ 
 
       </nav >
     </>

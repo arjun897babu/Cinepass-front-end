@@ -15,8 +15,8 @@ const initialState: UserState = {
   user: null,
   loading: false,
   error: null,
-  isUser: false,
-  tempMail:null
+  isAuthenticated: false,
+  tempMail: null
 
 };
 
@@ -53,7 +53,7 @@ const userSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action: PayloadAction<ResponseData>) => {
         state.loading = false;
         state.error = null
-        state.isUser = action.payload.status === ResponseStatus.SUCCESS
+        state.isAuthenticated = action.payload.status === ResponseStatus.SUCCESS
         if (action.payload.data) {
           console.log(action.payload.data)
         };
@@ -62,10 +62,8 @@ const userSlice = createSlice({
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         if (isErrorResponse(action.payload)) {
-          console.log('actin.payload', action.payload.error)
-          console.log('actin.payload', action.payload.data)
           state.error = action.payload.error as IInitialStateError
-          // state.tempMail = action.payload.data ?action.payload.data:undefined
+          state.tempMail = action.payload.data ? action.payload.data[0] as { email: string } : null
         }
 
       })
@@ -77,11 +75,13 @@ const userSlice = createSlice({
       .addCase(logoutUser.fulfilled, (state, action: PayloadAction<ResponseData>) => {
         state.loading = false;
         state.error = null
-        state.isUser = action.payload.status === ResponseStatus.ERROR
+        state.isAuthenticated = action.payload.status === ResponseStatus.ERROR;
+        state.user=null
       })
       .addCase(logoutUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as IInitialStateError | null
+        
 
       })
       .addCase(verifyUser.pending, (state) => {
@@ -92,12 +92,12 @@ const userSlice = createSlice({
       .addCase(verifyUser.fulfilled, (state) => {
         state.loading = false;
         state.user = null;
-        state.isUser = false;
+        state.isAuthenticated = false;
       })
       .addCase(verifyUser.rejected, (state, action) => {
         state.loading = false;
         state.user = null
-        state.isUser = false;
+        state.isAuthenticated = false;
         state.error = action.payload as IInitialStateError | null
       })
 

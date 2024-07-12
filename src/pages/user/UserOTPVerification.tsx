@@ -25,7 +25,7 @@ export const UserOTPVerification: React.FC = (): JSX.Element => {
 
   useEffect(() => {
     dispatch(clearError())
-  }, [ ]);
+  }, []);
 
   const { handleSubmit } = useFormSubmit(formData, setInputError);
 
@@ -35,7 +35,7 @@ export const UserOTPVerification: React.FC = (): JSX.Element => {
       if (isValid) {
 
         if (tempMail) {
-          const response = await dispatch(verifyUser({ ...formData, email:tempMail })).unwrap();
+          const response = await dispatch(verifyUser({ ...formData, email: tempMail.email })).unwrap();
           if (response.status === ResponseStatus.SUCCESS) {
             navigate(response.redirectURL)
           }

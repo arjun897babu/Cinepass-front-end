@@ -1,7 +1,7 @@
 
 import React, { FormEvent, useEffect } from 'react';
 import '../../index.css';
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { FaArrowLeft } from "react-icons/fa";
 import backGroundImage from '/Iconic Movie Posters Collage.webp';
 import { useForm } from '../../hooks/UseForm';
@@ -12,6 +12,7 @@ import { loginUser } from '../../redux/actions/userAction';
 import { ResponseStatus } from '../../interface/Interface';
 import { isErrorResponse } from '../../utils/customError';
 import { clearError } from '../../redux/reducers/userReducer';
+import { useLoggedUser } from '../../hooks/useLoggedUser';
 
 
 
@@ -19,8 +20,9 @@ export const UserLogin: React.FC = (): JSX.Element => {
 
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  // const location = useLocation()
-
+  const { isAuthenticated } = useLoggedUser();
+ 
+  console.log('login page',isAuthenticated)
   const { error } = useSelector((state: RootState) => state.user);
 
   const { formData, inputError, handleChange, setInputError } = useForm({
@@ -28,9 +30,12 @@ export const UserLogin: React.FC = (): JSX.Element => {
     password: ''
   });
 
-  useEffect(()=>{
+  useEffect(() => {
+    if (isAuthenticated) {
+     navigate('/')    
+    }
     dispatch(clearError())
-  },[ ])
+  }, [isAuthenticated])
 
   const { handleSubmit } = useFormSubmit(formData, setInputError);
 
@@ -42,7 +47,7 @@ export const UserLogin: React.FC = (): JSX.Element => {
 
       try {
         const result = await dispatch(loginUser(formData)).unwrap();
-        console.log('response from user login', result)
+
         if (result.status === ResponseStatus.SUCCESS) {
           navigate('/')
         }

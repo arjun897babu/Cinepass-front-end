@@ -10,7 +10,9 @@ const initialState: TheaterState = {
   theaters: null,
   loading: false,
   error: null,
-  token: null
+  tempMail:null,
+  isAuthenticated:false
+  
 }
 
 const theaterSlice = createSlice({

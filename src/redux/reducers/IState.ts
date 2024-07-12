@@ -1,10 +1,10 @@
 import { IInitialStateError } from "../../interface/Interface";
 
 export interface IInitialState {
-  
+
   loading: boolean;
   error: IInitialStateError | null;
-  isUser:boolean
-  tempMail:string|null
-  
+  isAuthenticated: boolean
+  tempMail: { email: string } | null
+
 }

@@ -6,25 +6,33 @@ import UserFooter from "../component/user/footer/UserFooter";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { Loader } from "../component/Loader";
+import { ProtectedRoutes } from "../component/user/ProtectedRoutes";
+import { UserProfile } from "../pages/user/userProfile";
 
 const UserRoutes: React.FC = () => {
   const location = useLocation();
   const { loading } = useSelector((state: RootState) => state.user)
   const isAuthRoutes = /^\/(login|signup|otp-verification)/.test(location.pathname);
-  
+
   return (
     <>
       {!isAuthRoutes && <UserNavBar />}
       {loading && < Loader />}
       <Routes>
         <Route path='/' element={
-    
+          <ProtectedRoutes>
             <UserHome />
+          </ProtectedRoutes>
 
         } />
         <Route path='/login' element={<UserLogin />} />
         <Route path='/signup' element={<UserSignUp />} />
         <Route path='/otp-verification' element={<UserOTPVerification />} />
+        <Route path='/profile' element={
+          <ProtectedRoutes>
+            <UserProfile />
+          </ProtectedRoutes>
+        } />
       </Routes>
       {!isAuthRoutes && <UserFooter />}
     </>
