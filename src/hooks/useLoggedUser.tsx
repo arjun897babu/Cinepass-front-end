@@ -1,26 +1,44 @@
 import { useEffect, useState } from "react";
-import { LoggedUser } from "../interface/user/IUserData";
+import { LoggedOwner } from "../interface/user/IUserData";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import { IInitialStateError } from "../interface/Interface";
 
-interface LoggedUserState {
-  loggedUser: LoggedUser | null
+interface LoggedOwnerState {
+  loggedOwner: LoggedOwner | null
   isAuthenticated: boolean
+  error: IInitialStateError | null, 
+  loading: boolean,
+  tempMail:{email:string;}| null
 }
 
-export const useLoggedUser = (): LoggedUserState  => {
 
-  const { user, isAuthenticated } = useSelector((state: RootState) => state.user);
-  const [loggedUser, setLoggedUser] = useState<LoggedUser | null>(null);
-  // loggedUser when user state changes
+
+export const useLoggedOwner = (role: string): LoggedOwnerState => {
+
+  const { owner, isAuthenticated, error, loading, tempMail } = useSelector((state: RootState) => {
+    switch (role) {
+      case 'admin':
+        return state.admin;
+      case 'theater':
+        return state.theater;
+      case 'user':
+        return state.user;
+      default:
+        return { owner: null, isAuthenticated: false, error: null, loading: false, tempMail: null };
+    }
+  });
+
+  const [loggedOwner, setLoggedOwner] = useState<LoggedOwner | null>(null);
+  // loggedOwner when user state changes
   useEffect(() => {
-    if (user) {
-      setLoggedUser(user);  //  setting the first element of User
+    if (owner) {
+      setLoggedOwner(owner);
 
     } else {
-      setLoggedUser(null)
+      setLoggedOwner(null)
     }
-  }, [user])
+  }, [isAuthenticated])
 
-  return { isAuthenticated , loggedUser }
+  return { isAuthenticated, loggedOwner, error, loading, tempMail }
 }

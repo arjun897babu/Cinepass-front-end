@@ -4,7 +4,6 @@ import { UserSingUpData } from '../../interface/user/IUserData'
 import { userEndPoints } from '../../services/endpoints/endPoints'
 import { AxiosError } from 'axios'
 import { LoginData, OTPVerification, ResponseData } from '../../interface/Interface'
-import { ErrorResponse, isErrorResponse } from '../../utils/customError'
 
 export const signUpUser: AsyncThunk<ResponseData, UserSingUpData, {}> = createAsyncThunk(
   'user/singup',

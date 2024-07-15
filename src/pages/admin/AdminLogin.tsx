@@ -1,9 +1,50 @@
 
-import React from 'react';
+import React, { FormEvent, useEffect } from 'react';
 import '../../index.css';
 import backGroundImage from '/Iconic Movie Posters Collage.webp';
+import { useForm } from '../../hooks/UseForm';
+import { useFormSubmit } from '../../hooks/UseFormSubmitt';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../redux/store';
+import { useNavigate } from 'react-router-dom';
+import { loginAdmin } from '../../redux/actions/adminAction';
+import { ResponseStatus } from '../../interface/Interface';
+import { isErrorResponse } from '../../utils/customError';
+import { useLoggedOwner } from '../../hooks/useLoggedUser';
+import { clearError } from '../../redux/reducers/adminReducer';
 
 export const AdminLogin: React.FC = (): JSX.Element => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { error, isAuthenticated } = useLoggedOwner('admin')
+  const navigate = useNavigate();
+  useEffect(() => {
+    dispatch(clearError())
+  }, [])
+  const { formData, inputError, setInputError, handleChange } = useForm({
+    email: '',
+    password: ''
+  });
+
+  const { handleSubmit } = useFormSubmit(formData, setInputError);
+
+  const onSubmit = async (e: FormEvent) => {
+    try {
+      const isValid = handleSubmit(e);
+
+      if (isValid) {
+        const response = await dispatch(loginAdmin(formData)).unwrap()
+        console.log(response)
+        if (response.status == ResponseStatus.SUCCESS) {
+          navigate(response.redirectURL)
+        }
+      }
+    } catch (error) {
+      if (isErrorResponse(error)) {
+        console.log(error)
+      }
+    }
+
+  }
 
   let backGroundImagePath = { backgroundImage: `url(${backGroundImage})` }
   return (
@@ -19,29 +60,38 @@ export const AdminLogin: React.FC = (): JSX.Element => {
             Empower Your Movie Management with CinePass
           </h1>
           {/* form */}
-          <form action="" className="flex flex-col gap-1 ">
+          <form onSubmit={onSubmit} className="flex flex-col gap-1 ">
 
-            <div className="p-2 mt-1 text-white rounded-xl w-full ">
+            <div className="p-2 mt-1 text-white rounded-xl w-full relative ">
               <label htmlFor="email">Email</label>
               <input
                 className="p-2 mt-3 text-black rounded-xl w-full focus:outline"
-                type="email"
+                type="text"
                 name="email"
+                value={formData.email}
+                onChange={handleChange}
                 placeholder="Email"
               />
+              {inputError?.email && <span className='text-red-600 capitalize absolute left-3 -bottom-4 font-mono text-sm ' >{inputError?.email}</span>}
+              {error?.error === 'email' && <span className='text-red-600 capitalize absolute left-3 -bottom-4 font-mono text-sm '>{error.message}</span>}
+
             </div>
-            <div className="p-2 mt-1  text-white rounded-xl w-full ">
+            <div className="p-2 mt-1  text-white rounded-xl w-full relative">
               <label htmlFor="Password">Password</label>
               <input
                 className="p-2 mt-3  text-black rounded-xl w-full focus:outline"
                 type="password"
                 name="password"
+                value={formData.password}
+                onChange={handleChange}
                 placeholder="password"
               />
+              {inputError?.password && <span className='text-red-600 capitalize absolute left-3 -bottom-4 font-mono text-sm ' >{inputError?.password}</span>}
+              {error?.error === 'password' && <span className='text-red-600 capitalize absolute left-3 -bottom-4 font-mono text-sm '>{error.message}</span>}
             </div>
 
 
-            <button className="bg-black rounded-xl text-white py-2  ">
+            <button className="bg-black rounded-xl mt-4 text-white py-2  ">
               Login
             </button>
           </form>
@@ -63,4 +113,3 @@ export const AdminLogin: React.FC = (): JSX.Element => {
   )
 }
 
- 

@@ -10,6 +10,7 @@ import { useForm } from '../../hooks/UseForm';
 import { useFormSubmit } from '../../hooks/UseFormSubmitt';
 import { userEndPoints } from '../../services/endpoints/endPoints';
 import { clearError } from '../../redux/reducers/userReducer';
+import { useLoggedOwner } from '../../hooks/useLoggedUser';
 
 
 export const UserSignUp: React.FC = (): JSX.Element => {
@@ -19,11 +20,12 @@ export const UserSignUp: React.FC = (): JSX.Element => {
   let background_image_path = { backgroundImage: `url(${backGroundImage})` };
 
   const dispatch = useDispatch<AppDispatch>();
-  
+
   useEffect(() => {
     dispatch(clearError())
   }, [])
-  const { error } = useSelector((state: RootState) => state.user);
+
+  const { error, isAuthenticated } = useLoggedOwner('user');
 
   const { formData, handleChange, inputError, setInputError } = useForm({
     name: '',

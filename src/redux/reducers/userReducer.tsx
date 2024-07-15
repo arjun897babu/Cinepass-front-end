@@ -3,16 +3,11 @@ import { loginUser, logoutUser, signUpUser, verifyUser } from "../actions/userAc
 import { IInitialState } from "./IState";
 import { IInitialStateError, ResponseData, ResponseStatus } from "../../interface/Interface";
 import { isErrorResponse } from "../../utils/customError";
-import { LoggedUser } from "../../interface/user/IUserData";
+ 
 
 
-
-export interface UserState extends IInitialState {
-  user: LoggedUser | null;
-}
-
-const initialState: UserState = {
-  user: null,
+const initialState: IInitialState = {
+  owner: null,
   loading: false,
   error: null,
   isAuthenticated: false,
@@ -38,7 +33,7 @@ const userSlice = createSlice({
       })
       .addCase(signUpUser.fulfilled, (state, action: PayloadAction<ResponseData>) => {
         state.loading = false;
-        state.user = action.payload.data ? action.payload.data[0] : null
+        state.tempMail = action.payload.data ? action.payload.data[0] as { email: string } : null
       })
       .addCase(signUpUser.rejected, (state, action) => {
         state.loading = false;
@@ -57,7 +52,7 @@ const userSlice = createSlice({
         if (action.payload.data) {
           console.log(action.payload.data)
         };
-        state.user = action.payload.data ? action.payload.data[0] : null
+        state.owner = action.payload.data ? action.payload.data[0] : null
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -76,12 +71,12 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = null
         state.isAuthenticated = action.payload.status === ResponseStatus.ERROR;
-        state.user=null
+        state.owner = null
       })
       .addCase(logoutUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as IInitialStateError | null
-        
+
 
       })
       .addCase(verifyUser.pending, (state) => {
@@ -91,12 +86,12 @@ const userSlice = createSlice({
 
       .addCase(verifyUser.fulfilled, (state) => {
         state.loading = false;
-        state.user = null;
+        state.owner = null;
         state.isAuthenticated = false;
       })
       .addCase(verifyUser.rejected, (state, action) => {
         state.loading = false;
-        state.user = null
+        state.owner = null
         state.isAuthenticated = false;
         state.error = action.payload as IInitialStateError | null
       })

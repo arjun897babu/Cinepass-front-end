@@ -1,5 +1,5 @@
 import { } from 'react-icons'
-import React, { MouseEvent, useEffect, useRef, useState } from 'react'
+import React, { MouseEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import logo from '/cinepass logo.png'
 import { GiHamburgerMenu } from "react-icons/gi"
@@ -7,7 +7,7 @@ import { RxCross1 } from "react-icons/rx";
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from '../../redux/store'
 import { logoutUser } from '../../redux/actions/userAction'
-import { useLoggedUser } from '../../hooks/useLoggedUser'
+import { useLoggedOwner } from '../../hooks/useLoggedUser'
 
 
 const UserNavBar: React.FC = (): JSX.Element => {
@@ -17,34 +17,33 @@ const UserNavBar: React.FC = (): JSX.Element => {
   const [open, setOpen] = useState(false); // State for dropdown menu toggle
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate();
-  const { loggedUser, isAuthenticated } = useLoggedUser();// state for logged in user
- console.log('navbar component')
-  useEffect(() => {
+  const { loggedOwner, isAuthenticated } = useLoggedOwner('user');// state for logged in user
 
-    let handler = (e: globalThis.MouseEvent): void => {
-      if (!menuRef.current?.contains(e.target as Node)) {
-        setOpen(false)
-      }
-    };
 
-    document.addEventListener("mousedown", handler);
-    return () => {
-      document.removeEventListener("mousedown", handler)
-    }
-
-  }, [])
-
+  // Handler for toggle
+  const handleToggle = () => {
+    setToggle((prevToggle) => !prevToggle);
+  }
+  // Handler for open
+  const handleOpen = () => {
+    setOpen((prevOpen) => !prevOpen);
+  }
   // Handle logout
   const logoutHandle = async (e: MouseEvent) => {
-    e.preventDefault();
-    await dispatch(logoutUser());
-    navigate('/login')
+    try {
+      e.preventDefault();
+      await dispatch(logoutUser());
+      navigate('/login')
+    } catch (error) {
+      console.log(error)
+    }
+
   }
 
   return (
     <>
       <nav className='relative p-4 flex justify-between items-center bg-white'>
-        <button className='space-y-2 md:hidden absolute left-4 top-8 z-10 ' onClick={() => setToggle((prevToggle) => !prevToggle)}  >
+        <button className='space-y-2 md:hidden absolute left-4 top-8 z-10 ' onClick={handleToggle}  >
           {
             (toggle) ?
               <GiHamburgerMenu
@@ -82,30 +81,31 @@ const UserNavBar: React.FC = (): JSX.Element => {
             </Link>
             :
 
-            (<div ref={menuRef} className="relative">
-              <div onClick={() => setOpen(!open)} className="cursor-pointer">
-                <img
-                  className="w-12 h-12 mx-auto rounded-full aspect-square cursor-pointer"
-                  src={loggedUser?.profile_picture ?? 'https://t4.ftcdn.net/jpg/03/40/12/49/240_F_340124934_bz3pQTLrdFpH92ekknuaTHy8JuXgG7fi.jpg'}
-                  alt="user avatar"
+            (
+              <div ref={menuRef} className="relative">
+                <div onClick={handleOpen} className="cursor-pointer">
+                  <img
+                    className="w-12 h-12 mx-auto rounded-full aspect-square cursor-pointer"
+                    src={loggedOwner?.profile_picture ?? 'https://t4.ftcdn.net/jpg/03/40/12/49/240_F_340124934_bz3pQTLrdFpH92ekknuaTHy8JuXgG7fi.jpg'}
+                    alt="user avatar"
 
-                />
-              </div>
-              <div className={`dropdown-menu ${open ? 'active' : 'inactive'} bg-white rounded-md shadow-lg py-2 mt-2 w-48 absolute right-0`}>
-                <h3 className="text-black px-4 py-2">{loggedUser?.name ?? 'Arjun'}</h3>
-                <hr className="my-1" />
-                <ul className='list-none'>
-                  <Link to={'/profile'}>
+                  />
+                </div>
+                <div className={`dropdown-menu ${open ? 'active' : 'inactive'} bg-white rounded-md shadow-lg py-2 mt-2 w-48 absolute right-0`}>
+                  <h3 className="text-black px-4 py-2">{loggedOwner?.name ?? 'Arjun'}</h3>
+                  <hr className="my-1" />
+                  <ul className='list-none'>
+                    <Link to={'/profile'}>
+                      <li className='dropdownItem px-4 py-2 hover:bg-gray-200'>
+                        <span className='text-black cursor-pointer'>Profile</span>
+                      </li>
+                    </Link>
                     <li className='dropdownItem px-4 py-2 hover:bg-gray-200'>
-                      <span className='text-black cursor-pointer'>Profile</span>
+                      <span className='text-black cursor-pointer' onClick={logoutHandle}>Logout</span>
                     </li>
-                  </Link>
-                  <li className='dropdownItem px-4 py-2 hover:bg-gray-200'>
-                    <span className='text-black cursor-pointer' onClick={logoutHandle}>Logout</span>
-                  </li>
-                </ul>
+                  </ul>
+                </div>
               </div>
-            </div>
             )
           }
 
@@ -115,7 +115,7 @@ const UserNavBar: React.FC = (): JSX.Element => {
         {/* <div className="fixed inset-0 bg-red-300">
 
         </div> */}
- 
+
 
       </nav >
     </>

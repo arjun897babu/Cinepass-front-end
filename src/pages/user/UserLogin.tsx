@@ -12,7 +12,7 @@ import { loginUser } from '../../redux/actions/userAction';
 import { ResponseStatus } from '../../interface/Interface';
 import { isErrorResponse } from '../../utils/customError';
 import { clearError } from '../../redux/reducers/userReducer';
-import { useLoggedUser } from '../../hooks/useLoggedUser';
+import { useLoggedOwner } from '../../hooks/useLoggedUser';
 
 
 
@@ -20,10 +20,11 @@ export const UserLogin: React.FC = (): JSX.Element => {
 
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { isAuthenticated } = useLoggedUser();
+      
  
-  console.log('login page',isAuthenticated)
-  const { error } = useSelector((state: RootState) => state.user);
+ 
+ 
+  const { error,isAuthenticated } = useLoggedOwner('user');
 
   const { formData, inputError, handleChange, setInputError } = useForm({
     email: '',

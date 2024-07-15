@@ -1,19 +1,24 @@
-import { UserEndPoints } from "./IEndPoints";
+import { UserEndpoint, AdminEndpoint, TheaterEndpoint } from "./IEndPoints";
 
-export const userEndPoints: UserEndPoints = {
-  
+export const userEndPoints: UserEndpoint = {
+
   signup: 'users/signup',
   login: 'users/login',
-  logout:'users/logout',
+  logout: 'users/logout',
   verifyOTP: 'users/otp-verification',
   resendOTP: 'users/otp-resend'
 };
-export const theatersEndPoints: UserEndPoints = {
-  
+export const theatersEndPoints: TheaterEndpoint = {
+
   signup: 'theaters/signup',
   login: 'theaters/login',
-  logout:'theaters/logout',
+  logout: 'theaters/logout',
   verifyOTP: 'theaters/otp-verification',
   resendOTP: 'theaters/otp-resend'
 };
+
+export const adminEndpoints: AdminEndpoint = {
+  login: '/admin/login',
+  logout: '/admin/logout',
+}
 

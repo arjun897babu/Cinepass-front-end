@@ -20,10 +20,7 @@ const UserRoutes: React.FC = () => {
       {loading && < Loader />}
       <Routes>
         <Route path='/' element={
-          <ProtectedRoutes>
             <UserHome />
-          </ProtectedRoutes>
-
         } />
         <Route path='/login' element={<UserLogin />} />
         <Route path='/signup' element={<UserSignUp />} />

@@ -7,12 +7,12 @@ export interface UserSingUpData extends LoginData {
 }
 
 
-export interface LoggedUser {
+export interface LoggedOwner {
   name: string;
   email: string;
-  mobile_number: number;
-  verified: boolean;
-  status: string;
-  profile_picture: string | null;
+  mobile_number?: number;
+  verified?: boolean;
+  status?: string;
+  profile_picture?: string | null;
    
 }

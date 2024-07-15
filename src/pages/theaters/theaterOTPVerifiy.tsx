@@ -1,24 +1,26 @@
-import React, { useEffect } from "react"
-import backgroundImage from '/Iconic Movie Posters Collage.webp'
+import React, { useEffect, useState } from "react"
+import backgroundImage from '/movie_projector.jpg'
 import { useForm } from "../../hooks/UseForm";
 import { useFormSubmit } from "../../hooks/UseFormSubmitt";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../redux/store";
-import { verifyUser } from "../../redux/actions/userAction";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../redux/store";
+
 import { ResponseStatus } from "../../interface/Interface";
-import { useLocation, useNavigate } from "react-router-dom";
-import { clearError } from "../../redux/reducers/userReducer";
+import { useNavigate } from "react-router-dom";
 import { useLoggedOwner } from "../../hooks/useLoggedUser";
+import { changeLoading, clearError } from "../../redux/reducers/theatersReducer";
+import { verifyOTPTheaters } from "../../redux/actions/theaterAction";
 
 
-export const UserOTPVerification: React.FC = (): JSX.Element => {
+
+export const TheaterOTPVerification: React.FC = (): JSX.Element => {
 
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate();
-  const location = useLocation()
 
-  const { error, isAuthenticated,tempMail } = useLoggedOwner('user');
-  
+  const { error, isAuthenticated, tempMail, loading } = useLoggedOwner('theater')
+
+
 
   const { formData, inputError, handleChange, setInputError } = useForm({
     otp: ''
@@ -36,19 +38,22 @@ export const UserOTPVerification: React.FC = (): JSX.Element => {
       if (isValid) {
 
         if (tempMail) {
-          const response = await dispatch(verifyUser({ ...formData, email: tempMail.email })).unwrap();
+          const response = await dispatch(verifyOTPTheaters({ ...formData, email: tempMail.email })).unwrap();
+          console.log('log from otp theater verify page', response)
           if (response.status === ResponseStatus.SUCCESS) {
+            console.log(response.redirectURL)
             navigate(response.redirectURL)
           }
         }
 
       }
     } catch (err) {
-      console.log('verification error :', err, error)
+      console.log('verification error :', err)
     }
 
   };
   const backgroundImagePath = { backgroundImage: `url(${backgroundImage})` };
+
   return (
     <>
 
@@ -79,12 +84,15 @@ export const UserOTPVerification: React.FC = (): JSX.Element => {
                   value={formData.otp}
                   onChange={handleChange}
                 />
-                {inputError.otp && <small className='text-red-600 capitalize absolute bottom-0 left-0'>{inputError.otp}</small>}
-                {error?.error === 'otp' && <small className='text-red-600 capitalize absolute bottom-0 left-0'>{error.message}</small>}
+                {inputError.otp && <small className='text-red-600 capitalize absolute -bottom-4 left-3 font-mono'>{inputError.otp}</small>}
+                {error?.error === 'otp' && <small className='text-red-600 capitalize absolute -bottom-4 left-3 font-mono'>{error.message}</small>}
               </div>
-              <button className="bg-black rounded-xl text-white py-2  ">
+              <button className="bg-black rounded-xl mt-6 text-white py-2  ">
                 Verify OTP
               </button>
+              <div className="mt-2 text-white text-sm text-center">
+                Time remaining: {''}
+              </div>
             </form>
           </div>
         </div>

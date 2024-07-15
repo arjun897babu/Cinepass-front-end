@@ -1,12 +1,16 @@
 
-import React from 'react';
+import React, { FormEvent } from 'react';
 import '../../index.css';
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import backGroundImage from '/movie_projector.jpg'
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../redux/store';
 import { useForm } from '../../hooks/UseForm';
 import { useFormSubmit } from '../../hooks/UseFormSubmitt';
+import { signupTheaters } from '../../redux/actions/theaterAction';
+import { ResponseStatus } from '../../interface/Interface';
+import { isErrorResponse } from '../../utils/customError';
+import { useLoggedOwner } from '../../hooks/useLoggedUser';
 
 
 
@@ -16,8 +20,8 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
   let background_image_path = { backgroundImage: `url(${backGroundImage})` };
 
   const dispatch = useDispatch<AppDispatch>();
-
-  const { error, loading } = useSelector((state: RootState) => state.theater);
+  const navigate = useNavigate()
+  const { loading, error } = useLoggedOwner('theater');
 
   console.log('states in the theater login page', error, loading)
 
@@ -28,6 +32,7 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
     password: '',
     confirm_password: '',
     adhaar_number: '',
+    theater_name: '',
     theater_license: '',
   });
   console.log('theater form data', formData);
@@ -35,7 +40,22 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
   const { handleSubmit } = useFormSubmit(formData, setInputError);
 
 
+  const onSubmit = async (e: FormEvent) => {
+    const isValid = handleSubmit(e)
+    try {
+      if (isValid) {
+        const result = await dispatch(signupTheaters(formData)).unwrap();
+        if (result.status === ResponseStatus.SUCCESS) {
+          navigate(result.redirectURL)
+        }
+      }
+    } catch (error) {
+      if (isErrorResponse(error)) {
+        console.log('theater signup error', error)
+      }
+    }
 
+  }
 
 
   return (
@@ -53,19 +73,20 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
 
           </h1>
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-1">
+          <form onSubmit={onSubmit} className="flex flex-col gap-1">
 
             <div className="p-2 mt-1 text-white rounded-xl w-full relative">
               <label htmlFor="name">Name</label>
               <input
                 className="p-2 mt-3 text-black rounded-xl w-full focus:outline"
-                type="name"
+                type="text"
                 name="name"
                 placeholder="Name"
                 value={formData.name}
                 onChange={handleChange}
               />
-              {inputError.name && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 '>{inputError.name}</small>}
+              {inputError.name && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 font-mono '>{inputError.name}</small>}
+              {error?.error === 'name' && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 font-mono '>{error.message}</small>}
             </div>
 
             <div className="p-2 mt-1 text-white rounded-xl w-full relative">
@@ -78,20 +99,22 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
                 onChange={handleChange}
                 value={formData.email}
               />
-              {inputError.email && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 '>{inputError.email}</small>}
+              {inputError.email && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 font-mono '>{inputError.email}</small>}
+              {error?.error === 'email' && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 font-mono '>{error.message}</small>}
             </div>
 
             <div className="p-2 mt-1 text-white rounded-xl w-full relative">
               <label htmlFor="mobile_number">Mobile Number</label>
               <input
                 className="p-2 mt-3 text-black rounded-xl w-full focus:outline"
-                type="number"
+                type="text"
                 name="mobile_number"
                 placeholder="mobile_number"
                 value={formData.mobile_number}
                 onChange={handleChange}
               />
-              {inputError.mobile_number && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 '>{inputError.mobile_number}</small>}
+              {inputError.mobile_number && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 font-mono '>{inputError.mobile_number}</small>}
+              {error?.error === 'mobile_number' && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 font-mono '>{error.message}</small>}
             </div>
 
             <div className="p-2 mt-1 text-white rounded-xl w-full relative">
@@ -104,7 +127,8 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
                 value={formData.password}
                 onChange={handleChange}
               />
-              {inputError.password && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 '>{inputError.password}</small>}
+              {inputError.password && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 font-mono '>{inputError.password}</small>}
+              {error?.error === 'password' && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 font-mono '>{error.message}</small>}
             </div>
 
             <div className="p-2 mt-1 text-white rounded-xl w-full relative">
@@ -117,32 +141,47 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
                 value={formData.confirm_password}
                 onChange={handleChange}
               />
-              {inputError.confirm_password && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 '>{inputError.confirm_password}</small>}
+              {inputError.confirm_password && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 font-mono '>{inputError.confirm_password}</small>}
             </div>
             <div className="p-2 mt-1 text-white rounded-xl w-full relative">
               <label htmlFor="adhaar_number">adhaar number</label>
               <input
                 className="p-2 mt-3 text-black rounded-xl w-full focus:outline"
-                type="password"
+                type="text"
                 name="adhaar_number"
                 placeholder="adhaar number"
                 value={formData.adhaar_number}
                 onChange={handleChange}
               />
-              {inputError.adhaar_number && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 '>{inputError.adhaar_number}</small>}
+              {inputError.adhaar_number && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 font-mono '>{inputError.adhaar_number}</small>}
+              {error?.error === 'adhaar_number' && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 font-mono '>{error.message}</small>}
             </div>
 
             <div className="p-2 mt-1 text-white rounded-xl w-full relative">
               <label htmlFor="theater_license">theater license number</label>
               <input
                 className="p-2 mt-3 text-black rounded-xl w-full focus:outline"
-                type="password"
+                type="text"
                 name="theater_license"
                 placeholder="theater license number"
                 value={formData.theater_license}
                 onChange={handleChange}
               />
-              {inputError.theater_license && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 '>{inputError.theater_license}</small>}
+              {inputError.theater_license && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 font-mono '>{inputError.theater_license}</small>}
+              {error?.error === 'theater_license' && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 font-mono '>{error.message}</small>}
+            </div>
+            <div className="p-2 mt-1 text-white rounded-xl w-full relative">
+              <label htmlFor="theater_license">Theater Name</label>
+              <input
+                className="p-2 mt-3 text-black rounded-xl w-full focus:outline"
+                type="text"
+                name="theater_name"
+                placeholder="theater license number"
+                value={formData.theater_name}
+                onChange={handleChange}
+              />
+              {inputError.theater_name && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 font-mono '>{inputError.theater_name}</small>}
+              {inputError.theater_name && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 font-mono '>{inputError.theater_name}</small>}
             </div>
 
             <button className="bg-black rounded-xl text-white py-2">
