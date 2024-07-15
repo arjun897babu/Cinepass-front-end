@@ -14,16 +14,13 @@ import { isErrorResponse } from '../../utils/customError';
 import { clearError } from '../../redux/reducers/userReducer';
 import { useLoggedOwner } from '../../hooks/useLoggedUser';
 
-
+ 
 
 export const UserLogin: React.FC = (): JSX.Element => {
 
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-      
- 
- 
- 
+     
   const { error,isAuthenticated } = useLoggedOwner('user');
 
   const { formData, inputError, handleChange, setInputError } = useForm({
