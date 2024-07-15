@@ -65,10 +65,10 @@ const UserNavBar: React.FC = (): JSX.Element => {
         </Link>
 
         <div className="nav_menu hidden  md:gap-2 lg:gap-5 md:flex   ">
-          <Link className='uppercase p-3 font-semibold  ' to={'/'}>Home <span></span></Link>
-          <Link className='uppercase p-3 font-semibold ' to={'/movies'}>movies</Link>
-          <Link className='uppercase p-3 font-semibold ' to={'/cinemas'}>cinemas</Link>
-          <Link className='uppercase p-3 font-semibold ' to={'/streams'}>streams</Link>
+          <Link className='hover:bg-blue-100 uppercase p-3 font-semibold  ' to={'/'}>Home <span></span></Link>
+          <Link className='hover:bg-blue-100 uppercase p-3 font-semibold ' to={'/movies'}>movies</Link>
+          <Link className='hover:bg-blue-100 uppercase p-3 font-semibold ' to={'/cinemas'}>cinemas</Link>
+          <Link className='hover:bg-blue-100 uppercase p-3 font-semibold ' to={'/streams'}>streams</Link>
         </div>
 
         <div className="auth-section hidden pl-6 text-base font-bold leading-6 text-center">
@@ -91,16 +91,16 @@ const UserNavBar: React.FC = (): JSX.Element => {
 
                   />
                 </div>
-                <div className={`dropdown-menu ${open ? 'active' : 'inactive'} bg-white rounded-md shadow-lg py-2 mt-2 w-48 absolute right-0`}>
-                  <h3 className="text-black px-4 py-2">{loggedOwner?.name ?? 'Arjun'}</h3>
+                <div className={`dropdown-menu ${open ? 'active' : 'inactive'}  rounded-md shadow-lg py-2 mt-2 w-48 absolute right-0 z-20`}>
+                  <h3 className="text-black capitalize px-4 py-2">{loggedOwner?.name ?? 'Arjun'}</h3>
                   <hr className="my-1" />
                   <ul className='list-none'>
                     <Link to={'/profile'}>
-                      <li className='dropdownItem px-4 py-2 hover:bg-gray-200'>
+                      <li className='dropdownItem px-4 py-2 hover:bg-blue-100'>
                         <span className='text-black cursor-pointer'>Profile</span>
                       </li>
                     </Link>
-                    <li className='dropdownItem px-4 py-2 hover:bg-gray-200'>
+                    <li className='dropdownItem px-4 py-2 hover:bg-blue-100'>
                       <span className='text-black cursor-pointer' onClick={logoutHandle}>Logout</span>
                     </li>
                   </ul>

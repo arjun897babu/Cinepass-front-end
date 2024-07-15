@@ -1,8 +1,8 @@
 import React from "react";
-import { Link } from 'react-router-dom'
+ 
 import * as IFooter from "./IFooter";
 import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
-import logo from '/cinepass logo.png'
+ 
 
 const iconMap = {
   FaFacebook: FaFacebook,
@@ -34,10 +34,10 @@ const SocialIcons: React.FC<{ Icons: IFooter.ArrayInterFace[] }> = ({ Icons }) =
 const ItemsContainer: React.FC = () => {
   return (
     <div className="grid grid-cols-1 text-center sm:grid-cols-4 sm:text-justify sm:gap-4 gap-6 sm:px-8 px-5 py-16">
-      <Item Links={IFooter.PRODUCTS} title="PRODUCTS" />
-      <Item Links={IFooter.RESOURCES} title="RESOURCES" />
+      <Item Links={IFooter.NAVIGATION} title="PRODUCTS" />
+      <Item Links={IFooter.MOVIEUPDATES} title="MOVIE UPDATES" />
       <Item Links={IFooter.COMPANY} title="COMPANY" />
-      <Item Links={IFooter.SUPPORT} title="SUPPORT" />
+      <Item Links={IFooter.TALKTOUS} title="TALK TO US" />
     </div>
   );
 };

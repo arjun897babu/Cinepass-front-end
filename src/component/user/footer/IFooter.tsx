@@ -8,30 +8,27 @@ export interface ItemProps {
   title?: string;
 }
 
-export const PRODUCTS:ArrayInterFace[] = [
-  { name: "Drag And Drop", link: "#" },
-  { name: "Visual Studio X", link: "#" },
-  { name: "Easy Content", link: "#" },
+export const NAVIGATION:ArrayInterFace[] = [
+  { name: "Home", link: "#" },
+  { name: "Movies", link: "#" },
+  { name: "Cinemas", link: "#" },
+  { name: "Orders", link: "#" },
+  { name: "Profile", link: "#" },
 ];
-export const RESOURCES:ArrayInterFace[] = [
-  { name: "Industries and tools", link: "#" },
-  { name: "Use cases", link: "#" },
-  { name: "Blog", link: "#" },
-  { name: "Online evenet", link: "#" },
-  { name: "Nostrud exercitation", link: "#" },
+export const MOVIEUPDATES:ArrayInterFace[] = [
+  { name: "Upcoming Movies", link: "#" },
+  { name: "Now Showing", link: "#" },
+ 
 ];
 export const COMPANY:ArrayInterFace[] = [
-  { name: "Diversity & inclusion", link: "#" },
   { name: "About us", link: "#" },
-  { name: "Press", link: "#" },
   { name: "Customer Stories", link: "#" },
   { name: "Online communities", link: "#" },
 ];
-export const SUPPORT:ArrayInterFace[]  = [
-  { name: "Documentation", link: "#" },
-  { name: "Tutorials & guides", link: "#" },
-  { name: "Webinars", link: "#" },
-  { name: "Open-source", link: "#" },
+export const TALKTOUS:ArrayInterFace[]  = [
+  { name: "+62172992827", link: "#" },
+  { name: "cinepassmovies22@gmail.com", link: "#" },
+ 
 ];
 
 export const Icons:ArrayInterFace[]  = [
