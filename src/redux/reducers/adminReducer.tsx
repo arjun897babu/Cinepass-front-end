@@ -2,9 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 import { IInitialState } from "./IState";
 
 import { IInitialStateError } from "../../interface/Interface";
-import { loginAdmin } from "../actions/adminAction";
+import { loginAdmin, logoutAdmin } from "../actions/adminAction";
 import { isEmpty } from "@cloudinary/url-gen/backwards/utils/isEmpty";
 import { isErrorResponse } from "../../utils/customError";
+import { FaFileShield } from "react-icons/fa6";
 
 
 const initialState: IInitialState = {
@@ -43,7 +44,21 @@ const adminSlice = createSlice({
           state.error = action.payload.error as IInitialStateError
         }
       })
+      .addCase(logoutAdmin.pending, (state) => {
+        state.loading = true;
+        state.error = null
+      })
+      .addCase(logoutAdmin.fulfilled, (state) => {
+        state.loading = false;
+        state.error = null;
+        state.isAuthenticated = false
+        state.owner = null
+      })
+      .addCase(logoutAdmin.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as IInitialStateError | null
+      })
   }
 })
-export const { clearError } = adminSlice.actions
+export const { clearError:clearAdminError } = adminSlice.actions
 export default adminSlice.reducer

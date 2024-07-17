@@ -3,7 +3,7 @@ import { loginUser, logoutUser, signUpUser, verifyUser } from "../actions/userAc
 import { IInitialState } from "./IState";
 import { IInitialStateError, ResponseData, ResponseStatus } from "../../interface/Interface";
 import { isErrorResponse } from "../../utils/customError";
- 
+
 
 
 const initialState: IInitialState = {
@@ -31,13 +31,15 @@ const userSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(signUpUser.fulfilled, (state, action: PayloadAction<ResponseData>) => {
+      .addCase(signUpUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.tempMail = action.payload.data ? action.payload.data[0] as { email: string } : null
+        state.tempMail = action.payload.data ? action.payload.data[0] : null
       })
       .addCase(signUpUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload as IInitialStateError
+        if (isErrorResponse(action.payload)) {
+          state.error = action.payload.error as IInitialStateError | null
+        }
       })
 
       //login
@@ -67,38 +69,42 @@ const userSlice = createSlice({
         state.loading = true;
         state.error = null
       })
-      .addCase(logoutUser.fulfilled, (state, action: PayloadAction<ResponseData>) => {
+      .addCase(logoutUser.fulfilled, (state) => {
         state.loading = false;
         state.error = null
-        state.isAuthenticated = action.payload.status === ResponseStatus.ERROR;
+        state.isAuthenticated = false;
         state.owner = null
       })
       .addCase(logoutUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload as IInitialStateError | null
-
-
+        if (isErrorResponse(action.payload)) {
+          state.error = action.payload.error as IInitialStateError | null
+        }
       })
+      
+      //verifying otp
       .addCase(verifyUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-
       .addCase(verifyUser.fulfilled, (state) => {
         state.loading = false;
         state.owner = null;
         state.isAuthenticated = false;
+        state.tempMail = null;
       })
       .addCase(verifyUser.rejected, (state, action) => {
         state.loading = false;
         state.owner = null
         state.isAuthenticated = false;
-        state.error = action.payload as IInitialStateError | null
+        if (isErrorResponse(action.payload)) {
+          state.error = action.payload.error as IInitialStateError | null
+        }
       })
 
   },
 
 });
 
-export const { clearError } = userSlice.actions
+export const { clearError: clearUserError } = userSlice.actions
 export default userSlice.reducer

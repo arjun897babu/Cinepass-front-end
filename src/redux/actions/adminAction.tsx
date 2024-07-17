@@ -20,4 +20,21 @@ export const loginAdmin: AsyncThunk<ResponseData, LoginData, {}> = createAsyncTh
       return rejectWithValue('an unknown error')
     }
   }
-)
+);
+
+export const logoutAdmin = createAsyncThunk<ResponseData, void, {}>(
+  'admin/logout',
+  async (_: void, { rejectWithValue }) => {
+
+    try {
+      const response = await serverInstance.post(adminEndpoints.logout, {});
+
+      return response.data as ResponseData;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return rejectWithValue(error.response?.data);
+      }
+      return rejectWithValue('An unknown error occurred');
+    }
+  }
+);

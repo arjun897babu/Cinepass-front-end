@@ -1,5 +1,5 @@
 
-import React, { FormEvent } from 'react';
+import React, { FormEvent, useEffect } from 'react';
 import '../../index.css';
 import { Link, useNavigate } from 'react-router-dom'
 import backGroundImage from '/movie_projector.jpg'
@@ -11,6 +11,7 @@ import { signupTheaters } from '../../redux/actions/theaterAction';
 import { ResponseStatus } from '../../interface/Interface';
 import { isErrorResponse } from '../../utils/customError';
 import { useLoggedOwner } from '../../hooks/useLoggedUser';
+import { clearTheaterError } from '../../redux/reducers/theatersReducer';
 
 
 
@@ -23,6 +24,11 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
   const navigate = useNavigate()
   const { loading, error } = useLoggedOwner('theater');
 
+
+  useEffect(() => {
+    dispatch(clearTheaterError())
+  }, [])
+
   console.log('states in the theater login page', error, loading)
 
   const { formData, handleChange, inputError, setInputError } = useForm({
@@ -34,7 +40,7 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
     adhaar_number: '',
     theater_name: '',
     theater_license: '',
-  });
+  },'theater');
   console.log('theater form data', formData);
 
   const { handleSubmit } = useFormSubmit(formData, setInputError);
@@ -61,7 +67,7 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
   return (
     <section className="background overlay flex items-center justify-center " style={background_image_path}>
 
-      <div className="flex rounded-2xl p-5 justify-center">
+      <div className="flex  p-5 justify-center">
 
 
         {/* Form section */}
@@ -75,10 +81,10 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
 
           <form onSubmit={onSubmit} className="flex flex-col gap-1">
 
-            <div className="p-2 mt-1 text-white rounded-xl w-full relative">
-              <label htmlFor="name">Name</label>
+            <div className="p-2 mt-1 text-white rounded-md w-full relative">
+              <label className='capitalize' htmlFor="name">Name</label>
               <input
-                className="p-2 mt-3 text-black rounded-xl w-full focus:outline"
+                className="p-2 mt-3 text-black rounded-md w-full focus:outline"
                 type="text"
                 name="name"
                 placeholder="Name"
@@ -89,10 +95,10 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
               {error?.error === 'name' && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 font-mono '>{error.message}</small>}
             </div>
 
-            <div className="p-2 mt-1 text-white rounded-xl w-full relative">
-              <label htmlFor="email">Email</label>
+            <div className="p-2 mt-1 text-white rounded-md w-full relative">
+              <label className='capitalize' htmlFor="email">Email</label>
               <input
-                className="p-2 mt-3 text-black rounded-xl w-full focus:outline"
+                className="p-2 mt-3 text-black rounded-md w-full focus:outline"
                 type="email"
                 name="email"
                 placeholder="Email"
@@ -103,10 +109,10 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
               {error?.error === 'email' && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 font-mono '>{error.message}</small>}
             </div>
 
-            <div className="p-2 mt-1 text-white rounded-xl w-full relative">
-              <label htmlFor="mobile_number">Mobile Number</label>
+            <div className="p-2 mt-1 text-white rounded-md w-full relative">
+              <label className='capitalize' htmlFor="mobile_number">Mobile Number</label>
               <input
-                className="p-2 mt-3 text-black rounded-xl w-full focus:outline"
+                className="p-2 mt-3 text-black rounded-md w-full focus:outline"
                 type="text"
                 name="mobile_number"
                 placeholder="mobile_number"
@@ -117,10 +123,10 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
               {error?.error === 'mobile_number' && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 font-mono '>{error.message}</small>}
             </div>
 
-            <div className="p-2 mt-1 text-white rounded-xl w-full relative">
-              <label htmlFor="password">Password</label>
+            <div className="p-2 mt-1 text-white rounded-md w-full relative">
+              <label className='capitalize' htmlFor="password">Password</label>
               <input
-                className="p-2 mt-3 text-black rounded-xl w-full focus:outline"
+                className="p-2 mt-3 text-black rounded-md w-full focus:outline"
                 type="password"
                 name="password"
                 placeholder="Password"
@@ -131,10 +137,10 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
               {error?.error === 'password' && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 font-mono '>{error.message}</small>}
             </div>
 
-            <div className="p-2 mt-1 text-white rounded-xl w-full relative">
-              <label htmlFor="confirm_password">Confirm Password</label>
+            <div className="p-2 mt-1 text-white rounded-md w-full relative">
+              <label className='capitalize' htmlFor="confirm_password">Confirm Password</label>
               <input
-                className="p-2 mt-3 text-black rounded-xl w-full focus:outline"
+                className="p-2 mt-3 text-black rounded-md w-full focus:outline"
                 type="password"
                 name="confirm_password"
                 placeholder="Confirm Password"
@@ -143,10 +149,10 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
               />
               {inputError.confirm_password && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 font-mono '>{inputError.confirm_password}</small>}
             </div>
-            <div className="p-2 mt-1 text-white rounded-xl w-full relative">
-              <label htmlFor="adhaar_number">adhaar number</label>
+            <div className="p-2 mt-1 text-white rounded-md w-full relative">
+              <label className='capitalize' htmlFor="adhaar_number">adhaar number</label>
               <input
-                className="p-2 mt-3 text-black rounded-xl w-full focus:outline"
+                className="p-2 mt-3 text-black rounded-md w-full focus:outline"
                 type="text"
                 name="adhaar_number"
                 placeholder="adhaar number"
@@ -157,10 +163,10 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
               {error?.error === 'adhaar_number' && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 font-mono '>{error.message}</small>}
             </div>
 
-            <div className="p-2 mt-1 text-white rounded-xl w-full relative">
-              <label htmlFor="theater_license">theater license number</label>
+            <div className="p-2 mt-1 text-white rounded-md w-full relative">
+              <label className='capitalize ' htmlFor="theater_license">theater license number</label>
               <input
-                className="p-2 mt-3 text-black rounded-xl w-full focus:outline"
+                className="p-2 mt-3 text-black rounded-md w-full focus:outline"
                 type="text"
                 name="theater_license"
                 placeholder="theater license number"
@@ -184,19 +190,20 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
               {inputError.theater_name && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 font-mono '>{inputError.theater_name}</small>}
             </div>
 
-            <button className="bg-black rounded-xl text-white py-2">
+            <button className="bg-white rounded-md text-black mt-6 hover:bg-gray-600 py-2">
               Register
             </button>
 
           </form>
 
-          <Link to={`/theaters/login`}><div className="mt-3 text-xs flex justify-end text-white">
-            <span className='bg-black px-5 py-2 rounded-xl'>Already have an account?</span>
-            <button className="py-2 px-5 bg-white text-black rounded-xl">
-              Login
-            </button>
-          </div>
-          </Link>
+          <div className="mt-3 text-xs flex justify-end items-center text-white  ">
+              <span className='  px-5 py-2 rounded-md'>Don't have an account?</span>
+              <Link to={`/theaters/login`}>
+                <button className="py-2 px-5 bg-white text-black rounded-md">
+                  Login
+                </button>
+              </Link>
+            </div>
         </div>
 
       </div>

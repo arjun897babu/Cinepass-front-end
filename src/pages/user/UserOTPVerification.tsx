@@ -7,39 +7,45 @@ import { AppDispatch, RootState } from "../../redux/store";
 import { verifyUser } from "../../redux/actions/userAction";
 import { ResponseStatus } from "../../interface/Interface";
 import { useLocation, useNavigate } from "react-router-dom";
-import { clearError } from "../../redux/reducers/userReducer";
+import { clearUserError } from "../../redux/reducers/userReducer";
 import { useLoggedOwner } from "../../hooks/useLoggedUser";
 
 
-export const UserOTPVerification: React.FC = (): JSX.Element => {
+
+const UserOTPVerification: React.FC = (): JSX.Element => {
 
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate();
   const location = useLocation()
 
-  const { error, isAuthenticated,tempMail } = useLoggedOwner('user');
-  
+  const { error, isAuthenticated, tempMail } = useLoggedOwner('user');
+  console.log(error)
 
   const { formData, inputError, handleChange, setInputError } = useForm({
     otp: ''
-  });
+  }, 'user');
 
   useEffect(() => {
-    dispatch(clearError())
+    dispatch(clearUserError())
   }, []);
 
   const { handleSubmit } = useFormSubmit(formData, setInputError);
 
   const onSubmit = async (event: React.FormEvent) => {
+    console.log('onsubmit working')
     try {
-      const isValid = handleSubmit(event);
+      const isValid =   handleSubmit(event);
       if (isValid) {
 
+        console.log(tempMail)
         if (tempMail) {
-          const response = await dispatch(verifyUser({ ...formData, email: tempMail.email })).unwrap();
-          if (response.status === ResponseStatus.SUCCESS) {
-            navigate(response.redirectURL)
-          }
+           
+            const response = await dispatch(verifyUser({ ...formData, email: tempMail.email })).unwrap();
+            if (response.status === ResponseStatus.SUCCESS) {
+              navigate(response.redirectURL)
+            }
+           
+
         }
 
       }
@@ -66,23 +72,23 @@ export const UserOTPVerification: React.FC = (): JSX.Element => {
 
             </h1>
             {/* form */}
-            <form onSubmit={onSubmit} className="flex flex-col gap-1 ">
+            <form onSubmit={onSubmit} className="flex flex-col gap-8 ">
 
 
-              <div className="p-2 mt-1  text-white rounded-xl w-full relative ">
+              <div className="p-2 mt-1  text-white rounded-md w-full relative ">
                 <label htmlFor="otp">Enter Your OTP</label>
                 <input
-                  className="p-2 mt-3  text-black rounded-xl w-full focus:outline"
+                  className="p-2 mt-3  text-black rounded-md w-full focus:outline"
                   type="text"
                   name="otp"
                   placeholder="Enter your OTP"
                   value={formData.otp}
                   onChange={handleChange}
                 />
-                {inputError.otp && <small className='text-red-600 capitalize absolute bottom-0 left-0'>{inputError.otp}</small>}
-                {error?.error === 'otp' && <small className='text-red-600 capitalize absolute bottom-0 left-0'>{error.message}</small>}
+                {inputError.otp && <small className='text-red-600 capitalize absolute -bottom-4 left-3'>{inputError.otp}</small>}
+                {error?.error === 'otp' && <small className='text-red-600 capitalize absolute -bottom-4 left-3'>{error.message}</small>}
               </div>
-              <button className="bg-black rounded-xl text-white py-2  ">
+              <button className="bg-black rounded-md  text-white py-2  ">
                 Verify OTP
               </button>
             </form>
@@ -93,3 +99,5 @@ export const UserOTPVerification: React.FC = (): JSX.Element => {
     </>
   )
 }
+
+export default UserOTPVerification

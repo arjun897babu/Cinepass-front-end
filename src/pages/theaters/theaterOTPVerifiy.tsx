@@ -8,7 +8,7 @@ import { AppDispatch } from "../../redux/store";
 import { ResponseStatus } from "../../interface/Interface";
 import { useNavigate } from "react-router-dom";
 import { useLoggedOwner } from "../../hooks/useLoggedUser";
-import { changeLoading, clearError } from "../../redux/reducers/theatersReducer";
+import { changeLoading, clearTheaterError } from "../../redux/reducers/theatersReducer";
 import { verifyOTPTheaters } from "../../redux/actions/theaterAction";
 
 
@@ -24,19 +24,20 @@ export const TheaterOTPVerification: React.FC = (): JSX.Element => {
 
   const { formData, inputError, handleChange, setInputError } = useForm({
     otp: ''
-  });
+  },'theater');
 
   useEffect(() => {
-    dispatch(clearError())
+    dispatch(clearTheaterError())
   }, []);
 
   const { handleSubmit } = useFormSubmit(formData, setInputError);
 
   const onSubmit = async (event: React.FormEvent) => {
+    
     try {
       const isValid = handleSubmit(event);
       if (isValid) {
-
+        
         if (tempMail) {
           const response = await dispatch(verifyOTPTheaters({ ...formData, email: tempMail.email })).unwrap();
           console.log('log from otp theater verify page', response)
@@ -84,15 +85,15 @@ export const TheaterOTPVerification: React.FC = (): JSX.Element => {
                   value={formData.otp}
                   onChange={handleChange}
                 />
-                {inputError.otp && <small className='text-red-600 capitalize absolute -bottom-4 left-3 font-mono'>{inputError.otp}</small>}
+                {!error?.error&&inputError.otp && <small className='text-red-600 capitalize absolute -bottom-4 left-3 font-mono'>{inputError.otp}</small>}
                 {error?.error === 'otp' && <small className='text-red-600 capitalize absolute -bottom-4 left-3 font-mono'>{error.message}</small>}
               </div>
               <button className="bg-black rounded-xl mt-6 text-white py-2  ">
                 Verify OTP
               </button>
-              <div className="mt-2 text-white text-sm text-center">
+              {/* <div className="mt-2 text-white text-sm text-center">
                 Time remaining: {''}
-              </div>
+              </div> */}
             </form>
           </div>
         </div>

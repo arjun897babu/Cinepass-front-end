@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IInitialState } from "./IState";
-import { loginTheaters, signupTheaters, verifyOTPTheaters } from "../actions/theaterAction";
+import { loginTheaters, logoutTheaters, signupTheaters, verifyOTPTheaters } from "../actions/theaterAction";
 import { IInitialStateError, ResponseData } from "../../interface/Interface";
 import { TheatersLogin } from "../../pages/theaters";
 import { isErrorResponse } from "../../utils/customError";
@@ -77,7 +77,23 @@ const theaterSlice = createSlice({
         state.isAuthenticated = false
         state.error = action.payload as IInitialStateError
       })
+      
+      //logout
+      .addCase(logoutTheaters.pending, (state) => {
+        state.loading = true;
+        state.error = null
+      })
+      .addCase(logoutTheaters.fulfilled, (state) => {
+        state.loading = false;
+        state.error = null;
+        state.isAuthenticated = false
+        state.owner = null
+      })
+      .addCase(logoutTheaters.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as IInitialStateError | null
+      })
   }
 })
-export const { clearError, changeLoading } = theaterSlice.actions
+export const { clearError:clearTheaterError, changeLoading } = theaterSlice.actions
 export default theaterSlice.reducer

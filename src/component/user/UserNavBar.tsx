@@ -1,5 +1,5 @@
 import { } from 'react-icons'
-import React, { MouseEvent, useCallback, useEffect, useRef, useState } from 'react'
+import React, { MouseEvent, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import logo from '/cinepass logo.png'
 import { GiHamburgerMenu } from "react-icons/gi"

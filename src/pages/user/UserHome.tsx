@@ -1,12 +1,13 @@
-import React from "react"
-import { Carousel } from "../../component/user/Carousel"
+import React, { lazy } from "react"
+// import { Carousel } from "../../component/user/carousel"
+const CarouselModule = lazy(() => import('./../../component/user/carousel'))
 import { SearchWithFilters } from "../../component/user/footer/SearchWithFilters"
 
 
 const UserHome: React.FC = () => {
   return (
     <>
-      <Carousel />
+      <CarouselModule />
       <SearchWithFilters />
       <div className="container">
         <div className="filter px-5 py-6">
@@ -28,7 +29,7 @@ const UserHome: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className="m-4 mb-8  px-4 w-72 ">
+          {/* <div className="m-4 mb-8  px-4 w-72 ">
             <div className="rounded-lg bg-white shadow-lg">
               <img src="https://assetscdn1.paytm.com/images/cinema/160692-f9558860-4294-11ef-99b5-d35223c98590.jpg?format=webp&imwidth=582" alt="movie poster" className="rounded-t-lg" />
               <div className="p-4 relative">
@@ -69,8 +70,8 @@ const UserHome: React.FC = () => {
                 </div>
               </div>
             </div>
-          </div>
-          
+          </div> */}
+
         </div>
       </div>
 

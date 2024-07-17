@@ -48,7 +48,7 @@ const validateMobileNumber = (mobileNumber: string): ReturnObject => {
       isValid: false
     }
   }
-  console.log(mobileNumber.length)
+
   if (mobileNumber.length !== 10) {
     return {
       message: 'Mobile number should be ten digits',
@@ -101,7 +101,6 @@ const validatePassword = (password: string): ReturnObject => {
 }
 const validateConfirmPassword = (password: string, confirmPassword: string): ReturnObject => {
 
-  console.log('confirm password validator', password, confirmPassword)
   if (password !== confirmPassword) {
     return {
       isValid: false,

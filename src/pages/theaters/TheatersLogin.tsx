@@ -1,5 +1,5 @@
 
-import React, { FormEvent } from 'react';
+import React, { FormEvent, useEffect } from 'react';
 import '../../index.css';
 import { Link, useNavigate } from 'react-router-dom'
 import backGroundImage from '/movie_projector.jpg'
@@ -11,20 +11,26 @@ import { useFormSubmit } from '../../hooks/UseFormSubmitt';
 import { loginTheaters } from '../../redux/actions/theaterAction';
 import { ResponseStatus } from '../../interface/Interface';
 import { isErrorResponse } from '../../utils/customError';
+import { clearTheaterError } from '../../redux/reducers/theatersReducer';
 
 
 
 export const TheatersLogin: React.FC = (): JSX.Element => {
 
   const dispatch = useDispatch<AppDispatch>();
-  const { error, isAuthenticated } = useLoggedOwner('theater');
- 
+  const { error } = useLoggedOwner('theater');
+
   const navigate = useNavigate();
+
+
+  useEffect(() => {
+    dispatch(clearTheaterError())
+  }, [])
 
   const { formData, handleChange, inputError, setInputError } = useForm({
     email: '',
     password: ''
-  })
+  }, 'theater')
   const { handleSubmit } = useFormSubmit(formData, setInputError)
   const onSubmit = async (e: FormEvent) => {
 
@@ -47,6 +53,9 @@ export const TheatersLogin: React.FC = (): JSX.Element => {
     }
 
   }
+  const forgotPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+  }
 
   let background_image_path = { backgroundImage: `url(${backGroundImage})` };
 
@@ -54,56 +63,59 @@ export const TheatersLogin: React.FC = (): JSX.Element => {
 
     <section className="background overlay flex items-center justify-center " style={background_image_path}>
 
-      <div className="flex rounded-2xl p-5 justify-center">
+      <div className="flex p-5 justify-center">
 
-        <div className={`relative md:w-3/5 px-8 md:px-24 py-24 space-y-8 bg-black bg-opacity-50`}>
+        <div className={`relative sm:w-3/5 px-8   py-24 space-y-8 bg-white bg-opacity-10`}>
 
 
-          <h1 className=" mt-2   bg-clip-text text-transparent bg-gradient-to-r from-slate-300 to-zinc-600 text-3xl  font-black text-center  ">
+          <h1 className=" mt-2  bg-clip-text text-transparent bg-white text-3xl  font-black text-center  ">
 
             Empower Your Movie Management with CinePass
-
 
           </h1>
           {/* form */}
           <form onSubmit={onSubmit} className="flex flex-col gap-1 ">
 
-            <div className="p-2 mt-1 text-white rounded-xl w-full relative ">
-              <label htmlFor="email">Email</label>
-              <input
-                className="p-2 mt-3 text-black rounded-xl w-full focus:outline"
-                type="email"
-                name="email"
-                placeholder="Email"
-                onChange={handleChange}
-                value={formData.email}
-              />
-              {inputError.email && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 font-mono '>{inputError.email}</small>}
-              {error?.error === 'email' && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 font-mono '>{error.message}</small>}
+            <div className="p-2 mt-1 text-white gap-3 w-full relative flex justify-center items-center text-center">
+              <label className='w-24 text-left' htmlFor="email">Email</label>
+              <div className="relative w-full">
+                <input
+                  className="p-2  text-black rounded-md w-full focus:outline"
+                  type="text"
+                  name="email"
+                  placeholder="Email"
+                  onChange={handleChange}
+                  value={formData.email}
+                />
+                {inputError.email && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.email}</small>}
+                {error?.error === 'email' && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{error.message}</small>}
+              </div>
             </div>
-            <div className="p-2 mt-1  text-white rounded-xl w-full relative">
-              <label htmlFor="Password">Password</label>
-              <input
-                className="p-2 mt-3  text-black rounded-xl w-full focus:outline"
-                type="password"
-                name="password"
-                placeholder="password"
-                onChange={handleChange}
-                value={formData.password}
-              />
-              {inputError.password && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 font-mono '>{inputError.password}</small>}
-              {error?.error === 'password' && <small className='text-red-600 capitalize absolute left-3 -bottom-3.5 font-mono '>{error.message}</small>}
+            <div className="p-2 mt-1 text-white gap-4 w-full relative flex justify-center items-center text-center">
+              <label className='w-24 text-left' htmlFor="Password">Password</label>
+              <div className="relative w-full">
+                <input
+                  className="p-2   text-black rounded-md w-full focus:outline"
+                  type="password"
+                  name="password"
+                  placeholder="password"
+                  onChange={handleChange}
+                  value={formData.password}
+                />
+                {inputError.password && <small className='text-red-600 capitalize absolute  left-0 -bottom-5 font-mono '>{inputError.password}</small>}
+                {error?.error === 'password' && <small className='text-red-600 capitalize absolute  left-0 -bottom-5 font-mono '>{error.message}</small>}
+              </div>
             </div>
 
 
             <div className="flex justify-end">
-              <button className="  mt-5 text-xs text-white">
+              <button className="m-5 text-xs text-white" onClick={forgotPassword}>
                 Forgot password?
               </button>
             </div>
 
 
-            <button className="bg-black rounded-xl text-white py-2  ">
+            <button className="bg-white  rounded-md text-black py-2  ">
               Login
             </button>
           </form>
@@ -120,42 +132,15 @@ export const TheatersLogin: React.FC = (): JSX.Element => {
             </div>
             {/* ------------------------------------------ */}
 
-            <Link to={`/theaters/signUp`}>
-              <div className="mt-3 text-xs flex justify-end   text-black">
-                <span className='bg-white px-5 py-2 rounded-xl'>Don't have an account?</span>
-                <button className="py-2 px-5 bg-black  text-white rounded-xl  ">
+            <div className="mt-3 text-xs flex justify-end items-center text-white  ">
+              <span className='  px-5 py-2 rounded-md'>Don't have an account?</span>
+              <Link to={`/theaters/signUp`}>
+                <button className="py-2 px-5 bg-white text-black rounded-md">
                   Register
                 </button>
-              </div>
-            </Link>
+              </Link>
+            </div>
 
-
-            <button className="bg-white border py-2 w-full rounded-xl mt-5 flex justify-center items-center text-sm   text-black">
-              <svg
-                className="mr-3"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 48 48"
-                width="25px"
-              >
-                <path
-                  fill="#FFC107"
-                  d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"
-                />
-                <path
-                  fill="#FF3D00"
-                  d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"
-                />
-                <path
-                  fill="#4CAF50"
-                  d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"
-                />
-                <path
-                  fill="#1976D2"
-                  d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"
-                />
-              </svg>
-              Google
-            </button>
 
           </>
 

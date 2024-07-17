@@ -1,20 +1,20 @@
 
-import React, { FormEvent, useEffect, useState } from 'react';
+import React, { FormEvent, useEffect } from 'react';
 import '../../index.css';
-import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { FaArrowLeft } from "react-icons/fa";
 import backGroundImage from '/Iconic Movie Posters Collage.webp';
 import { useForm } from '../../hooks/UseForm';
 import { useFormSubmit } from '../../hooks/UseFormSubmitt';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../redux/store';
+import { useDispatch, } from 'react-redux';
+import { AppDispatch, } from '../../redux/store';
 import { loginUser } from '../../redux/actions/userAction';
 import { ResponseStatus } from '../../interface/Interface';
 import { isErrorResponse } from '../../utils/customError';
-import { clearError } from '../../redux/reducers/userReducer';
+import { clearUserError } from '../../redux/reducers/userReducer';
 import { useLoggedOwner } from '../../hooks/useLoggedUser';
-import { CredentialResponse, GoogleLogin, googleLogout, useGoogleLogin } from '@react-oauth/google';
-import axios from 'axios';
+// import { CredentialResponse, GoogleLogin, googleLogout, useGoogleLogin } from '@react-oauth/google';
+// import axios from 'axios';
 
 
 
@@ -25,16 +25,18 @@ export const UserLogin: React.FC = (): JSX.Element => {
 
   const { error, isAuthenticated } = useLoggedOwner('user');
 
-  const { formData, inputError, handleChange, setInputError } = useForm({
-    email: '',
-    password: ''
-  });
+  const {
+    formData,
+    inputError,
+    handleChange,
+    setInputError
+  } = useForm({ email: '', password: '' }, 'user');
 
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/')
     }
-    dispatch(clearError())
+    dispatch(clearUserError())
   }, [isAuthenticated])
 
   const { handleSubmit } = useFormSubmit(formData, setInputError);
@@ -44,23 +46,16 @@ export const UserLogin: React.FC = (): JSX.Element => {
     const isValid = handleSubmit(event);
 
     if (isValid) {
-
       try {
         const result = await dispatch(loginUser(formData)).unwrap();
-
         if (result.status === ResponseStatus.SUCCESS) {
           navigate('/')
         }
-
       } catch (err) {
-        console.log(error)
         if (isErrorResponse(err)) {
-          console.log(err)
           navigate(err.redirectURL);
         }
       }
-
-
     }
   }
 
@@ -72,9 +67,9 @@ export const UserLogin: React.FC = (): JSX.Element => {
 
     <section className="background overlay flex items-center justify-center " style={background_image_path}>
 
-      <div className="flex rounded-2xl p-5 justify-center">
+      <div className="flex p-5 justify-center">
 
-        <div className={`relative md:w-3/5 px-8 md:px-24 py-24 space-y-8  `}>
+        <div className={`relative md:w-3/5 px-4 sm:px-24 py-24 space-y-8  `}>
 
           &&
           <Link to={'/'} >
@@ -85,7 +80,7 @@ export const UserLogin: React.FC = (): JSX.Element => {
 
 
 
-          <h1 className=" mt-2   bg-clip-text text-transparent bg-gradient-to-r from-slate-300 to-zinc-600 text-3xl  font-black text-center  ">
+          <h1 className=" bg-clip-text text-transparent bg-gradient-to-r from-slate-300 to-zinc-600 text-3xl  font-black text-center  ">
 
             Unlock the Magic of Cinema with CinePass
 
@@ -94,23 +89,23 @@ export const UserLogin: React.FC = (): JSX.Element => {
           {/* form */}
           <form onSubmit={onSubmit} className="flex flex-col gap-1 ">
 
-            <div className="p-2 mt-1 text-white rounded-xl w-full relative">
+            <div className="p-2 mt-1 text-white rounded-md w-full relative">
               <label htmlFor="email">Email</label>
               <input
-                className="p-2 mt-3 text-black rounded-xl w-full focus:outline"
+                className="p-2 mt-3 text-black rounded-md w-full focus:outline"
                 type="email"
                 name="email"
                 placeholder="Email"
                 value={formData.email}
                 onChange={handleChange}
               />
-              {inputError.email && <small className='text-red-600 capitalize absolute -bottom-3 left-3'>{inputError?.password}</small>}
+              {inputError.email && <small className='text-red-600 capitalize absolute -bottom-3 left-3'>{inputError?.email}</small>}
               {error?.error === 'email' && <small className='text-red-600 capitalize absolute -bottom-3 left-3'>{error.message}</small>}
             </div>
-            <div className="p-2 mt-1 text-white rounded-xl w-full relative">
+            <div className="p-2 mt-1 text-white rounded-md w-full relative">
               <label htmlFor="Password">Password</label>
               <input
-                className="p-2 mt-3  text-black rounded-xl w-full focus:outline"
+                className="p-2 mt-3  text-black rounded-md w-full focus:outline"
                 type="password"
                 name="password"
                 placeholder="password"
@@ -123,14 +118,14 @@ export const UserLogin: React.FC = (): JSX.Element => {
             </div>
 
 
-            <div className="flex justify-end">
-              <button className="  mt-5 text-xs text-white">
+            <div className="flex justify-end mb-9">
+              <button className="font-extrabold  mt-5 text-xs text-white">
                 Forgot password?
               </button>
             </div>
 
 
-            <button className="bg-black rounded-xl text-white py-2  ">
+            <button className="bg-black rounded-md text-white py-2  ">
               Login
             </button>
           </form>
@@ -148,16 +143,13 @@ export const UserLogin: React.FC = (): JSX.Element => {
             {/* ------------------------------------------ */}
 
             <Link to={`/signup`}>
-              <div className="mt-3 text-xs flex justify-end   text-black">
-                <span className='bg-white px-5 py-2 rounded-xl'>Don't have an account?</span>
-                <button className="py-2 px-5 bg-black  text-white rounded-xl  ">
-                  Register
-                </button>
+              <div className="mt-3 text-xs flex justify-end font-extrabold   text-white">
+                Don't have an account?  
               </div>
             </Link>
 
             <div className='w-full flex items-center justify-center'>
-              {/* <GoogleLogin width={100} onSuccess={responseMessage} onError={errorMessage} /> */ }
+              {/* <GoogleLogin width={100} onSuccess={responseMessage} onError={errorMessage} /> */}
             </div>
 
 

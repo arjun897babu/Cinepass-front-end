@@ -1,6 +1,13 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
-import { UserHome, UserSignUp, UserLogin, UserOTPVerification } from '../pages/user'
+// import { UserHome, UserSignUp, UserLogin, UserOTPVerification } from '../pages/user'
+// import UserHome from "../pages/user/UserHome";
+const UserHome = lazy(() => import('../pages/user/UserHome'))
+import { UserSignUp } from "../pages/user/UserSignUp";
+import { UserLogin } from "../pages/user/UserLogin";
+// import { UserOTPVerification } from "../pages/user/UserOTPVerification";
+const UserOTPVerification = lazy(() => import('../pages/user/UserOTPVerification'))
+
 import UserNavBar from "../component/user/UserNavBar";
 import UserFooter from "../component/user/footer/UserFooter";
 import { useSelector } from "react-redux";
@@ -16,22 +23,25 @@ const UserRoutes: React.FC = () => {
 
   return (
     <>
-      {!isAuthRoutes && <UserNavBar />}
-      {loading && < Loader />}
-      <Routes>
-        <Route path='/' element={
+      <Suspense fallback={< Loader />}>
+
+        {!isAuthRoutes && <UserNavBar />}
+        {loading && < Loader />}
+        <Routes>
+          <Route path='/' element={
             <UserHome />
-        } />
-        <Route path='/login' element={<UserLogin />} />
-        <Route path='/signup' element={<UserSignUp />} />
-        <Route path='/otp-verification' element={<UserOTPVerification />} />
-        <Route path='/profile' element={
-          <ProtectedRoutes>
-            <UserProfile />
-          </ProtectedRoutes>
-        } />
-      </Routes>
-      {!isAuthRoutes && <UserFooter />}
+          } />
+          <Route path='/login' element={<UserLogin />} />
+          <Route path='/signup' element={<UserSignUp />} />
+          <Route path='/otp-verification' element={<UserOTPVerification />} />
+          <Route path='/profile' element={
+            <ProtectedRoutes>
+              <UserProfile />
+            </ProtectedRoutes>
+          } />
+        </Routes>
+        {!isAuthRoutes && <UserFooter />}
+      </Suspense>
     </>
   )
 }

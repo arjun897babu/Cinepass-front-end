@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { BsChevronCompactLeft, BsChevronCompactRight } from 'react-icons/bs';
 import { RxDotFilled } from 'react-icons/rx';
 
-export const Carousel: React.FC = (): JSX.Element => {
+const Carousel: React.FC = (): JSX.Element => {
+  
   const slides = [
     'https://assetscdn1.paytm.com/images/catalog/view_item/2699999/1719408000464.jpg?format=webp&imwidth=1750',
     'https://assetscdn1.paytm.com/images/catalog/view_item/2753828/1720788936964.jpg?format=webp&imwidth=1750',
@@ -26,7 +27,7 @@ export const Carousel: React.FC = (): JSX.Element => {
   const goToSlide = (slideIndex: number) => {
     setCurrentIndex(slideIndex);
   };
-  console.log('slider rendering')
+ 
   return (
     <div className='w-full m-auto bg-gray-100 hidden sm:block p-4 relative group'>
       <div
@@ -56,3 +57,4 @@ export const Carousel: React.FC = (): JSX.Element => {
     </div>
   );
 }
+export default Carousel

@@ -11,19 +11,19 @@ import { loginAdmin } from '../../redux/actions/adminAction';
 import { ResponseStatus } from '../../interface/Interface';
 import { isErrorResponse } from '../../utils/customError';
 import { useLoggedOwner } from '../../hooks/useLoggedUser';
-import { clearError } from '../../redux/reducers/adminReducer';
+import { clearAdminError } from '../../redux/reducers/adminReducer';
 
 export const AdminLogin: React.FC = (): JSX.Element => {
   const dispatch = useDispatch<AppDispatch>();
   const { error, isAuthenticated } = useLoggedOwner('admin')
   const navigate = useNavigate();
   useEffect(() => {
-    dispatch(clearError())
+    dispatch(clearAdminError())
   }, [])
   const { formData, inputError, setInputError, handleChange } = useForm({
     email: '',
     password: ''
-  });
+  },'admin');
 
   const { handleSubmit } = useFormSubmit(formData, setInputError);
 

@@ -1,6 +1,7 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import { AdminLogin,AdminHome } from '../pages/admin'
+import { AdminLogin, AdminHome } from '../pages/admin'
+import { AdminProtectedRoutes } from "../component/admin/adminProtectedRoutes";
 
 
 const UserRoutes: React.FC = () => {
@@ -8,7 +9,12 @@ const UserRoutes: React.FC = () => {
     <>
 
       <Routes>
-        <Route path='/home' element={<AdminHome />} />
+        <Route path='/home' element={
+          <AdminProtectedRoutes>
+            <AdminHome />
+          </AdminProtectedRoutes>
+
+        } />
         <Route path='/login' element={<AdminLogin />} />
       </Routes>
 

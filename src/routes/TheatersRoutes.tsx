@@ -4,6 +4,7 @@ import { TheatersHome, TheatersLogin, TheatersSignUp } from '../pages/theaters'
 import { TheaterOTPVerification } from "../pages/theaters/theaterOTPVerifiy";
 import { useLoggedOwner } from "../hooks/useLoggedUser";
 import { Loader } from "../component/Loader";
+import { TheaterProtectedRoutes } from "../component/theaters/theaterProtectedRoutes";
 
 
 const UserRoutes: React.FC = () => {
@@ -39,7 +40,12 @@ const UserRoutes: React.FC = () => {
     <>
       {showLoader && <Loader />}
       <Routes>
-        <Route path='/home' element={<TheatersHome />} />
+        <Route path='/home' element={
+          <TheaterProtectedRoutes>
+            <TheatersHome />
+          </TheaterProtectedRoutes>
+
+        } />
         <Route path='/login' element={<TheatersLogin />} />
         <Route path='/signup' element={<TheatersSignUp />} />
         <Route path='/otp-verification' element={<TheaterOTPVerification />} />
