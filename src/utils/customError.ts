@@ -1,7 +1,7 @@
 import { ResponseData } from "../interface/Interface";
 
 export interface ErrorResponse extends ResponseData {
-  data?: { [key: string]: string }[] |undefined
+  data?: { [key: string]: string } |undefined
 }
 
 export function isErrorResponse(error: unknown): error is ErrorResponse {

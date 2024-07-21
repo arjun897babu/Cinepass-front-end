@@ -5,7 +5,7 @@ import { useFormSubmit } from "../../hooks/UseFormSubmitt";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { verifyUser } from "../../redux/actions/userAction";
-import { ResponseStatus } from "../../interface/Interface";
+import { ResponseStatus, Role } from "../../interface/Interface";
 import { useLocation, useNavigate } from "react-router-dom";
 import { clearUserError } from "../../redux/reducers/userReducer";
 import { useLoggedOwner } from "../../hooks/useLoggedUser";
@@ -18,12 +18,12 @@ const UserOTPVerification: React.FC = (): JSX.Element => {
   const navigate = useNavigate();
   const location = useLocation()
 
-  const { error, isAuthenticated, tempMail } = useLoggedOwner('user');
+  const { error, isAuthenticated, tempMail } = useLoggedOwner(Role.users);
   console.log(error)
 
   const { formData, inputError, handleChange, setInputError } = useForm({
     otp: ''
-  }, 'user');
+  }, Role.users);
 
   useEffect(() => {
     dispatch(clearUserError())

@@ -1,27 +1,45 @@
-import React from "react";
-import { Route, Routes } from "react-router-dom";
-import { AdminLogin, AdminHome } from '../pages/admin'
+import React, { lazy, Suspense } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { AdminLogin, AdminParent } from '../pages/admin'
 import { AdminProtectedRoutes } from "../component/admin/adminProtectedRoutes";
+import { ErroPage } from "../pages/ErrorPage";
+const AdminTheaters = lazy(() => import('../pages/admin/layout/AdminTheaters'))
+import AdminHome from "../pages/admin/layout/AdminHome";
+import { Loader } from "../component/Loader";
+import AdminUsers from "../pages/admin/layout/AdminUsers";
 
 
-const UserRoutes: React.FC = () => {
+const AdminRoutes: React.FC = () => {
   return (
     <>
+      <Suspense fallback={<Loader />}>
 
-      <Routes>
-        <Route path='/home' element={
-          <AdminProtectedRoutes>
-            <AdminHome />
-          </AdminProtectedRoutes>
+        <Routes>
+          <Route path="/" element={<Navigate to="/admin/home" />} />
 
-        } />
-        <Route path='/login' element={<AdminLogin />} />
-      </Routes>
+          <Route path="*" element={<ErroPage redirectPath="/admin/home" />} />
+          <Route path='/login' element={<AdminLogin />} />
+          <Route
+            path='/'
+            element={
+              <AdminProtectedRoutes>
+                <AdminParent />
+              </AdminProtectedRoutes>
+            }
+          >
+            <Route path="home" element={<AdminHome />} />
+            <Route path="theaters" element={<AdminTheaters />} />
+            <Route path="users" element={<AdminUsers />} />
+          </Route>
 
+
+        </Routes>
+
+      </Suspense>
     </>
   )
 }
 
 
-export default UserRoutes
+export default AdminRoutes
 

@@ -1,6 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
-import { UserRoutes, AdminRoutes, TheatersRoutes } from './routes';
-import {Loader} from './component/Loader'
+import { AdminRoutes,TheatersRoutes,UserRoutes } from './routes';
 
 function App() {
 
@@ -8,6 +7,7 @@ function App() {
     <>
 
       <Routes>
+
         {/* user routes */}
         <Route path="/*" element={<UserRoutes />} />
 
@@ -16,7 +16,7 @@ function App() {
 
         {/* theaters routes */}
         <Route path="/theaters/*" element={<TheatersRoutes />} />
-        <Route path="/lod" element={<Loader />} />
+
 
 
       </Routes>

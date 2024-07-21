@@ -1,5 +1,5 @@
 
-import React, { FormEvent, useEffect } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import '../../index.css';
 import { Link, useNavigate } from 'react-router-dom'
 import backGroundImage from '/Iconic Movie Posters Collage.webp';
@@ -10,22 +10,21 @@ import { useForm } from '../../hooks/UseForm';
 import { useFormSubmit } from '../../hooks/UseFormSubmitt';
 import { clearUserError } from '../../redux/reducers/userReducer';
 import { useLoggedOwner } from '../../hooks/useLoggedUser';
-import { ResponseStatus } from '../../interface/Interface';
-
+import { ResponseStatus, Role } from '../../interface/Interface';
 
 export const UserSignUp: React.FC = (): JSX.Element => {
 
   const navigate = useNavigate()
 
   let background_image_path = { backgroundImage: `url(${backGroundImage})` };
-
+ 
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     dispatch(clearUserError())
   }, [])
 
-  const { error, isAuthenticated } = useLoggedOwner('user');
+  const { error, isAuthenticated } = useLoggedOwner(Role.users);
 
   const { formData, handleChange, inputError, setInputError } = useForm({
     name: '',
@@ -33,7 +32,7 @@ export const UserSignUp: React.FC = (): JSX.Element => {
     mobile_number: '',
     password: '',
     confirm_password: ''
-  }, 'user')
+  }, Role.users)
 
   const { handleSubmit } = useFormSubmit(formData, setInputError);
 
@@ -148,7 +147,7 @@ export const UserSignUp: React.FC = (): JSX.Element => {
               {inputError.confirm_password && <small className='text-red-600 capitalize absolute -bottom-2.5 left-3'>{inputError.confirm_password}</small>}
 
             </div>
- 
+
             <button type='submit' className="bg-black  mt-4 rounded-md text-white py-2">
               Register
             </button>
@@ -157,12 +156,13 @@ export const UserSignUp: React.FC = (): JSX.Element => {
 
           <Link to={`/login`}>
             <div className="mt-3 font-extrabold text-sm flex justify-end text-white">
-               Already have an account? 
+              Already have an account?
             </div>
           </Link>
         </div>
 
       </div>
+   
 
     </section>
   )

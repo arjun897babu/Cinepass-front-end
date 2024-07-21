@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { LoggedOwner } from "../interface/user/IUserData";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-import { IInitialStateError } from "../interface/Interface";
+import { IInitialStateError, Role } from "../interface/Interface";
 
 interface LoggedOwnerState {
   loggedOwner: LoggedOwner | null
@@ -14,15 +14,15 @@ interface LoggedOwnerState {
 
 
 
-export const useLoggedOwner = (role: string): LoggedOwnerState => {
+export const useLoggedOwner = (role: Role): LoggedOwnerState => {
 
   const { owner, isAuthenticated, error, loading, tempMail } = useSelector((state: RootState) => {
     switch (role) {
-      case 'admin':
+      case Role.admin:
         return state.admin;
-      case 'theater':
-        return state.theater;
-      case 'user':
+      case Role.theaters:
+        return state.theaters;
+      case Role.users:
         return state.user;
       default:
         return { owner: null, isAuthenticated: false, error: null, loading: false, tempMail: null };

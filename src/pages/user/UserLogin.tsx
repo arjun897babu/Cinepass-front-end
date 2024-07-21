@@ -1,5 +1,5 @@
 
-import React, { FormEvent, useEffect } from 'react';
+import React, { FormEvent, MouseEvent, useEffect, useState } from 'react';
 import '../../index.css';
 import { Link, useNavigate } from 'react-router-dom'
 import { FaArrowLeft } from "react-icons/fa";
@@ -9,10 +9,12 @@ import { useFormSubmit } from '../../hooks/UseFormSubmitt';
 import { useDispatch, } from 'react-redux';
 import { AppDispatch, } from '../../redux/store';
 import { loginUser } from '../../redux/actions/userAction';
-import { ResponseStatus } from '../../interface/Interface';
+import { ResponseStatus, Role } from '../../interface/Interface';
 import { isErrorResponse } from '../../utils/customError';
 import { clearUserError } from '../../redux/reducers/userReducer';
 import { useLoggedOwner } from '../../hooks/useLoggedUser';
+import useAction from '../../hooks/UseAction';
+
 // import { CredentialResponse, GoogleLogin, googleLogout, useGoogleLogin } from '@react-oauth/google';
 // import axios from 'axios';
 
@@ -22,21 +24,21 @@ export const UserLogin: React.FC = (): JSX.Element => {
 
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-
-  const { error, isAuthenticated } = useLoggedOwner('user');
+  const { error, isAuthenticated } = useLoggedOwner(Role.users);
+  const {clearError} = useAction(Role.users)
 
   const {
     formData,
     inputError,
     handleChange,
     setInputError
-  } = useForm({ email: '', password: '' }, 'user');
+  } = useForm({ email: '', password: '' }, Role.users);
 
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/')
     }
-    dispatch(clearUserError())
+    clearError
   }, [isAuthenticated])
 
   const { handleSubmit } = useFormSubmit(formData, setInputError);
@@ -119,9 +121,11 @@ export const UserLogin: React.FC = (): JSX.Element => {
 
 
             <div className="flex justify-end mb-9">
-              <button className="font-extrabold  mt-5 text-xs text-white">
-                Forgot password?
-              </button>
+              <Link to={'/forgot-password'} >
+                <span className="font-extrabold  mt-5 text-xs text-white">
+                  Forgot password?
+                </span>
+              </Link>
             </div>
 
 
@@ -144,7 +148,7 @@ export const UserLogin: React.FC = (): JSX.Element => {
 
             <Link to={`/signup`}>
               <div className="mt-3 text-xs flex justify-end font-extrabold   text-white">
-                Don't have an account?  
+                Don't have an account?
               </div>
             </Link>
 
@@ -166,6 +170,7 @@ export const UserLogin: React.FC = (): JSX.Element => {
           />
         </div>
       </div>
+
     </section >
   )
 }

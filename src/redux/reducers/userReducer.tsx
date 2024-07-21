@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { loginUser, logoutUser, signUpUser, verifyUser } from "../actions/userAction";
+import { forgotPasswordUser, loginUser, logoutUser, signUpUser, verifyUser } from "../actions/userAction";
 import { IInitialState } from "./IState";
 import { IInitialStateError, ResponseData, ResponseStatus } from "../../interface/Interface";
 import { isErrorResponse } from "../../utils/customError";
+import { LoggedOwner } from "../../interface/user/IUserData";
 
 
 
@@ -22,6 +23,15 @@ const userSlice = createSlice({
     clearError(state) {
       state.error = null;
     },
+    setError(state, action: PayloadAction<IInitialStateError>) {
+      state.error = action.payload
+    },
+    setIsAuthenticated(state) {
+      state.isAuthenticated = !state.isAuthenticated
+    },
+    setLoading(state) {
+      state.loading = !state.loading
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -33,7 +43,7 @@ const userSlice = createSlice({
       })
       .addCase(signUpUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.tempMail = action.payload.data ? action.payload.data[0] : null
+        state.tempMail = action.payload.data ? action.payload.data as { email: string } : null
       })
       .addCase(signUpUser.rejected, (state, action) => {
         state.loading = false;
@@ -51,16 +61,13 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = null
         state.isAuthenticated = action.payload.status === ResponseStatus.SUCCESS
-        if (action.payload.data) {
-          console.log(action.payload.data)
-        };
-        state.owner = action.payload.data ? action.payload.data[0] : null
+        state.owner = action.payload.data ? action.payload.data as unknown as LoggedOwner : null
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         if (isErrorResponse(action.payload)) {
           state.error = action.payload.error as IInitialStateError
-          state.tempMail = action.payload.data ? action.payload.data[0] as { email: string } : null
+          state.tempMail = action.payload.data ? action.payload.data as { email: string } : null
         }
 
       })
@@ -81,7 +88,7 @@ const userSlice = createSlice({
           state.error = action.payload.error as IInitialStateError | null
         }
       })
-      
+
       //verifying otp
       .addCase(verifyUser.pending, (state) => {
         state.loading = true;
@@ -101,10 +108,26 @@ const userSlice = createSlice({
           state.error = action.payload.error as IInitialStateError | null
         }
       })
+      //forgot password
+      .addCase(forgotPasswordUser.pending, (state) => {
+        state.loading = true
+      })
+      .addCase(forgotPasswordUser.fulfilled, (state) => {
+        state.loading = false
+      })
+      .addCase(forgotPasswordUser.rejected, (state) => {
+        state.loading = false;
+        
+      })
 
   },
 
 });
 
-export const { clearError: clearUserError } = userSlice.actions
+export const {
+  clearError: clearUserError,
+  setError: setUserError,
+  setIsAuthenticated: setUserAuthentication,
+  setLoading: setUserLoading
+} = userSlice.actions
 export default userSlice.reducer

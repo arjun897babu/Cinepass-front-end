@@ -5,10 +5,10 @@ import { useFormSubmit } from "../../hooks/UseFormSubmitt";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../redux/store";
 
-import { ResponseStatus } from "../../interface/Interface";
+import { ResponseStatus, Role } from "../../interface/Interface";
 import { useNavigate } from "react-router-dom";
 import { useLoggedOwner } from "../../hooks/useLoggedUser";
-import { changeLoading, clearTheaterError } from "../../redux/reducers/theatersReducer";
+import { clearTheaterError } from "../../redux/reducers/theatersReducer";
 import { verifyOTPTheaters } from "../../redux/actions/theaterAction";
 
 
@@ -18,13 +18,13 @@ export const TheaterOTPVerification: React.FC = (): JSX.Element => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate();
 
-  const { error, isAuthenticated, tempMail, loading } = useLoggedOwner('theater')
+  const { error, isAuthenticated, tempMail, loading } = useLoggedOwner(Role.theaters)
 
 
 
   const { formData, inputError, handleChange, setInputError } = useForm({
     otp: ''
-  },'theater');
+  },Role.theaters);
 
   useEffect(() => {
     dispatch(clearTheaterError())
@@ -45,6 +45,8 @@ export const TheaterOTPVerification: React.FC = (): JSX.Element => {
             console.log(response.redirectURL)
             navigate(response.redirectURL)
           }
+        }else{
+          navigate('/theaters/login')
         }
 
       }
@@ -75,10 +77,10 @@ export const TheaterOTPVerification: React.FC = (): JSX.Element => {
             <form onSubmit={onSubmit} className="flex flex-col gap-1 ">
 
 
-              <div className="p-2 mt-1  text-white rounded-xl w-full relative ">
+              <div className="p-2 mt-1  text-white rounded-md w-full relative ">
                 <label htmlFor="otp">Enter Your OTP</label>
                 <input
-                  className="p-2 mt-3  text-black rounded-xl w-full focus:outline"
+                  className="p-2 mt-3  text-black rounded-md w-full focus:outline"
                   type="text"
                   name="otp"
                   placeholder="Enter your OTP"
@@ -88,7 +90,7 @@ export const TheaterOTPVerification: React.FC = (): JSX.Element => {
                 {!error?.error&&inputError.otp && <small className='text-red-600 capitalize absolute -bottom-4 left-3 font-mono'>{inputError.otp}</small>}
                 {error?.error === 'otp' && <small className='text-red-600 capitalize absolute -bottom-4 left-3 font-mono'>{error.message}</small>}
               </div>
-              <button className="bg-black rounded-xl mt-6 text-white py-2  ">
+              <button className="bg-black rounded-md mt-6 text-white py-2  ">
                 Verify OTP
               </button>
               {/* <div className="mt-2 text-white text-sm text-center">

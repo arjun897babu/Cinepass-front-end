@@ -8,14 +8,14 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../redux/store';
 import { useNavigate } from 'react-router-dom';
 import { loginAdmin } from '../../redux/actions/adminAction';
-import { ResponseStatus } from '../../interface/Interface';
+import { ResponseStatus, Role } from '../../interface/Interface';
 import { isErrorResponse } from '../../utils/customError';
 import { useLoggedOwner } from '../../hooks/useLoggedUser';
 import { clearAdminError } from '../../redux/reducers/adminReducer';
 
 export const AdminLogin: React.FC = (): JSX.Element => {
   const dispatch = useDispatch<AppDispatch>();
-  const { error, isAuthenticated } = useLoggedOwner('admin')
+  const { error, isAuthenticated } = useLoggedOwner(Role.admin)
   const navigate = useNavigate();
   useEffect(() => {
     dispatch(clearAdminError())
@@ -23,7 +23,7 @@ export const AdminLogin: React.FC = (): JSX.Element => {
   const { formData, inputError, setInputError, handleChange } = useForm({
     email: '',
     password: ''
-  },'admin');
+  },Role.admin);
 
   const { handleSubmit } = useFormSubmit(formData, setInputError);
 
@@ -62,10 +62,10 @@ export const AdminLogin: React.FC = (): JSX.Element => {
           {/* form */}
           <form onSubmit={onSubmit} className="flex flex-col gap-1 ">
 
-            <div className="p-2 mt-1 text-white rounded-xl w-full relative ">
+            <div className="p-2 mt-1 text-white rounded-md w-full relative ">
               <label htmlFor="email">Email</label>
               <input
-                className="p-2 mt-3 text-black rounded-xl w-full focus:outline"
+                className="p-2 mt-3 text-black rounded-md w-full focus:outline"
                 type="text"
                 name="email"
                 value={formData.email}
@@ -76,10 +76,10 @@ export const AdminLogin: React.FC = (): JSX.Element => {
               {error?.error === 'email' && <span className='text-red-600 capitalize absolute left-3 -bottom-4 font-mono text-sm '>{error.message}</span>}
 
             </div>
-            <div className="p-2 mt-1  text-white rounded-xl w-full relative">
+            <div className="p-2 mt-1  text-white rounded-md w-full relative">
               <label htmlFor="Password">Password</label>
               <input
-                className="p-2 mt-3  text-black rounded-xl w-full focus:outline"
+                className="p-2 mt-3  text-black rounded-md w-full focus:outline"
                 type="password"
                 name="password"
                 value={formData.password}
@@ -91,7 +91,7 @@ export const AdminLogin: React.FC = (): JSX.Element => {
             </div>
 
 
-            <button className="bg-black rounded-xl mt-4 text-white py-2  ">
+            <button className="bg-black rounded-md mt-4 text-white py-2  ">
               Login
             </button>
           </form>

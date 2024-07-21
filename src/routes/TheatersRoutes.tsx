@@ -1,60 +1,42 @@
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
-import { TheatersHome, TheatersLogin, TheatersSignUp } from '../pages/theaters'
+import { TheaterForgotPassword, TheatersHome, TheatersLogin, TheatersSignUp } from '../pages/theaters'
 import { TheaterOTPVerification } from "../pages/theaters/theaterOTPVerifiy";
 import { useLoggedOwner } from "../hooks/useLoggedUser";
 import { Loader } from "../component/Loader";
 import { TheaterProtectedRoutes } from "../component/theaters/theaterProtectedRoutes";
+import { ErroPage } from "../pages/ErrorPage";
+import { Role } from "../interface/Interface";
 
 
-const UserRoutes: React.FC = () => {
-  const { loading } = useLoggedOwner('theater');
-  const [showLoader, setShowLoader] = useState(false);
+const TheatersRoutes: React.FC = () => {
+  const { loading } = useLoggedOwner(Role.theaters);
 
-  useEffect(() => {
-    let timer: NodeJS.Timeout | null = null;
-
-    if (loading) {
-      // Show loader immediately
-      setShowLoader(true);
-
-      // Set timeout to hide loader after 2 seconds
-      timer = setTimeout(() => {
-        setShowLoader(false);
-      }, 2000);
-    } else {
-      // Cancel timeout and hide loader
-      if (timer) {
-        clearTimeout(timer);
-      }
-      setShowLoader(false);
-    }
-    return () => {
-      if (timer) {
-        clearTimeout(timer);
-      }
-    };
-  }, [loading]);
 
   return (
     <>
-      {showLoader && <Loader />}
-      <Routes>
-        <Route path='/home' element={
-          <TheaterProtectedRoutes>
-            <TheatersHome />
-          </TheaterProtectedRoutes>
+      <Suspense fallback={<Loader />} >
 
-        } />
-        <Route path='/login' element={<TheatersLogin />} />
-        <Route path='/signup' element={<TheatersSignUp />} />
-        <Route path='/otp-verification' element={<TheaterOTPVerification />} />
-      </Routes>
+        <Routes>
+          <Route path="*" element={<ErroPage redirectPath="/theaters/home" />} />
+          <Route path='/home' element={
+            <TheaterProtectedRoutes>
+              <TheatersHome />
+            </TheaterProtectedRoutes>
 
+          } />
+          <Route path='/login' element={<TheatersLogin />} />
+          <Route path='/signup' element={<TheatersSignUp />} />
+          <Route path='/forgot-password' element={<TheaterForgotPassword />} />
+          <Route path='/otp-verification' element={<TheaterOTPVerification />} />
+        </Routes>
+
+      </Suspense>
     </>
   )
 }
 
 
-export default UserRoutes
+export default TheatersRoutes
+
 

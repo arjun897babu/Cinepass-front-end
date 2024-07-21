@@ -15,24 +15,27 @@ import { RootState } from "../redux/store";
 import { Loader } from "../component/Loader";
 import { ProtectedRoutes } from "../component/user/ProtectedRoutes";
 import { UserProfile } from "../pages/user/userProfile";
+import { ErroPage } from "../pages/ErrorPage";
+import { UserForgotPassword } from "../pages/user/UserForgotPassword";
 
 const UserRoutes: React.FC = () => {
   const location = useLocation();
   const { loading } = useSelector((state: RootState) => state.user)
-  const isAuthRoutes = /^\/(login|signup|otp-verification)/.test(location.pathname);
+  const isAuthRoutes = /^\/(login|signup|forgot-password|otp-verification)/.test(location.pathname);
 
   return (
     <>
       <Suspense fallback={< Loader />}>
 
         {!isAuthRoutes && <UserNavBar />}
-        {loading && < Loader />}
         <Routes>
+          <Route path="*" element={<ErroPage />} />
           <Route path='/' element={
             <UserHome />
           } />
           <Route path='/login' element={<UserLogin />} />
           <Route path='/signup' element={<UserSignUp />} />
+          <Route path='/forgot-password' element={<UserForgotPassword />} />
           <Route path='/otp-verification' element={<UserOTPVerification />} />
           <Route path='/profile' element={
             <ProtectedRoutes>

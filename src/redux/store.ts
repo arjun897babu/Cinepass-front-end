@@ -16,7 +16,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   user: userReducer,
-  theater: theatersReducer,
+  theaters: theatersReducer,
   admin:adminReducer
 })
 

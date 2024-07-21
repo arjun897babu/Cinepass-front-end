@@ -9,16 +9,16 @@ import { useLoggedOwner } from '../../hooks/useLoggedUser';
 import { useForm } from '../../hooks/UseForm';
 import { useFormSubmit } from '../../hooks/UseFormSubmitt';
 import { loginTheaters } from '../../redux/actions/theaterAction';
-import { ResponseStatus } from '../../interface/Interface';
+import { ResponseStatus, Role } from '../../interface/Interface';
 import { isErrorResponse } from '../../utils/customError';
 import { clearTheaterError } from '../../redux/reducers/theatersReducer';
-
+import Toast from '../../component/Toast';
 
 
 export const TheatersLogin: React.FC = (): JSX.Element => {
 
   const dispatch = useDispatch<AppDispatch>();
-  const { error } = useLoggedOwner('theater');
+  const { error } = useLoggedOwner(Role.theaters);
 
   const navigate = useNavigate();
 
@@ -30,7 +30,7 @@ export const TheatersLogin: React.FC = (): JSX.Element => {
   const { formData, handleChange, inputError, setInputError } = useForm({
     email: '',
     password: ''
-  }, 'theater')
+  }, Role.theaters)
   const { handleSubmit } = useFormSubmit(formData, setInputError)
   const onSubmit = async (e: FormEvent) => {
 
@@ -38,23 +38,22 @@ export const TheatersLogin: React.FC = (): JSX.Element => {
       const isValid = handleSubmit(e)
       if (isValid) {
         const response = await dispatch(loginTheaters(formData)).unwrap();
-        console.log(response)
+
         if (response.status === ResponseStatus.SUCCESS) {
           navigate(response.redirectURL)
         }
-
       }
     } catch (error) {
-      console.log(error)
+
       if (isErrorResponse(error)) {
-        console.log(error)
-        navigate(error.redirectURL)
+        if (error.redirectURL) {
+          navigate(error.redirectURL)
+        } else {
+
+        }
       }
     }
 
-  }
-  const forgotPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
   }
 
   let background_image_path = { backgroundImage: `url(${backGroundImage})` };
@@ -62,7 +61,8 @@ export const TheatersLogin: React.FC = (): JSX.Element => {
   return (
 
     <section className="background overlay flex items-center justify-center " style={background_image_path}>
-
+      {error?.error === 'approval' && <Toast status={ResponseStatus.ERROR} message={error.message} role={Role.theaters} />}
+      {error?.error === '' && <Toast status={ResponseStatus.ERROR} message={error.message} role={Role.theaters} />}
       <div className="flex p-5 justify-center">
 
         <div className={`relative sm:w-3/5 px-8   py-24 space-y-8 bg-white bg-opacity-10`}>
@@ -109,9 +109,11 @@ export const TheatersLogin: React.FC = (): JSX.Element => {
 
 
             <div className="flex justify-end">
-              <button className="m-5 text-xs text-white" onClick={forgotPassword}>
-                Forgot password?
-              </button>
+              <Link to={`/theaters/forgot-password`}>
+                <button className="m-5 text-xs text-white" >
+                  Forgot password?
+                </button>
+              </Link>
             </div>
 
 
@@ -134,7 +136,7 @@ export const TheatersLogin: React.FC = (): JSX.Element => {
 
             <div className="mt-3 text-xs flex justify-end items-center text-white  ">
               <span className='  px-5 py-2 rounded-md'>Don't have an account?</span>
-              <Link to={`/theaters/signUp`}>
+              <Link to={`/theaters/signup`}>
                 <button className="py-2 px-5 bg-white text-black rounded-md">
                   Register
                 </button>

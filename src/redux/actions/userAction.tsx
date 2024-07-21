@@ -1,13 +1,13 @@
 import { serverInstance } from '../../services'
 import { AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit'
-import { UserSingUpData } from '../../interface/user/IUserData'
+import { UserSignUpData } from '../../interface/user/IUserData'
 import { userEndPoints } from '../../services/endpoints/endPoints'
 import { AxiosError } from 'axios'
 import { LoginData, OTPVerification, ResponseData } from '../../interface/Interface'
 
-export const signUpUser: AsyncThunk<ResponseData, UserSingUpData, {}> = createAsyncThunk(
-  'user/singup',
-  async (userData: UserSingUpData, { rejectWithValue }) => {
+export const signUpUser: AsyncThunk<ResponseData, UserSignUpData, {}> = createAsyncThunk(
+  'user/signup',
+  async (userData: UserSignUpData, { rejectWithValue }) => {
     console.log('reaching the signup async thunk')
     try {
       const response = await serverInstance.post(userEndPoints.signup, userData);
@@ -32,8 +32,8 @@ export const loginUser: AsyncThunk<ResponseData, LoginData, {}> = createAsyncThu
       return await response.data
     } catch (error) {
       if (error instanceof AxiosError) {
-       
-        return rejectWithValue(error.response?.data )
+
+        return rejectWithValue(error.response?.data)
       }
 
       return rejectWithValue('An unknown error occurred')
@@ -74,4 +74,33 @@ export const logoutUser = createAsyncThunk<ResponseData, void, {}>(
     }
   }
 );
+export const forgotPasswordUser: AsyncThunk<ResponseData, Record<string, string>, {}> = createAsyncThunk(
+  '/user/forgot-password',
+  async (formData, { rejectWithValue }) => {
+    try {
+      const response = await serverInstance.post(userEndPoints.forgotPassword, formData);
+      return await response.data 
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return rejectWithValue(error.response?.data)
+      }
+      return rejectWithValue('an unknown error occured')
+    }
+  }
+)
+
+export const resetPassword: AsyncThunk<ResponseData, Record<string, string>, {}> = createAsyncThunk(
+  '/user/resetPassword',
+  async ({ formData, token }, { rejectWithValue }) => {
+    try {
+      const response = await serverInstance.put(userEndPoints.resetPassword(token), formData);
+      return await response.data
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return rejectWithValue(error.response?.data)
+      }
+      return rejectWithValue('an unknown error occured')
+    }
+  }
+)
 

@@ -1,11 +1,10 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IInitialState } from "./IState";
 
 import { IInitialStateError } from "../../interface/Interface";
-import { loginAdmin, logoutAdmin } from "../actions/adminAction";
-import { isEmpty } from "@cloudinary/url-gen/backwards/utils/isEmpty";
+import { getEntityDataForAdmin, loginAdmin, logoutAdmin, manageEntitiesByAdmin, updateTheaterApprovalForAdmin } from "../actions/adminAction";
 import { isErrorResponse } from "../../utils/customError";
-import { FaFileShield } from "react-icons/fa6";
+import { LoggedOwner } from "../../interface/user/IUserData";
 
 
 const initialState: IInitialState = {
@@ -22,7 +21,17 @@ const adminSlice = createSlice({
   reducers: {
     clearError(state) {
       state.error = null
-    }
+    },
+    setError(state, action: PayloadAction<IInitialStateError>) {
+      state.error = action.payload
+    },
+    setIsAuthenticated(state) {
+      state.isAuthenticated = !state.isAuthenticated
+    },
+    setLoading(state) {
+      state.loading = !state.loading
+    },
+
   },
   extraReducers: (builder) => {
     builder
@@ -34,8 +43,7 @@ const adminSlice = createSlice({
         state.loading = false;
         state.isAuthenticated = true;
         state.error = null;
-        state.owner = action.payload.data ? action.payload.data[0] : null
-
+        state.owner = action.payload.data ? action.payload.data as unknown as LoggedOwner : null
       })
       .addCase(loginAdmin.rejected, (state, action) => {
         state.loading = false
@@ -58,7 +66,57 @@ const adminSlice = createSlice({
         state.loading = false;
         state.error = action.payload as IInitialStateError | null
       })
+      //get theaters for admin
+      .addCase(getEntityDataForAdmin.pending, (state) => {
+        state.loading = true,
+          state.error = null
+      })
+      .addCase(getEntityDataForAdmin.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(getEntityDataForAdmin.rejected, (state, action) => {
+        state.loading = false
+        if (isErrorResponse(action.payload)) {
+          state.error = action.payload.error as IInitialStateError | null
+        }
+      })
+      //updating approval status
+      .addCase(updateTheaterApprovalForAdmin.pending, (state) => {
+        state.loading = true,
+          state.error = null
+      })
+      .addCase(updateTheaterApprovalForAdmin.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(updateTheaterApprovalForAdmin.rejected, (state, action) => {
+        state.loading = false
+        if (isErrorResponse(action.payload)) {
+          state.error = action.payload.error as IInitialStateError | null
+        }
+      })
+
+      //manageEntity status
+      .addCase(manageEntitiesByAdmin.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(manageEntitiesByAdmin.fulfilled, (state) => {
+        state.loading = false
+      })
+      .addCase(manageEntitiesByAdmin.rejected, (state, action) => {
+        state.loading = false
+        if (isErrorResponse(action.payload)) {
+          state.error = action.payload.error as IInitialStateError | null
+        }
+      })
   }
-})
-export const { clearError:clearAdminError } = adminSlice.actions
+});
+
+export const {
+  clearError: clearAdminError,
+  setError: setAdminError,
+  setIsAuthenticated: setAdminAuthentication,
+  setLoading: setAdminLoading
+} = adminSlice.actions
+
 export default adminSlice.reducer

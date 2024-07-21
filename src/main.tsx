@@ -12,7 +12,7 @@ const { VITE_GOOGLE_CLIENT_ID } = import.meta.env
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
   
-    <GoogleOAuthProvider clientId={VITE_GOOGLE_CLIENT_ID}>
+    {/* <GoogleOAuthProvider clientId={VITE_GOOGLE_CLIENT_ID}> */}
 
       <Provider store={store}>
         <PersistGate loading={null} persistor={persist} />
@@ -20,6 +20,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <App />
         {/* </React.StrictMode> */}
       </Provider>
-    </GoogleOAuthProvider>
+    {/* </GoogleOAuthProvider> */}
   </BrowserRouter>
 )

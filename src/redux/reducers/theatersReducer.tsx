@@ -1,9 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IInitialState } from "./IState";
-import { loginTheaters, logoutTheaters, signupTheaters, verifyOTPTheaters } from "../actions/theaterAction";
+import { forgotPasswordTheaters, loginTheaters, logoutTheaters, signupTheaters, verifyOTPTheaters } from "../actions/theaterAction";
 import { IInitialStateError, ResponseData } from "../../interface/Interface";
 import { TheatersLogin } from "../../pages/theaters";
 import { isErrorResponse } from "../../utils/customError";
+import { LoggedOwner } from "../../interface/user/IUserData";
 
 
 
@@ -24,8 +25,14 @@ const theaterSlice = createSlice({
     clearError(state) {
       state.error = null
     },
-    changeLoading(state, action) {
-      state.loading = !action.payload
+    setLoading(state) {
+      state.loading = !state.loading
+    },
+    setError(state, action: PayloadAction<IInitialStateError>) {
+      state.error = action.payload
+    },
+    setIsAuthenticated(state) {
+      state.isAuthenticated = !state.isAuthenticated
     }
   },
   extraReducers: (builder) => {
@@ -38,7 +45,7 @@ const theaterSlice = createSlice({
       .addCase(signupTheaters.fulfilled, (state, action: PayloadAction<ResponseData>) => {
         console.log(action.payload)
         state.loading = false;
-        state.tempMail = action.payload.data ? action.payload.data[0] as { email: string } : null
+        state.tempMail = action.payload.data ? action.payload.data as { email: string } : null
       })
       .addCase(signupTheaters.rejected, (state, action) => {
         state.loading = false;
@@ -53,13 +60,13 @@ const theaterSlice = createSlice({
         state.loading = false;
         state.error = null;
         state.isAuthenticated = true;
-        state.owner = action.payload.data ? action.payload.data[0] : null
+        state.owner = action.payload.data ? action.payload.data as unknown as LoggedOwner : null
       })
       .addCase(loginTheaters.rejected, (state, action) => {
         state.loading = false
         if (isErrorResponse(action.payload)) {
           state.error = action.payload.error as IInitialStateError;
-          state.tempMail = action.payload.data ? action.payload.data[0] as { email: string } : null
+          state.tempMail = action.payload.data ? action.payload.data as { email: string } : null
         }
       })
 
@@ -77,7 +84,7 @@ const theaterSlice = createSlice({
         state.isAuthenticated = false
         state.error = action.payload as IInitialStateError
       })
-      
+
       //logout
       .addCase(logoutTheaters.pending, (state) => {
         state.loading = true;
@@ -93,7 +100,23 @@ const theaterSlice = createSlice({
         state.loading = false;
         state.error = action.payload as IInitialStateError | null
       })
+       //forgot password
+       .addCase(forgotPasswordTheaters.pending, (state) => {
+        state.loading = true
+      })
+      .addCase(forgotPasswordTheaters.fulfilled, (state) => {
+        state.loading = false
+      })
+      .addCase(forgotPasswordTheaters.rejected, (state) => {
+        state.loading = false;
+        
+      })
   }
 })
-export const { clearError:clearTheaterError, changeLoading } = theaterSlice.actions
+export const {
+  clearError: clearTheaterError,
+  setLoading: setTheaterLoading,
+  setError: setTheaterError,
+  setIsAuthenticated: setTheatersAuthentication
+} = theaterSlice.actions
 export default theaterSlice.reducer

@@ -72,3 +72,18 @@ export const logoutTheaters = createAsyncThunk<ResponseData, void, {}>(
     }
   }
 );
+
+export const forgotPasswordTheaters: AsyncThunk<ResponseData, Record<string, string>, {}> = createAsyncThunk(
+  '/theaters/forgot-password',
+  async (formData, { rejectWithValue }) => {
+    try {
+      const response = await serverInstance.post(theatersEndPoints.forgotPassword, formData);
+      return await response.data
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return rejectWithValue(error.response?.data)
+      }
+      return rejectWithValue('an unknown error occured')
+    }
+  }
+)

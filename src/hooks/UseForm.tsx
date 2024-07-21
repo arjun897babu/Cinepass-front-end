@@ -13,6 +13,8 @@ import { clearAdminError } from "../redux/reducers/adminReducer";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../redux/store";
 import { useLoggedOwner } from "./useLoggedUser";
+import { Role } from "../interface/Interface";
+import useAction from "./UseAction";
 
 type FormData<T> = {
   [key in keyof T]: T[key];
@@ -22,13 +24,13 @@ type ValidateError<T> = {
   [key in keyof T]?: string;
 };
 
-export const useForm = <T extends Record<string, any>>(initialValue: T, owner: string) => {
+export const useForm = <T extends Record<string, any>>(initialValue: T, owner: Role) => {
   const [formData, setFormData] = useState<FormData<T>>(initialValue);
   const [inputError, setInputError] = useState<ValidateError<T>>({});
-  const {error} = useLoggedOwner(owner)
+  const { error } = useLoggedOwner(owner)
 
   const dispatch = useDispatch<AppDispatch>();
-  const clearError = getClearError(owner);
+  const { clearError } = useAction(owner)
 
 
 
@@ -37,11 +39,11 @@ export const useForm = <T extends Record<string, any>>(initialValue: T, owner: s
 
 
     const { name, value } = event.target;
-    console.log(name, value)
+
     setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
 
     let validationResponse = checkInputValue(name, value, formData.password);
-    console.log(validationResponse)
+
     if (!validationResponse.isValid) {
 
       setInputError((prevErrors) => ({
@@ -61,7 +63,7 @@ export const useForm = <T extends Record<string, any>>(initialValue: T, owner: s
 
     if (error?.error === name) {
       if (clearError) {
-        dispatch(clearError());
+        clearError();
       }
     }
   };
@@ -101,15 +103,15 @@ function checkInputValue(name: string, value: string, value2?: string) {
   return validationResponse;
 }
 
-function getClearError(owner: string) {
+// function getClearError(owner: string) {
 
-  switch (owner) {
-    case 'user':
-      return clearUserError
-    case 'theater':
-      return clearTheaterError
-    case 'admin':
-      return clearAdminError
-  }
+//   switch (owner) {
+//     case 'user':
+//       return clearUserError
+//     case 'theater':
+//       return clearTheaterError
+//     case 'admin':
+//       return clearAdminError
+//   }
 
-}
+// }
