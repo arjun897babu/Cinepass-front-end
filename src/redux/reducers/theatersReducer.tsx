@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IInitialState } from "./IState";
 import { forgotPasswordTheaters, loginTheaters, logoutTheaters, resendOTPTheaters, resetPasswordTheaters, signupTheaters, verifyOTPTheaters } from "../actions/theaterAction";
 import { IInitialStateError, ResponseData } from "../../interface/Interface";
-import { TheatersLogin } from "../../pages/theaters";
 import { isErrorResponse } from "../../utils/customError";
 import { LoggedOwner } from "../../interface/user/IUserData";
 

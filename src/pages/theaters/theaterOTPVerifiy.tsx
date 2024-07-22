@@ -22,7 +22,7 @@ export const TheaterOTPVerification: React.FC = (): JSX.Element => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate();
 
-  const { error, isAuthenticated, tempMail, } = useLoggedOwner(Role.theaters)
+  const { error, tempMail, } = useLoggedOwner(Role.theaters)
 
   const [response, setResponse] = useState<ResponseData | null>(null)
   const { isActive, resetTimer, timeRemaining } = useTimer(5)

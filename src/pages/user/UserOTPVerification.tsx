@@ -1,12 +1,12 @@
-import React, { MouseEvent, useEffect, useState } from "react"
+import React, {  useEffect, useState } from "react"
 import backgroundImage from '/Iconic Movie Posters Collage.webp'
 import { useForm } from "../../hooks/UseForm";
 import { useFormSubmit } from "../../hooks/UseFormSubmitt";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../redux/store";
-import { resendOTPUser, verifyUser } from "../../redux/actions/userAction";
+import { useDispatch,  } from "react-redux";
+import { AppDispatch,  } from "../../redux/store";
+import {  verifyUser } from "../../redux/actions/userAction";
 import { ResponseData, ResponseStatus, Role } from "../../interface/Interface";
-import { useLocation, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { clearUserError } from "../../redux/reducers/userReducer";
 import { useLoggedOwner } from "../../hooks/useLoggedUser";
 import { formatTime } from "../../utils/fromat";
@@ -22,9 +22,8 @@ const UserOTPVerification: React.FC = (): JSX.Element => {
 
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate();
-  const location = useLocation()
 
-  const { error, isAuthenticated, tempMail } = useLoggedOwner(Role.users);
+  const { error, tempMail } = useLoggedOwner(Role.users);
 
   const { formData, inputError, handleChange, setInputError } = useForm({
     otp: ''

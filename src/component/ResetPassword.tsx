@@ -11,7 +11,6 @@ import { ResponseData, ResponseStatus, Role } from "../interface/Interface";
 import { useFormSubmit } from "../hooks/UseFormSubmitt";
 import { isErrorResponse } from "../utils/customError";
 import Toast from "./Toast";
-import useAction from "../hooks/UseAction";
 import { resetPassword } from "../redux/actions/userAction";
 import { resetPasswordTheaters } from "../redux/actions/theaterAction";
 
@@ -20,7 +19,6 @@ const ResetPassWord: React.FC<{ role: Role }> = ({ role }) => {
   const { token } = useParams<{ token: string }>()
   const backgroundImagePath = { backgroundImage: `url(${role === Role.users ? backgroundImage : backgroundImage1})` };
   const dispatch = useDispatch<AppDispatch>();
-  const { setError } = useAction(role);
   const [response, setResponse] = useState<ResponseData | null>()
   const { error } = useLoggedOwner(role);
   const { formData, handleChange, inputError, setInputError } = useForm({ password: '', confirm_password: '' }, role)
