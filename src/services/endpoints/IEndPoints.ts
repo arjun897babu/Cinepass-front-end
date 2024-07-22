@@ -7,18 +7,20 @@ export interface UserEndpoint extends IEndPoints {
   signup: string;
   verifyOTP: string;
   resendOTP: string;
-  forgotPassword:string;
-  resetPassword:(token:string)=>string,
+  forgotPassword: string;
+  resetPassword: (token: string) => string;
+  googleSignUp: string;
+  googleLogout: string;
 }
 export interface TheaterEndpoint extends IEndPoints {
   signup: string;
   verifyOTP: string;
   resendOTP: string;
-  forgotPassword:string;
-  resetPassword:(token:string)=>string;
+  forgotPassword: string;
+  resetPassword: (token: string) => string;
 }
 export interface AdminEndpoint extends IEndPoints {
-  getEntityData:(role: string) => string
+  getEntityData: (role: string) => string
   updateApprovalStatus: (theaterOwnerId: string) => string
   manageEntities: (_id: string, role: string) => string
 

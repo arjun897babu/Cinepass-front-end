@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { forgotPasswordUser, loginUser, logoutUser, resendOTPUser, resetPassword, signUpUser, verifyUser } from "../actions/userAction";
+import { forgotPasswordUser, googleSignUp, loginUser, logoutUser, resendOTPUser, resetPassword, signUpUser, verifyUser } from "../actions/userAction";
 import { IInitialState } from "./IState";
 import { IInitialStateError, ResponseData, ResponseStatus } from "../../interface/Interface";
 import { isErrorResponse } from "../../utils/customError";
@@ -12,7 +12,8 @@ const initialState: IInitialState = {
   loading: false,
   error: null,
   isAuthenticated: false,
-  tempMail: null
+  tempMail: null,
+  isGoogleAuth:false
 
 };
 
@@ -69,7 +70,26 @@ const userSlice = createSlice({
           state.error = action.payload.error as IInitialStateError
           state.tempMail = action.payload.data ? action.payload.data as { email: string } : null
         }
+      })
 
+      //google login
+      .addCase(googleSignUp.pending, (state) => {
+        state.loading = true;
+        state.error = null
+      })
+      .addCase(googleSignUp.fulfilled, (state, action: PayloadAction<ResponseData>) => {
+        state.loading = false;
+        state.error = null
+        state.isAuthenticated = action.payload.status === ResponseStatus.SUCCESS
+        state.owner = action.payload.data ? action.payload.data as unknown as LoggedOwner : null
+        state.isGoogleAuth = true
+      })
+      .addCase(googleSignUp.rejected, (state, action) => {
+        state.loading = false;
+        if (isErrorResponse(action.payload)) {
+          state.error = action.payload.error as IInitialStateError
+          state.tempMail = action.payload.data ? action.payload.data as { email: string } : null
+        }
       })
       //logout
       .addCase(logoutUser.pending, (state) => {
@@ -141,7 +161,7 @@ const userSlice = createSlice({
         state.loading = true;
       })
       .addCase(resendOTPUser.fulfilled, (state) => {
-         state.loading = false;
+        state.loading = false;
       })
       .addCase(resendOTPUser.rejected, (state, action) => {
         state.loading = false;

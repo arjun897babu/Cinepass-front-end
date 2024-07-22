@@ -52,3 +52,7 @@ export interface ApprovalResponse {
   approval_status: string
 }
 
+export interface GoogleSignUp{
+  credential:string,
+  client_id :string
+}

@@ -1,5 +1,5 @@
 
-import React, { FormEvent, MouseEvent, useEffect, useState } from 'react';
+import React, { FormEvent, useEffect } from 'react';
 import '../../index.css';
 import { Link, useNavigate } from 'react-router-dom'
 import { FaArrowLeft } from "react-icons/fa";
@@ -11,12 +11,11 @@ import { AppDispatch, } from '../../redux/store';
 import { loginUser } from '../../redux/actions/userAction';
 import { ResponseStatus, Role } from '../../interface/Interface';
 import { isErrorResponse } from '../../utils/customError';
-import { clearUserError } from '../../redux/reducers/userReducer';
 import { useLoggedOwner } from '../../hooks/useLoggedUser';
 import useAction from '../../hooks/UseAction';
 
-// import { CredentialResponse, GoogleLogin, googleLogout, useGoogleLogin } from '@react-oauth/google';
-// import axios from 'axios';
+import GoogleSignUp from '../../component/user/GoogleSignUp';
+import Toast from '../../component/Toast';
 
 
 
@@ -25,7 +24,7 @@ export const UserLogin: React.FC = (): JSX.Element => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { error, isAuthenticated } = useLoggedOwner(Role.users);
-  const {clearError} = useAction(Role.users)
+  const { clearError } = useAction(Role.users)
 
   const {
     formData,
@@ -51,7 +50,7 @@ export const UserLogin: React.FC = (): JSX.Element => {
       try {
         const result = await dispatch(loginUser(formData)).unwrap();
         if (result.status === ResponseStatus.SUCCESS) {
-          navigate('/')
+          navigate(result.redirectURL)
         }
       } catch (err) {
         if (isErrorResponse(err)) {
@@ -68,7 +67,7 @@ export const UserLogin: React.FC = (): JSX.Element => {
   return (
 
     <section className="background overlay flex items-center justify-center " style={background_image_path}>
-
+      {error?.error === 'googleAuth' && <Toast message={error.message} status={ResponseStatus.ERROR} role={Role.users} />}
       <div className="flex p-5 justify-center">
 
         <div className={`relative md:w-3/5 px-4 sm:px-24 py-24 space-y-8  `}>
@@ -153,7 +152,7 @@ export const UserLogin: React.FC = (): JSX.Element => {
             </Link>
 
             <div className='w-full flex items-center justify-center'>
-              {/* <GoogleLogin width={100} onSuccess={responseMessage} onError={errorMessage} /> */}
+              <GoogleSignUp />
             </div>
 
 

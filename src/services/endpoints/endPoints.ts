@@ -7,8 +7,10 @@ export const userEndPoints: UserEndpoint = {
   logout: '/users/logout',
   verifyOTP: '/users/otp-verification',
   resendOTP: '/users/resend-otp',
-  forgotPassword:'/users/forgot-password',
-  resetPassword: (token: string) => `/users/reset-password/${token}`
+  forgotPassword: '/users/forgot-password',
+  resetPassword: (token: string) => `/users/reset-password/${token}`,
+  googleSignUp: '/users/google-signup',
+  googleLogout: 'users/google-logout'
 };
 export const theatersEndPoints: TheaterEndpoint = {
 
@@ -17,7 +19,7 @@ export const theatersEndPoints: TheaterEndpoint = {
   logout: '/theaters/logout',
   verifyOTP: '/theaters/otp-verification',
   resendOTP: '/theaters/resend-otp',
-  forgotPassword:'/theaters/forgot-password',
+  forgotPassword: '/theaters/forgot-password',
   resetPassword: (token: string) => `/theaters/reset-password/${token}`
 
 

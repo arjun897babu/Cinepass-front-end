@@ -3,7 +3,7 @@ import { AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit'
 import { UserSignUpData } from '../../interface/user/IUserData'
 import { userEndPoints } from '../../services/endpoints/endPoints'
 import { AxiosError } from 'axios'
-import { LoginData, OTPVerification, ResponseData } from '../../interface/Interface'
+import { GoogleSignUp, LoginData, OTPVerification, ResponseData } from '../../interface/Interface'
 
 export const signUpUser: AsyncThunk<ResponseData, UserSignUpData, {}> = createAsyncThunk(
   'user/signup',
@@ -109,6 +109,21 @@ export const resendOTPUser: AsyncThunk<ResponseData, string, {}> = createAsyncTh
   async (email, { rejectWithValue }) => {
     try {
       const response = await serverInstance.post(userEndPoints.resendOTP, { email });
+      return await response.data
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return rejectWithValue(error.response?.data)
+      }
+      return rejectWithValue('an unknown error occured')
+    }
+  }
+);
+
+export const googleSignUp: AsyncThunk<ResponseData, GoogleSignUp, {}> = createAsyncThunk(
+  '/user/googleSignUp',
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await serverInstance.post(userEndPoints.googleSignUp, data);
       return await response.data
     } catch (error) {
       if (error instanceof AxiosError) {

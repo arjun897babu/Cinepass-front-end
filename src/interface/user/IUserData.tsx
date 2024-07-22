@@ -14,7 +14,6 @@ export interface LoggedOwner {
   verified?: boolean;
   status?: boolean;
   profile_picture?: string | null;
-
 }
 
 export interface IUser {

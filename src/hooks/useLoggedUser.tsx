@@ -7,9 +7,9 @@ import { IInitialStateError, Role } from "../interface/Interface";
 interface LoggedOwnerState {
   loggedOwner: LoggedOwner | null
   isAuthenticated: boolean
-  error: IInitialStateError | null, 
+  error: IInitialStateError | null,
   loading: boolean,
-  tempMail:{email:string;}| null
+  tempMail: { email: string; } | null,
 }
 
 

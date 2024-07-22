@@ -9,6 +9,7 @@ import { AppDispatch } from '../../redux/store'
 import { logoutUser } from '../../redux/actions/userAction'
 import { useLoggedOwner } from '../../hooks/useLoggedUser'
 import { Role } from '../../interface/Interface'
+import { googleLogout } from "@react-oauth/google";
 
 
 const UserNavBar: React.FC = (): JSX.Element => {
@@ -19,7 +20,7 @@ const UserNavBar: React.FC = (): JSX.Element => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate();
   const { loggedOwner, isAuthenticated } = useLoggedOwner(Role.users);// state for logged in user
-
+  
 
   // Handler for toggle
   const handleToggle = () => {

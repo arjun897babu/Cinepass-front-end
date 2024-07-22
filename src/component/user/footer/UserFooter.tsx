@@ -11,7 +11,7 @@ const iconMap = {
 };
 
 const SocialIcons: React.FC<{ Icons: IFooter.ArrayInterFace[] }> = ({ Icons }) => {
-  console.log('footer component')
+   
   return (
     <div className="text-teal-500">
       {Icons.map((icon) => {
