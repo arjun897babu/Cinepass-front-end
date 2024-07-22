@@ -93,7 +93,22 @@ export const resetPassword: AsyncThunk<ResponseData, Record<string, string>, {}>
   '/user/resetPassword',
   async ({ password, token }, { rejectWithValue }) => {
     try {
-      const response = await serverInstance.put(userEndPoints.resetPassword(token), { password});
+      const response = await serverInstance.put(userEndPoints.resetPassword(token), { password });
+      return await response.data
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return rejectWithValue(error.response?.data)
+      }
+      return rejectWithValue('an unknown error occured')
+    }
+  }
+);
+
+export const resendOTPUser: AsyncThunk<ResponseData, string, {}> = createAsyncThunk(
+  '/user/resendOTP',
+  async (email, { rejectWithValue }) => {
+    try {
+      const response = await serverInstance.post(userEndPoints.resendOTP, { email });
       return await response.data
     } catch (error) {
       if (error instanceof AxiosError) {

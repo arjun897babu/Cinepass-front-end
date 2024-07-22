@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IInitialState } from "./IState";
-import { forgotPasswordTheaters, loginTheaters, logoutTheaters, resetPasswordTheaters, signupTheaters, verifyOTPTheaters } from "../actions/theaterAction";
+import { forgotPasswordTheaters, loginTheaters, logoutTheaters, resendOTPTheaters, resetPasswordTheaters, signupTheaters, verifyOTPTheaters } from "../actions/theaterAction";
 import { IInitialStateError, ResponseData } from "../../interface/Interface";
 import { TheatersLogin } from "../../pages/theaters";
 import { isErrorResponse } from "../../utils/customError";
@@ -49,7 +49,7 @@ const theaterSlice = createSlice({
       })
       .addCase(signupTheaters.rejected, (state, action) => {
         state.loading = false;
-        if(isErrorResponse(action.payload)){
+        if (isErrorResponse(action.payload)) {
           state.error = action.payload.error as IInitialStateError
         }
       })
@@ -131,6 +131,22 @@ const theaterSlice = createSlice({
           }
         }
       })
+      //resend otp
+      .addCase(resendOTPTheaters.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(resendOTPTheaters.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(resendOTPTheaters.rejected, (state, action) => {
+        state.loading = false;
+        if (isErrorResponse(action.payload)) {
+          if (action.payload.error && action.payload.error.error === 'otp') {
+            state.error = action.payload.error as IInitialStateError | null
+          }
+        }
+      })
+
   }
 })
 export const {

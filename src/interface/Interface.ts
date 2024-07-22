@@ -25,7 +25,7 @@ export interface ResponseData {
   error?: IInitialStateError | null,
   data?: {
     [key: string]: string | number | boolean | object | any[];
-  }
+  },
   redirectURL: string
 }
 

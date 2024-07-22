@@ -6,7 +6,7 @@ export const userEndPoints: UserEndpoint = {
   login: '/users/login',
   logout: '/users/logout',
   verifyOTP: '/users/otp-verification',
-  resendOTP: '/users/otp-resend',
+  resendOTP: '/users/resend-otp',
   forgotPassword:'/users/forgot-password',
   resetPassword: (token: string) => `/users/reset-password/${token}`
 };
@@ -16,7 +16,7 @@ export const theatersEndPoints: TheaterEndpoint = {
   login: '/theaters/login',
   logout: '/theaters/logout',
   verifyOTP: '/theaters/otp-verification',
-  resendOTP: '/theaters/otp-resend',
+  resendOTP: '/theaters/resend-otp',
   forgotPassword:'/theaters/forgot-password',
   resetPassword: (token: string) => `/theaters/reset-password/${token}`
 

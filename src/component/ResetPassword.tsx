@@ -18,7 +18,7 @@ import { resetPasswordTheaters } from "../redux/actions/theaterAction";
 const ResetPassWord: React.FC<{ role: Role }> = ({ role }) => {
   const navigate = useNavigate()
   const { token } = useParams<{ token: string }>()
-   const backgroundImagePath = { backgroundImage: `url(${role === Role.users ? backgroundImage : backgroundImage1})` };
+  const backgroundImagePath = { backgroundImage: `url(${role === Role.users ? backgroundImage : backgroundImage1})` };
   const dispatch = useDispatch<AppDispatch>();
   const { setError } = useAction(role);
   const [response, setResponse] = useState<ResponseData | null>()
@@ -35,7 +35,7 @@ const ResetPassWord: React.FC<{ role: Role }> = ({ role }) => {
         let result
         if (role == Role.users) {
           result = await dispatch(resetPassword({ password: formData.password, token })).unwrap()
-        } else if (role === Role.theaters) {
+        } else {
           result = await dispatch(resetPasswordTheaters({ password: formData.password, token })).unwrap()
           console.log(result)
         }
@@ -43,14 +43,20 @@ const ResetPassWord: React.FC<{ role: Role }> = ({ role }) => {
           setTimeout(() => {
             navigate(result.redirectURL)
           }, 2000)
-          setResponse({ message: result.message, status: result.status, redirectURL: result.redirectURL });
+          setResponse((prev) => ({ ...prev, message: result.message, status: result.status, redirectURL: result.redirectURL }));
         }
       } else {
-        // const timer = setTimeout(() => {
-        //   return clearTimeout(timer)
-        // }, 2000)
-
-        // isValid ? setError({ error: '', message: 'Something went wrong' }) : null
+        if(isValid){
+          setTimeout(() => {
+            navigate( `${Role.users === role ? '/login' : `/${role}/login`}`)
+          }, 2000)
+          setResponse((prevResponse) => ({
+            ...prevResponse,
+            message: 'Something went wrong',
+            status: ResponseStatus.ERROR,
+            redirectURL: `#`
+          }))
+        }
       }
     } catch (error) {
       if (isErrorResponse(error)) {

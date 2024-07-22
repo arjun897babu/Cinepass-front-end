@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { forgotPasswordUser, loginUser, logoutUser, resetPassword, signUpUser, verifyUser } from "../actions/userAction";
+import { forgotPasswordUser, loginUser, logoutUser, resendOTPUser, resetPassword, signUpUser, verifyUser } from "../actions/userAction";
 import { IInitialState } from "./IState";
 import { IInitialStateError, ResponseData, ResponseStatus } from "../../interface/Interface";
 import { isErrorResponse } from "../../utils/customError";
@@ -105,7 +105,9 @@ const userSlice = createSlice({
         state.owner = null
         state.isAuthenticated = false;
         if (isErrorResponse(action.payload)) {
-          state.error = action.payload.error as IInitialStateError | null
+          if (action.payload.error && action.payload.error.error === 'otp') {
+            state.error = action.payload.error as IInitialStateError | null
+          }
         }
       })
       //forgot password
@@ -130,6 +132,21 @@ const userSlice = createSlice({
         state.loading = false
         if (isErrorResponse(action.payload)) {
           if (action.payload.error && action.payload.error.error === 'password') {
+            state.error = action.payload.error as IInitialStateError | null
+          }
+        }
+      })
+      //resend otp
+      .addCase(resendOTPUser.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(resendOTPUser.fulfilled, (state) => {
+         state.loading = false;
+      })
+      .addCase(resendOTPUser.rejected, (state, action) => {
+        state.loading = false;
+        if (isErrorResponse(action.payload)) {
+          if (action.payload.error && action.payload.error.error === 'otp') {
             state.error = action.payload.error as IInitialStateError | null
           }
         }

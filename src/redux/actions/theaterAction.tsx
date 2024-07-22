@@ -102,3 +102,17 @@ export const resetPasswordTheaters: AsyncThunk<ResponseData, Record<string, stri
     }
   }
 )
+export const resendOTPTheaters: AsyncThunk<ResponseData, string, {}> = createAsyncThunk(
+  '/theaters/resendOTP',
+  async (email, { rejectWithValue }) => {
+    try {
+      const response = await serverInstance.post(theatersEndPoints.resendOTP, { email });
+      return await response.data
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return rejectWithValue(error.response?.data)
+      }
+      return rejectWithValue('an unknown error occured')
+    }
+  }
+)

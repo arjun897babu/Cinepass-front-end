@@ -1,14 +1,20 @@
-import React, { useEffect } from "react"
+import React, { MouseEvent, useEffect, useState } from "react"
 import backgroundImage from '/Iconic Movie Posters Collage.webp'
 import { useForm } from "../../hooks/UseForm";
 import { useFormSubmit } from "../../hooks/UseFormSubmitt";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { verifyUser } from "../../redux/actions/userAction";
-import { ResponseStatus, Role } from "../../interface/Interface";
+import { resendOTPUser, verifyUser } from "../../redux/actions/userAction";
+import { ResponseData, ResponseStatus, Role } from "../../interface/Interface";
 import { useLocation, useNavigate } from "react-router-dom";
 import { clearUserError } from "../../redux/reducers/userReducer";
 import { useLoggedOwner } from "../../hooks/useLoggedUser";
+import { formatTime } from "../../utils/fromat";
+import { isErrorResponse } from "../../utils/customError";
+import Toast from "../../component/Toast";
+import { useTimer } from "../../hooks/useTimer";
+import ResendOTP from "../../component/ResendOTP";
+
 
 
 
@@ -19,11 +25,13 @@ const UserOTPVerification: React.FC = (): JSX.Element => {
   const location = useLocation()
 
   const { error, isAuthenticated, tempMail } = useLoggedOwner(Role.users);
-  console.log(error)
 
   const { formData, inputError, handleChange, setInputError } = useForm({
     otp: ''
   }, Role.users);
+
+  const [response, setResponse] = useState<ResponseData | null>(null);
+  const { timeRemaining, isActive, resetTimer } = useTimer(5);
 
   useEffect(() => {
     dispatch(clearUserError())
@@ -32,25 +40,23 @@ const UserOTPVerification: React.FC = (): JSX.Element => {
   const { handleSubmit } = useFormSubmit(formData, setInputError);
 
   const onSubmit = async (event: React.FormEvent) => {
-    console.log('onsubmit working')
     try {
-      const isValid =   handleSubmit(event);
+      const isValid = handleSubmit(event);
       if (isValid) {
-
-        console.log(tempMail)
         if (tempMail) {
-           
-            const response = await dispatch(verifyUser({ ...formData, email: tempMail.email })).unwrap();
-            if (response.status === ResponseStatus.SUCCESS) {
-              navigate(response.redirectURL)
-            }
-           
+          const result = await dispatch(verifyUser({ ...formData, email: tempMail.email })).unwrap();
+          if (result.status === ResponseStatus.SUCCESS) {
+            navigate(result.redirectURL)
+          }
 
+        } else {
+          navigate('/login')
         }
-
       }
     } catch (err) {
-      console.log('verification error :', err, error)
+      if (isErrorResponse(error)) {
+        setResponse({ message: error.message, status: error.status, redirectURL: error?.redirectURL })
+      }
     }
 
   };
@@ -59,8 +65,8 @@ const UserOTPVerification: React.FC = (): JSX.Element => {
     <>
 
 
-      <section className="background  md:h-screen overlay flex items-center justify-center " style={backgroundImagePath}>
-
+      <section className="background h-full  md:h-screen overlay flex items-center justify-center " style={backgroundImagePath}>
+        {response && <Toast status={response?.status} message={response?.message} role={Role.users} />}
         <div className="flex rounded-2xl p-5 justify-center">
 
           <div className={`relative px-8 md:px-24 py-24 space-y-8 bg-black bg-opacity-50`}>
@@ -88,9 +94,19 @@ const UserOTPVerification: React.FC = (): JSX.Element => {
                 {inputError.otp && <small className='text-red-600 capitalize absolute -bottom-4 left-3'>{inputError.otp}</small>}
                 {error?.error === 'otp' && <small className='text-red-600 capitalize absolute -bottom-4 left-3'>{error.message}</small>}
               </div>
-              <button className="bg-black rounded-md  text-white py-2  ">
+              <div className="flex justify-end mb-2">
+
+                <ResendOTP isActive={isActive} resetTimer={resetTimer} role={Role.users} setResponse={setResponse} />
+
+              </div>
+              <button className="bg-black rounded-md  text-white py-2  "  >
                 Verify OTP
               </button>
+              <div className="mt-2 text-white text-sm text-center">
+                Time remaining: {formatTime(timeRemaining)}
+              </div>
+
+
             </form>
           </div>
         </div>

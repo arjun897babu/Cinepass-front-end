@@ -8,7 +8,7 @@ export interface UserEndpoint extends IEndPoints {
   verifyOTP: string;
   resendOTP: string;
   forgotPassword:string;
-  resetPassword:(token:string)=>string
+  resetPassword:(token:string)=>string,
 }
 export interface TheaterEndpoint extends IEndPoints {
   signup: string;
