@@ -17,11 +17,12 @@ import { ProtectedRoutes } from "../component/user/ProtectedRoutes";
 import { UserProfile } from "../pages/user/userProfile";
 import { ErroPage } from "../pages/ErrorPage";
 import { UserForgotPassword } from "../pages/user/UserForgotPassword";
+import { ResetPassWordUser } from "../pages/user/ResetPassWordUser";
 
 const UserRoutes: React.FC = () => {
   const location = useLocation();
   const { loading } = useSelector((state: RootState) => state.user)
-  const isAuthRoutes = /^\/(login|signup|forgot-password|otp-verification)/.test(location.pathname);
+  const isAuthRoutes = /^\/(login|signup|forgot-password|otp-verification|users\/reset-password)/.test(location.pathname);
 
   return (
     <>
@@ -36,6 +37,7 @@ const UserRoutes: React.FC = () => {
           <Route path='/login' element={<UserLogin />} />
           <Route path='/signup' element={<UserSignUp />} />
           <Route path='/forgot-password' element={<UserForgotPassword />} />
+          <Route path='/users/reset-password/:token' element={<ResetPassWordUser />} />
           <Route path='/otp-verification' element={<UserOTPVerification />} />
           <Route path='/profile' element={
             <ProtectedRoutes>

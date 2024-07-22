@@ -139,7 +139,7 @@ const AdminTheaters: React.FC = (): JSX.Element => {
                           id="approval-status"
                           value={value.approval_status}
                           onChange={handleStatusChange}
-                          data-theaterId={value._id}
+                          data-id={value._id}
                           className="mt-1.5 w-32 focus:outline-none border-2   rounded-none p-1 capitalize border-gray-300 text-gray-700 sm:text-sm"
                         >
                           <option className='' value={ApprovalStatus.APPROVED}>{ApprovalStatus.APPROVED}</option>

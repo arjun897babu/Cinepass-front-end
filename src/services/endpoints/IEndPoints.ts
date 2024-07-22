@@ -15,7 +15,7 @@ export interface TheaterEndpoint extends IEndPoints {
   verifyOTP: string;
   resendOTP: string;
   forgotPassword:string;
-
+  resetPassword:(token:string)=>string;
 }
 export interface AdminEndpoint extends IEndPoints {
   getEntityData:(role: string) => string

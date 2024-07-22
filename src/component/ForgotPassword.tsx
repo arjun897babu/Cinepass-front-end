@@ -13,18 +13,15 @@ import { forgotPasswordTheaters } from "../redux/actions/theaterAction";
 import Toast from "./Toast";
 import UseAction from "../hooks/UseAction";
 import { isErrorResponse } from "../utils/customError";
-interface ForgotPasswordProps {
-  role: Role
-}
 
-export const ForgotPassword: React.FC<ForgotPasswordProps> = ({ role }): JSX.Element => {
+
+export const ForgotPassword: React.FC<{ role: Role }> = ({ role }): JSX.Element => {
   console.log(role)
   const { error } = useLoggedOwner(role)
-  const backgroundImagePath = { backgroundImage: `url(${role === Role.users ? backgroundImage : backgroundImage1 })` };
+  const backgroundImagePath = { backgroundImage: `url(${role === Role.users ? backgroundImage : backgroundImage1})` };
   const dispatch = useDispatch<AppDispatch>();
   const { setError } = UseAction(role)
-  console.log(error)
-  console.log(setError)
+
   const navigate = useNavigate();
   const [response, setResponse] = useState<ResponseData | null>(null)
   const { formData, handleChange, inputError, setInputError } = useForm({
@@ -36,13 +33,11 @@ export const ForgotPassword: React.FC<ForgotPasswordProps> = ({ role }): JSX.Ele
     const isValid = handleSubmit(e)
     try {
       if (isValid) {
-        console.log(role === Role.users,role === Role.theaters)
         let response
         if (role === Role.users) {
           response = await dispatch(forgotPasswordUser(formData)).unwrap()
         }
         else if (role === Role.theaters) {
-          console.log('ssneding request')
           response = await dispatch(forgotPasswordTheaters(formData)).unwrap()
           console.log(response)
         }

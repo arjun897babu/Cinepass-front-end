@@ -28,7 +28,7 @@ export const useForm = <T extends Record<string, any>>(initialValue: T, owner: R
   const [formData, setFormData] = useState<FormData<T>>(initialValue);
   const [inputError, setInputError] = useState<ValidateError<T>>({});
   const { error } = useLoggedOwner(owner)
-
+  console.log(formData)
   const dispatch = useDispatch<AppDispatch>();
   const { clearError } = useAction(owner)
 

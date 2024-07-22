@@ -7,6 +7,7 @@ import { Loader } from "../component/Loader";
 import { TheaterProtectedRoutes } from "../component/theaters/theaterProtectedRoutes";
 import { ErroPage } from "../pages/ErrorPage";
 import { Role } from "../interface/Interface";
+import { TheaterResetPassWord } from "../pages/theaters/TheaterResetPassword";
 
 
 const TheatersRoutes: React.FC = () => {
@@ -28,6 +29,7 @@ const TheatersRoutes: React.FC = () => {
           <Route path='/login' element={<TheatersLogin />} />
           <Route path='/signup' element={<TheatersSignUp />} />
           <Route path='/forgot-password' element={<TheaterForgotPassword />} />
+          <Route path='/reset-password/:token' element={<TheaterResetPassWord />} />
           <Route path='/otp-verification' element={<TheaterOTPVerification />} />
         </Routes>
 

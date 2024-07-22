@@ -8,6 +8,7 @@ import { useDispatch } from 'react-redux'
 import { AppDispatch } from '../../redux/store'
 import { logoutUser } from '../../redux/actions/userAction'
 import { useLoggedOwner } from '../../hooks/useLoggedUser'
+import { Role } from '../../interface/Interface'
 
 
 const UserNavBar: React.FC = (): JSX.Element => {
@@ -17,7 +18,7 @@ const UserNavBar: React.FC = (): JSX.Element => {
   const [open, setOpen] = useState(false); // State for dropdown menu toggle
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate();
-  const { loggedOwner, isAuthenticated } = useLoggedOwner('user');// state for logged in user
+  const { loggedOwner, isAuthenticated } = useLoggedOwner(Role.users);// state for logged in user
 
 
   // Handler for toggle

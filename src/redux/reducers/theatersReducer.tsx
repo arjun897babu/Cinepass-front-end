@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IInitialState } from "./IState";
-import { forgotPasswordTheaters, loginTheaters, logoutTheaters, signupTheaters, verifyOTPTheaters } from "../actions/theaterAction";
+import { forgotPasswordTheaters, loginTheaters, logoutTheaters, resetPasswordTheaters, signupTheaters, verifyOTPTheaters } from "../actions/theaterAction";
 import { IInitialStateError, ResponseData } from "../../interface/Interface";
 import { TheatersLogin } from "../../pages/theaters";
 import { isErrorResponse } from "../../utils/customError";
@@ -49,7 +49,9 @@ const theaterSlice = createSlice({
       })
       .addCase(signupTheaters.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload as IInitialStateError
+        if(isErrorResponse(action.payload)){
+          state.error = action.payload.error as IInitialStateError
+        }
       })
       //login
       .addCase(loginTheaters.pending, (state) => {
@@ -82,7 +84,10 @@ const theaterSlice = createSlice({
       .addCase(verifyOTPTheaters.rejected, (state, action) => {
         state.loading = false;
         state.isAuthenticated = false
-        state.error = action.payload as IInitialStateError
+        if (isErrorResponse(action.payload)) {
+
+          state.error = action.payload.error as IInitialStateError | null
+        }
       })
 
       //logout
@@ -100,8 +105,8 @@ const theaterSlice = createSlice({
         state.loading = false;
         state.error = action.payload as IInitialStateError | null
       })
-       //forgot password
-       .addCase(forgotPasswordTheaters.pending, (state) => {
+      //forgot password
+      .addCase(forgotPasswordTheaters.pending, (state) => {
         state.loading = true
       })
       .addCase(forgotPasswordTheaters.fulfilled, (state) => {
@@ -109,7 +114,22 @@ const theaterSlice = createSlice({
       })
       .addCase(forgotPasswordTheaters.rejected, (state) => {
         state.loading = false;
-        
+
+      })
+      //reset password
+      .addCase(resetPasswordTheaters.pending, (state) => {
+        state.loading = true
+      })
+      .addCase(resetPasswordTheaters.fulfilled, (state) => {
+        state.loading = false
+      })
+      .addCase(resetPasswordTheaters.rejected, (state, action) => {
+        state.loading = false
+        if (isErrorResponse(action.payload)) {
+          if (action.payload.error && action.payload.error.error === 'password') {
+            state.error = action.payload.error as IInitialStateError | null
+          }
+        }
       })
   }
 })

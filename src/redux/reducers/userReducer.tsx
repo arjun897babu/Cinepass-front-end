@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { forgotPasswordUser, loginUser, logoutUser, signUpUser, verifyUser } from "../actions/userAction";
+import { forgotPasswordUser, loginUser, logoutUser, resetPassword, signUpUser, verifyUser } from "../actions/userAction";
 import { IInitialState } from "./IState";
 import { IInitialStateError, ResponseData, ResponseStatus } from "../../interface/Interface";
 import { isErrorResponse } from "../../utils/customError";
@@ -117,7 +117,22 @@ const userSlice = createSlice({
       })
       .addCase(forgotPasswordUser.rejected, (state) => {
         state.loading = false;
-        
+
+      })
+      //reset password
+      .addCase(resetPassword.pending, (state) => {
+        state.loading = true
+      })
+      .addCase(resetPassword.fulfilled, (state) => {
+        state.loading = false
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
+        state.loading = false
+        if (isErrorResponse(action.payload)) {
+          if (action.payload.error && action.payload.error.error === 'password') {
+            state.error = action.payload.error as IInitialStateError | null
+          }
+        }
       })
 
   },

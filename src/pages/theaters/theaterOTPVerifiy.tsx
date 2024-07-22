@@ -87,7 +87,7 @@ export const TheaterOTPVerification: React.FC = (): JSX.Element => {
                   value={formData.otp}
                   onChange={handleChange}
                 />
-                {!error?.error&&inputError.otp && <small className='text-red-600 capitalize absolute -bottom-4 left-3 font-mono'>{inputError.otp}</small>}
+                {inputError.otp && <small className='text-red-600 capitalize absolute -bottom-4 left-3 font-mono'>{inputError.otp}</small>}
                 {error?.error === 'otp' && <small className='text-red-600 capitalize absolute -bottom-4 left-3 font-mono'>{error.message}</small>}
               </div>
               <button className="bg-black rounded-md mt-6 text-white py-2  ">

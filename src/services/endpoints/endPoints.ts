@@ -18,6 +18,8 @@ export const theatersEndPoints: TheaterEndpoint = {
   verifyOTP: '/theaters/otp-verification',
   resendOTP: '/theaters/otp-resend',
   forgotPassword:'/theaters/forgot-password',
+  resetPassword: (token: string) => `/theaters/reset-password/${token}`
+
 
 };
 

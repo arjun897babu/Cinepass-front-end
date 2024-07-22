@@ -79,7 +79,7 @@ export const forgotPasswordUser: AsyncThunk<ResponseData, Record<string, string>
   async (formData, { rejectWithValue }) => {
     try {
       const response = await serverInstance.post(userEndPoints.forgotPassword, formData);
-      return await response.data 
+      return await response.data
     } catch (error) {
       if (error instanceof AxiosError) {
         return rejectWithValue(error.response?.data)
@@ -91,9 +91,9 @@ export const forgotPasswordUser: AsyncThunk<ResponseData, Record<string, string>
 
 export const resetPassword: AsyncThunk<ResponseData, Record<string, string>, {}> = createAsyncThunk(
   '/user/resetPassword',
-  async ({ formData, token }, { rejectWithValue }) => {
+  async ({ password, token }, { rejectWithValue }) => {
     try {
-      const response = await serverInstance.put(userEndPoints.resetPassword(token), formData);
+      const response = await serverInstance.put(userEndPoints.resetPassword(token), { password});
       return await response.data
     } catch (error) {
       if (error instanceof AxiosError) {
