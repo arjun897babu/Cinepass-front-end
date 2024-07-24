@@ -1,21 +1,19 @@
 import React, { MouseEvent, useEffect, useState } from "react"
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../redux/store";
-import { useLoggedOwner } from "../../../hooks/useLoggedUser";
 import { getEntityDataForAdmin, manageEntitiesByAdmin, updateTheaterApprovalForAdmin } from "../../../redux/actions/adminAction";
 import { ITheaterOwnerEntity } from "../../../interface/theater/ITheaterOwner";
 import { ApprovalResponse, ApprovalStatus, ResponseStatus, Role } from "../../../interface/Interface";
 import { isErrorResponse } from "../../../utils/customError";
-import { EmptyData } from "../../../component/EmptyData";
+// import { Loader } from "../../../component/Loader";
+// const EmptyData = lazy(() => import('../../../component/EmptyData'))
 
 
 
 const AdminTheaters: React.FC = (): JSX.Element => {
-  const [open, setOpen] = useState<boolean>(false)
   const [theaters, setTheaters] = useState<ITheaterOwnerEntity[] | []>([]);
   const dispatch = useDispatch<AppDispatch>();
-  // const { error, isAuthenticated } = useLoggedOwner('admin')
-
+  // const { loading } = useLoggedOwner(Role.admin) 
   const fetchTheaters = async () => {
     try {
       const response = await dispatch(getEntityDataForAdmin(Role.theaters)).unwrap();
@@ -34,11 +32,12 @@ const AdminTheaters: React.FC = (): JSX.Element => {
     fetchTheaters()
   }, [])
 
-  const showDetails = (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
-    setOpen((prev) => !prev)
+  // const showDetails = (e: MouseEvent<HTMLButtonElement>) => {
+  //   e.preventDefault()
+  //   setOpen((prev) => !prev)
 
-  };
+  // };
+
   const handleBlock = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
     event.stopPropagation()
@@ -101,10 +100,12 @@ const AdminTheaters: React.FC = (): JSX.Element => {
 
   }
 
+  // if (loading) return <>< Loader /></>
+
   return (
     <>
       {
-        theaters.length ? (<div className="overflow-x-auto">
+        theaters.length > 0 && (<div className="overflow-x-auto">
 
           <table className="w-full sm:max-w-full rounded-lg border border-gray-200 border-spacing-9 divide-y-2 divide-gray-200 text-sm">
             <thead>
@@ -113,7 +114,7 @@ const AdminTheaters: React.FC = (): JSX.Element => {
                 <th className="px-4 py-2 text-left text-black capitalize font-sans">owner</th>
                 <th className="px-4 py-2  text-left text-black capitalize font-sans min-w-52">theater license number</th>
                 {/* <th className="px-4 py-2 text-black capitalize font-sans min-w-48">Approval status</th> */}
-                <th className="px-4 py-2  text-left text-black capitalize font-sans">view</th>
+                {/* <th className="px-4 py-2  text-left text-black capitalize font-sans">view</th> */}
                 <th className="px-4 py-2  text-left text-black capitalize font-sans">action</th>
 
               </tr>
@@ -125,11 +126,11 @@ const AdminTheaters: React.FC = (): JSX.Element => {
                   <td className="px-4 capitalize py-2 text-left text-black min-w-28 whitespace-nowrap overflow-hidden overflow-ellipsis">{value.name}</td>
                   <td className="px-4 py-2 text-left text-black min-w-28 overflow-hidden overflow-ellipsis">{value.theater_license}</td>
                   {/* <td className="px-4 py-2 text-left text-black">{value.approval_status}</td> */}
-                  <td className="px-2 py-2   text-black">
+                  {/* <td className="px-2 py-2   text-black">
                     <button onClick={showDetails} className="rounded-lg bg-cyan-500 p-2 w-14" type="button">
                       View
                     </button>
-                  </td>
+                  </td> */}
                   <td className="px-4 py-2 text-left text-black">
 
                     {value.approval_status === ApprovalStatus.PENDING ?
@@ -174,13 +175,8 @@ const AdminTheaters: React.FC = (): JSX.Element => {
             </tbody>
 
           </table>
-        </div >) : (
-          (
-            <div className="flex justify-center items-center w-full">
-              <EmptyData />
-            </div>
-          )
-        )
+        </div >)
+
       }
 
 

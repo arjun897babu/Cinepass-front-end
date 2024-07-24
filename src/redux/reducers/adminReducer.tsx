@@ -66,13 +66,13 @@ const adminSlice = createSlice({
         state.loading = false;
         state.error = action.payload as IInitialStateError | null
       })
-      //get theaters for admin
+      //get entity data  for admin
       .addCase(getEntityDataForAdmin.pending, (state) => {
         state.loading = true,
           state.error = null
       })
       .addCase(getEntityDataForAdmin.fulfilled, (state) => {
-        state.loading = false;
+          state.loading = false;
       })
       .addCase(getEntityDataForAdmin.rejected, (state, action) => {
         state.loading = false
@@ -82,7 +82,7 @@ const adminSlice = createSlice({
       })
       //updating approval status
       .addCase(updateTheaterApprovalForAdmin.pending, (state) => {
-        state.loading = true,
+        // state.loading = true,
           state.error = null
       })
       .addCase(updateTheaterApprovalForAdmin.fulfilled, (state) => {
@@ -97,7 +97,7 @@ const adminSlice = createSlice({
 
       //manageEntity status
       .addCase(manageEntitiesByAdmin.pending, (state) => {
-        state.loading = true
+        // state.loading = true
         state.error = null
       })
       .addCase(manageEntitiesByAdmin.fulfilled, (state) => {

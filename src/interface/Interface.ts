@@ -56,3 +56,24 @@ export interface GoogleSignUp{
   credential:string,
   client_id :string
 }
+
+export interface ICast {
+  image: string;
+  name: string;
+}
+
+export interface ITheaterMovie {
+  _id: string;
+  movie_name: string;
+  language: string[];
+  booking_date: Date;
+  listed: boolean;
+  release_data: Date;
+  trailer: string;
+  duration: string;
+  genre: string[];
+  cast: ICast[];
+  cover_photo: string;
+  movie_poster: string;
+  format: string[];
+}

@@ -3,7 +3,7 @@ import { BsChevronCompactLeft, BsChevronCompactRight } from 'react-icons/bs';
 import { RxDotFilled } from 'react-icons/rx';
 
 const Carousel: React.FC = (): JSX.Element => {
-  
+
   const slides = [
     'https://assetscdn1.paytm.com/images/catalog/view_item/2699999/1719408000464.jpg?format=webp&imwidth=1750',
     'https://assetscdn1.paytm.com/images/catalog/view_item/2753828/1720788936964.jpg?format=webp&imwidth=1750',
@@ -27,9 +27,9 @@ const Carousel: React.FC = (): JSX.Element => {
   const goToSlide = (slideIndex: number) => {
     setCurrentIndex(slideIndex);
   };
- 
+
   return (
-    <div className='w-full m-auto bg-gray-100 hidden sm:block p-4 relative group'>
+    <div className='w-full mb-2 hidden sm:block m-auto relative group'>
       <div
         className='w-full h-full  bg-center bg-cover duration-500 '
       >
@@ -37,7 +37,7 @@ const Carousel: React.FC = (): JSX.Element => {
       </div>
       {/* Left Arrow */}
       <div className='hidden group-hover:block absolute top-[50%] -translate-x-0 translate-y-[-50%] left-5 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer'>
-        <BsChevronCompactLeft onClick={prevSlide} size={20}  />
+        <BsChevronCompactLeft onClick={prevSlide} size={20} />
       </div>
       {/* Right Arrow */}
       <div className='hidden group-hover:block absolute top-[50%] -translate-x-0 translate-y-[-50%] right-5 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer'>

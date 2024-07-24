@@ -33,7 +33,7 @@ const SocialIcons: React.FC<{ Icons: IFooter.ArrayInterFace[] }> = ({ Icons }) =
 
 const ItemsContainer: React.FC = () => {
   return (
-    <div className="grid grid-cols-1 text-center sm:grid-cols-4 sm:text-justify sm:gap-4 gap-6 sm:px-8 px-5 py-16">
+    <div className="grid grid-cols-1 text-center md:grid-cols-4 md:text-justify md:gap-2 gap-6 md:px-16 px-3 py-16">
       <Item Links={IFooter.NAVIGATION} title="PRODUCTS" />
       <Item Links={IFooter.MOVIEUPDATES} title="MOVIE UPDATES" />
       <Item Links={IFooter.COMPANY} title="COMPANY" />
@@ -46,16 +46,16 @@ const ItemsContainer: React.FC = () => {
 const Item: React.FC<IFooter.ItemProps> = ({ Links, title }) => {
   return (
     <ul>
-      <h1 className="mb-1 font-semibold">{title}</h1>
+      <h1 className="mb-1  font-semibold">{title}</h1>
       {Links.map((link) => (
         <li key={link.name}>
-          <a
+          <span
             className="text-gray-400 hover:text-white duration-300
-          text-sm cursor-pointer leading-6"
-            href={link.link}
+          text-base cursor-pointer leading-6"
+            
           >
             {link.name}
-          </a>
+          </span>
         </li>
       ))}
     </ul>

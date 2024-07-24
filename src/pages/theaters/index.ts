@@ -1,4 +1,4 @@
 export * from './TheatersLogin'
 export * from './TheaterSignUp'
-export * from './TheatersHome'
+export * from './TheaterParent'
 export * from './TheaterForgotPassword'

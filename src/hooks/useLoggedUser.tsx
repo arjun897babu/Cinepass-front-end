@@ -38,7 +38,7 @@ export const useLoggedOwner = (role: Role): LoggedOwnerState => {
     } else {
       setLoggedOwner(null)
     }
-  }, [isAuthenticated])
+  }, [owner,loading,isAuthenticated])
 
   return { isAuthenticated, loggedOwner, error, loading, tempMail }
 }

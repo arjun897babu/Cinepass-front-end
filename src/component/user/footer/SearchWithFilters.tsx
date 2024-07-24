@@ -6,7 +6,7 @@ import { IoIosArrowDropdown } from "react-icons/io";
 export const SearchWithFilters: React.FC = () => {
   return (
     <>
-      <div className='w-full m-auto p-2 hidden sm:flex justify-between items-center relative group'>
+      <div className='w-full   p-2 bg-white hidden sm:flex justify-between items-center relative group'>
 
         <div className="w-72 h-9 p-1 bg-blue-100 flex justify-evenly rounded-md">
           <button className="w-full h-full p-1 capitalize text-sm text-slate-800">now showing</button>

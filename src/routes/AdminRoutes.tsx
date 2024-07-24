@@ -6,7 +6,7 @@ import { ErroPage } from "../pages/ErrorPage";
 const AdminTheaters = lazy(() => import('../pages/admin/layout/AdminTheaters'))
 import AdminHome from "../pages/admin/layout/AdminHome";
 import { Loader } from "../component/Loader";
-import AdminUsers from "../pages/admin/layout/AdminUsers";
+const AdminUsers = lazy(() => import('../pages/admin/layout/AdminUsers'))
 
 
 const AdminRoutes: React.FC = () => {
