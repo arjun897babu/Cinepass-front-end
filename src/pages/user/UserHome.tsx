@@ -14,11 +14,11 @@ const UserHome: React.FC = () => {
         <SearchWithFilters />
         <div className="mx-auto gap-1 flex p-2 bg-gray-200">
           {/* Accordion  */}
-          <div className="hidden sm:block rounded-lg bg-white h-1/2 flex-shrink-0 w-full sm:w-1/4   p-2">
+          <div className="hidden mt-4 sm:block rounded-lg bg-white h-1/2 flex-shrink-0 w-full sm:w-1/4   p-2">
             <AccordionAllOpen />
           </div>
           {/* Movie cards  */}
-          <div className="flex-grow grid grid-cols-2 rounded-lg p-1 bg-white mx-auto gap-x-5 gap-y-10 sm:grid-cols-2 sm:p-4 lg:grid-cols-3 lg:xxl:grid-cols-4 xl:gap-x-8">
+          <div className="flex-grow grid grid-cols-2 rounded-lg p-1 items-center justify-center mx-auto gap-x-4 gap-y-4 sm:grid-cols-2 sm:p-4 lg:grid-cols-3 lg:xxl:grid-cols-4 xl:gap-x-4">
             <MovieCard />
             <MovieCard />
             <MovieCard />

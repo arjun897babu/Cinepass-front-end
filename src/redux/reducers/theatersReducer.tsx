@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IInitialState } from "./IState";
-import { forgotPasswordTheaters, loginTheaters, logoutTheaters, resendOTPTheaters, resetPasswordTheaters, signupTheaters, verifyOTPTheaters } from "../actions/theaterAction";
+import { forgotPasswordTheaters, getTheaterDetails, loginTheaters, logoutTheaters, resendOTPTheaters, resetPasswordTheaters, signupTheaters, verifyOTPTheaters } from "../actions/theaterAction";
 import { IInitialStateError, ResponseData } from "../../interface/Interface";
 import { isErrorResponse } from "../../utils/customError";
 import { LoggedOwner } from "../../interface/user/IUserData";
@@ -144,6 +144,17 @@ const theaterSlice = createSlice({
             state.error = action.payload.error as IInitialStateError | null
           }
         }
+      })
+      //get theater details of owner
+      .addCase(getTheaterDetails.pending,(state)=>{
+        state.loading = true
+      })
+      .addCase(getTheaterDetails.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(getTheaterDetails.rejected, (state, action) => {
+        state.loading = false;
+        console.log(action)
       })
 
   }

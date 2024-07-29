@@ -5,7 +5,7 @@ const MovieCard: React.FC = ( ) => {
 
   return (
     <>
-      <div className="  ">
+      <div className=" ">
         <div className="rounded-lg bg-white shadow-lg">
           <img src="https://assetscdn1.paytm.com/images/cinema/160692-f9558860-4294-11ef-99b5-d35223c98590.jpg?format=webp&imwidth=582" alt="movie poster" className="rounded-t-lg" />
           <div className="p-4 relative">

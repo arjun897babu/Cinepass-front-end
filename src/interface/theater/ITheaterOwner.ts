@@ -11,4 +11,6 @@ export interface ITheaterOwnerEntity {
   theater_name: string;
   theater_license: string;
   approval_status: ApprovalStatus;
+  address:string,
+  city:string
 }

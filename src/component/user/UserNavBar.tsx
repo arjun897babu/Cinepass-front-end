@@ -9,8 +9,7 @@ import { AppDispatch } from '../../redux/store'
 import { logoutUser } from '../../redux/actions/userAction'
 import { useLoggedOwner } from '../../hooks/useLoggedUser'
 import { Role } from '../../interface/Interface'
-import { googleLogout } from "@react-oauth/google";
-
+ 
 
 const UserNavBar: React.FC = (): JSX.Element => {
 

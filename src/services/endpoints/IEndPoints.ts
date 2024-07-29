@@ -18,6 +18,8 @@ export interface TheaterEndpoint extends IEndPoints {
   resendOTP: string;
   forgotPassword: string;
   resetPassword: (token: string) => string;
+  getTheaterDetails:string;
+  updateTheater:string
 }
 export interface AdminEndpoint extends IEndPoints {
   getEntityData: (role: string) => string

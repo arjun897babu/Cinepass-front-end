@@ -5,6 +5,7 @@ import { getEntityDataForAdmin, manageEntitiesByAdmin, updateTheaterApprovalForA
 import { ITheaterOwnerEntity } from "../../../interface/theater/ITheaterOwner";
 import { ApprovalResponse, ApprovalStatus, ResponseStatus, Role } from "../../../interface/Interface";
 import { isErrorResponse } from "../../../utils/customError";
+import { TheaterDetails } from "../../../component/admin/TheaterDetail";
 // import { Loader } from "../../../component/Loader";
 // const EmptyData = lazy(() => import('../../../component/EmptyData'))
 
@@ -32,11 +33,10 @@ const AdminTheaters: React.FC = (): JSX.Element => {
     fetchTheaters()
   }, [])
 
-  // const showDetails = (e: MouseEvent<HTMLButtonElement>) => {
-  //   e.preventDefault()
-  //   setOpen((prev) => !prev)
 
-  // };
+
+
+
 
   const handleBlock = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
@@ -114,33 +114,31 @@ const AdminTheaters: React.FC = (): JSX.Element => {
                 <th className="px-4 py-2 text-left text-black capitalize font-sans">owner</th>
                 <th className="px-4 py-2  text-left text-black capitalize font-sans min-w-52">theater license number</th>
                 {/* <th className="px-4 py-2 text-black capitalize font-sans min-w-48">Approval status</th> */}
-                {/* <th className="px-4 py-2  text-left text-black capitalize font-sans">view</th> */}
+                <th className="px-4 py-2  text-left text-black capitalize font-sans">view</th>
                 <th className="px-4 py-2  text-left text-black capitalize font-sans">action</th>
 
               </tr>
             </thead>
             <tbody className={`divide-y divide-gray-200 ${!theaters.length ? 'h-full' : ''}`}>
 
-              {theaters?.length > 0 && theaters.map((value) => (
-                <tr key={value._id}>
-                  <td className="px-4 capitalize py-2 text-left text-black min-w-28 whitespace-nowrap overflow-hidden overflow-ellipsis">{value.name}</td>
-                  <td className="px-4 py-2 text-left text-black min-w-28 overflow-hidden overflow-ellipsis">{value.theater_license}</td>
-                  {/* <td className="px-4 py-2 text-left text-black">{value.approval_status}</td> */}
-                  {/* <td className="px-2 py-2   text-black">
-                    <button onClick={showDetails} className="rounded-lg bg-cyan-500 p-2 w-14" type="button">
-                      View
-                    </button>
-                  </td> */}
+              {theaters?.length > 0 && theaters.map((owner) => (
+                <tr key={owner._id}>
+                  <td className="px-4 capitalize py-2 text-left text-black min-w-28 whitespace-nowrap overflow-hidden overflow-ellipsis">{owner.name}</td>
+                  <td className="px-4 py-2 text-left text-black min-w-28 overflow-hidden overflow-ellipsis">{owner.theater_license}</td>
+                  {/* <td className="px-4 py-2 text-left text-black">{owner.approval_status}</td> */}
+                  <td className="px-2 py-2   text-black">
+                    <TheaterDetails owner={owner} />
+                  </td>
                   <td className="px-4 py-2 text-left text-black">
 
-                    {value.approval_status === ApprovalStatus.PENDING ?
+                    {owner.approval_status === ApprovalStatus.PENDING ?
                       (
                         <select
                           name="approval-status"
                           id="approval-status"
-                          value={value.approval_status}
+                          value={owner.approval_status}
                           onChange={handleStatusChange}
-                          data-id={value._id}
+                          data-id={owner._id}
                           className="mt-1.5 w-32 focus:outline-none border-2   rounded-none p-1 capitalize border-gray-300 text-gray-700 sm:text-sm"
                         >
                           <option className='' value={ApprovalStatus.APPROVED}>{ApprovalStatus.APPROVED}</option>
@@ -149,25 +147,23 @@ const AdminTheaters: React.FC = (): JSX.Element => {
 
                         </select>) :
                       (
-                        value.approval_status === ApprovalStatus.APPROVED ?
+                        owner.approval_status === ApprovalStatus.APPROVED ?
                           (<button
                             onClick={handleBlock}
-                            data-id={value._id}
+                            data-id={owner._id}
                             className={
                               `w-32 bg-transparent
-                          ${!value.status ? 'hover:bg-green-500 text-green-700  border-green-500 hover:border-transparent hover:text-white' : 'hover:bg-red-500 text-red-700  border-red-500 hover:border-transparent hover:text-white'} 
+                          ${!owner.status ? 'hover:bg-green-500 text-green-700  border-green-500 hover:border-transparent hover:text-white' : 'hover:bg-red-500 text-red-700  border-red-500 hover:border-transparent hover:text-white'} 
                           font-semibold  py-2 px-4 border rounded`}>
-                            {!value.status ? "unblock" : "block"}
+                            {!owner.status ? "unblock" : "block"}
                           </button>) :
                           (
                             <button type="button" className="bg-red-500 hover:cursor-no-drop text-white w-32 font-semibold py-2 px-4  capitalize rounded-sm">
-                              {value.approval_status}
+                              {owner.approval_status}
                             </button>
                           )
                       )
                     }
-
-
                   </td>
                 </tr>
               ))}

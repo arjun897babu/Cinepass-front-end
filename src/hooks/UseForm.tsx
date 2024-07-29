@@ -72,7 +72,8 @@ export const useForm = <T extends Record<string, any>>(initialValue: T, owner: R
     formData,
     handleChange,
     inputError,
-    setInputError
+    setInputError,
+    setFormData
   };
 };
 

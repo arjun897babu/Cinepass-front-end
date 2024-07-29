@@ -40,8 +40,10 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
     adhaar_number: '',
     theater_name: '',
     theater_license: '',
-  },Role.theaters)
-  ;
+    address: '',
+    city:''
+  }, Role.theaters)
+    ;
   console.log('theater form data', formData);
 
   const { handleSubmit } = useFormSubmit(formData, setInputError);
@@ -85,125 +87,150 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
             <div className="p-2 mt-1 text-white rounded-md w-full relative flex text-left justify-center items-center  ">
               <label className='capitalize w-28 ' htmlFor="name">Name</label>
               <div className="relative w-full">
-              <input
-                className="p-2 text-black rounded-md w-full focus:outline"
-                type="text"
-                name="name"
-                placeholder="Name"
-                value={formData.name}
-                onChange={handleChange}
-              />
-              {inputError.name && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.name}</small>}
-              {error?.error === 'name' && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{error.message}</small>}
+                <input
+                  className="p-2 text-black rounded-md w-full focus:outline"
+                  type="text"
+                  name="name"
+                  placeholder="Name"
+                  value={formData.name}
+                  onChange={handleChange}
+                />
+                {inputError.name && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.name}</small>}
+                {error?.error === 'name' && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{error.message}</small>}
               </div>
             </div>
 
             <div className="p-2 mt-1 text-white rounded-md w-full relative flex text-left justify-center items-center" >
               <label className='capitalize w-28 ' htmlFor="email">Email</label>
               <div className="relative w-full">
-              <input
-                className="p-2 text-black rounded-md w-full focus:outline"
-                type="email"
-                name="email"
-                placeholder="Email"
-                onChange={handleChange}
-                value={formData.email}
-              />
-              {inputError.email && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.email}</small>}
-              {error?.error === 'email' && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{error.message}</small>}
+                <input
+                  className="p-2 text-black rounded-md w-full focus:outline"
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  onChange={handleChange}
+                  value={formData.email}
+                />
+                {inputError.email && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.email}</small>}
+                {error?.error === 'email' && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{error.message}</small>}
               </div>
             </div>
 
             <div className="p-2 mt-1 text-white rounded-md w-full relative flex text-left justify-center items-center" >
               <label className='capitalize w-28 ' htmlFor="mobile_number">Mobile Number</label>
-             <div className="relative w-full">
-             <input
-                className="p-2 text-black rounded-md w-full focus:outline"
-                type="text"
-                name="mobile_number"
-                placeholder="mobile_number"
-                value={formData.mobile_number}
-                onChange={handleChange}
-              />
-              {inputError.mobile_number && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.mobile_number}</small>}
-              {error?.error === 'mobile_number' && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{error.message}</small>}
-             </div>
+              <div className="relative w-full">
+                <input
+                  className="p-2 text-black rounded-md w-full focus:outline"
+                  type="text"
+                  name="mobile_number"
+                  placeholder="mobile_number"
+                  value={formData.mobile_number}
+                  onChange={handleChange}
+                />
+                {inputError.mobile_number && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.mobile_number}</small>}
+                {error?.error === 'mobile_number' && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{error.message}</small>}
+              </div>
             </div>
 
             <div className="p-2 mt-1 text-white rounded-md w-full relative flex text-left justify-center items-center" >
               <label className='capitalize w-28 ' htmlFor="password">Password</label>
               <div className="relative w-full">
-              <input
-                className="p-2 text-black rounded-md w-full focus:outline"
-                type="password"
-                name="password"
-                placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
-              />
-              {inputError.password && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.password}</small>}
-              {error?.error === 'password' && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{error.message}</small>}
+                <input
+                  className="p-2 text-black rounded-md w-full focus:outline"
+                  type="password"
+                  name="password"
+                  placeholder="Password"
+                  value={formData.password}
+                  onChange={handleChange}
+                />
+                {inputError.password && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.password}</small>}
+                {error?.error === 'password' && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{error.message}</small>}
               </div>
             </div>
 
             <div className="p-2 mt-1 text-white rounded-md w-full relative flex text-left justify-center items-center" >
               <label className='capitalize w-28' htmlFor="confirm_password">Confirm Password</label>
               <div className="relative w-full">
-              <input
-                className="p-2 text-black rounded-md w-full focus:outline"
-                type="password"
-                name="confirm_password"
-                placeholder="Confirm Password"
-                value={formData.confirm_password}
-                onChange={handleChange}
-              />
-              {inputError.confirm_password && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.confirm_password}</small>}
+                <input
+                  className="p-2 text-black rounded-md w-full focus:outline"
+                  type="password"
+                  name="confirm_password"
+                  placeholder="Confirm Password"
+                  value={formData.confirm_password}
+                  onChange={handleChange}
+                />
+                {inputError.confirm_password && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.confirm_password}</small>}
               </div>
             </div>
             <div className="p-2 mt-1 text-white rounded-md w-full relative flex text-left justify-center items-center" >
               <label className='capitalize w-28 ' htmlFor="adhaar_number">adhaar number</label>
               <div className="relative w-full">
-              <input
-                className="p-2 text-black rounded-md w-full focus:outline"
-                type="text"
-                name="adhaar_number"
-                placeholder="adhaar number"
-                value={formData.adhaar_number}
-                onChange={handleChange}
-              />
-              {inputError.adhaar_number && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.adhaar_number}</small>}
-              {error?.error === 'adhaar_number' && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{error.message}</small>}
+                <input
+                  className="p-2 text-black rounded-md w-full focus:outline"
+                  type="text"
+                  name="adhaar_number"
+                  placeholder="adhaar number"
+                  value={formData.adhaar_number}
+                  onChange={handleChange}
+                />
+                {inputError.adhaar_number && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.adhaar_number}</small>}
+                {error?.error === 'adhaar_number' && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{error.message}</small>}
               </div>
             </div>
 
             <div className="p-2 mt-1 text-white rounded-md w-full relative flex text-left justify-center items-center " >
               <label className='capitalize w-28 ' htmlFor="theater_license">theater license</label>
               <div className="relative w-full">
-              <input
-                className="p-2 text-black rounded-md w-full focus:outline"
-                type="text"
-                name="theater_license"
-                placeholder="theater license number"
-                value={formData.theater_license}
-                onChange={handleChange}
-              />
-              {inputError.theater_license && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.theater_license}</small>}
-              {error?.error === 'theater_license' && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{error.message}</small>}
+                <input
+                  className="p-2 text-black rounded-md w-full focus:outline"
+                  type="text"
+                  name="theater_license"
+                  placeholder="theater license number"
+                  value={formData.theater_license}
+                  onChange={handleChange}
+                />
+                {inputError.theater_license && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.theater_license}</small>}
+                {error?.error === 'theater_license' && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{error.message}</small>}
               </div>
             </div>
             <div className="p-2 mt-1 text-white rounded-md w-full relative flex text-left justify-center items-center ">
               <label className='capitalize w-28' htmlFor="theater_license">Theater Name</label>
               <div className="relative w-full">
-              <input
-                className="p-2 text-black rounded-md w-full focus:outline"
-                type="text"
-                name="theater_name"
-                placeholder="theater license number"
-                value={formData.theater_name}
-                onChange={handleChange}
-              />
-              {inputError.theater_name && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.theater_name}</small>}
-              {inputError.theater_name && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.theater_name}</small>}
+                <input
+                  className="p-2 text-black rounded-md w-full focus:outline"
+                  type="text"
+                  name="theater_name"
+                  placeholder="theater license number"
+                  value={formData.theater_name}
+                  onChange={handleChange}
+                />
+                {inputError.theater_name && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.theater_name}</small>}
+                {inputError.theater_name && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.theater_name}</small>}
+              </div>
+            </div>
+            <div className="p-2 mt-1 text-white rounded-md w-full relative flex text-left justify-center items-center ">
+              <label className='capitalize w-28' htmlFor="theater_license">address</label>
+              <div className="relative w-full justify-between flex ">
+                <input
+                  className="p-2 text-black rounded-md     focus:outline"
+                  type="text"
+                  name="address"
+                  placeholder="Enter the address"
+                  value={formData.address}
+                  onChange={handleChange}
+                />
+                {inputError.address && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.address}</small>}
+                {inputError.address && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.address}</small>}
+                <input
+                  className="p-2 text-black rounded-md     focus:outline"
+                  type="text"
+                  name="city"
+                  placeholder="choose city"
+                  value={formData.city}
+                  onChange={handleChange}
+                />
+                {inputError.city && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.city}</small>}
+                {inputError.city && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.city}</small>}
               </div>
             </div>
 
@@ -214,13 +241,13 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
           </form>
 
           <div className="mt-3 text-xs flex justify-end items-center text-white  ">
-              <span className='  px-5 py-2 rounded-md'>Don't have an account?</span>
-              <Link to={`/theaters/login`}>
-                <button className="py-2 px-5 bg-white text-black rounded-md">
-                  Login
-                </button>
-              </Link>
-            </div>
+            <span className='  px-5 py-2 rounded-md'>Don't have an account?</span>
+            <Link to={`/theaters/login`}>
+              <button className="py-2 px-5 bg-white text-black rounded-md">
+                Login
+              </button>
+            </Link>
+          </div>
         </div>
 
       </div>

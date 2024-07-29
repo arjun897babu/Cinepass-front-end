@@ -1,65 +1,34 @@
+import { useEffect, useState } from "react"
+import { TheaterInfo } from "../../../component/theaters/TheaterInfo"
+import { useDispatch } from "react-redux"
+import { AppDispatch } from "../../../redux/store"
+import { getTheaterDetails } from "../../../redux/actions/theaterAction"
+import { ITheaterDetailResponse } from "../../../interface/theater/ITheaterDetail"
+
 const TheaterDetail: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const [theaterData, setTheaterData] = useState<ITheaterDetailResponse | null>(null);
+
+  const fetchTheaterDetails = async () => {
+    try {
+      const response = await dispatch(getTheaterDetails()).unwrap();
+      setTheaterData(response);
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
+  useEffect(() => {
+    fetchTheaterDetails()
+  }, [dispatch])
+
   return (
     <>
-      <div className="w-full">
-        <div className="flex mb-3 justify-end">
-          <button className="bg-pink-600 hover:bg-pink-800 text-white font-bold py-2 px-4 rounded">update  </button>
-          {/* <button></button> */}
-        </div>
-        <div className="flex flex-col px-8 pt-10 pb-2 rounded-md border border-black border-solid w-full max-md:px-5">
-          <div className="max-md:max-w-full">
-            <div className="flex gap-5 max-md:flex-col">
-              <div className="flex flex-col w-[28%] max-md:ml-0 max-md:w-full">
-                <div className="flex flex-col grow text-sm font-light leading-4 text-black max-md:mt-7">
-                  <img
-                    src="https://img.freepik.com/premium-vector/photo-coming-soon_77760-116.jpg?w=740"
-                    className="self-center border border-black border-solid aspect-[1.22] w-[206px]"
-                  />
-
-                </div>
-              </div>
-              <div className="flex flex-col ml-5 w-[72%] max-md:ml-0 max-md:w-full">
-                <div className="flex flex-col self-stretch my-auto text-black max-md:mt-10 max-md:max-w-full">
-                  <h1 className="text-2xl font-medium leading-8 max-md:max-w-full">
-                    Magic Frames Cinemas 4K Dolby Atmos, Kunnamangalam
-                  </h1>
-                  <div className="flex gap-5 justify-between self-start mt-11 text-sm font-light leading-4 whitespace-nowrap max-md:mt-10">
-                    <h1>Locationion</h1>
-                    <p className="self-start">Unknown</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="flex gap-5 justify-between mt-2.5 ml-5 w-full font-light leading-[120%] max-md:flex-wrap max-md:max-w-full">
-            <div className="flex flex-col">
-              <div className="flex gap-5 self-start text-sm text-black">
-                <h1 className="flex-auto">License Number</h1>
-                <>:</>
-                <span>12313ILJ12BC</span>
-              </div>
-              <div className="flex gap-5 self-start text-sm text-black">
-                <h1 className="flex-auto">Number of Screens</h1>
-                <>:</>
-                <span>0</span>
-              </div>
-            </div>
-
-            <div className="flex gap-5 justify-between items-start text-xs">
-
-              <button className="flex flex-col px-5 justify-center items-center cursor-not-allowed py-1.5 text-white bg-pink-700 rounded-xl border border-black border-solid max-md:pl-5">
-                <span className="font-semibold" >Under maintenance</span>
-                <span className="mt-1.5">0</span>
-              </button>
-              <button className="flex justify-center items-center flex-col px-5 cursor-not-allowed py-1.5 text-black bg-neutral-500 rounded-xl border border-black border-solid max-md:pl-5">
-                <span className="font-semibold" >Screens Available</span>
-                <span className="mt-1.5">0</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
+      {
+        theaterData &&
+        <TheaterInfo data={theaterData} />
+      }
     </>
   )
 }

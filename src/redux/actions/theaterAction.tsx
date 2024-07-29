@@ -4,7 +4,14 @@ import { serverInstance } from "../../services";
 import { theatersEndPoints } from "../../services/endpoints/endPoints";
 import { TheaterSignUpData } from "../../interface/theater/ITheatersData";
 import { LoginData, OTPVerification, ResponseData } from "../../interface/Interface";
-
+import { ITheaterDetailResponse } from "../../interface/theater/ITheaterDetail";
+interface UpdateTheaterInput {
+  theater_name: string,
+  theater_license: string,
+  city: string,
+  address: string,
+  images: string[]
+}
 
 export const signupTheaters: AsyncThunk<ResponseData, TheaterSignUpData, {}> = createAsyncThunk(
   'theaters/signup',
@@ -116,3 +123,38 @@ export const resendOTPTheaters: AsyncThunk<ResponseData, string, {}> = createAsy
     }
   }
 )
+
+export const getTheaterDetails: AsyncThunk<ITheaterDetailResponse, void, {}> = createAsyncThunk(
+  'theaters/theater',
+  async (_: void, { rejectWithValue }) => {
+
+    try {
+      const response = await serverInstance.get(theatersEndPoints.getTheaterDetails, {})
+      const { theater } = response?.data?.data
+      return await theater
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return rejectWithValue(error.response)
+      }
+      return rejectWithValue('an unknown error')
+    }
+  }
+
+);
+
+export const updateTheater: AsyncThunk<ITheaterDetailResponse, UpdateTheaterInput, {}> = createAsyncThunk(
+  'theaters/updateTheater',
+  async (theaterData: UpdateTheaterInput, { rejectWithValue }) => {
+    try {
+      const response = await serverInstance.put(theatersEndPoints.updateTheater, theaterData);
+      const { theater } = response.data?.data
+      return await theater
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return rejectWithValue(error.response)
+      }
+      return rejectWithValue('an unknown error')
+    }
+  }
+)
+

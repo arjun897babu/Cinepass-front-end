@@ -11,6 +11,7 @@ import { RiLogoutCircleLine } from "react-icons/ri";
 import { logoutAdmin } from '../../redux/actions/adminAction';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../redux/store';
+import { TheaterDetails } from './layout/AdminTheaters';
 
 const menu = [
   {
@@ -61,7 +62,7 @@ export const AdminParent: React.FC = (): JSX.Element => {
   }
   return (
     <>
-      <div className="flex h-screen">
+      <div className="flex h-screen ">
         {/* sidebar */}
         <div className="p-5 pt-8 gap-5 w-70 relative hidden sm:block ">
           {/* website logo */}

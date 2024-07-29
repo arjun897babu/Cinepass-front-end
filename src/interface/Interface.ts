@@ -39,8 +39,8 @@ export enum ResponseStatus {
 }
 
 export enum Status {
-  ACTIVE = "active",
-  BLOCKED = "blocked",
+  ACTIVE = "Active",
+  BLOCKED = "Blocked",
 }
 export enum ApprovalStatus {
   APPROVED = 'approved',
