@@ -9,7 +9,7 @@ import { ResponseData, ResponseStatus, Role } from "../../interface/Interface";
 import {  useNavigate } from "react-router-dom";
 import { clearUserError } from "../../redux/reducers/userReducer";
 import { useLoggedOwner } from "../../hooks/useLoggedUser";
-import { formatTime } from "../../utils/fromat";
+import { formatTime } from "../../utils/format";
 import { isErrorResponse } from "../../utils/customError";
 import Toast from "../../component/Toast";
 import { useTimer } from "../../hooks/useTimer";

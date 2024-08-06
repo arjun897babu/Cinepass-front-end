@@ -15,13 +15,13 @@ const AdminUsers: React.FC = (): JSX.Element => {
   const dispatch = useDispatch<AppDispatch>()
   const [users, setUsers] = useState<IUser[] | []>([]);
   const { loading } = useLoggedOwner(Role.admin)
-  
+
   const fetchUsers = async () => {
     try {
       const response = await dispatch(getEntityDataForAdmin(Role.users)).unwrap();
       if (response.status === ResponseStatus.SUCCESS) {
         response.data ? setUsers(response.data.users as unknown as IUser[]) : setUsers([])
-  
+
       }
     } catch (error) {
       if (isErrorResponse(error)) {
@@ -72,27 +72,41 @@ const AdminUsers: React.FC = (): JSX.Element => {
       {
         users?.length > 0 &&
         (
-          <div className="overflow-x-auto">
+          <div className="mt-8 overflow-x-auto overflow-y-hidden">
 
-            <table className="w-full sm:max-w-full rounded-lg border border-gray-200 border-spacing-9 divide-y-2 divide-gray-200 text-sm">
+            <table className="table">
               <thead>
                 <tr>
-
-                  <th className="px-4 py-2 text-left text-black capitalize font-sans">Name</th>
-                  <th className="px-4 py-2  text-left text-black capitalize font-sans min-w-52">email</th>
-                  {/* <th className="px-4 py-2  text-left text-black capitalize font-sans min-w-52">status</th> */}
-                  <th className="px-4 py-2  text-left text-black capitalize font-sans">action</th>
+                  <th></th>
+                  <th className="text-left text-black capitalize font-bold">Name</th>
+                  <th className=" text-left text-black capitalize font-bold min-w-52">email</th>
+                  {/* <th className=" text-left text-black capitalize font-bold min-w-52">status</th> */}
+                  <th className=" text-left text-black capitalize font-bold">action</th>
 
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className=" ">
 
-                {users?.length > 0 && users.map((value) => (
+                {users?.length > 0 && users.map((value, index) => (
                   <tr key={value._id}>
-                    <td className="px-4 capitalize py-2 text-left text-black min-w-28 whitespace-nowrap overflow-hidden overflow-ellipsis">{value.name}</td>
-                    <td className="px-4 py-2 text-left text-black min-w-28 overflow-hidden overflow-ellipsis">{value.email}</td>
-                    {/* <td className="px-4 py-2 text-left text-black">{value.mobile_number}</td> */}
-                    <td className="px-4 py-2 text-left text-black">
+                    <td>{index + 1}</td>
+                    <td>
+                      <div className="flex items-center gap-3   max-w-60  whitespace-nowrap overflow-hidden ">
+                        <div className="avatar">
+                          <div className="mask rounded-full h-12 w-12">
+                            <img
+                              src={value.profile_picture ?? 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541'}
+                              alt={value.name + ' poster'} />
+                          </div>
+                        </div>
+                        <div>
+                          <div className="max-w-60 font-semibold text-black capitalize  text-ellipsis  whitespace-nowrap overflow-hidden"> {value.name} </div>
+                          <div className="text-sm opacity-50">{value.location}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td ><span className="badge rounded-none font-bold   min-w-28 overflow-hidden overflow-ellipsis">{value.email}</span></td>
+                    <td className=" text-left text-black">
 
                       <button
                         onClick={handleBlock}

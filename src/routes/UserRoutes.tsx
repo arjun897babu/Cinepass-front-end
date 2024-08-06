@@ -18,6 +18,8 @@ import { UserProfile } from "../pages/user/userProfile";
 import { ErroPage } from "../pages/ErrorPage";
 import { UserForgotPassword } from "../pages/user/UserForgotPassword";
 import { ResetPassWordUser } from "../pages/user/ResetPassWordUser";
+import UserInitPage from "../pages/user/UserInitPage";
+const MoviePage = lazy(()=>import("../pages/user/MoviePage"))
 
 const UserRoutes: React.FC = () => {
   const location = useLocation();
@@ -32,6 +34,9 @@ const UserRoutes: React.FC = () => {
         <Routes>
           <Route path="*" element={<ErroPage />} />
           <Route path='/' element={
+            <UserInitPage />
+          } />
+          <Route path='/home/:city' element={
             <UserHome />
           } />
           <Route path='/login' element={<UserLogin />} />
@@ -43,6 +48,9 @@ const UserRoutes: React.FC = () => {
             <ProtectedRoutes>
               <UserProfile />
             </ProtectedRoutes>
+          } />
+          <Route path='/movie' element={
+              <MoviePage />
           } />
         </Routes>
         {!isAuthRoutes && <UserFooter />}

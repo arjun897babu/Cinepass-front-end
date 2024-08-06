@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { forgotPasswordUser, googleSignUp, loginUser, logoutUser, resendOTPUser, resetPassword, signUpUser, verifyUser } from "../actions/userAction";
+import { forgotPasswordUser, getAllShows, googleSignUp, loginUser, logoutUser, resendOTPUser, resetPassword, signUpUser, verifyUser } from "../actions/userAction";
 import { IInitialState } from "./IState";
 import { IInitialStateError, ResponseData, ResponseStatus } from "../../interface/Interface";
 import { isErrorResponse } from "../../utils/customError";
@@ -13,7 +13,8 @@ const initialState: IInitialState = {
   error: null,
   isAuthenticated: false,
   tempMail: null,
-  isGoogleAuth:false
+  isGoogleAuth: false,
+  city: undefined
 
 };
 
@@ -33,6 +34,9 @@ const userSlice = createSlice({
     setLoading(state) {
       state.loading = !state.loading
     },
+    setCity(state, action: PayloadAction<string>) {
+      state.city = action.payload
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -171,6 +175,19 @@ const userSlice = createSlice({
           }
         }
       })
+      .addCase(getAllShows.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getAllShows.fulfilled, (state) => {
+        state.loading = false;
+
+      })
+      .addCase(getAllShows.rejected, (state, action) => {
+        state.loading = false;
+        if (isErrorResponse(action.payload)) {
+
+        }
+      })
 
   },
 
@@ -180,6 +197,7 @@ export const {
   clearError: clearUserError,
   setError: setUserError,
   setIsAuthenticated: setUserAuthentication,
-  setLoading: setUserLoading
+  setLoading: setUserLoading,
+  setCity: setUserCity
 } = userSlice.actions
 export default userSlice.reducer

@@ -80,7 +80,7 @@ export const TheatersLogin: React.FC = (): JSX.Element => {
               <label className='w-24 text-left' htmlFor="email">Email</label>
               <div className="relative w-full">
                 <input
-                  className="p-2  text-black rounded-md w-full focus:outline"
+                  className="p-2  text-black rounded-md w-full focus:outline-none"
                   type="text"
                   name="email"
                   placeholder="Email"

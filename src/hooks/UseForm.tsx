@@ -6,61 +6,63 @@ import {
   validateConfirmPassword,
   validateName
 } from '../utils/validator';
-import { clearUserError } from "../redux/reducers/userReducer";
-import { clearTheaterError } from "../redux/reducers/theatersReducer";
-import { clearAdminError } from "../redux/reducers/adminReducer";
-
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../redux/store";
 import { useLoggedOwner } from "./useLoggedUser";
 import { Role } from "../interface/Interface";
 import useAction from "./UseAction";
 
-type FormData<T> = {
-  [key in keyof T]: T[key];
-};
 
-type ValidateError<T> = {
-  [key in keyof T]?: string;
-};
+type FormData = {
+  [key: string]: string
+}
 
-export const useForm = <T extends Record<string, any>>(initialValue: T, owner: Role) => {
-  const [formData, setFormData] = useState<FormData<T>>(initialValue);
-  const [inputError, setInputError] = useState<ValidateError<T>>({});
-  const { error } = useLoggedOwner(owner)
+
+export const useForm = <T extends FormData>(initialValue: T, owner: Role) => {
+  const [formData, setFormData] = useState<T>(initialValue);
+  const [inputError, setInputError] = useState<Record<string, string>>({});
+  const { error } = useLoggedOwner(owner);
 
   const dispatch = useDispatch<AppDispatch>();
-  const { clearError } = useAction(owner)
+  const { clearError } = useAction(owner);
 
-
-
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    event.stopPropagation()
-
+  const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    event.stopPropagation();
 
     const { name, value } = event.target;
 
-    setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
+    // Update form data
+    setFormData((prevFormData) => {
+      const newFormData = { ...prevFormData, [name]: value };
 
+      if (name === "rows" || name === "column") {
+        const rows = parseInt(newFormData["rows"], 10) || 0;
+        const columns = parseInt(newFormData["column"], 10) || 0;
+
+        const total = calculateSeatingCapacity(rows, columns);
+        (newFormData as Record<string, string>)["seating_capacity"] = total;
+      } 
+
+      return newFormData;
+    });
+
+    // Validate the input value
     let validationResponse = checkInputValue(name, value, formData.password);
 
     if (!validationResponse.isValid) {
-
       setInputError((prevErrors) => ({
         ...prevErrors,
         [name]: validationResponse.message,
       }));
-
     } else {
-
       setInputError((prevErrors) => {
         const newErrors = { ...prevErrors };
-        delete newErrors[name as keyof T];
+        delete newErrors[name];
         return newErrors;
       });
-
     }
 
+    // Clear error if applicable
     if (error?.error === name) {
       if (clearError) {
         clearError();
@@ -78,7 +80,6 @@ export const useForm = <T extends Record<string, any>>(initialValue: T, owner: R
 };
 
 function checkInputValue(name: string, value: string, value2?: string) {
-
   let validationResponse;
   switch (name) {
     case "name":
@@ -95,7 +96,7 @@ function checkInputValue(name: string, value: string, value2?: string) {
       break;
     case "confirm_password":
       validationResponse = validateConfirmPassword(value, value2 || '');
-      console.log('confirmvalidation', validationResponse)
+      console.log('confirmvalidation', validationResponse);
       break;
     default:
       validationResponse = { message: "", isValid: true };
@@ -104,15 +105,7 @@ function checkInputValue(name: string, value: string, value2?: string) {
   return validationResponse;
 }
 
-// function getClearError(owner: string) {
-
-//   switch (owner) {
-//     case 'user':
-//       return clearUserError
-//     case 'theater':
-//       return clearTheaterError
-//     case 'admin':
-//       return clearAdminError
-//   }
-
-// }
+function calculateSeatingCapacity(rows: number, column: number): string {
+  console.log(rows * column);
+  return `${rows * column}`;
+}

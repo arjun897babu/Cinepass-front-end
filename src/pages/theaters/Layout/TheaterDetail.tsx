@@ -18,6 +18,9 @@ const TheaterDetail: React.FC = () => {
     }
   }
 
+  const setTheaterDataResponse = (updatedData: ITheaterDetailResponse) => {
+    setTheaterData(updatedData);
+  };
 
   useEffect(() => {
     fetchTheaterDetails()
@@ -27,7 +30,7 @@ const TheaterDetail: React.FC = () => {
     <>
       {
         theaterData &&
-        <TheaterInfo data={theaterData} />
+        <TheaterInfo data={theaterData} setTheaterDataResponse={setTheaterDataResponse} />
       }
     </>
   )

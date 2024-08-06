@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useLoggedOwner } from "../../hooks/useLoggedUser";
 import { clearTheaterError } from "../../redux/reducers/theatersReducer";
 import { verifyOTPTheaters } from "../../redux/actions/theaterAction";
-import { formatTime } from "../../utils/fromat";
+import { formatTime } from "../../utils/format";
 import ResendOTP from "../../component/ResendOTP";
 import { useTimer } from "../../hooks/useTimer";
 import Toast from "../../component/Toast";

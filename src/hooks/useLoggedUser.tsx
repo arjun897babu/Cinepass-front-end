@@ -10,13 +10,14 @@ interface LoggedOwnerState {
   error: IInitialStateError | null,
   loading: boolean,
   tempMail: { email: string; } | null,
+  city: undefined | string
 }
 
 
 
 export const useLoggedOwner = (role: Role): LoggedOwnerState => {
 
-  const { owner, isAuthenticated, error, loading, tempMail } = useSelector((state: RootState) => {
+  const { owner, isAuthenticated, error, loading, tempMail, city } = useSelector((state: RootState) => {
     switch (role) {
       case Role.admin:
         return state.admin;
@@ -25,7 +26,7 @@ export const useLoggedOwner = (role: Role): LoggedOwnerState => {
       case Role.users:
         return state.user;
       default:
-        return { owner: null, isAuthenticated: false, error: null, loading: false, tempMail: null };
+        return { owner: null, isAuthenticated: false, error: null, loading: false, tempMail: null, city: undefined };
     }
   });
 
@@ -38,7 +39,7 @@ export const useLoggedOwner = (role: Role): LoggedOwnerState => {
     } else {
       setLoggedOwner(null)
     }
-  }, [owner,loading,isAuthenticated])
+  }, [owner, loading, isAuthenticated])
 
-  return { isAuthenticated, loggedOwner, error, loading, tempMail }
+  return { isAuthenticated, loggedOwner, error, loading, tempMail, city }
 }

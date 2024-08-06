@@ -1,8 +1,9 @@
 import { AsyncThunk, createAsyncThunk } from "@reduxjs/toolkit";
-import { LoginData, ResponseData } from "../../interface/Interface";
+import { IMovie, LoginData, ResponseData } from "../../interface/Interface";
 import { AxiosError, AxiosHeaders } from "axios";
 import { serverInstance } from "../../services";
 import { adminEndpoints } from "../../services/endpoints/endPoints";
+import { MovieType } from "../../component/admin/AddMovieForm";
 
 export const loginAdmin: AsyncThunk<ResponseData, LoginData, {}> = createAsyncThunk(
   'admin/login',
@@ -84,4 +85,40 @@ export const manageEntitiesByAdmin: AsyncThunk<ResponseData, Record<string, stri
   }
 )
 
+export const addMovie: AsyncThunk<IMovie, { movieData: IMovie; movieType: MovieType }, {}> = createAsyncThunk(
+  'admin/manageEntities',
+  async ({ movieData, movieType }, { rejectWithValue }) => {
+    try {
+      const response = await serverInstance.post(adminEndpoints.addMovie(movieType), movieData);
+      console.log(response.data)
+      const { movie } = response.data?.data
+
+      return await movie
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return rejectWithValue(error.response)
+      }
+      return rejectWithValue('an unknown error')
+    }
+  }
+)
+
+export const getMovie: AsyncThunk<IMovie[], MovieType, {}> = createAsyncThunk(
+  'admin/getMovie',
+  async (movieType: MovieType, { rejectWithValue }) => {
+    try {
+
+      const response = await serverInstance.get(adminEndpoints.getMovie(movieType), {});
+      const { movies } = response.data?.data
+      return await movies
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return rejectWithValue(error.response)
+      }
+
+      return rejectWithValue('an unknown error')
+    }
+  }
+
+)
 

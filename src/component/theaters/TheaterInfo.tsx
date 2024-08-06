@@ -1,12 +1,17 @@
 import { ITheaterDetailResponse } from "../../interface/theater/ITheaterDetail"
 import TheaterUpdateForm from "./TheaterUpdateForm"
 
-export const TheaterInfo: React.FC<{ data: ITheaterDetailResponse }> = ({ data }) => {
+interface TheaterInfoProps {
+  data: ITheaterDetailResponse;
+  setTheaterDataResponse: (updatedData: ITheaterDetailResponse) => void;
+}
+
+export const TheaterInfo: React.FC<TheaterInfoProps> = ({ data, setTheaterDataResponse }) => {
   return (
     <>
-      <div className="w-full">
+      <div className="w-full ">
         <div className="flex mb-3 justify-end">
-          <TheaterUpdateForm data={data} />
+          <TheaterUpdateForm data={data} setTheaterDataResponse={setTheaterDataResponse} />
         </div>
         <div className="flex flex-col px-8 pt-10 pb-2 rounded-md border bg-gray-100 border-black border-solid w-full max-md:px-5">
           <div className="max-md:max-w-full">
@@ -58,13 +63,13 @@ export const TheaterInfo: React.FC<{ data: ITheaterDetailResponse }> = ({ data }
               </button>
             </div>
           </div>
-            <div className="carousel carousel-center mb-3  justify-center space-x-2 w-full p-2 mt-4">
-              {data.images.map((img, index: number) => (
-                <div key={index} className="carousel-item border border-slate-400 h-48 w-48 relative">
-                  <img src={img} className=" h-full w-full object-cover" />
-                </div>
-              ))}
-            </div>
+          <div className="carousel carousel-center mb-3  justify-start space-x-2 w-full p-2 mt-4">
+            {data.images.map((img, index: number) => (
+              <div key={index} className="carousel-item border border-slate-400 h-48 w-48 relative">
+                <img src={img} className=" h-full w-full object-cover" />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 

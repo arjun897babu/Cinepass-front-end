@@ -6,6 +6,7 @@ import { ErroPage } from "../pages/ErrorPage";
 const AdminTheaters = lazy(() => import('../pages/admin/layout/AdminTheaters'))
 import AdminHome from "../pages/admin/layout/AdminHome";
 import { Loader } from "../component/Loader";
+import AdminMovie from "../pages/admin/layout/AdminMovies";
 const AdminUsers = lazy(() => import('../pages/admin/layout/AdminUsers'))
 
 
@@ -30,6 +31,7 @@ const AdminRoutes: React.FC = () => {
             <Route path="home" element={<AdminHome />} />
             <Route path="theaters" element={<AdminTheaters />} />
             <Route path="users" element={<AdminUsers />} />
+            <Route path="movie" element={<AdminMovie />} />
           </Route>
 
 

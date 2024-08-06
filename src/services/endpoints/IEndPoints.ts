@@ -1,3 +1,5 @@
+import { MovieType } from "../../component/admin/AddMovieForm";
+
 export interface IEndPoints {
   login: string;
   logout: string;
@@ -11,6 +13,9 @@ export interface UserEndpoint extends IEndPoints {
   resetPassword: (token: string) => string;
   googleSignUp: string;
   googleLogout: string;
+  getMovieShows: (city: string) => string
+  getAllCities: string
+  getAllMovies: (city: string) => string
 }
 export interface TheaterEndpoint extends IEndPoints {
   signup: string;
@@ -18,12 +23,19 @@ export interface TheaterEndpoint extends IEndPoints {
   resendOTP: string;
   forgotPassword: string;
   resetPassword: (token: string) => string;
-  getTheaterDetails:string;
-  updateTheater:string
+  getTheaterDetails: string;
+  updateTheater: string
+  createScreen: string
+  getMovie: (movieType: MovieType) => string
+  getScreen: string
+  addMovieShows: string
+  getMovieShows: string
 }
 export interface AdminEndpoint extends IEndPoints {
   getEntityData: (role: string) => string
   updateApprovalStatus: (theaterOwnerId: string) => string
-  manageEntities: (_id: string, role: string) => string
+  manageEntities: (_entityId: string, role: string) => string
+  addMovie: (movieType: MovieType) => string
+  getMovie: (movieType: MovieType) => string
 
 }

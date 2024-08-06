@@ -7,11 +7,11 @@ import { BiCameraMovie, } from "react-icons/bi";
 import { CiStreamOn } from "react-icons/ci";
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { FiUsers } from "react-icons/fi";
-import { RiLogoutCircleLine } from "react-icons/ri";
+import { RiLogoutCircleLine, RiMovieLine } from "react-icons/ri";
 import { logoutAdmin } from '../../redux/actions/adminAction';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../redux/store';
-import { TheaterDetails } from './layout/AdminTheaters';
+// import { TheaterDetails } from './layout/AdminTheaters';
 
 const menu = [
   {
@@ -36,8 +36,13 @@ const menu = [
   },
   {
     title: 'Stream',
-    logo: BiCameraMovie,
+    logo: RiMovieLine,
     link: '/admin/stream'
+  },
+  {
+    title: 'Movies',
+    logo: BiCameraMovie,
+    link: '/admin/movie'
   },
   {
     title: 'Stream Plan',
@@ -45,6 +50,7 @@ const menu = [
     link: '/admin/stream-plan'
   }
 ];
+ 
 
 export const AdminParent: React.FC = (): JSX.Element => {
   const dispatch = useDispatch<AppDispatch>()
@@ -101,7 +107,7 @@ export const AdminParent: React.FC = (): JSX.Element => {
             </div>
             {/* welcome note */}
           </div>
-          <div className="content   p-5">
+          <div className="content p-5">
             <Outlet />
           </div>
         </div>

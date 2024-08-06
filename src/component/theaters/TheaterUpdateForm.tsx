@@ -8,6 +8,12 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../redux/store";
 import { updateTheater } from "../../redux/actions/theaterAction";
+
+interface TheaterInfoProps {
+  data: ITheaterDetailResponse;
+  setTheaterDataResponse: (updatedData: ITheaterDetailResponse) => void;
+}
+
 const uploadImages = async (images: string[]) => {
   const promises = images.map(image => {
     const formData = new FormData();
@@ -20,7 +26,7 @@ const uploadImages = async (images: string[]) => {
   return responses.map(response => response.data.secure_url);
 };
 
-const TheaterUpdateForm: React.FC<{ data: ITheaterDetailResponse }> = ({ data }) => {
+const TheaterUpdateForm: React.FC<TheaterInfoProps> = ({ data,setTheaterDataResponse }) => {
   const [loading, setLoading] = useState<boolean>(false)
   const [cloudImg, setCloudImg] = useState<string[]>([]);
   const dispatch = useDispatch<AppDispatch>()
@@ -69,7 +75,7 @@ const TheaterUpdateForm: React.FC<{ data: ITheaterDetailResponse }> = ({ data })
         setLoading((prev) => !prev)
         const imageUrls = await uploadImages(images);
         console.log(imageUrls)
-        const response = await dispatch(updateTheater({ ...formData, images: imageUrls }));
+        const response = await dispatch(updateTheater({ ...formData, images: imageUrls })).unwrap();
         console.log('updated response from the server', response)
         setLoading((prev) => !prev)
       }

@@ -1,10 +1,13 @@
 import { AsyncThunk, createAsyncThunk } from "@reduxjs/toolkit";
-import { AxiosError } from "axios";
+import { AxiosError, AxiosHeaders } from "axios";
 import { serverInstance } from "../../services";
 import { theatersEndPoints } from "../../services/endpoints/endPoints";
 import { TheaterSignUpData } from "../../interface/theater/ITheatersData";
-import { LoginData, OTPVerification, ResponseData } from "../../interface/Interface";
+import { IMovie, LoginData, OTPVerification, ResponseData } from "../../interface/Interface";
 import { ITheaterDetailResponse } from "../../interface/theater/ITheaterDetail";
+import { ITheaterScreen, ITheaterScreenResponse } from "../../interface/theater/ITheaterScreen";
+import { MovieType } from "../../component/admin/AddMovieForm";
+import { IMovieShow } from "../../interface/theater/IMovieShow";
 interface UpdateTheaterInput {
   theater_name: string,
   theater_license: string,
@@ -157,4 +160,75 @@ export const updateTheater: AsyncThunk<ITheaterDetailResponse, UpdateTheaterInpu
     }
   }
 )
+
+export const createTheaterScreen: AsyncThunk<ITheaterScreenResponse, ITheaterScreen, {}> = createAsyncThunk(
+  'theaters/add-screen',
+  async (theaterScreenData: ITheaterScreen, { rejectWithValue }) => {
+    try {
+      const response = await serverInstance.post(theatersEndPoints.createScreen, theaterScreenData);
+      const { screen } = response.data?.data
+      return await screen
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return rejectWithValue(error.response)
+      }
+      return rejectWithValue('an unknown error')
+    }
+  }
+)
+
+export const getMovie: AsyncThunk<IMovie[], MovieType, {}> = createAsyncThunk(
+  'theaters/getMovie',
+  async (movieType: MovieType, { rejectWithValue }) => {
+    try {
+
+      const response = await serverInstance.get(theatersEndPoints.getMovie(movieType), {});
+      const { movies } = response.data?.data
+      return await movies
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return rejectWithValue(error.response)
+      }
+
+      return rejectWithValue('an unknown error')
+    }
+  }
+
+)
+export const getScreen: AsyncThunk<ITheaterScreenResponse[], void, {}> = createAsyncThunk(
+  'theaters/getScreen',
+  async (_, { rejectWithValue }) => {
+    try {
+
+      const response = await serverInstance.get(theatersEndPoints.getScreen, {});
+      const { screen } = response.data?.data
+      return await screen
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return rejectWithValue(error.response)
+      }
+
+      return rejectWithValue('an unknown error')
+    }
+  }
+
+)
+
+export const addMovieShows: AsyncThunk<IMovieShow, IMovieShow, {}> = createAsyncThunk(
+  'theaters/addMovieShows',
+  async (formData, { rejectWithValue }) => {
+    try {
+      const response = await serverInstance.post(theatersEndPoints.addMovieShows, formData);
+      const { show } = response.data?.data
+      return await show
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return rejectWithValue(error.response)
+      }
+      return rejectWithValue('an unknown error')
+    }
+  }
+
+)
+
 

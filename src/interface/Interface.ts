@@ -1,3 +1,5 @@
+import { ITheaterOwnerEntity } from "./theater/ITheaterOwner";
+import { ITheaterScreenResponse } from "./theater/ITheaterScreen";
 
 export enum ResponseStatus {
   success = 'Success',
@@ -52,28 +54,56 @@ export interface ApprovalResponse {
   approval_status: string
 }
 
-export interface GoogleSignUp{
-  credential:string,
-  client_id :string
+export interface GoogleSignUp {
+  credential: string,
+  client_id: string
 }
+
 
 export interface ICast {
   image: string;
   name: string;
 }
 
-export interface ITheaterMovie {
-  _id: string;
+export interface IMovie {
+  _id?: string;
+
   movie_name: string;
-  language: string[];
-  booking_date: Date;
-  listed: boolean;
-  release_data: Date;
-  trailer: string;
-  duration: string;
-  genre: string[];
-  cast: ICast[];
-  cover_photo: string;
-  movie_poster: string;
+  languages: string[];
+  release_date: (string | Date);
+  run_time: string;
+  genres: string[];
   format: string[];
+  cover_photo?: string;
+  listed?: boolean;
+  movie_poster?: string;
+  cast?: ICast[];
+  trailer?: string;
+  file?: string
 }
+
+export interface ISeat {
+  name: string,
+  booked: boolean,
+}
+
+export interface ITheaterScreen {
+  _id?: string;
+  theaterId?: string
+  screen_name: string,
+  seating_capacity: number,
+  rows: number,
+  column: number,
+  screen_format: string[] // specification of the screen 
+  chargePerSeat: number
+  layout: Array<Array<ISeat>>;
+}
+export interface IGetMovieShowResponse {
+  _id: string,
+  showTime: string,
+  theater: Pick<ITheaterOwnerEntity, 'address' | 'city' | 'theater_name'>
+  movie: IMovie,
+  screen: Pick<ITheaterScreenResponse, '_id' | 'amenity' | 'screen_name'>
+}
+
+

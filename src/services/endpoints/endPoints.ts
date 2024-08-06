@@ -10,8 +10,12 @@ export const userEndPoints: UserEndpoint = {
   forgotPassword: '/users/forgot-password',
   resetPassword: (token: string) => `/users/reset-password/${token}`,
   googleSignUp: '/users/google-signup',
-  googleLogout: 'users/google-logout'
+  googleLogout: 'users/google-logout',
+  getMovieShows: (city) => `/users/get-shows/${city}`,
+  getAllCities: `/users/get-cities`,
+  getAllMovies: (city) => `/users/get-movies/${city}`,
 };
+
 export const theatersEndPoints: TheaterEndpoint = {
 
   signup: '/theaters/signup',
@@ -20,9 +24,14 @@ export const theatersEndPoints: TheaterEndpoint = {
   verifyOTP: '/theaters/otp-verification',
   resendOTP: '/theaters/resend-otp',
   forgotPassword: '/theaters/forgot-password',
-  resetPassword: (token: string) => `/theaters/reset-password/${token}`,
-  getTheaterDetails:`/theaters/theater`,
-  updateTheater:`theaters/update-theater`
+  resetPassword: (token: string) => `/theaters /reset - password/${token}`,
+  getTheaterDetails: `/theaters/theater`,
+  updateTheater: `/theaters/update-theater`,
+  createScreen: `theaters/add-screen`,
+  getMovie: (movieType) => `/theaters/get-movie/${movieType}`,
+  getScreen: `/theaters/get-screen`,
+  addMovieShows: `/theaters/add-shows`,
+  getMovieShows: `/theaters/get-shows`
 
 
 };
@@ -32,6 +41,8 @@ export const adminEndpoints: AdminEndpoint = {
   logout: '/admin/logout',
   getEntityData: (role: string) => `/admin/${role}`,
   updateApprovalStatus: (theaterOwnerId) => `/admin/approval/${theaterOwnerId}`,
-  manageEntities: (_id, role) => `/admin/manage-status/${role}/${_id}`
+  manageEntities: (entityId, role) => `/admin/manage-status/${role}/${entityId}`,
+  addMovie: (movieType) => `/admin/add-movie/${movieType}`,
+  getMovie: (movieType) => `admin/get-movie/${movieType}`
 }
 

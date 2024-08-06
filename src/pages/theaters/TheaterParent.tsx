@@ -62,7 +62,7 @@ export const TheatersParent: React.FC = (): JSX.Element => {
   }
   return (
     <>
-      <div className="flex h-screen">
+      <div className="flex h-screen ">
         <div className="p-5 pt-8 gap-5 w-70 relative hidden sm:block">
           {/* website logo */}
           <div className="gap-3 flex items-center ml-12 md:ml-0">

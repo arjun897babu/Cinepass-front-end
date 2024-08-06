@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { IInitialStateError, Role } from '../interface/Interface';
 import { clearAdminError, setAdminAuthentication, setAdminError, setAdminLoading } from '../redux/reducers/adminReducer';
-import { clearUserError, setUserAuthentication, setUserError, setUserLoading } from '../redux/reducers/userReducer';
+import { clearUserError, setUserAuthentication, setUserCity, setUserError, setUserLoading } from '../redux/reducers/userReducer';
 import { clearTheaterError, setTheaterError, setTheaterLoading, setTheatersAuthentication } from '../redux/reducers/theatersReducer';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../redux/store';
@@ -11,13 +11,14 @@ interface Action {
   setLoading: () => void;
   setError: (error: IInitialStateError) => void;
   setIsAuthenticated: () => void;
+  setCity?: (city: string) => void
 }
 
 
 const useAction = (role: Role): Action => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const getActions = useCallback(():Action => {
+  const getActions = useCallback((): Action => {
     switch (role) {
       case Role.admin:
         return {
@@ -32,6 +33,7 @@ const useAction = (role: Role): Action => {
           setLoading: () => dispatch(setUserLoading()),
           setError: (error: IInitialStateError) => dispatch(setUserError(error)),
           setIsAuthenticated: () => dispatch(setUserAuthentication()),
+          setCity: (city: string) => dispatch(setUserCity(city))
         };
       case Role.theaters:
         return {
@@ -46,6 +48,7 @@ const useAction = (role: Role): Action => {
           setLoading: () => void 0,
           setError: () => void 0,
           setIsAuthenticated: () => void 0,
+          setCity: () => void 0,
         };
     }
   }, [dispatch, role]);
