@@ -4,7 +4,17 @@ import {
   validateMobileNumber,
   validatePassword,
   validateConfirmPassword,
-  validateName
+  validateName,
+  validateAdhaar,
+  validateTheaterName,
+  validateAddress,
+  validateCity,
+  validateTheaterLicense,
+  validateScreenName,
+  validateRow,
+  validateCol,
+  validateEnumValue,
+  validateMovieName
 } from '../utils/validator';
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../redux/store";
@@ -36,12 +46,12 @@ export const useForm = <T extends FormData>(initialValue: T, owner: Role) => {
       const newFormData = { ...prevFormData, [name]: value };
 
       if (name === "rows" || name === "column") {
-        const rows = parseInt(newFormData["rows"], 10) || 0;
-        const columns = parseInt(newFormData["column"], 10) || 0;
+        const rows = parseInt(newFormData["rows"], 10) || 1;
+        const columns = parseInt(newFormData["column"], 10) || 1;
 
         const total = calculateSeatingCapacity(rows, columns);
         (newFormData as Record<string, string>)["seating_capacity"] = total;
-      } 
+      }
 
       return newFormData;
     });
@@ -62,7 +72,6 @@ export const useForm = <T extends FormData>(initialValue: T, owner: Role) => {
       });
     }
 
-    // Clear error if applicable
     if (error?.error === name) {
       if (clearError) {
         clearError();
@@ -79,7 +88,12 @@ export const useForm = <T extends FormData>(initialValue: T, owner: Role) => {
   };
 };
 
-function checkInputValue(name: string, value: string, value2?: string) {
+interface ReturnObject {
+  message: string;
+  isValid: boolean
+}
+
+export function checkInputValue(name: string, value: string, value2?: string): ReturnObject {
   let validationResponse;
   switch (name) {
     case "name":
@@ -96,8 +110,38 @@ function checkInputValue(name: string, value: string, value2?: string) {
       break;
     case "confirm_password":
       validationResponse = validateConfirmPassword(value, value2 || '');
-      console.log('confirmvalidation', validationResponse);
       break;
+    case "adhaar_number":
+      validationResponse = validateAdhaar(value);
+      break;
+    case "theater_name":
+      validationResponse = validateTheaterName(value);
+      break;
+    case "address":
+      validationResponse = validateAddress(value);
+      break;
+    case "city":
+      validationResponse = validateCity(value);
+      break;
+    case "theater_license":
+      validationResponse = validateTheaterLicense(value);
+      break;
+    case 'screen_name':
+      validationResponse = validateScreenName(value);
+      break
+    case 'rows':
+      validationResponse = validateRow(value);
+      break
+    case 'column':
+      validationResponse = validateCol(value);
+      break
+    case 'aminety'||'language':
+      validationResponse = validateEnumValue(name, value);
+      break
+    case 'movie_name':
+      validationResponse = validateMovieName(value);
+      break
+      
     default:
       validationResponse = { message: "", isValid: true };
       break;
@@ -106,6 +150,5 @@ function checkInputValue(name: string, value: string, value2?: string) {
 }
 
 function calculateSeatingCapacity(rows: number, column: number): string {
-  console.log(rows * column);
   return `${rows * column}`;
 }

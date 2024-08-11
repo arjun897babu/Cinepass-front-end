@@ -1,3 +1,5 @@
+import { string } from "zod";
+import { UploadError } from "./customError";
 
 export function formatTime(time: number): string {
   const min = Math.floor(time / 60);
@@ -47,3 +49,26 @@ export function calculateEndTime(hour: number, movieHour: number, min: number, m
 
   return formatEndTime(endHour, endMin)
 }
+
+export function getMovieSrc(src: string | File) {
+  return typeof src === "string" ? src as string : ''
+}
+
+export function convertFile(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      reader.result ?
+        resolve(reader.result as string)  // represent the base64 string 
+        : reject(new UploadError('uploading Failed'));
+    };
+
+    reader.onerror = (error) => {
+      reject(new UploadError('uploading Failed'));
+    };
+
+    //for reading the file as data url
+    reader.readAsDataURL(file);
+  });
+};

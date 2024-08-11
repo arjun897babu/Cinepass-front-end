@@ -1,8 +1,8 @@
 import React, { lazy, Suspense } from "react";
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes, useLocation, useParams } from "react-router-dom";
 // import { UserHome, UserSignUp, UserLogin, UserOTPVerification } from '../pages/user'
-// import UserHome from "../pages/user/UserHome";
-const UserHome = lazy(() => import('../pages/user/UserHome'))
+import UserHome from "../pages/user/UserHome";
+// const UserHome = lazy(() => import('../pages/user/UserHome'))
 import { UserSignUp } from "../pages/user/UserSignUp";
 import { UserLogin } from "../pages/user/UserLogin";
 // import { UserOTPVerification } from "../pages/user/UserOTPVerification";
@@ -20,7 +20,7 @@ import { UserForgotPassword } from "../pages/user/UserForgotPassword";
 import { ResetPassWordUser } from "../pages/user/ResetPassWordUser";
 import UserInitPage from "../pages/user/UserInitPage";
 const MoviePage = lazy(()=>import("../pages/user/MoviePage"))
-
+  
 const UserRoutes: React.FC = () => {
   const location = useLocation();
   const { loading } = useSelector((state: RootState) => state.user)
@@ -49,7 +49,7 @@ const UserRoutes: React.FC = () => {
               <UserProfile />
             </ProtectedRoutes>
           } />
-          <Route path='/movie' element={
+          <Route path='/movie/:id' element={
               <MoviePage />
           } />
         </Routes>

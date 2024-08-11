@@ -1,4 +1,4 @@
-import { lazy, MouseEvent, useEffect, useState } from "react";
+import { lazy, MouseEvent, useEffect, useRef, useState } from "react";
 import { IUser } from "../../../interface/user/IUserData";
 // import { EmptyData } from "../../../component/EmptyData";
 const EmptyData = lazy(() => import('../../../component/EmptyData'))
@@ -9,12 +9,23 @@ import { AppDispatch } from "../../../redux/store";
 import { isErrorResponse } from "../../../utils/customError";
 // import { Loader } from "../../../component/Loader";
 import { useLoggedOwner } from "../../../hooks/useLoggedUser";
+import ConfirmationModal from "../../../component/ConfirmationModal";
+import Toast2 from "../../../component/Toast2";
 
+export type ToastMessage = {
+ alert: ResponseStatus,
+ message: string
+}
 
 const AdminUsers: React.FC = (): JSX.Element => {
   const dispatch = useDispatch<AppDispatch>()
   const [users, setUsers] = useState<IUser[] | []>([]);
   const { loading } = useLoggedOwner(Role.admin)
+
+  const [toastMessage, setToastMessage] = useState<ToastMessage | null>(null)
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false)
+  const setModalClose = () => setIsConfirmModalOpen(false)
+
 
   const fetchUsers = async () => {
     try {
@@ -33,11 +44,20 @@ const AdminUsers: React.FC = (): JSX.Element => {
   useEffect(() => {
     fetchUsers()
   }, [])
-  const handleBlock = async (e: MouseEvent<HTMLButtonElement>) => {
+  const manageBtnRef = useRef<HTMLButtonElement>(null);
+  const clearToast = () => {
+    setToastMessage(null)
+  }
+  const BlockButtonClicked = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    const _id = e.currentTarget.getAttribute('data-id')
-    console.log(_id)
+    if (manageBtnRef.current?.getAttribute('data-id')) {
+      setIsConfirmModalOpen(true);
+    }
+  }
+  const handleBlock = async () => {
+
+    const _id = manageBtnRef.current?.getAttribute('data-id')
     if (_id) {
       try {
         const response = await dispatch(manageEntitiesByAdmin({ _id, role: Role.users })).unwrap();
@@ -53,13 +73,19 @@ const AdminUsers: React.FC = (): JSX.Element => {
                 }
               })
             })
+
+            setToastMessage({ alert: ResponseStatus.SUCCESS, message: response.message })
           }
         }
 
       } catch (error) {
         if (isErrorResponse(error)) {
           console.error(error);
+          setToastMessage({ alert: ResponseStatus.ERROR, message: error.message })
         }
+      }
+      finally {
+        setIsConfirmModalOpen(false)
       }
     }
   }
@@ -69,6 +95,9 @@ const AdminUsers: React.FC = (): JSX.Element => {
 
   return (
     <>
+
+      {toastMessage && <Toast2 alert={toastMessage.alert} clearToast={clearToast} message={toastMessage.message} />}
+
       {
         users?.length > 0 &&
         (
@@ -109,7 +138,8 @@ const AdminUsers: React.FC = (): JSX.Element => {
                     <td className=" text-left text-black">
 
                       <button
-                        onClick={handleBlock}
+                        ref={manageBtnRef}
+                        onClick={BlockButtonClicked}
                         data-id={value._id}
                         className={
                           `w-32 bg-transparent
@@ -117,12 +147,20 @@ const AdminUsers: React.FC = (): JSX.Element => {
                   font-semibold  py-2 px-4 border rounded`}>
                         {!value.status ? "unblock" : "block"}
                       </button> </td>
+
                   </tr>
                 ))}
 
               </tbody>
 
             </table>
+            {isConfirmModalOpen && <ConfirmationModal
+              isOpen={isConfirmModalOpen}
+              onClose={setModalClose}
+              onConfirm={handleBlock}
+              message="Do you want to proceed with this action "
+              btnType={manageBtnRef.current?.innerText === 'unblock' ? ResponseStatus.success : ResponseStatus.ERROR}
+            />}
           </div >
         )
 

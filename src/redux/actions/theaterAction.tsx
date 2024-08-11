@@ -3,11 +3,12 @@ import { AxiosError, AxiosHeaders } from "axios";
 import { serverInstance } from "../../services";
 import { theatersEndPoints } from "../../services/endpoints/endPoints";
 import { TheaterSignUpData } from "../../interface/theater/ITheatersData";
-import { IMovie, LoginData, OTPVerification, ResponseData } from "../../interface/Interface";
+import { IGetMovieShowResponse, IMovie, LoginData, OTPVerification, ResponseData } from "../../interface/Interface";
 import { ITheaterDetailResponse } from "../../interface/theater/ITheaterDetail";
 import { ITheaterScreen, ITheaterScreenResponse } from "../../interface/theater/ITheaterScreen";
 import { MovieType } from "../../component/admin/AddMovieForm";
 import { IMovieShow } from "../../interface/theater/IMovieShow";
+import { IResponseError } from "../../utils/customError";
 interface UpdateTheaterInput {
   theater_name: string,
   theater_license: string,
@@ -166,13 +167,30 @@ export const createTheaterScreen: AsyncThunk<ITheaterScreenResponse, ITheaterScr
   async (theaterScreenData: ITheaterScreen, { rejectWithValue }) => {
     try {
       const response = await serverInstance.post(theatersEndPoints.createScreen, theaterScreenData);
+
       const { screen } = response.data?.data
+
       return await screen
+
     } catch (error) {
+
       if (error instanceof AxiosError) {
-        return rejectWithValue(error.response)
+        const { response } = error
+        if (response) {
+          return rejectWithValue({
+            statusCode: response.status,
+            data: response.data.error
+          } as IResponseError);
+        }
       }
-      return rejectWithValue('an unknown error')
+
+      return rejectWithValue({
+        statusCode: 500,
+        data: {
+          error: 'unknown_error',
+          message: 'an unknown error occured'
+        }
+      } as IResponseError)
     }
   }
 )
@@ -204,11 +222,26 @@ export const getScreen: AsyncThunk<ITheaterScreenResponse[], void, {}> = createA
       const { screen } = response.data?.data
       return await screen
     } catch (error) {
+      
       if (error instanceof AxiosError) {
-        return rejectWithValue(error.response)
+        const { response } = error
+        if (response) {
+          return rejectWithValue({
+            statusCode: response.status,
+            data: response.data.error
+          } as IResponseError);
+        }
       }
 
-      return rejectWithValue('an unknown error')
+      return rejectWithValue({
+        statusCode: 500,
+        data: {
+          error: 'unknown_error',
+          message: 'an unknown error occured'
+        }
+      } as IResponseError)
+
+
     }
   }
 
@@ -232,3 +265,18 @@ export const addMovieShows: AsyncThunk<IMovieShow, IMovieShow, {}> = createAsync
 )
 
 
+export const getAllShows: AsyncThunk<IGetMovieShowResponse[], void, {}> = createAsyncThunk(
+  '/theaters/getAllShows',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await serverInstance.get(theatersEndPoints.getMovieShows, {});
+      const { shows } = response.data?.data
+      return await shows
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return rejectWithValue(error.response)
+      }
+      return rejectWithValue('an unknown error occured')
+    }
+  }
+);

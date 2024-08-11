@@ -4,6 +4,7 @@ import { AxiosError, AxiosHeaders } from "axios";
 import { serverInstance } from "../../services";
 import { adminEndpoints } from "../../services/endpoints/endPoints";
 import { MovieType } from "../../component/admin/AddMovieForm";
+import { IResponseError } from "../../utils/customError";
 
 export const loginAdmin: AsyncThunk<ResponseData, LoginData, {}> = createAsyncThunk(
   'admin/login',
@@ -85,20 +86,34 @@ export const manageEntitiesByAdmin: AsyncThunk<ResponseData, Record<string, stri
   }
 )
 
-export const addMovie: AsyncThunk<IMovie, { movieData: IMovie; movieType: MovieType }, {}> = createAsyncThunk(
+export const addMovie: AsyncThunk<IMovie, { movieData: IMovie; movieType: MovieType },{} > = createAsyncThunk(
   'admin/manageEntities',
   async ({ movieData, movieType }, { rejectWithValue }) => {
     try {
+      console.log('this is the moviedata',movieData)
       const response = await serverInstance.post(adminEndpoints.addMovie(movieType), movieData);
-      console.log(response.data)
       const { movie } = response.data?.data
-
+       
       return await movie
     } catch (error) {
       if (error instanceof AxiosError) {
-        return rejectWithValue(error.response)
+        const { response } = error;
+        
+        if (response) {
+          return rejectWithValue({
+            statusCode: response.status,
+            data: response.data.error
+          } as IResponseError);
+        }
       }
-      return rejectWithValue('an unknown error')
+
+      return rejectWithValue({
+        statusCode: 500,
+        data: {
+          error: 'unknown_error',
+          message: 'an unknown error occured'
+        }
+      } as IResponseError)
     }
   }
 )

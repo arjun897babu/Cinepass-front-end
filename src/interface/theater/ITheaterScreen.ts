@@ -17,8 +17,6 @@ export interface ITheaterScreenResponse {
   layout: Array<Array<ISeat>>;
 }
 export interface ITheaterScreen {
-  _id?: string;
-  theaterId?: string
   screen_name: string,
   seating_capacity: string,
   rows: string,

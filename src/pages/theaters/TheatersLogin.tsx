@@ -43,6 +43,10 @@ export const TheatersLogin: React.FC = (): JSX.Element => {
           navigate(response.redirectURL)
         }
       }
+      else {
+        alert('error')
+      }
+
     } catch (error) {
 
       if (isErrorResponse(error)) {

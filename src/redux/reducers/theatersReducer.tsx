@@ -152,9 +152,9 @@ const theaterSlice = createSlice({
       .addCase(getTheaterDetails.fulfilled, (state) => {
         state.loading = false;
       })
-      .addCase(getTheaterDetails.rejected, (state, action) => {
+      .addCase(getTheaterDetails.rejected, (state) => {
         state.loading = false;
-        console.log(action)
+        
       })
       //create theater screen
       .addCase(createTheaterScreen.pending,(state)=>{
@@ -163,9 +163,9 @@ const theaterSlice = createSlice({
       .addCase(createTheaterScreen.fulfilled, (state) => {
         state.loading = false;
       })
-      .addCase(createTheaterScreen.rejected, (state, action) => {
+      .addCase(createTheaterScreen.rejected, (state) => {
         state.loading = false;
-        console.log(action)
+         
       })
 
   }

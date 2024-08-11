@@ -30,7 +30,7 @@ const UserOTPVerification: React.FC = (): JSX.Element => {
   }, Role.users);
 
   const [response, setResponse] = useState<ResponseData | null>(null);
-  const { timeRemaining, isActive, resetTimer } = useTimer(5);
+  const { timeRemaining, isActive, resetTimer } = useTimer(120);
 
   useEffect(() => {
     dispatch(clearUserError())

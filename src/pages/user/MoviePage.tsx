@@ -1,4 +1,8 @@
+import { useParams } from "react-router-dom"
+
 const MoviePage: React.FC = () => {
+const id = useParams()
+  
   return (
     <>
       {/* movie section  */}

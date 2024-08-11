@@ -41,7 +41,7 @@ const UserHome: React.FC = () => {
     } catch (error) {
       console.log(error)
     } finally {
-      setLoading((prev) => !prev)
+      setLoading(false)
     }
   }
 
@@ -49,13 +49,13 @@ const UserHome: React.FC = () => {
     fetchMovies()
   }, []);
 
-  if (loading) return <Loader />
+  // if (loading) return <Loader />
 
   return (
     <>
 
-      <div className="p-2  bg-gray-200">
-        <CarouselModule />
+      <div className="p-2   bg-gray-200">
+        <CarouselModule movie={movies} />
         <SearchWithFilters />
         <div className="mx-auto gap-1 flex p-2 bg-gray-200">
           {/* Accordion  */}
@@ -67,7 +67,7 @@ const UserHome: React.FC = () => {
             {
               movies?.length > 0 &&
               movies.map((movie) => {
-                return <Link to={`/movie/${movie._id}`} ><MovieCard key={movie._id} movie={movie} /></Link>
+                return <Link key={movie._id} to={`/movie/${movie._id}`}> <MovieCard movie={movie} />  </Link>
               })
             }
 

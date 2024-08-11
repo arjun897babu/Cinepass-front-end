@@ -51,7 +51,7 @@ export const TheaterInfo: React.FC<TheaterInfoProps> = ({ data, setTheaterDataRe
               </div>
             </div>
 
-            <div className="flex gap-5 justify-between items-start text-xs">
+            {/* <div className="flex gap-5 justify-between items-start text-xs">
 
               <button className="flex flex-col px-5 justify-center items-center cursor-not-allowed py-1.5 text-white bg-pink-700 rounded-xl border border-black border-solid max-md:pl-5">
                 <span className="font-semibold" >Under maintenance</span>
@@ -61,7 +61,7 @@ export const TheaterInfo: React.FC<TheaterInfoProps> = ({ data, setTheaterDataRe
                 <span className="font-semibold" >Screens Available</span>
                 <span className="mt-1.5">0</span>
               </button>
-            </div>
+            </div> */}
           </div>
           <div className="carousel carousel-center mb-3  justify-start space-x-2 w-full p-2 mt-4">
             {data.images.map((img, index: number) => (

@@ -29,12 +29,12 @@ const UserInitPage: React.FC = () => {
     fetchCities()
   }, [])
 
-  if (loading) return <Loader />
+ 
   return (
     <>
       <div className="h-screen">
         <dialog id="my_modal_4" className="modal modal-open ">
-          <div className="modal-box w-11/12 max-w-5xl">
+          <div className="modal-box ">
             <h3 className="font-bold text-2xl text-center capitalize ">select your city</h3>
             {
               cities?.length > 0 ? (

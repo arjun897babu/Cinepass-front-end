@@ -2,13 +2,13 @@ import { ChangeEvent, FormEvent, MouseEvent, useEffect, useRef, useState } from 
 import { FaEdit } from "react-icons/fa"
 import { GiCancel } from "react-icons/gi"
 import { useForm } from "../../../hooks/UseForm"
-import { IMovie, Role } from "../../../interface/Interface"
+import { IGetMovieShowResponse, IMovie, Role } from "../../../interface/Interface"
 import { useDispatch } from "react-redux"
 import { AppDispatch } from "../../../redux/store"
-import { addMovieShows, getMovie, getScreen } from "../../../redux/actions/theaterAction"
+import { addMovieShows, getAllShows, getMovie, getScreen } from "../../../redux/actions/theaterAction"
 import { MovieType } from "../../../component/admin/AddMovieForm"
 import { Loader } from "../../../component/Loader"
-import { calculateEndTime, formatEndTime, formatRunTime, getIST, getMovieTime } from "../../../utils/format"
+import { calculateEndTime, formatEndTime, formatRunTime, getIST, getMovieSrc, getMovieTime } from "../../../utils/format"
 import { IMovieShow } from "../../../interface/theater/IMovieShow"
 import { ITheaterScreenResponse } from "../../../interface/theater/ITheaterScreen"
 import { useFormSubmit } from "../../../hooks/UseFormSubmitt"
@@ -24,7 +24,7 @@ const ShowFormModal: React.FC<ShowModalProps> = ({ initialData }) => {
   const durationRef = useRef<HTMLInputElement>(null)
   const [movieShows, setMovieShows] = useState<IMovieShow[] | []>([])
   const [screens, setScreens] = useState<ITheaterScreenResponse[] | []>([])
-  const [selectedMovie, setSelectedMovie] = useState<string>('')
+  const [selectedMovie, setSelectedMovie] = useState<IMovie | null>(null)
   const { formData, handleChange, inputError, setFormData, setInputError } = useForm(initialData, Role.theaters)
   const [theaterMovies, setTheaterMovies] = useState<IMovie[] | []>([])
   const [releaseDate, setReleaseDate] = useState('')
@@ -37,7 +37,7 @@ const ShowFormModal: React.FC<ShowModalProps> = ({ initialData }) => {
     try {
       setFetching((prev) => !prev)
       const response = await dispatch(getScreen()).unwrap();
-       
+
       if (response) {
         return response
       }
@@ -54,6 +54,7 @@ const ShowFormModal: React.FC<ShowModalProps> = ({ initialData }) => {
       setFetching((prev) => !prev)
       const response = await dispatch(getMovie(MovieType.theater)).unwrap()
       setTheaterMovies(response)
+
     } catch (error) {
       console.log(error)
     } finally {
@@ -62,34 +63,30 @@ const ShowFormModal: React.FC<ShowModalProps> = ({ initialData }) => {
   }
 
 
-  const fetchMovieDetails = async (movieId: string) => {
-    const selectedMovie = theaterMovies.find((movie) => movie._id === movieId)
+  const handleMovieChange = async (e: ChangeEvent<HTMLSelectElement>) => {
+    e.preventDefault();
+    const { name, value } = e.target;
+    const selectedMovie = theaterMovies.find((movie) => movie._id === value)
+
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
 
     if (selectedMovie) {
+      setSelectedMovie(selectedMovie)
       setReleaseDate(getIST(selectedMovie.release_date as string));
       setDuration(selectedMovie.run_time);
       setFormat([selectedMovie.format.join(',')]);
       const theaterScreens = await fetchScreen()
       const filtered = theaterScreens?.filter((screen) => selectedMovie.format.includes(screen.amenity))
-
       if (filtered) {
         setScreens(filtered ?? [])
       }
     }
 
-  }
-
-
-  const handleMovieChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    e.preventDefault();
-    const { name, value } = e.target;
-
-    setFormData((prev) => ({ ...prev, [name]: value }));
-
-    setSelectedMovie(value);
-
-    fetchMovieDetails(value);
   };
+
+
+
 
   useEffect(() => {
     fetchMovies()
@@ -129,9 +126,8 @@ const ShowFormModal: React.FC<ShowModalProps> = ({ initialData }) => {
     const isValid = handleSubmit(e)
     try {
       if (isValid) {
-        
+
         const response = await dispatch(addMovieShows(formData as unknown as IMovieShow)).unwrap()
-        console.log(response)
         if (response) {
           window.location.reload();
         }
@@ -172,15 +168,15 @@ const ShowFormModal: React.FC<ShowModalProps> = ({ initialData }) => {
                     {/* Movie selection */}
                     <div className="gap-3 w-full relative flex justify-center items-center text-center">
                       <label className="w-24 font-bold text-left" htmlFor="movie-select">Movie</label>
-                      <select value={formData.movieId} id="movie-select" onChange={handleMovieChange} name="movieId" className="select capitalize font-serif w-full border border-black max-w-xs" >
+                      <select value={formData.movieId} id="movie-select" onChange={handleMovieChange} name="movieId" className="select capitalize  font-serif w-full border border-black max-w-xs" >
                         {
                           theaterMovies.length > 0 ? (
                             <>
-                              <option disabled value=""  >select ...</option>
+                              <option disabled value="" className=" p-2 rounded-none"  >select ...</option>
                               {
                                 theaterMovies.map((movie) => (
                                   <option
-                                    className="capitalize font-serif"
+                                    className="capitalize  p-2 rounded-none  font-serif"
                                     key={movie._id}
                                     value={movie._id}
                                   >
@@ -241,25 +237,58 @@ const ShowFormModal: React.FC<ShowModalProps> = ({ initialData }) => {
                     <div className="gap-3 w-full relative flex justify-center items-center text-center">
                       <label className="w-24 font-bold text-left" htmlFor="screen-select">Screen</label>
 
-                      <select value={formData.screenId} id="movie-select" onChange={handleChange} name="screenId" className="select capitalize font-serif w-full border border-black max-w-xs" >
+                      <select value={formData.screenId} id="movie-select" onChange={handleChange} name="screenId" className="select capitalize  relative   w-full border border-black max-w-xs" >
                         {
                           screens.length > 0 ? (
                             <>
                               <option disabled value=""  >select ...</option>
                               {
                                 screens.map((screen) => (
-                                  <option
-                                    className="capitalize font-serif"
-                                    key={screen._id}
-                                    value={screen._id}
-                                  >
-                                    {screen.screen_name}
-                                  </option>
+                                
+                                    <option
+                                      className=" "
+                                      key={screen._id}
+                                      value={screen._id}
+ 
+                                    >
+                                      {screen.screen_name} - {screen.amenity}
+                                    </option>
+                                     
                                 ))
                               }
                             </>) :
                             (
                               <option disabled>No screen found</option>
+                            )
+                        }
+                      </select>
+
+                    </div>
+                    {/* language selection */}
+                    <div className="gap-3 w-full relative flex justify-center items-center text-center">
+                      <label className="w-24 font-bold text-left" htmlFor="screen-select">language</label>
+
+                      <select value={formData.language} id="language-select" onChange={handleChange} name="language" className="select capitalize font-serif w-full border border-black max-w-xs" >
+                        {
+                          selectedMovie ? (
+                            <>
+                              <option disabled value=""  >select ...</option>
+                              {
+                                selectedMovie.languages.map((language, i) => (
+                                  <option
+                                    className="capitalize font-serif"
+                                    key={`${language}-${i}`}
+                                    value={language}
+                                  >
+
+                                    {language}
+                                  </option>
+                                ))
+                              }
+                            </>
+                          ) :
+                            (
+                              <option disabled>No Languges found</option>
                             )
                         }
                       </select>
@@ -317,12 +346,41 @@ const ShowFormModal: React.FC<ShowModalProps> = ({ initialData }) => {
 }
 
 const TheaterShow: React.FC = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [shows, setShows] = useState<IGetMovieShowResponse[] | []>([])
+
+  const dispatch = useDispatch<AppDispatch>();
+
+  const getShows = async () => {
+    try {
+
+      setLoading((prev) => !prev);
+
+      const response = await dispatch(getAllShows()).unwrap()
+
+      setShows(response)
+
+    } catch (error) {
+      
+    } finally {
+      setLoading((prev) => !prev)
+    }
+  }
+
+  useEffect(() => {
+    getShows()
+  }, []);
+
   const initialData = {
     movieId: '',
+    language: '',
     screenId: '',
     showTime: '00:00',
     endTime: '00:00'
   }
+
+  if (loading) return <Loader />
+
   return (
     <>
       <div
@@ -345,40 +403,45 @@ const TheaterShow: React.FC = () => {
             </tr>
           </thead>
           <tbody className="  ">
-            <tr>
-              <th>
-                1
-              </th>
-              <td>
-                <div className="flex items-center gap-3   max-w-60  whitespace-nowrap overflow-hidden ">
-                  <div className="avatar">
-                    <div className="mask h-16 w-16">
-                      <img
-                        src="https://img.daisyui.com/images/profile/demo/2@94.webp"
-                        alt={' poster'} />
+            {
+              shows.length > 0 &&
+              shows.map((show, index) => {
+                return <tr key={show._id}>
+                  <th>
+                    {index + 1}
+                  </th>
+                  <td>
+                    <div className="flex items-center gap-3   max-w-60  whitespace-nowrap overflow-hidden ">
+                      <div className="avatar">
+                        <div className="mask h-16 w-16">
+                          <img
+                            src={getMovieSrc(show.movie.movie_poster as string)}
+                            alt={`${show.movie.movie_name}_poster`} />
+                        </div>
+                      </div>
+                      <div>
+                        <div className="max-w-60 font-semibold text-black capitalize  text-ellipsis  whitespace-nowrap overflow-hidden">{show.movie.movie_name} </div>
+                        <div className="text-sm opacity-50">{formatRunTime(show.movie.run_time)}</div>
+                        <div className="text-sm opacity-50">{getIST(show.movie.release_date as string)}</div>
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    <div className="max-w-60 font-semibold text-black capitalize  text-ellipsis  whitespace-nowrap overflow-hidden"> movie name </div>
-                    <div className="text-sm opacity-50">2h 2m</div>
-                    <div className="text-sm opacity-50">29/09/2021</div>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <span className="badge font-bold rounded-none ">9:00 AM</span>
-              </td>
-              <td>
-                <span className="badge font-bold rounded-none ">Auid 1</span>
-              </td>
-              <td className="flex justify-center items-center gap-3">
+                  </td>
+                  <td>
+                    <span className="badge font-bold rounded-none ">{show.showTime}</span>
+                  </td>
+                  <td>
+                    <span className="badge font-bold rounded-none ">{show.screen.screen_name}</span>
+                  </td>
+                  <td className="flex justify-center items-center gap-3">
 
-                <button className="btn bg-transparent hover:bg-transparent  border-none hover: join-item text-black"><FaEdit /></button>
-                <button className="btn bg-transparent hover:bg-transparent border-none hover: join-item text-red-600"><GiCancel /></button>
+                    <button className="btn bg-transparent hover:bg-transparent  border-none hover: join-item text-black"><FaEdit /></button>
+                    <button className="btn bg-transparent hover:bg-transparent border-none hover: join-item text-red-600"><GiCancel /></button>
 
-              </td>
+                  </td>
 
-            </tr>
+                </tr>
+              })
+            }
           </tbody>
           {/* foot */}
           <tfoot>

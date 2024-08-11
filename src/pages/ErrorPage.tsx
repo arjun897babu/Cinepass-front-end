@@ -1,5 +1,7 @@
 import React, { memo, MouseEvent } from "react"
 import { useNavigate } from "react-router-dom"
+import { useLoggedOwner } from "../hooks/useLoggedUser";
+import { Role } from "../interface/Interface";
 
 interface RedirectPath {
   redirectPath?: string
@@ -8,14 +10,14 @@ interface RedirectPath {
 export const ErroPage: React.FC<RedirectPath> = ({ redirectPath }) => {
 
   const navigate = useNavigate();
-
-
+  const { city } = useLoggedOwner(Role.users)
+  if (!city) navigate('/')
   const navigateHome = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (redirectPath) {
       navigate(redirectPath);
     } else {
-      navigate("/");
+      navigate(`/home/${city}`);
     }
   }
 

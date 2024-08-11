@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 
 
-
 export function useTimer(initialTime: number) {
   const [timeRemaining, setTimeRemaining] = useState(initialTime);
   const [isActive, setIsActive] = useState(true);

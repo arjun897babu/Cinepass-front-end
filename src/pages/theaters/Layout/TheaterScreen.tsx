@@ -1,28 +1,30 @@
-import { FormEvent, MouseEvent, useState } from "react"
+import { FormEvent, MouseEvent, useEffect, useRef, useState } from "react"
 import { FaArrowLeft, FaEdit } from "react-icons/fa"
 import { GiCancel } from "react-icons/gi"
 import { useDispatch } from "react-redux"
 import { AppDispatch } from "../../../redux/store"
 import { useForm } from "../../../hooks/UseForm"
-import { Role } from "../../../interface/Interface"
+import { ITheaterScreen, Role } from "../../../interface/Interface"
 import { useLoggedOwner } from "../../../hooks/useLoggedUser"
 import { useFormSubmit } from "../../../hooks/UseFormSubmitt"
-import { createTheaterScreen } from "../../../redux/actions/theaterAction"
-import { ISeat } from "../../../interface/theater/ITheaterScreen"
+import { createTheaterScreen, getScreen } from "../../../redux/actions/theaterAction"
+import { ISeat, ITheaterScreenResponse } from "../../../interface/theater/ITheaterScreen"
+import { isReponseError } from "../../../utils/customError"
+import { IoIosInformationCircleOutline } from "react-icons/io"
 
 const SeatRow: React.FC<{ rowNumber: number; columnCount: number }> = ({ rowNumber, columnCount }) => {
   const seats = Array.from({ length: columnCount }, (_, col) => (
     <div
       key={`${rowNumber}-${col + 1}`}
-      className="seat border border-blue-300 rounded-md w-7 h-7 m-0.5 flex items-center justify-center"
+      className="seat border border-blue-300 rounded-md w-7 h-7 m-0.5"
     >
-      {/* {`${String.fromCharCode(64 + rowNumber)}${col + 1}`} */}
+      
     </div>
 
   ));
 
   return (
-    <div key={rowNumber} className="relative flex justify-center items-center">
+    <div key={rowNumber} className="relative flex  items-center">
       <div className="absolute -left-7 font-light text-xs text-black flex items-center justify-center">
         {String.fromCharCode(64 + rowNumber)}
       </div>
@@ -35,52 +37,47 @@ const ColumnNumbers: React.FC<{ columnCount: number }> = ({ columnCount }) => {
   const columns = Array.from({ length: columnCount }, (_, col) => (
     <div
       key={`column-${col + 1}`}
-      className="w-7 h-7 m-0.5 flex items-center justify-center font-light text-xs text-black"
+      className="w-7 h-7 m-0.5 flex   justify-center font-light text-xs text-black"
     >
       {col + 1}
     </div>
   ));
 
   return (
-    <div className="relative -bottom-2 flex justify-center items-center mb-1">
+    <div className="relative -bottom-2 flex   items-center mb-1">
       {columns}
     </div>
   );
 };
 
-const SeatLayoutModal: React.FC<{ rows: string, column: string, id: string }> = ({ rows, column, id }) => {
+const SeatLayoutModal: React.FC<{ rows: string, column: string, id: string, action: boolean, closeModal: () => void, name: string }> = ({ rows, column, id, action, name, closeModal }) => {
 
   const rowCount = parseInt(rows, 10);
   const columnCount = parseInt(column, 10);
+  const layoutModalRef = useRef<HTMLDialogElement>(null)
 
-  const showModal = (e: MouseEvent<HTMLButtonElement>) => {
+  useEffect(() => {
+    if (layoutModalRef.current) {
+      layoutModalRef.current.showModal();
+    }
+  }, []);
+
+  const closeLayoutModal = (e: MouseEvent<HTMLButtonElement>) => {
 
     e.preventDefault();
-    e.stopPropagation();
-    const modal = document.getElementById(`${id}_seat_layout`) as HTMLDialogElement
-    if (modal && rowCount > 0 && columnCount > 0) {
-      modal.showModal()
-    }
-  }
-
-  const closeModal = (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const modal = document.getElementById(`${id}_seat_layout`) as HTMLDialogElement
-    if (modal) {
-      modal.close()
-    }
+    layoutModalRef.current?.close()
+    closeModal()
   }
 
   return (
     <>
-      <button className="btn btn-sm  bg-sky-400 " onClick={showModal}>seat layout</button>
-      <dialog id={`${id}_seat_layout`} className="modal">
-        <div className="relative modal-box w-11/12 max-w-5xl">
 
-          <button onClick={closeModal} className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+      <dialog ref={layoutModalRef} id={`${id}_seat_layout`} className="modal overflow-x-visible ">
+        <div className="relative modal-box max-w-max">
 
-          <h3 className="font-bold text-2xl text-center uppercase">screen layout </h3>
+          <button onClick={closeLayoutModal} className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+
+          <h3 className="text-xl text-center uppercase">screen layout <span className="font-bold text-2xl">{name}</span>  </h3>
           <div className="p-3 relative  ">
             {Array.from({ length: rowCount }, (_, row) => (
               <SeatRow key={row + 1} rowNumber={row + 1} columnCount={columnCount} />
@@ -94,12 +91,51 @@ const SeatLayoutModal: React.FC<{ rows: string, column: string, id: string }> = 
 }
 
 const TheaterScreen: React.FC = () => {
-
+  const dispatch = useDispatch<AppDispatch>();
   const [addForm, setAddForm] = useState(false);
   const [updateForm, setUpdateForm] = useState(false);
-  const dispatch = useDispatch<AppDispatch>();
+  const [screens, setScreens] = useState<ITheaterScreenResponse[] | []>([]);
+  const [selectedScreen, setSelectedScreen] = useState<ITheaterScreenResponse | null>(null)
+  const [showmodal, setShowmodal] = useState<boolean>(false);
+
+  const closeViewModal = () => {
+    setSelectedScreen(null)
+  }
+  const closeModal = () => {
+    setShowmodal(false)
+  }
+
+  const setLayoutView = (e: MouseEvent<HTMLButtonElement>) => {
+
+    e.preventDefault();
+    const _id = e.currentTarget.getAttribute('data-id');
+    if (_id) {
+      const [screen] = screens.filter(screen => screen._id === _id);
+      setSelectedScreen(screen);
+    }
+  }
   const { error } = useLoggedOwner(Role.theaters);
 
+  const fetchScreen = async () => {
+
+    try {
+      const response = await dispatch(getScreen()).unwrap()
+      if (response) {
+        setScreens(response)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    fetchScreen()
+  }, [])
+  const setActionModal = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    if (parseInt(formData.column, 10) > 0 && parseInt(formData.rows, 10) > 0)
+      setShowmodal(true)
+  }
   const initialStat = {
     screen_name: '',
     rows: '',
@@ -139,7 +175,7 @@ const TheaterScreen: React.FC = () => {
 
     try {
       if (isValid) {
-        const screenLayout = [];
+
       }
       setUpdateForm(false)
 
@@ -170,13 +206,23 @@ const TheaterScreen: React.FC = () => {
           screenLayout.push(row);
         }
 
-        const response = await dispatch(createTheaterScreen({ ...formData, layout: screenLayout }))
-
-        console.log(response)
+        const response = await dispatch(createTheaterScreen({ ...formData, layout: screenLayout })).unwrap()
       }
       setUpdateForm(false)
     } catch (error) {
-      console.log(error)
+
+      if (isReponseError(error)) {
+
+        setInputError((prev) => (
+          {
+            ...prev,
+            [error.data.error]: error.data.message
+          }
+        )
+        )
+      }
+    } finally {
+
     }
   }
 
@@ -184,257 +230,200 @@ const TheaterScreen: React.FC = () => {
   return (
     <>
       {!addForm ? (<>
-        <div className="join mb-7">
-          <button className="btn join-item capitalize mr-5 ">screen 1</button>
-          <button className="btn join-item capitalize mr-5 ">screen 2</button>
-          <button className="btn  join-item capitalize mr-5 ">screen 3</button>
+        <div
+          className="flex justify-end items-center mb-6">
+          <button className="btn btn-neutral float-end capitalize" onClick={showAddForm}>Add Screen</button>
         </div>
-        <button className="btn btn-neutral float-end capitalize" onClick={showAddForm}>Add Screen</button>
+
+        <div
+          className="overflow-x-auto overflow-y-hidden">
+          <table className="table ">
+            {/* head */}
+            <thead className=" ">
+              <tr>
+                <th>
+                </th>
+                <th className="font-bold text-black">Name</th>
+                <th className="font-bold text-black">Seating Capacity</th>
+                <th className="font-bold text-black text-center">Action</th>
+                <th > </th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody className="  ">
+              {
+                screens.length > 0 &&
+                screens.map((screen, index) => {
+                  return <tr key={screen._id}>
+                    <th>
+                      {index + 1}
+                    </th>
+                    <td>
+                      {screen.screen_name}
+                    </td>
+                    <td>
+                      <span className="badge font-bold rounded-none ">{screen.seating_capacity}</span>
+                    </td>
+                    <td className="flex justify-center items-center gap-3">
+
+                      <button className="btn bg-transparent hover:bg-transparent  border-none hover: join-item text-black"><FaEdit /></button>
+                      <button className="btn bg-transparent hover:bg-transparent border-none hover: join-item text-red-600"><GiCancel /></button>
+                    </td>
+                    <td>
+                      <button className="btn btn-sm   bg-sky-400" data-id={screen._id} onClick={setLayoutView}  >Seat Layout</button>
+                    </td>
+
+                  </tr>
+                })
+              }
+            </tbody>
+            {/* foot */}
+            <tfoot>
+
+            </tfoot>
+          </table>
+
+          {selectedScreen && <SeatLayoutModal action={false} column={`${selectedScreen?.column}`} id={`${selectedScreen?._id}`} rows={`${selectedScreen?.rows}`} closeModal={closeViewModal} name={selectedScreen.screen_name} />}
+        </div>
       </>)
         :
         (
-          <button className="flex gap-4 items-center capitalize" onClick={showAddForm}>
-            <i><FaArrowLeft /></i>
-            back
-          </button>
+
+          <>
+            <button className="flex gap-4 items-center capitalize" onClick={showAddForm}>
+              <i><FaArrowLeft /></i>
+              back
+            </button>
+            <div className="flex justify-center ">
+              <div className={` ${!addForm ? 'hidden' : ''} rounded-lg mt-9 border  border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark p-5`}>
+                <div className="mt-4">
+                  <form action="flex flex-col gap-1" id="screenForm" onSubmit={handleAddScreen}>
+                    <div className="p-2 mt-1 gap-3 w-full relative flex justify-center items-center text-center">
+                      <label className='w-24 text-left text-black capitalize text-sm' htmlFor="screen_name">screen name</label>
+                      <div className="relative w-full">
+                        <input
+                          className="p-2 border rounded-md w-full focus:outline-none text-sm"
+                          type="text"
+                          name="screen_name"
+                          placeholder="screen name"
+                          onChange={handleChange}
+                          value={formData.screen_name}
+                        />
+                        {inputError.screen_name && <small className='text-red-600 capitalize absolute left-0 -bottom-4  '>{inputError.screen_name}</small>}
+                        {error?.error === 'screen_name' && <small className='text-red-600 capitalize absolute left-0 -bottom-4  '>{error.message}</small>}
+                      </div>
+                    </div>
+                    <div className="p-2 mt-1 gap-3 w-full relative flex justify-center items-center text-center">
+                      <label className='w-24 text-left text-black capitalize text-sm' htmlFor="rows">rows</label>
+                      <div className="relative w-full">
+                        <input
+                          className="p-2 border rounded-md w-full focus:outline-none text-sm"
+                          type="number"
+                          name="rows"
+                          placeholder="rows"
+                          onChange={handleChange}
+                          value={formData.rows}
+                        />
+                        {inputError.rows && <small className='text-red-600 capitalize absolute left-0 -bottom-4  '>{inputError.rows}</small>}
+                        {error?.error === 'rows' && <small className='text-red-600 capitalize absolute left-0 -bottom-4  '>{error.message}</small>}
+                      </div>
+                    </div>
+                    <div className="p-2 mt-1 gap-3 w-full relative flex justify-center items-center text-center">
+                      <label className='w-24 text-left text-black capitalize text-sm' htmlFor="column">columns</label>
+                      <div className="relative w-full">
+                        <input
+                          className="p-2 border rounded-md w-full focus:outline-none text-sm"
+                          type="number"
+                          name="column"
+                          placeholder="columns"
+                          onChange={handleChange}
+                          value={formData.column}
+                        />
+                        {inputError.column && <small className='text-red-600 capitalize absolute left-0 -bottom-4  text-xs'>{inputError.column}</small>}
+                        {error?.error === 'column' && <small className='text-red-600 capitalize absolute left-0 -bottom-4  text-xs'>{error.message}</small>}
+                      </div>
+                    </div>
+                    <div className="p-2 mt-1 gap-3 w-full relative flex justify-center items-center">
+                      <label className='w-24 text-left text-black capitalize text-sm' htmlFor="select-amenity">amenity</label>
+                      <div className="relative w-full">
+                        <select
+                          className="p-2 border rounded-md w-5/6 focus:outline-none text-sm"
+                          name="amenity"
+                          id="select-amenity"
+                          onChange={handleChange}
+                          value={formData.amenity}
+                        >
+                          <option value="" disabled>select...</option>
+                          <option value="2D">2D</option>
+                          <option value="3D">3D</option>
+                          <option value="4K">4K</option>
+                          <option value="IMAX">IMAX</option>
+                        </select>
+                        {inputError.amenity && <small className='text-red-600 capitalize absolute left-0 -bottom-4  text-xs'>{inputError.amenity}</small>}
+                        {error?.error === 'amenity' && <small className='text-red-600 capitalize absolute left-0 -bottom-4  text-xs'>{error.message}</small>}
+                      </div>
+                    </div>
+                    <div className="p-2 mt-1 gap-3 w-full relative flex justify-center items-center text-center">
+                      <label className='w-24 text-left text-black capitalize text-sm' htmlFor="chargePerSeat">charge per seat</label>
+                      <div className="relative w-full">
+                        <input
+                          className="p-2 border rounded-md w-full focus:outline-none text-sm"
+                          type="number"
+                          name="chargePerSeat"
+                          placeholder="charge per seat"
+                          onChange={handleChange}
+                          value={formData.chargePerSeat}
+                        />
+                        {inputError.chargePerSeat && <small className='text-red-600 capitalize absolute left-0 -bottom-4  text-xs'>{inputError.chargePerSeat}</small>}
+                        {error?.error === 'chargePerSeat' && <small className='text-red-600 capitalize absolute left-0 -bottom-4  text-xs'>{error.message}</small>}
+                      </div>
+                    </div>
+                    <div className="p-2 mt-1 gap-3 w-full relative flex justify-center items-center text-center">
+                      <label className='w-24 text-left text-black capitalize text-sm' htmlFor="seating_capacity">seating capacity</label>
+                      <div className="relative w-full">
+                        <input
+                          className="p-2 border rounded-md w-full focus:outline-none text-sm"
+                          type="number"
+                          name="seating_capacity"
+                          placeholder="seating capacity"
+                          onChange={handleChange}
+                          value={formData.seating_capacity}
+                          readOnly={true}
+                        />
+                        {inputError.seating_capacity && <small className='text-red-600 capitalize absolute left-0 -bottom-4  text-xs'>{inputError.seating_capacity}</small>}
+                        {error?.error === 'seating_capacity' && <small className='text-red-600 capitalize absolute left-0 -bottom-4  text-xs'>{error.message}</small>}
+                      </div>
+                       
+                    </div>
+                    <div className="flex justify-end gap-2">
+                      <button type="button" className="btn btn-sm  bg-sky-400 hover:bg-sky-500" onClick={setActionModal}>Seat Layout</button>
+                    </div>
+                    <div className="flex justify-center mt-4">
+                      <button className="btn btn-wide bg-sky-400 hover:bg-sky-500 text-white text-sm" type="submit">submit</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+
+              {showmodal && <SeatLayoutModal action={true} rows={formData.rows} column={formData.column} id={'screenForm'} closeModal={closeModal} name={formData.screen_name} />}
+            </div>
+          </>
         )
       }
 
 
-      <div className="w-full flex justify-center items-center mx-auto">
-
-        <div className="relative w-full">
-          <div className={`card ${addForm ? 'hidden' : ''} border-2 rounded-none border-sky-100`}>
-            <div className="card-body">
-              {/* Header Section */}
-              <h2 className="card-title  justify-center border-b-4 pb-2 uppercase ">Screen details</h2>
-              <div className="bg-sky-400">
-                <div className={`${!updateForm ? 'justify-between' : 'justify-center'} flex  items-center p-2`}>
-                  <div className="bg-black text-white px-3 rounded">
-                    <h2 className="text-xl">AUDI 1</h2>
-                  </div>
-                  {!updateForm && <div className="join join-horizontal">
-                    <button onClick={showUpdateForm} className="btn bg-transparent hover:bg-transparent  border-none hover: join-item text-black"><FaEdit /></button>
-                    <button className="btn bg-transparent hover:bg-transparent border-none hover: join-item text-red-600"><GiCancel /></button>
-                  </div>}
-                </div>
-              </div>
-              {/* Header Section */}
-              {/* Screen Details Section */}
-              <div className="mt-4">
-                {/* update screen form */}
-                <form action="flex flex-col w-full gap-1" id="updateForm" onSubmit={updateFormSubmit}>
-                  <div className="p-2 mt-1  gap-3 w-full relative flex justify-center items-center text-center">
-                    <label className='w-24 text-left text-black capitalize' htmlFor="screen_name">screen name</label>
-                    <div className="relative w-full">
-                      <input
-                        readOnly={!updateForm}
-                        className="p-2 border cursor-not-allowed text-gray-400 rounded-md w-full focus:outline-none"
-                        type="text"
-                        name="screen_name"
-                        placeholder="screen name"
-                        value={formData.screen_name}
-                        onChange={handleChange}
-
-                      />
-                      {inputError.screen_name && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.screen_name}</small>}
-                      {error?.error === 'screen_name' && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{error.message}</small>}
-                    </div>
-                  </div>
-                  <div className="p-2 mt-1  gap-3 w-full relative flex justify-center items-center text-center">
-                    <label className='w-24 text-left text-black capitalize' htmlFor="rows">rows</label>
-                    <div className="relative w-full">
-                      <input
-                        readOnly={!updateForm}
-                        className="p-2 border cursor-not-allowed text-gray-400 rounded-md w-full focus:outline-none"
-                        type="text"
-                        name="rows"
-                        placeholder="rows"
-                        onChange={handleChange}
-                        value={formData.rows}
-                      />
-                      {inputError.rows && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.rows}</small>}
-                      {error?.error === 'rows' && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{error.message}</small>}
-                    </div>
-                  </div>
-                  <div className="p-2 mt-1  gap-3 w-full relative flex justify-center items-center text-center">
-                    <label className='w-24 text-left text-black capitalize' htmlFor="column">columns</label>
-                    <div className="relative w-full">
-                      <input
-                        readOnly={!updateForm}
-                        className="p-2 border cursor-not-allowed text-gray-400 rounded-md w-full focus:outline-none"
-                        type="text"
-                        name="column"
-                        placeholder="columns"
-                        onChange={handleChange}
-                        value={formData.column}
-
-                      />
-                      {inputError.column && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.column}</small>}
-                      {error?.error === 'column' && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{error.message}</small>}
-                    </div>
-                  </div>
-                  <div className="p-2 mt-1  gap-3 w-full relative flex justify-center items-center text-center">
-                    <label className='w-24 text-left text-black capitalize' htmlFor="chargePerSeat">charge per seat</label>
-                    <div className="relative w-full">
-                      <input
-                        readOnly={!updateForm}
-                        className="p-2 border cursor-not-allowed text-gray-400 rounded-md w-full focus:outline-none"
-                        type="text"
-                        name="chargePerSeat"
-                        placeholder="charge per seat"
-                        onChange={handleChange}
-                        value={formData.chargePerSeat}
-                      />
-                      {inputError.chargePerSeat && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.chargePerSeat}</small>}
-                      {error?.error === 'chargePerSeat' && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{error.message}</small>}
-                    </div>
-                  </div>
-                  <div className="p-2 mt-1  gap-3 w-full relative flex justify-center items-center text-center">
-                    <label className='w-24 text-left text-black capitalize' htmlFor="seating_capacity">seating capacity</label>
-                    <div className="relative w-full">
-                      <input
-                        readOnly={true}
-                        className="p-2 border cursor-not-allowed text-gray-400 rounded-md w-full focus:outline-none"
-                        type="text"
-                        name="seating_capacity"
-                        placeholder="seating capacity"
 
 
-                        value={formData.seating_capacity}
-                      />
-                      {inputError.seating_capacity && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.seating_capacity}</small>}
-                      {error?.error === 'seating_capacity' && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{error.message}</small>}
-                    </div>
-                    <SeatLayoutModal rows={formData.rows} column={formData.column} id="updateForm" />
-                  </div>
-                  {updateForm && <div className="flex justify-center mt-4">
-                    <button className="btn btn-wide bg-sky-400 hover:bg-sky-500 text-white" type="submit">Update</button>
-                  </div>}
-                </form>
-                {/* update screen form */}
 
-              </div>
-            </div>
-          </div>
 
-          {/* add screen form */}
-          <div className={`card ${!addForm ? 'hidden' : ''}  rounded-sm  mt-2 border border-gray-200`}>
-            <div className="card-body">
 
-              <h2 className="card-title justify-center border-b-4  pb-2 uppercase ">Add screen</h2>
+      {/* add screen form */}
 
-              {/* Screen Details Section */}
-              <div className="mt-4">
-                <form action="flex flex-col gap-1" id="screenForm" onSubmit={handleAddScreen}>
-                  <div className="p-2 mt-1  gap-3 w-full relative flex justify-center items-center text-center">
-                    <label className='w-24 text-left text-black capitalize' htmlFor="screen_name">screen name</label>
-                    <div className="relative w-full">
-                      <input
-                        className="p-2 border  text-gray-400 rounded-md w-full focus:outline-none"
-                        type="text"
-                        name="screen_name"
-                        placeholder="screen name"
-                        onChange={handleChange}
-                        value={formData.screen_name}
 
-                      />
-                      {inputError.screen_name && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.screen_name}</small>}
-                      {error?.error === 'screen_name' && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{error.message}</small>}
-                    </div>
-                  </div>
-                  <div className="p-2 mt-1  gap-3 w-full relative flex justify-center items-center text-center">
-                    <label className='w-24 text-left text-black capitalize' htmlFor="rows">rows</label>
-                    <div className="relative w-full">
-                      <input
-                        className="p-2 border  text-gray-400 rounded-md w-full focus:outline-none"
-                        type="number"
-                        name="rows"
-                        placeholder="rows"
-                        onChange={handleChange}
-                        value={formData.rows}
-                      />
-                      {inputError.rows && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.rows}</small>}
-                      {error?.error === 'rows' && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{error.message}</small>}
-                    </div>
-                  </div>
-                  <div className="p-2 mt-1  gap-3 w-full relative flex justify-center items-center text-center">
-                    <label className='w-24 text-left text-black capitalize' htmlFor="column">columns</label>
-                    <div className="relative w-full">
-                      <input
-                        className="p-2 border  text-gray-400 rounded-md w-full focus:outline-none"
-                        type="number"
-                        name="column"
-                        placeholder="columns"
-                        onChange={handleChange}
-                        value={formData.column}
-                      />
-                      {inputError.column && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.column}</small>}
-                      {error?.error === 'column' && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{error.message}</small>}
-                    </div>
-                  </div>
-                  <div className="p-2 mt-1  gap-3 w-full relative flex justify-center items-center ">
-                    <label className='w-24 text-left text-black capitalize' htmlFor="select-amenity">amenity</label>
-                    <div className="relative w-full">
-                      <select
-                        className="p-2 border select text-gray-400 rounded-md w-1/2 focus:outline-none"
-                        name="amenity"
-                        id="select-amenity"
-                        onChange={handleChange}
-                        value={formData.amenity}
-                      >
-                        <option value="" disabled>select...</option>
-                        <option value="2D">2D</option>
-                        <option value="3D">3D</option>
-                        <option value="4K">4K</option> 
-                        <option value="IMAX">IMAX</option>
-                      </select>
-                      {inputError.amenity && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.amenity}</small>}
-                      {error?.error === 'amenity' && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{error.message}</small>}
-                    </div>
-                  </div>
-                  <div className="p-2 mt-1  gap-3 w-full relative flex justify-center items-center text-center">
-                    <label className='w-24 text-left text-black capitalize' htmlFor="chargePerSeat">charge per seat</label>
-                    <div className="relative w-full">
-                      <input
-                        className="p-2 border  text-gray-400 rounded-md w-full focus:outline-none"
-                        type="number"
-                        name="chargePerSeat"
-                        placeholder="charge per seat"
-                        onChange={handleChange}
-                        value={formData.chargePerSeat}
-                      />
-                      {inputError.chargePerSeat && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.chargePerSeat}</small>}
-                      {error?.error === 'chargePerSeat' && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{error.message}</small>}
-                    </div>
-                  </div>
-                  <div className="p-2 mt-1  gap-3 w-full relative flex justify-center items-center text-center">
-                    <label className='w-24 text-left text-black capitalize' htmlFor="seating_capacity">seating capacity</label>
-                    <div className="relative w-full">
-                      <input
-                        className="p-2 border  text-gray-400 rounded-md w-full focus:outline-none"
-                        type="number"
-                        name="seating_capacity"
-                        placeholder="seating capacity"
-                        onChange={handleChange}
-                        value={formData.seating_capacity}
-                        readOnly={true}
-                      />
-                      {inputError.seating_capacity && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.seating_capacity}</small>}
-                      {error?.error === 'seating_capacity' && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{error.message}</small>}
-                    </div>
-                    <SeatLayoutModal rows={formData.rows} column={formData.column} id={'screenForm'} />
-                  </div>
-                  <div className="flex justify-center mt-4">
-                    <button className="btn btn-wide bg-sky-400 hover:bg-sky-500 text-white" type="submit">submit</button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
 
-      </div >
+
+
+
     </>
   )
 }

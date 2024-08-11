@@ -29,8 +29,6 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
     dispatch(clearTheaterError())
   }, [])
 
-  console.log('states in the theater login page', error, loading)
-
   const { formData, handleChange, inputError, setInputError } = useForm({
     name: '',
     email: '',
@@ -41,10 +39,9 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
     theater_name: '',
     theater_license: '',
     address: '',
-    city:''
+    city: ''
   }, Role.theaters)
-    ;
-  console.log('theater form data', formData);
+
 
   const { handleSubmit } = useFormSubmit(formData, setInputError);
 
@@ -58,6 +55,7 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
           navigate(result.redirectURL)
         }
       }
+    
     } catch (error) {
       if (isErrorResponse(error)) {
         console.log('theater signup error', error)
@@ -229,8 +227,8 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
                   value={formData.city}
                   onChange={handleChange}
                 />
-                {inputError.city && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.city}</small>}
-                {inputError.city && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.city}</small>}
+                {inputError.city && <small className='text-red-600 capitalize absolute right-20 -bottom-5 font-mono '>{inputError.city}</small>}
+                {inputError.city && <small className='text-red-600 capitalize absolute right-20 -bottom-5 font-mono '>{inputError.city}</small>}
               </div>
             </div>
 

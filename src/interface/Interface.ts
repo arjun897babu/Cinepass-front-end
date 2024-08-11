@@ -1,3 +1,4 @@
+import { FieldValues } from "react-hook-form";
 import { ITheaterOwnerEntity } from "./theater/ITheaterOwner";
 import { ITheaterScreenResponse } from "./theater/ITheaterScreen";
 
@@ -65,21 +66,21 @@ export interface ICast {
   name: string;
 }
 
-export interface IMovie {
+export interface IMovie   {
   _id?: string;
-
   movie_name: string;
   languages: string[];
   release_date: (string | Date);
   run_time: string;
   genres: string[];
   format: string[];
-  cover_photo?: string;
+  cover_photo: string | File;
   listed?: boolean;
-  movie_poster?: string;
+  movie_poster: string | File;
   cast?: ICast[];
   trailer?: string;
-  file?: string
+  file?: string;
+  plan?:string
 }
 
 export interface ISeat {
