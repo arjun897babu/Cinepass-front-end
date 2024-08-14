@@ -1,30 +1,31 @@
 
-import React, { FormEvent, useEffect, useState } from 'react';
+import React, { FormEvent, useEffect } from 'react';
 import '../../index.css';
 import { Link, useNavigate } from 'react-router-dom'
 import backGroundImage from '/Iconic Movie Posters Collage.webp';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../redux/store';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../redux/store';
 import { signUpUser } from '../../redux/actions/userAction';
 import { useForm } from '../../hooks/UseForm';
 import { useFormSubmit } from '../../hooks/UseFormSubmitt';
 import { clearUserError } from '../../redux/reducers/userReducer';
 import { useLoggedOwner } from '../../hooks/useLoggedUser';
 import { ResponseStatus, Role } from '../../interface/Interface';
+import { PasswordInput } from '../../component/PasswordInput';
 
 export const UserSignUp: React.FC = (): JSX.Element => {
 
   const navigate = useNavigate()
 
   let background_image_path = { backgroundImage: `url(${backGroundImage})` };
- 
+
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     dispatch(clearUserError())
   }, [])
 
-  const { error, isAuthenticated } = useLoggedOwner(Role.users);
+  const { error } = useLoggedOwner(Role.users);
 
   const { formData, handleChange, inputError, setInputError } = useForm({
     name: '',
@@ -119,34 +120,25 @@ export const UserSignUp: React.FC = (): JSX.Element => {
               {inputError.mobile_number && <small className='text-red-600 capitalize absolute -bottom-2.5 left-3'>{inputError.mobile_number}</small>}
               {error?.error === 'mobile_number' && <small className='text-red-600 capitalize absolute -bottom-3 left-3'>{error.message}</small>}
 
-            </div>
-
-            <div className="p-2 mt-1 text-white rounded-md w-full relative">
-              <label htmlFor="password">Password</label>
-              <input
-                className="p-2 mt-3 text-black rounded-md w-full focus:outline"
-                type="password"
-                name="password"
-                onChange={handleChange}
-                placeholder="Password"
-                value={formData.password}
-              />
-              {inputError.password && <small className='text-red-600 capitalize absolute -bottom-2.5 left-3'>{inputError.password}</small>}
-              {error?.error === 'password' && <small className='text-red-600 capitalize absolute -bottom-3 left-3'>{error.message}</small>}
-            </div>
-
-            <div className="p-2 mt-1 text-white rounded-md w-full relative">
-              <label htmlFor="confirm_password">Confirm Password</label>
-              <input
-                className="p-2 mt-3 text-black rounded-md w-full focus:outline"
-                type="password"
-                name="confirm_password"
-                placeholder="Confirm Password"
-                onChange={handleChange}
-              />
-              {inputError.confirm_password && <small className='text-red-600 capitalize absolute -bottom-2.5 left-3'>{inputError.confirm_password}</small>}
-
-            </div>
+            </div> 
+            
+            <PasswordInput
+              label='password'
+              name='password'
+              onChange={handleChange}
+              placeholder='enter your password'
+              value={formData.password}
+              inputError={inputError.password ? inputError.password : undefined}
+              responseError={error?.error === 'password' ? error.message : undefined}
+            />
+            <PasswordInput
+              label='confirm password'
+              name='confirm_password'
+              onChange={handleChange}
+              placeholder='re enter your password'
+              value={formData.confirm_password}
+              inputError={inputError.confirm_password ? inputError.confirm_password : undefined}
+            /> 
 
             <button type='submit' className="bg-black  mt-4 rounded-md text-white py-2">
               Register
@@ -162,10 +154,22 @@ export const UserSignUp: React.FC = (): JSX.Element => {
         </div>
 
       </div>
-   
+
 
     </section>
   )
 }
 
 
+  {/* <div className="p-2 mt-1 text-white rounded-md w-full relative">
+              <label htmlFor="confirm_password">Confirm Password</label>
+              <input
+                className="p-2 mt-3 text-black rounded-md w-full focus:outline"
+                type="password"
+                name="confirm_password"
+                placeholder="Confirm Password"
+                onChange={handleChange}
+              />
+              {inputError.confirm_password && <small className='text-red-600 capitalize absolute -bottom-2.5 left-3'>{inputError.confirm_password}</small>}
+
+            </div> */}

@@ -14,6 +14,7 @@ export const userEndPoints: UserEndpoint = {
   getMovieShows: (city) => `/users/get-shows/${city}`,
   getAllCities: `/users/get-cities`,
   getAllMovies: (city) => `/users/get-movies/${city}`,
+  getSingleMovie: (city, movieId) => `/users/get-movies/${city}?movieId=${movieId}`,
 };
 
 export const theatersEndPoints: TheaterEndpoint = {
@@ -24,12 +25,12 @@ export const theatersEndPoints: TheaterEndpoint = {
   verifyOTP: '/theaters/otp-verification',
   resendOTP: '/theaters/resend-otp',
   forgotPassword: '/theaters/forgot-password',
-  resetPassword: (token: string) => `/theaters /reset - password/${token}`,
+  resetPassword: (token: string) => `/theaters/reset-password/${token}`,
   getTheaterDetails: `/theaters/theater`,
   updateTheater: `/theaters/update-theater`,
   createScreen: `theaters/add-screen`,
   getMovie: (movieType) => `/theaters/get-movie/${movieType}`,
-  getScreen: `/theaters/get-screen`,
+  getScreen: `/theaters/get-allScreen`,
   addMovieShows: `/theaters/add-shows`,
   getMovieShows: `/theaters/get-shows`
 
@@ -45,4 +46,3 @@ export const adminEndpoints: AdminEndpoint = {
   addMovie: (movieType) => `/admin/add-movie/${movieType}`,
   getMovie: (movieType) => `admin/get-movie/${movieType}`
 }
-

@@ -66,7 +66,7 @@ export interface ICast {
   name: string;
 }
 
-export interface IMovie   {
+export interface IMovie {
   _id?: string;
   movie_name: string;
   languages: string[];
@@ -80,7 +80,8 @@ export interface IMovie   {
   cast?: ICast[];
   trailer?: string;
   file?: string;
-  plan?:string
+  plan?: string;
+  slug?: string
 }
 
 export interface ISeat {

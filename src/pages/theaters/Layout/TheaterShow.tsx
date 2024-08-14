@@ -12,6 +12,7 @@ import { calculateEndTime, formatEndTime, formatRunTime, getIST, getMovieSrc, ge
 import { IMovieShow } from "../../../interface/theater/IMovieShow"
 import { ITheaterScreenResponse } from "../../../interface/theater/ITheaterScreen"
 import { useFormSubmit } from "../../../hooks/UseFormSubmitt"
+import { Language } from "../../../utils/validator"
 
 interface ShowModalProps {
   initialData: { [key: string]: string };
@@ -222,15 +223,30 @@ const ShowFormModal: React.FC<ShowModalProps> = ({ initialData }) => {
                     {/* format */}
                     <div className="gap-3 w-full relative flex justify-center items-center text-center">
                       <label className="w-24 font-bold text-left" htmlFor="format">Format</label>
-                      <input
-                        type="text"
-                        id="format"
-                        name="format"
-                        className="input w-full border border-gray-400 text-gray-500 max-w-xs"
-                        placeholder="viewing experience"
-                        readOnly
-                        value={format}
-                      />
+                      <select value={formData.format} id="format-select" onChange={handleChange} name="format" className="select capitalize font-serif w-full border border-black max-w-xs" >
+                        {
+                          selectedMovie ? (
+                            <>
+                              <option disabled value=""  >select ...</option>
+                              {
+                                selectedMovie.format.map((format, i) => (
+                                  <option
+                                    className="capitalize font-serif"
+                                    key={`${format}-${i}`}
+                                    value={format}
+                                  >
+
+                                    {format}
+                                  </option>
+                                ))
+                              }
+                            </>
+                          ) :
+                            (
+                              <option disabled>No Languges found</option>
+                            )
+                        }
+                      </select>
                     </div>
 
                     {/* Screen selection */}
@@ -373,8 +389,9 @@ const TheaterShow: React.FC = () => {
 
   const initialData = {
     movieId: '',
-    language: '',
     screenId: '',
+    language: '',
+    format:'',
     showTime: '00:00',
     endTime: '00:00'
   }

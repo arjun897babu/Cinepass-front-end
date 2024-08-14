@@ -16,6 +16,7 @@ export interface UserEndpoint extends IEndPoints {
   getMovieShows: (city: string) => string
   getAllCities: string
   getAllMovies: (city: string) => string
+  getSingleMovie: (city: string, movieId: string) => string
 }
 export interface TheaterEndpoint extends IEndPoints {
   signup: string;

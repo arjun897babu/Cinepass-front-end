@@ -52,7 +52,7 @@ const regex = {
   theater_name: /^(?=.{3,100}$)[a-zA-Z0-9,]+(?: [a-zA-Z0-9,]+)*$/,
   address: /^(?=.{30,120}$)[a-zA-Z0-9, ]+$/,
   city: /^(?=.{3,25}$)[a-zA-Z]+(?: [a-zA-Z]+)*$/,
-  theater_license: /^[a-zA-Z]$/,
+  theater_license: /^[a-zA-Z0-9]+$/,
   password: /^[a-zA-Z0-9]/,
   screen_name: /^[a-zA-Z]+(?: [0-9]+)*$/,
   row_col: /^\d/,

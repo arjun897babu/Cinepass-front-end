@@ -12,6 +12,7 @@ import { ResponseStatus, Role } from '../../interface/Interface';
 import { isErrorResponse } from '../../utils/customError';
 import { useLoggedOwner } from '../../hooks/useLoggedUser';
 import { clearAdminError } from '../../redux/reducers/adminReducer';
+import { PasswordInput } from '../../component/PasswordInput';
 
 export const AdminLogin: React.FC = (): JSX.Element => {
   const dispatch = useDispatch<AppDispatch>();
@@ -23,7 +24,7 @@ export const AdminLogin: React.FC = (): JSX.Element => {
   const { formData, inputError, setInputError, handleChange } = useForm({
     email: '',
     password: ''
-  },Role.admin);
+  }, Role.admin);
 
   const { handleSubmit } = useFormSubmit(formData, setInputError);
 
@@ -61,7 +62,7 @@ export const AdminLogin: React.FC = (): JSX.Element => {
           </h1>
           {/* form */}
           <form onSubmit={onSubmit} className="flex flex-col gap-1 ">
-
+            
             <div className="p-2 mt-1 text-white rounded-md w-full relative ">
               <label htmlFor="email">Email</label>
               <input
@@ -76,21 +77,15 @@ export const AdminLogin: React.FC = (): JSX.Element => {
               {error?.error === 'email' && <span className='text-red-600 capitalize absolute left-3 -bottom-4 font-mono text-sm '>{error.message}</span>}
 
             </div>
-            <div className="p-2 mt-1  text-white rounded-md w-full relative">
-              <label htmlFor="Password">Password</label>
-              <input
-                className="p-2 mt-3  text-black rounded-md w-full focus:outline"
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="password"
-              />
-              {inputError?.password && <span className='text-red-600 capitalize absolute left-3 -bottom-4 font-mono text-sm ' >{inputError?.password}</span>}
-              {error?.error === 'password' && <span className='text-red-600 capitalize absolute left-3 -bottom-4 font-mono text-sm '>{error.message}</span>}
-            </div>
-
-
+            <PasswordInput
+              label='password'
+              name='password'
+              onChange={handleChange}
+              placeholder='enter your password'
+              value={formData.password}
+              inputError={inputError.password ? inputError.password : undefined}
+              responseError={error?.error === 'password' ? error.message : undefined}
+            />
             <button className="bg-black rounded-md mt-4 text-white py-2  ">
               Login
             </button>

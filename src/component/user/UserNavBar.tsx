@@ -9,7 +9,7 @@ import { AppDispatch } from '../../redux/store'
 import { logoutUser } from '../../redux/actions/userAction'
 import { useLoggedOwner } from '../../hooks/useLoggedUser'
 import { Role } from '../../interface/Interface'
- 
+
 
 const UserNavBar: React.FC = (): JSX.Element => {
 
@@ -18,8 +18,11 @@ const UserNavBar: React.FC = (): JSX.Element => {
   const [open, setOpen] = useState(false); // State for dropdown menu toggle
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate();
-  const { loggedOwner, isAuthenticated } = useLoggedOwner(Role.users);// state for logged in user
-  
+  const { loggedOwner, isAuthenticated, city } = useLoggedOwner(Role.users);// state for logged in user
+
+  if (!city) {
+    navigate('/')
+  }
 
   // Handler for toggle
   const handleToggle = () => {
@@ -58,15 +61,15 @@ const UserNavBar: React.FC = (): JSX.Element => {
               />
           }
         </button>
-        <Link to={'/'}>
-          <div className="gap-3 flex items-center  ml-12 md:ml-0 " >
+        <Link  to={`/home/${city}`}>
+          <div className="gap-3 flex items-center  ml-12 md:ml-0 ">
             <img src={logo} alt="Cine pass Logo" className='object-cover max-w-20 max-h-20' />
             <span className='dancing-script text-2xl text-center align-middle '>Cinepass</span>
           </div>
         </Link>
 
         <div className="nav_menu hidden  md:gap-2 lg:gap-5 md:flex   ">
-          <Link className='hover:bg-blue-100 uppercase p-3 font-semibold  ' to={'/'}>Home <span></span></Link>
+          <Link className='hover:bg-blue-100 uppercase p-3 font-semibold  '  to={`/home/${city}`}>Home <span></span></Link>
           <Link className='hover:bg-blue-100 uppercase p-3 font-semibold ' to={'/movies'}>movies</Link>
           <Link className='hover:bg-blue-100 uppercase p-3 font-semibold ' to={'/cinemas'}>cinemas</Link>
           <Link className='hover:bg-blue-100 uppercase p-3 font-semibold ' to={'/streams'}>streams</Link>

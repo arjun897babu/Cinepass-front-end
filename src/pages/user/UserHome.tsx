@@ -24,8 +24,7 @@ const UserHome: React.FC = () => {
   const fetchMovies = async () => {
     try {
 
-      setLoading((prev) => !prev);
-
+      setLoading(true);
 
       if (city) {
 
@@ -47,9 +46,9 @@ const UserHome: React.FC = () => {
 
   useEffect(() => {
     fetchMovies()
-  }, []);
+  }, [city]);
 
-  // if (loading) return <Loader />
+  // if (loading) return <Loader/> 
 
   return (
     <>
@@ -63,14 +62,13 @@ const UserHome: React.FC = () => {
             <AccordionAllOpen />
           </div>
           {/* Movie cards  */}
-          <div className="flex-grow grid grid-cols-2 rounded-lg p-1 items-center justify-center mx-auto gap-x-4 gap-y-4 sm:grid-cols-2 sm:p-4 lg:grid-cols-3 lg:xxl:grid-cols-4 xl:gap-x-4">
+          <div className=" grid grid-cols-2 rounded-lg p-1 items-center justify-center mx-auto gap-x-4 gap-y-4 sm:grid-cols-2 sm:p-4 lg:grid-cols-3 lg:xxl:grid-cols-4 xl:gap-x-4">
             {
               movies?.length > 0 &&
               movies.map((movie) => {
-                return <Link key={movie._id} to={`/movie/${movie._id}`}> <MovieCard movie={movie} />  </Link>
+                return <Link key={movie._id} to={`/movie/${movie.slug}`}> <MovieCard movie={movie} />  </Link>
               })
             }
-
           </div>
         </div>
       </div>

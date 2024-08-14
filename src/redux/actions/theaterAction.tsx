@@ -219,8 +219,9 @@ export const getScreen: AsyncThunk<ITheaterScreenResponse[], void, {}> = createA
     try {
 
       const response = await serverInstance.get(theatersEndPoints.getScreen, {});
-      const { screen } = response.data?.data
-      return await screen
+       const { screens } = response.data?.data
+       console.log(screens)
+      return await screens
     } catch (error) {
       
       if (error instanceof AxiosError) {

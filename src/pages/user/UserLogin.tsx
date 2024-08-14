@@ -16,6 +16,7 @@ import useAction from '../../hooks/UseAction';
 
 import GoogleSignUp from '../../component/user/GoogleSignUp';
 import Toast from '../../component/Toast';
+import { PasswordInput } from '../../component/PasswordInput';
 
 
 
@@ -103,21 +104,16 @@ export const UserLogin: React.FC = (): JSX.Element => {
               {inputError.email && <small className='text-red-600 capitalize absolute -bottom-3 left-3'>{inputError?.email}</small>}
               {error?.error === 'email' && <small className='text-red-600 capitalize absolute -bottom-3 left-3'>{error.message}</small>}
             </div>
-            <div className="p-2 mt-1 text-white rounded-md w-full relative">
-              <label htmlFor="Password">Password</label>
-              <input
-                className="p-2 mt-3  text-black rounded-md w-full focus:outline"
-                type="password"
-                name="password"
-                placeholder="password"
-                value={formData.password}
-                onChange={handleChange}
-              />
 
-              {inputError.password && <small className='text-red-600 capitalize absolute -bottom-3 left-3'>{inputError.password}</small>}
-              {error?.error === 'password' && <small className='text-red-600 capitalize absolute -bottom-3 left-3'>{error.message}</small>}
-            </div>
-
+            <PasswordInput
+              name='password'
+              label='password'
+              onChange={handleChange}
+              placeholder='enter your password'
+              value={formData.password}
+              inputError={inputError.password ? inputError.password : undefined}
+              responseError={error?.error === 'password' ? error.message : undefined}
+            />
 
             <div className="flex justify-end mb-9">
               <Link to={'/forgot-password'} >
@@ -173,3 +169,19 @@ export const UserLogin: React.FC = (): JSX.Element => {
     </section >
   )
 }
+
+
+{/* <div className="p-2 mt-1 text-white rounded-md w-full relative">
+              <label htmlFor="Password">Password</label>
+              <input
+                className="p-2 mt-3  text-black rounded-md w-full focus:outline"
+                type="password"
+                name="password"
+                placeholder="password"
+                value={formData.password}
+                onChange={handleChange}
+              />
+
+              {inputError.password && <small className='text-red-600 capitalize absolute -bottom-3 left-3'>{inputError.password}</small>}
+              {error?.error === 'password' && <small className='text-red-600 capitalize absolute -bottom-3 left-3'>{error.message}</small>}
+            </div> */}

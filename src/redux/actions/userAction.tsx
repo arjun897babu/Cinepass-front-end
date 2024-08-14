@@ -161,7 +161,7 @@ export const getAllShows: AsyncThunk<IGetMovieShowResponse[], string, {}> = crea
       return await shows
     } catch (error) {
       if (error instanceof AxiosError) {
-        return rejectWithValue(error.response )
+        return rejectWithValue(error.response)
       }
       return rejectWithValue('an unknown error occured')
     }
@@ -172,6 +172,22 @@ export const getAllMovies: AsyncThunk<IMovie[], string, {}> = createAsyncThunk(
   async (city, { rejectWithValue }) => {
     try {
       const response = await serverInstance.get(userEndPoints.getAllMovies(city), {});
+      const { movies } = response.data?.data
+      return await movies
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.log(error.status)
+        return rejectWithValue(error)
+      }
+      return rejectWithValue('an unknown error occured')
+    }
+  }
+);
+export const getSingleMovie: AsyncThunk<any[], { city: string, movieId: string }, {}> = createAsyncThunk(
+  '/user/getAllMovies',
+  async ({ city, movieId }, { rejectWithValue }) => {
+    try {
+      const response = await serverInstance.get(userEndPoints.getSingleMovie(city,movieId), {});
       const { movies } = response.data?.data
       return await movies
     } catch (error) {

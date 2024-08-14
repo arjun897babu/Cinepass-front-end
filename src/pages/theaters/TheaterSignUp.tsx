@@ -12,6 +12,7 @@ import { ResponseStatus, Role } from '../../interface/Interface';
 import { isErrorResponse } from '../../utils/customError';
 import { useLoggedOwner } from '../../hooks/useLoggedUser';
 import { clearTheaterError } from '../../redux/reducers/theatersReducer';
+import { PasswordInput } from '../../component/PasswordInput';
 
 
 
@@ -55,7 +56,7 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
           navigate(result.redirectURL)
         }
       }
-    
+
     } catch (error) {
       if (isErrorResponse(error)) {
         console.log('theater signup error', error)
@@ -130,7 +131,7 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
               </div>
             </div>
 
-            <div className="p-2 mt-1 text-white rounded-md w-full relative flex text-left justify-center items-center" >
+            {/* <div className="p-2 mt-1 text-white rounded-md w-full relative flex text-left justify-center items-center" >
               <label className='capitalize w-28 ' htmlFor="password">Password</label>
               <div className="relative w-full">
                 <input
@@ -159,7 +160,28 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
                 />
                 {inputError.confirm_password && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.confirm_password}</small>}
               </div>
-            </div>
+            </div> */}
+
+            <PasswordInput
+              label='password'
+              name='password'
+              onChange={handleChange}
+              placeholder='enter your password'
+              value={formData.password}
+              inputError={inputError.password ? inputError.password : undefined}
+              responseError={error?.error === 'password' ? error.message : undefined}
+              theater={true}
+            />
+            <PasswordInput
+              label='confirm password'
+              name='confirm_password'
+              onChange={handleChange}
+              placeholder='re enter your password'
+              value={formData.confirm_password}
+              inputError={inputError.confirm_password ? inputError.confirm_password : undefined}
+              theater={true}
+            />
+
             <div className="p-2 mt-1 text-white rounded-md w-full relative flex text-left justify-center items-center" >
               <label className='capitalize w-28 ' htmlFor="adhaar_number">adhaar number</label>
               <div className="relative w-full">

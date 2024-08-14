@@ -13,6 +13,7 @@ import { ResponseStatus, Role } from '../../interface/Interface';
 import { isErrorResponse } from '../../utils/customError';
 import { clearTheaterError } from '../../redux/reducers/theatersReducer';
 import Toast from '../../component/Toast';
+import { PasswordInput } from '../../component/PasswordInput';
 
 
 export const TheatersLogin: React.FC = (): JSX.Element => {
@@ -42,9 +43,6 @@ export const TheatersLogin: React.FC = (): JSX.Element => {
         if (response.status === ResponseStatus.SUCCESS) {
           navigate(response.redirectURL)
         }
-      }
-      else {
-        alert('error')
       }
 
     } catch (error) {
@@ -95,21 +93,18 @@ export const TheatersLogin: React.FC = (): JSX.Element => {
                 {error?.error === 'email' && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{error.message}</small>}
               </div>
             </div>
-            <div className="p-2 mt-1 text-white gap-4 w-full relative flex justify-center items-center text-center">
-              <label className='w-24 text-left' htmlFor="Password">Password</label>
-              <div className="relative w-full">
-                <input
-                  className="p-2   text-black rounded-md w-full focus:outline"
-                  type="password"
-                  name="password"
-                  placeholder="password"
-                  onChange={handleChange}
-                  value={formData.password}
-                />
-                {inputError.password && <small className='text-red-600 capitalize absolute  left-0 -bottom-5 font-mono '>{inputError.password}</small>}
-                {error?.error === 'password' && <small className='text-red-600 capitalize absolute  left-0 -bottom-5 font-mono '>{error.message}</small>}
-              </div>
-            </div>
+            
+             <PasswordInput
+              label='password'
+              name='password'
+              onChange={handleChange}
+              placeholder='enter your password'
+              value={formData.password}
+              inputError={inputError.password ? inputError.password : undefined}
+              responseError={error?.error === 'password' ? error.message : undefined}
+              theater={true}
+            />
+
 
 
             <div className="flex justify-end">
@@ -159,3 +154,18 @@ export const TheatersLogin: React.FC = (): JSX.Element => {
   )
 }
 
+{/* <div className="p-2 mt-1 text-white w-full relative flex justify-center items-center text-center gap-4">
+              <label className='w-24 text-left' htmlFor="Password">Password</label>
+              <div className="relative w-full">
+                <input
+                  className="p-2   text-black rounded-md w-full focus:outline"
+                  type="password"
+                  name="password"
+                  placeholder="password"
+                  onChange={handleChange}
+                  value={formData.password}
+                />
+                {inputError.password && <small className='text-red-600 capitalize absolute  left-0 -bottom-5 font-mono '>{inputError.password}</small>}
+                {error?.error === 'password' && <small className='text-red-600 capitalize absolute  left-0 -bottom-5 font-mono '>{error.message}</small>}
+              </div>
+            </div> */}

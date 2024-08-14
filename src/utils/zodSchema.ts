@@ -5,7 +5,7 @@ export const movieSchema = z.object({
     .string()
     .min(1, 'enter a movie name(1-150 characters)')
     .max(150, 'enter a movie name(1-150 characters)')
-    .regex(/^[a-zA-Z0-9']+(?: [a-zA-Z0-9\-:(),.']+)*$/, 'invalid movie name'), //correct the regex for first name
+    .regex(/^[a-zA-Z0-9']+(?: [a-zA-Z0-9\-:(),.']+)*$/, 'invalid movie name'), // clear the doubt :  regex for first name 
   release_date: z
     .string()
     .min(1, 'Release date is required')
@@ -34,3 +34,7 @@ export const movieSchema = z.object({
     .string()
     .optional(),
 });
+
+export const movieShowSchema = z.object({
+  
+})

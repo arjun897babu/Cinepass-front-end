@@ -1,4 +1,3 @@
-import { string } from "zod";
 import { UploadError } from "./customError";
 
 export function formatTime(time: number): string {
@@ -24,7 +23,12 @@ export function getIST(time: string): string {
 }
 
 export function formatRunTime(time: string): string {
-  return `${Math.floor(parseInt(time, 10) / 60)}h ${parseInt(time, 10) % 60}min`
+  const minutes = parseInt(time, 10);
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+
+  return `${hours}${remainingMinutes > 0 ? `h ${remainingMinutes}min` : 'h'}`;
+
 }
 
 export function getMovieTime(time: string): [number, number] {

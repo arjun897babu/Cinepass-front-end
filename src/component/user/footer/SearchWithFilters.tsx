@@ -1,9 +1,31 @@
-import React from "react"
+import React, { MouseEvent, useState } from "react"
 import { CiSearch } from "react-icons/ci"
 import { IoLocation } from "react-icons/io5";
 import { IoIosArrowDropdown } from "react-icons/io";
+import { useLoggedOwner } from "../../../hooks/useLoggedUser";
+import { Role } from "../../../interface/Interface";
+import { useNavigate } from "react-router-dom";
+import LocationModal from "../../../pages/user/LocationModal";
 
 export const SearchWithFilters: React.FC = () => {
+
+  const { city } = useLoggedOwner(Role.users);
+  const [locationModal, setLocationModal] = useState(false)
+  const navigate = useNavigate();
+
+  if (!city) {
+    navigate('/')
+  }
+
+  const showModal = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    setLocationModal(true)
+  }
+
+  const onClose = () => {
+    setLocationModal(false);
+  }
+
   return (
     <>
       <div className='w-full   p-2 bg-white hidden sm:flex justify-between items-center relative group'>
@@ -17,13 +39,13 @@ export const SearchWithFilters: React.FC = () => {
           <CiSearch size={20} className="absolute top-2.5 left-2 text-gray-400" />
           <input type="search" placeholder="search movie, theater..." className="pl-10 pr-4 w-full h-9 placeholder-gray-400 text-gray-900 focus:outline-none" />
         </div>
-        {/* 
+
         <div className="relative flex items-center p-1 w-40 border-2">
           <IoLocation />
-          <button className="b-2   w-full h-full">Location</button>
+          <button onClick={showModal} className="b-2   w-full h-full">{city}</button>
+          {locationModal && < LocationModal onClose={onClose} />}
           <IoIosArrowDropdown />
-        </div> */}
-
+        </div>
       </div>
     </>
   )

@@ -1,17 +1,15 @@
-import React from "react"
-import { Bars } from 'react-loader-spinner'
+import React from "react";
+import { InfinitySpin, TailSpin } from 'react-loader-spinner';
 
- export const Loader: React.FC = (): JSX.Element => {
+export const Loader: React.FC = (): JSX.Element => {
   return (
-    <div className="fixed top-0 left-0 w-full h-full bg-black flex justify-center items-center bg-opacity-75 opacity-80  z-40 ">
-      <Bars
-        height="80"
-        width="80"
-        color="#2d708b"
-        ariaLabel="bars-loading"
+    <div className="fixed top-0 left-0 w-full h-full bg-white flex justify-center items-center z-40">
+      <InfinitySpin
         visible={true}
+        width="200"
+        color="#4fa94d"
+        ariaLabel="infinity-spin-loading"
       />
     </div>
-  )
+  );
 };
-
