@@ -6,7 +6,7 @@ import { TheaterSignUpData } from "../../interface/theater/ITheatersData";
 import { IGetMovieShowResponse, IMovie, LoginData, OTPVerification, ResponseData } from "../../interface/Interface";
 import { ITheaterDetailResponse } from "../../interface/theater/ITheaterDetail";
 import { ITheaterScreen, ITheaterScreenResponse } from "../../interface/theater/ITheaterScreen";
-import { MovieType } from "../../component/admin/AddMovieForm";
+import { MovieType } from "../../component/admin/MovieForm";
 import { IMovieShow } from "../../interface/theater/IMovieShow";
 import { IResponseError } from "../../utils/customError";
 interface UpdateTheaterInput {

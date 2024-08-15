@@ -12,79 +12,34 @@ import { movieSchema } from "../../utils/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { convertFile } from "../../utils/format";
+import { MultiSelect } from "./MultiSelect";
+
 
 export enum MovieType {
   theater = 'Theater',
   stream = 'Stream'
 }
-interface AddMovieFormProps {
-  movieType: MovieType;
-  setToast: (alert: ResponseStatus, message: string) => void
-  updateMovieData: (movieData: IMovie) => void
-  closeButtonRef: RefObject<HTMLDialogElement>
-  selectedData?: IMovie
-  closeModal: () => void
+interface MovieFormProps {
+  movieType: MovieType; // theater movie | streaming movie
+  setToast: (alert: ResponseStatus, message: string) => void // cal back for setting toastmessage
+  setModalToast: (alert: ResponseStatus, message: string) => void // cal back for setting toastmessage
+  updateMovieData: (movieData: IMovie) => void // updating the movieState after adding or updating
+  closeButtonRef: RefObject<HTMLDialogElement> // for closing the modal after successfull response
+  selectedData?: IMovie // selected movie data
+  closeModal: () => void // changing the modal view state in parent
 }
 
-
-interface MultiSelectComponentProps {
-  field: string
-  defaultValues: string[];
-  handleAddValue: (name: keyof IMovie, value: string) => void;
-}
-
-const MultiSelectComponent: React.FC<MultiSelectComponentProps> = ({ field, defaultValues, handleAddValue }) => {
-
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedValues, setSelectedValues] = useState<string[]>([]);
-  const toggleDropdown = () => setIsOpen(!isOpen);
-
-
-  const handleSelection = (value: string) => {
-    const newSelectedValues = selectedValues.includes(value)
-      ? selectedValues.filter((item) => item !== value)
-      : [...selectedValues, value];
-
-    setSelectedValues(newSelectedValues);
-    handleAddValue(field as keyof IMovie, value);
-  };
-  return (
-    <div className="relative">
-      <div className="flex items-center">
-        <input
-          type="text"
-          readOnly
-          value={selectedValues.join(', ') || 'Choose options'}
-          onClick={toggleDropdown}
-          className="input input-bordered flex-1 cursor-pointer"
-        />
-      </div>
-
-      {isOpen && (
-        <div className="absolute bg-white border rounded shadow-lg mt-2 w-full max-h-60 overflow-auto z-50">
-          <ul className="p-2">
-            {defaultValues.map((value) => (
-              <li key={value} className="flex capitalize items-center p-2 cursor-pointer hover:bg-gray-200  ">
-                <input
-                  type="checkbox"
-                  checked={selectedValues.includes(value)}
-                  onChange={() => handleSelection(value)}
-                  className="mr-2"
-                />
-                {value}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
-  );
-};
-
-
-
-
-export const AddMovieForm: React.FC<AddMovieFormProps> = ({ movieType, updateMovieData, closeButtonRef, selectedData, setToast, closeModal }) => {
+export const MovieForm: React.FC<MovieFormProps> = (
+  {
+    movieType,
+    updateMovieData,
+    closeButtonRef,
+    selectedData,
+    setToast,
+    setModalToast,
+    closeModal
+  }
+) => {
 
   const initialMovieData = {
     movie_name: '',
@@ -135,11 +90,10 @@ export const AddMovieForm: React.FC<AddMovieFormProps> = ({ movieType, updateMov
     e.preventDefault()
     e.stopPropagation()
 
-    if (imageField === 'movie_poster') {
-      moviePosterRef.current?.click();
-    } else if (imageField === 'cover_photo') {
-      coverPhotoRef.current?.click();
-    }
+    imageField === 'movie_poster' ?
+      moviePosterRef.current?.click()
+      : coverPhotoRef.current?.click();
+
   }
 
 
@@ -160,8 +114,7 @@ export const AddMovieForm: React.FC<AddMovieFormProps> = ({ movieType, updateMov
         })
         .catch((error) => {
           if (error instanceof UploadError) {
-
-            setToast(ResponseStatus.ERROR, error.message)
+            setModalToast(ResponseStatus.ERROR, error.message)
           }
         })
       : null
@@ -177,7 +130,7 @@ export const AddMovieForm: React.FC<AddMovieFormProps> = ({ movieType, updateMov
         movieData,
         movieType: MovieType.theater
       })).unwrap();
-
+      console.log(response)
       if (response) {
         setToast(ResponseStatus.SUCCESS, 'Movie Added Successfully')
         updateMovieData(response)
@@ -191,14 +144,13 @@ export const AddMovieForm: React.FC<AddMovieFormProps> = ({ movieType, updateMov
 
       //error during upload the image
       if (err instanceof UploadError) {
-
-        setToast(ResponseStatus.ERROR, err.message)
+        setModalToast(ResponseStatus.ERROR, err.message) // need to set as modal Toast
       }
 
       //error during the submission
       else if (isReponseError(err)) {
         if (err.statusCode === 413) {
-          setToast(ResponseStatus.ERROR, err.data.message)
+          setModalToast(ResponseStatus.ERROR, err.data.message) /// need to set as a modal toast
         }
         setError(
           err.data.error as keyof IMovie,
@@ -206,8 +158,6 @@ export const AddMovieForm: React.FC<AddMovieFormProps> = ({ movieType, updateMov
             message: err.data.message
           })
 
-      } else {
-        setToast(ResponseStatus.ERROR, 'Too large')
       }
 
     } finally {
@@ -242,7 +192,7 @@ export const AddMovieForm: React.FC<AddMovieFormProps> = ({ movieType, updateMov
         <div className="relative flex  gap-2 items-center">
           <div className="flex relative flex-col">
             <label className="label">Genres</label>
-            <MultiSelectComponent
+            <MultiSelect
               field="genres"
               defaultValues={Object.values(Genre)}
               handleAddValue={handleAddValue}
@@ -255,7 +205,7 @@ export const AddMovieForm: React.FC<AddMovieFormProps> = ({ movieType, updateMov
           </div>
           <div className="relative flex flex-col">
             <label className="label">Language</label>
-            <MultiSelectComponent
+            <MultiSelect
               field={'languages'}
               defaultValues={Object.values(Language)}
               handleAddValue={handleAddValue}
@@ -268,7 +218,7 @@ export const AddMovieForm: React.FC<AddMovieFormProps> = ({ movieType, updateMov
           </div>
           <div className="relative flex flex-col">
             <label className="label">Select Format</label>
-            <MultiSelectComponent
+            <MultiSelect
               field={'format'}
               defaultValues={Object.values(MovieFormat)}
               handleAddValue={handleAddValue}
@@ -371,7 +321,6 @@ export const AddMovieForm: React.FC<AddMovieFormProps> = ({ movieType, updateMov
           )}
         </div>
 
-
         <div className="text-center">
           <button
             type='submit'
@@ -391,5 +340,5 @@ export const AddMovieForm: React.FC<AddMovieFormProps> = ({ movieType, updateMov
     </>
   );
 }
-export default AddMovieForm;
+export default MovieForm;
 

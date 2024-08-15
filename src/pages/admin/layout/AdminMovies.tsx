@@ -1,89 +1,19 @@
 import React, { ChangeEvent, FormEvent, MouseEvent, RefObject, useEffect, useRef, useState } from "react"
 import { FaEdit } from "react-icons/fa"
 import { GiCancel } from "react-icons/gi"
-import AddMovieForm, { MovieType } from "../../../component/admin/AddMovieForm"
+import MovieForm, { MovieType } from "../../../component/admin/MovieForm"
 import { IMovie, ResponseStatus, Role } from "../../../interface/Interface"
 import { useDispatch } from "react-redux"
 import { AppDispatch } from "../../../redux/store"
-import { getMovie } from "../../../redux/actions/adminAction"
+import { getMovie, manageMovie } from "../../../redux/actions/adminAction"
 import { formatRunTime, getIST, getMovieSrc } from "../../../utils/format"
 import { Loader } from "../../../component/Loader"
 import { ToastMessage } from "./AdminUsers"
 import Toast2 from "../../../component/Toast2"
-import Toast from "../../../component/Toast"
-
-interface AddMovieModalProp {
-  id: string
-  action: string
-  updateMovieData: (movieData: IMovie) => void
-  closeModal: () => void
-  selectedData?: IMovie,
-}
-
-//modal for add a new Theater movie in admin side
-const AddMovieModal: React.FC<AddMovieModalProp> = (
-  {
-    id,
-    action,
-    updateMovieData,
-    closeModal,
-    selectedData
-  }) => {
-
-  const [toastMessage, setToastMessage] = useState<ToastMessage | null>(null)
-
-  const setToast = (alert: ResponseStatus, message: string) => {
-    setToastMessage({ alert, message })
-  }
-
-  const modalRef = useRef<HTMLDialogElement>(null);
-  const clearToast = () => {
-    setToastMessage(null)
-  }
-  useEffect(() => {
-    if (modalRef.current) {
-      modalRef.current.showModal();
-    }
-  }, []);
-
-  const closeAddForm = (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
-    modalRef.current?.close()
-    closeModal()
-  }
-  return (
-
-    <>
-
-      {/* {
-        toastMessage &&
-        <Toast2
-          alert={toastMessage.alert}
-          clearToast={clearToast}
-          message={toastMessage.message}
-        />
-      } */}
-     
+import { MovieModal } from "../../../component/admin/MovieFromModal"
+import ConfirmationModal from "../../../component/ConfirmationModal"
 
 
-      <dialog ref={modalRef} id={`${id}_Form`} className="modal ">
-        <div className="modal-box w-11/12 max-w-3xl  ">
-
-          <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onClick={closeAddForm}>✕</button>
-          <h3 className="text-2xl font-bold mb-4 text-center">{action} Movie</h3>
-          <AddMovieForm
-            movieType={MovieType.theater}
-            updateMovieData={updateMovieData}
-            closeButtonRef={modalRef}
-            selectedData={selectedData}
-            setToast={setToast}
-            closeModal={closeModal}
-          />
-        </div>
-      </dialog>
-    </>
-  )
-}
 
 const AdminMovie: React.FC = () => {
 
@@ -91,9 +21,51 @@ const AdminMovie: React.FC = () => {
   const [loading, setLoading] = useState(false)
   const [theaterMovies, setTheaterMovies] = useState<IMovie[] | []>([]);
   const [selectedMovie, setSelectedMovie] = useState<IMovie | null>(null); // Modal shows selected movie's info for update
-
   const [addMovieModal, setAddMovieModal] = useState<boolean>(false) //for add movie form modal 
+  const [toastMessage, setToastMessage] = useState<ToastMessage | null>(null);
+  const [confirmation, setConfirmation] = useState<boolean>(false)
+  const [deleteMovieId, setDeleteMovieId] = useState<string | null>(null)
 
+  const deleteButtonClicked = (e: MouseEvent<HTMLButtonElement>, _id: string | undefined) => {
+    e.preventDefault()
+    _id ?
+      (setDeleteMovieId(_id), setConfirmation(true))
+      : null;
+  }
+
+  const deleteMovie = async () => {
+    console.log(deleteMovieId)
+    if (deleteMovieId) {
+      try {
+        const response = await dispatch(manageMovie({ movieType: MovieType.theater, movieId: deleteMovieId })).unwrap()
+        if (response.status === ResponseStatus.SUCCESS) {
+          const { movie } = response.data;
+
+          setTheaterMovies((prev) =>
+            prev.map((item) =>
+              item._id === movie._id
+                ? { ...item, status: movie.status }
+                : item
+
+            )
+          ); 
+          setToastMessage({ alert: response.status, message: response.message })
+        }
+      } catch (error) {
+
+      } finally {
+        setDeleteMovieId(null)
+        setConfirmation(false)
+      }
+    }
+  }
+
+  const closeConfirmationModal = () => setConfirmation(false)
+  //call back for setting up toast message
+  const setToast = (alert: ResponseStatus, message: string) => setToastMessage({ alert, message })
+
+  // call back for clearing toast message
+  const clearToast = () => setToastMessage(null)
 
   //call back for updating the theater movie list
   const setNewMovies = (movieData: IMovie) => {
@@ -116,6 +88,7 @@ const AdminMovie: React.FC = () => {
   //close modal for update form
   const closeModalView = () => {
     setSelectedMovie(null)
+
   }
 
   //close modal for add form
@@ -140,7 +113,7 @@ const AdminMovie: React.FC = () => {
 
   useEffect(() => {
     fetchMovieData()
-  }, [])
+  }, [dispatch,deleteMovieId,selectedMovie])
 
   const showUpdateForm = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
@@ -161,12 +134,33 @@ const AdminMovie: React.FC = () => {
     <>
 
       {
+        toastMessage &&
+        <Toast2
+          alert={toastMessage.alert}
+          clearToast={clearToast}
+          message={toastMessage.message}
+        />
+      }
+
+      {
         addMovieModal &&
-        <AddMovieModal  // add movie form modal
+        <MovieModal  // add movie form modal
           updateMovieData={setNewMovies}
           closeModal={closeAddMovieModal}
           action="add"
           id="addMovie"
+          setToast={setToast}
+        />
+      }
+
+      {
+        confirmation &&
+        <ConfirmationModal
+          btnType={ResponseStatus.ERROR}
+          message="Are you sure you want to delete this movie?"
+          isOpen={confirmation}
+          onClose={closeConfirmationModal}
+          onConfirm={deleteMovie}
         />
       }
 
@@ -222,7 +216,7 @@ const AdminMovie: React.FC = () => {
                           <td className="flex justify-center items-center gap-3">
 
                             <button onClick={showUpdateForm} className="btn bg-transparent hover:bg-transparent  border-none hover: join-item text-black" data-id={movie._id}><FaEdit /></button>
-                            <button className="btn bg-transparent hover:bg-transparent border-none hover: join-item text-red-600"><GiCancel /></button>
+                            <button onClick={(e) => deleteButtonClicked(e, movie._id)} className="btn bg-transparent hover:bg-transparent border-none hover: join-item text-red-600"><GiCancel /></button>
 
                           </td>
                           <th>
@@ -246,9 +240,10 @@ const AdminMovie: React.FC = () => {
 
         {
           selectedMovie &&
-          <AddMovieModal  // update form modal
+          <MovieModal  // update form modal
             updateMovieData={setNewMovies}
             closeModal={closeModalView}
+            setToast={setToast}
             action="update"
             id="updateMovie"
             selectedData={selectedMovie}

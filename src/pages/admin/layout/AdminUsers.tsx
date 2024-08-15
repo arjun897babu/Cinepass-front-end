@@ -13,8 +13,8 @@ import ConfirmationModal from "../../../component/ConfirmationModal";
 import Toast2 from "../../../component/Toast2";
 
 export type ToastMessage = {
- alert: ResponseStatus,
- message: string
+  alert: ResponseStatus,
+  message: string
 }
 
 const AdminUsers: React.FC = (): JSX.Element => {
@@ -25,6 +25,7 @@ const AdminUsers: React.FC = (): JSX.Element => {
   const [toastMessage, setToastMessage] = useState<ToastMessage | null>(null)
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false)
   const setModalClose = () => setIsConfirmModalOpen(false)
+  const [selectedUser, setSelectedUser] = useState<{ _id: string, status: boolean } | null>(null);
 
 
   const fetchUsers = async () => {
@@ -44,23 +45,22 @@ const AdminUsers: React.FC = (): JSX.Element => {
   useEffect(() => {
     fetchUsers()
   }, [])
-  const manageBtnRef = useRef<HTMLButtonElement>(null);
-  const clearToast = () => {
-    setToastMessage(null)
-  }
-  const BlockButtonClicked = (e: MouseEvent<HTMLButtonElement>) => {
+
+  const clearToast = () => setToastMessage(null)
+
+  const BlockButtonClicked = (e: MouseEvent<HTMLButtonElement>, _id: string, status: boolean) => {
     e.preventDefault();
-    e.stopPropagation();
-    if (manageBtnRef.current?.getAttribute('data-id')) {
-      setIsConfirmModalOpen(true);
-    }
+    setSelectedUser({ _id, status });
+    setIsConfirmModalOpen(true);
+
   }
+
   const handleBlock = async () => {
 
-    const _id = manageBtnRef.current?.getAttribute('data-id')
-    if (_id) {
+
+    if (selectedUser) {
       try {
-        const response = await dispatch(manageEntitiesByAdmin({ _id, role: Role.users })).unwrap();
+        const response = await dispatch(manageEntitiesByAdmin({ _id: selectedUser._id, role: Role.users })).unwrap();
         if (response.status === ResponseStatus.SUCCESS) {
           const updateDocumentId = response.data as { _id: string };
           if (updateDocumentId) {
@@ -85,6 +85,7 @@ const AdminUsers: React.FC = (): JSX.Element => {
         }
       }
       finally {
+        setSelectedUser(null);
         setIsConfirmModalOpen(false)
       }
     }
@@ -138,8 +139,7 @@ const AdminUsers: React.FC = (): JSX.Element => {
                     <td className=" text-left text-black">
 
                       <button
-                        ref={manageBtnRef}
-                        onClick={BlockButtonClicked}
+                        onClick={(e) => BlockButtonClicked(e, value._id, value.status)}
                         data-id={value._id}
                         className={
                           `w-32 bg-transparent
@@ -159,7 +159,7 @@ const AdminUsers: React.FC = (): JSX.Element => {
               onClose={setModalClose}
               onConfirm={handleBlock}
               message="Do you want to proceed with this action "
-              btnType={manageBtnRef.current?.innerText === 'unblock' ? ResponseStatus.success : ResponseStatus.ERROR}
+              btnType={!selectedUser?.status ? ResponseStatus.success : ResponseStatus.ERROR}
             />}
           </div >
         )

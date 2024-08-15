@@ -1,9 +1,9 @@
 import { AsyncThunk, createAsyncThunk } from "@reduxjs/toolkit";
-import { IMovie, LoginData, ResponseData } from "../../interface/Interface";
+import { ApprovalStatus, IMovie, LoginData, ResponseData, ResponseData2 } from "../../interface/Interface";
 import { AxiosError, AxiosHeaders } from "axios";
 import { serverInstance } from "../../services";
 import { adminEndpoints } from "../../services/endpoints/endPoints";
-import { MovieType } from "../../component/admin/AddMovieForm";
+import { MovieType } from "../../component/admin/MovieForm";
 import { IResponseError } from "../../utils/customError";
 
 export const loginAdmin: AsyncThunk<ResponseData, LoginData, {}> = createAsyncThunk(
@@ -55,11 +55,11 @@ export const getEntityDataForAdmin: AsyncThunk<ResponseData, string, {}> = creat
   }
 )
 
-export const updateTheaterApprovalForAdmin: AsyncThunk<ResponseData, Record<string, string>, {}> = createAsyncThunk(
+export const updateTheaterApprovalForAdmin: AsyncThunk<ResponseData, { _id: string, approval_status: string }, {}> = createAsyncThunk(
   'admin/updateTheaterApprovalStatus',
-  async ({ theaterOwnerId, approval_status }, { rejectWithValue }) => {
+  async ({ _id, approval_status }, { rejectWithValue }) => {
     try {
-      const response = await serverInstance.put(adminEndpoints.updateApprovalStatus(theaterOwnerId), { approval_status })
+      const response = await serverInstance.put(adminEndpoints.updateApprovalStatus(_id), { approval_status })
       return await response.data
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -86,19 +86,19 @@ export const manageEntitiesByAdmin: AsyncThunk<ResponseData, Record<string, stri
   }
 )
 
-export const addMovie: AsyncThunk<IMovie, { movieData: IMovie; movieType: MovieType },{} > = createAsyncThunk(
+export const addMovie: AsyncThunk<IMovie, { movieData: IMovie; movieType: MovieType }, {}> = createAsyncThunk(
   'admin/manageEntities',
   async ({ movieData, movieType }, { rejectWithValue }) => {
     try {
-      console.log('this is the moviedata',movieData)
+      console.log('this is the moviedata', movieData)
       const response = await serverInstance.post(adminEndpoints.addMovie(movieType), movieData);
       const { movie } = response.data?.data
-       
+
       return await movie
     } catch (error) {
       if (error instanceof AxiosError) {
         const { response } = error;
-        
+
         if (response) {
           return rejectWithValue({
             statusCode: response.status,
@@ -118,6 +118,7 @@ export const addMovie: AsyncThunk<IMovie, { movieData: IMovie; movieType: MovieT
   }
 )
 
+
 export const getMovie: AsyncThunk<IMovie[], MovieType, {}> = createAsyncThunk(
   'admin/getMovie',
   async (movieType: MovieType, { rejectWithValue }) => {
@@ -135,5 +136,33 @@ export const getMovie: AsyncThunk<IMovie[], MovieType, {}> = createAsyncThunk(
     }
   }
 
+);
+
+
+interface IManageMovieResponse extends ResponseData2 {
+  data: {
+    movie: {
+      _id: string,
+      status: string
+    }
+  }
+}
+export const manageMovie: AsyncThunk<IManageMovieResponse, { movieType: MovieType, movieId: string }, {}> = createAsyncThunk(
+  'admin/manageMovie',
+  async ({ movieType, movieId }, { rejectWithValue }) => {
+    try {
+      const response = await serverInstance.patch(adminEndpoints.deleteMovie(movieType, movieId), {})
+
+      return await response.data
+
+    } catch (error) {
+
+      if (error instanceof AxiosError) {
+        return rejectWithValue(error.response)
+      }
+
+      return rejectWithValue('an unknown error')
+    }
+  }
 )
 

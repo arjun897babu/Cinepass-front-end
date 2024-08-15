@@ -31,6 +31,12 @@ export interface ResponseData {
   },
   redirectURL: string
 }
+export interface ResponseData2 {
+  status: ResponseStatus;
+  message: string;
+  error?: IInitialStateError | null,
+  redirectURL?: string
+}
 
 export interface OTPVerification {
   email: string;

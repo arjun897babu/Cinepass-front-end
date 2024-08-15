@@ -6,7 +6,7 @@ import { IGetMovieShowResponse, IMovie, Role } from "../../../interface/Interfac
 import { useDispatch } from "react-redux"
 import { AppDispatch } from "../../../redux/store"
 import { addMovieShows, getAllShows, getMovie, getScreen } from "../../../redux/actions/theaterAction"
-import { MovieType } from "../../../component/admin/AddMovieForm"
+import { MovieType } from "../../../component/admin/MovieForm"
 import { Loader } from "../../../component/Loader"
 import { calculateEndTime, formatEndTime, formatRunTime, getIST, getMovieSrc, getMovieTime } from "../../../utils/format"
 import { IMovieShow } from "../../../interface/theater/IMovieShow"

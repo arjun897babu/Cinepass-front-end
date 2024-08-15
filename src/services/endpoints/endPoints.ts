@@ -40,9 +40,10 @@ export const theatersEndPoints: TheaterEndpoint = {
 export const adminEndpoints: AdminEndpoint = {
   login: '/admin/login',
   logout: '/admin/logout',
-  getEntityData: (role: string) => `/admin/${role}`,
+  getEntityData: (role) => `/admin/${role}`,
   updateApprovalStatus: (theaterOwnerId) => `/admin/approval/${theaterOwnerId}`,
   manageEntities: (entityId, role) => `/admin/manage-status/${role}/${entityId}`,
   addMovie: (movieType) => `/admin/add-movie/${movieType}`,
-  getMovie: (movieType) => `admin/get-movie/${movieType}`
+  getMovie: (movieType) => `admin/get-movie/${movieType}`,
+  deleteMovie: (movieTpe, movieId) => `/admin/delete/${movieTpe}/${movieId}`
 }

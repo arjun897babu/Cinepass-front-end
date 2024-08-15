@@ -37,8 +37,7 @@ export const TheaterDetails: React.FC<TheaterDetailsProps> = ({ owner }) => {
     }
   }
 
-  console.log(owner)
-
+  
   return (
     <>
       <button className="btn" onClick={showModal}>View</button>

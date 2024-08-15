@@ -1,4 +1,4 @@
-import { MovieType } from "../../component/admin/AddMovieForm";
+import { MovieType } from "../../component/admin/MovieForm";
 
 export interface IEndPoints {
   login: string;
@@ -38,5 +38,6 @@ export interface AdminEndpoint extends IEndPoints {
   manageEntities: (_entityId: string, role: string) => string
   addMovie: (movieType: MovieType) => string
   getMovie: (movieType: MovieType) => string
+  deleteMovie: (movieTpe: MovieType, movieId: string) => string
 
 }
