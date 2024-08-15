@@ -14,6 +14,8 @@ import { formatTime } from "../../utils/format";
 import ResendOTP from "../../component/ResendOTP";
 import { useTimer } from "../../hooks/useTimer";
 import Toast from "../../component/Toast";
+import { isErrorResponse } from "../../utils/customError";
+import useAction from "../../hooks/UseAction";
 
 
 
@@ -23,9 +25,9 @@ export const TheaterOTPVerification: React.FC = (): JSX.Element => {
   const navigate = useNavigate();
 
   const { error, tempMail, } = useLoggedOwner(Role.theaters)
-
+  const { clearTempMail,clearError } = useAction(Role.theaters)
   const [response, setResponse] = useState<ResponseData | null>(null)
-  const { isActive, resetTimer, timeRemaining } = useTimer(5)
+  const { isActive, resetTimer, timeRemaining } = useTimer(120)
 
 
   const { formData, inputError, handleChange, setInputError } = useForm({
@@ -33,11 +35,27 @@ export const TheaterOTPVerification: React.FC = (): JSX.Element => {
   }, Role.theaters);
 
   useEffect(() => {
+
+    if (!tempMail) {
+      navigate('/login')
+    }
+
     dispatch(clearTheaterError())
-  }, []);
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      clearTempMail ?
+        clearTempMail()
+        : null
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+
+  }, [])
 
   const { handleSubmit } = useFormSubmit(formData, setInputError);
- 
+
   const onSubmit = async (event: React.FormEvent) => {
 
     try {
@@ -46,7 +64,6 @@ export const TheaterOTPVerification: React.FC = (): JSX.Element => {
 
         if (tempMail) {
           const response = await dispatch(verifyOTPTheaters({ ...formData, email: tempMail.email })).unwrap();
-          console.log('log from otp theater verify page', response)
           if (response.status === ResponseStatus.SUCCESS) {
             console.log(response.redirectURL)
             navigate(response.redirectURL)
@@ -57,18 +74,24 @@ export const TheaterOTPVerification: React.FC = (): JSX.Element => {
 
       }
     } catch (err) {
-      console.log('verification error :', err)
+      if (isErrorResponse(error)) {
+        setResponse({ message: error.message, status: error.status, redirectURL: error?.redirectURL })
+      }
+    } finally {
+      setResponse(null)
     }
 
   };
   const backgroundImagePath = { backgroundImage: `url(${backgroundImage})` };
+
+
 
   return (
     <>
 
 
       <section className="background  md:h-screen overlay flex items-center justify-center " style={backgroundImagePath}>
-      {response && <Toast status={response?.status} message={response?.message} role={Role.users} />}
+        {response && <Toast status={response?.status} message={response?.message} role={Role.users} />}
         <div className="flex rounded-2xl p-5 justify-center">
 
           <div className={`relative px-8 md:px-24 py-24 space-y-8 bg-black bg-opacity-50`}>

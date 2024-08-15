@@ -32,6 +32,9 @@ const theaterSlice = createSlice({
     },
     setIsAuthenticated(state) {
       state.isAuthenticated = !state.isAuthenticated
+    },
+    clearTempMail(state) {
+      state.tempMail = null
     }
   },
   extraReducers: (builder) => {
@@ -174,6 +177,7 @@ export const {
   clearError: clearTheaterError,
   setLoading: setTheaterLoading,
   setError: setTheaterError,
-  setIsAuthenticated: setTheatersAuthentication
+  setIsAuthenticated: setTheatersAuthentication,
+  clearTempMail:clearTheaterTempMail
 } = theaterSlice.actions
 export default theaterSlice.reducer

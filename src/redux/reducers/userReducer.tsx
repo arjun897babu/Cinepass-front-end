@@ -36,6 +36,9 @@ const userSlice = createSlice({
     },
     setCity(state, action: PayloadAction<string>) {
       state.city = action.payload
+    },
+    clearTempMail(state) {
+      state.tempMail = null
     }
   },
   extraReducers: (builder) => {
@@ -198,6 +201,7 @@ export const {
   setError: setUserError,
   setIsAuthenticated: setUserAuthentication,
   setLoading: setUserLoading,
-  setCity: setUserCity
+  setCity: setUserCity,
+  clearTempMail:clearUserTempMail
 } = userSlice.actions
 export default userSlice.reducer

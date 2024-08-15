@@ -1,20 +1,33 @@
-import React from "react";
-import { ResponseStatus } from "../interface/Interface";
+import React, { useEffect } from "react";
+import { ResponseStatus, Role } from "../interface/Interface";
 import { FaCheckCircle } from "react-icons/fa";
+import useAction from "../hooks/UseAction";
 
 interface ToastProps {
   alert: ResponseStatus, // success or false
   message: string, // alert message
   clearToast: () => void
   modalToast?: boolean
+  
 }
 
 
 const Toast2: React.FC<ToastProps> = ({ alert, message, clearToast, modalToast }) => {
 
-  setTimeout(() => {
-    clearToast()
-  }, 2000)
+
+
+  useEffect(() => {
+
+    const timeout = setTimeout(() => {
+      clearToast();
+     
+    }, 2000);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, []);
+
 
   return (
     <>

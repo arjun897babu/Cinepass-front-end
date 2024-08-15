@@ -1,14 +1,14 @@
-import { lazy, MouseEvent, useEffect, useRef, useState } from "react";
+import {  MouseEvent, useEffect , useState } from "react";
 import { IUser } from "../../../interface/user/IUserData";
 // import { EmptyData } from "../../../component/EmptyData";
-const EmptyData = lazy(() => import('../../../component/EmptyData'))
+// const EmptyData = lazy(() => import('../../../component/EmptyData'))
 import { getEntityDataForAdmin, manageEntitiesByAdmin } from "../../../redux/actions/adminAction";
 import { ResponseStatus, Role } from "../../../interface/Interface";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../redux/store";
 import { isErrorResponse } from "../../../utils/customError";
 // import { Loader } from "../../../component/Loader";
-import { useLoggedOwner } from "../../../hooks/useLoggedUser";
+ 
 import ConfirmationModal from "../../../component/ConfirmationModal";
 import Toast2 from "../../../component/Toast2";
 
@@ -20,7 +20,7 @@ export type ToastMessage = {
 const AdminUsers: React.FC = (): JSX.Element => {
   const dispatch = useDispatch<AppDispatch>()
   const [users, setUsers] = useState<IUser[] | []>([]);
-  const { loading } = useLoggedOwner(Role.admin)
+  
 
   const [toastMessage, setToastMessage] = useState<ToastMessage | null>(null)
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false)

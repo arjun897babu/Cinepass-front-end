@@ -1,6 +1,6 @@
 import { AsyncThunk, createAsyncThunk } from "@reduxjs/toolkit";
-import { ApprovalStatus, IMovie, LoginData, ResponseData, ResponseData2 } from "../../interface/Interface";
-import { AxiosError, AxiosHeaders } from "axios";
+import {  IMovie, LoginData, ResponseData, ResponseData2 } from "../../interface/Interface";
+import { AxiosError } from "axios";
 import { serverInstance } from "../../services";
 import { adminEndpoints } from "../../services/endpoints/endPoints";
 import { MovieType } from "../../component/admin/MovieForm";

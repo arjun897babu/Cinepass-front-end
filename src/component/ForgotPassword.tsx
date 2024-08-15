@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react"
+import React, { FormEvent, memo, useState } from "react"
 import backgroundImage from '/Iconic Movie Posters Collage.webp'
 import backgroundImage1 from '/movie_projector.jpg'
 import { useDispatch } from "react-redux";
@@ -13,14 +13,15 @@ import { forgotPasswordTheaters } from "../redux/actions/theaterAction";
 import Toast from "./Toast";
 import UseAction from "../hooks/UseAction";
 import { isErrorResponse } from "../utils/customError";
+import Toast2 from "./Toast2";
 
 
-export const ForgotPassword: React.FC<{ role: Role }> = ({ role }): JSX.Element => {
-  console.log(role)
+const ForgotPassword: React.FC<{ role: Role }> = ({ role }): JSX.Element => {
+  console.log(role) 
   const { error } = useLoggedOwner(role)
   const backgroundImagePath = { backgroundImage: `url(${role === Role.users ? backgroundImage : backgroundImage1})` };
   const dispatch = useDispatch<AppDispatch>();
-  const { setError } = UseAction(role)
+  const { setError, clearError } = UseAction(role)
 
   const navigate = useNavigate();
   const [response, setResponse] = useState<ResponseData | null>(null)
@@ -39,9 +40,12 @@ export const ForgotPassword: React.FC<{ role: Role }> = ({ role }): JSX.Element 
         }
         else if (role === Role.theaters) {
           response = await dispatch(forgotPasswordTheaters(formData)).unwrap()
-          console.log(response)
+          
         }
         if (response?.status === ResponseStatus.SUCCESS) {
+          setTimeout(() => {
+            setResponse(null)
+          }, 2000)
           setResponse({ message: response.message, status: response.status, redirectURL: response.redirectURL })
         }
       }
@@ -58,8 +62,18 @@ export const ForgotPassword: React.FC<{ role: Role }> = ({ role }): JSX.Element 
   return (
 
     <>
+      {response && <Toast message={response.message} status={response.status} role={role} />}
+      {
+        error?.error === 'approval'
+        ||
+        error?.error === 'blocked' &&
+        <Toast2
+          alert={ResponseStatus.ERROR}
+          message={error.message}
+          clearToast={clearError}
+        />}
+
       <section className="background  md:h-screen overlay flex items-center justify-center " style={backgroundImagePath}>
-        {response && <Toast message={response.message} status={response.status} role={role} />}
         <div className="flex rounded-2xl p-5 justify-center">
 
           <div className={`relative px-8 md:px-24 py-24 space-y-8 bg-black bg-opacity-50`}>
@@ -98,3 +112,5 @@ export const ForgotPassword: React.FC<{ role: Role }> = ({ role }): JSX.Element 
     </>
   )
 }
+
+export default memo(ForgotPassword);

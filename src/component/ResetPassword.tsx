@@ -13,6 +13,8 @@ import { isErrorResponse } from "../utils/customError";
 import Toast from "./Toast";
 import { resetPassword } from "../redux/actions/userAction";
 import { resetPasswordTheaters } from "../redux/actions/theaterAction";
+import Toast2 from "./Toast2";
+import useAction from "../hooks/UseAction";
 
 const ResetPassWord: React.FC<{ role: Role }> = ({ role }) => {
   const navigate = useNavigate()
@@ -22,7 +24,7 @@ const ResetPassWord: React.FC<{ role: Role }> = ({ role }) => {
   const [response, setResponse] = useState<ResponseData | null>()
   const { error } = useLoggedOwner(role);
   const { formData, handleChange, inputError, setInputError } = useForm({ password: '', confirm_password: '' }, role)
-
+  const { clearError } = useAction(role)
   const { handleSubmit } = useFormSubmit(formData, setInputError)
 
 
@@ -39,14 +41,14 @@ const ResetPassWord: React.FC<{ role: Role }> = ({ role }) => {
         }
         if (result?.status === ResponseStatus.SUCCESS) {
           setTimeout(() => {
-            navigate(result.redirectURL)
+            navigate(result.redirectURL, { replace: true, state: { verified: true } })
           }, 2000)
           setResponse((prev) => ({ ...prev, message: result.message, status: result.status, redirectURL: result.redirectURL }));
         }
       } else {
-        if(isValid){
+        if (isValid) {
           setTimeout(() => {
-            navigate( `${Role.users === role ? '/login' : `/${role}/login`}`)
+            navigate(`${Role.users === role ? '/login' : `/${role}/login`}`, { replace: true })
           }, 2000)
           setResponse((prevResponse) => ({
             ...prevResponse,
@@ -70,6 +72,18 @@ const ResetPassWord: React.FC<{ role: Role }> = ({ role }) => {
 
   return (
     <>
+
+      {
+        error?.error === 'approval'
+        ||
+        error?.error === 'blocked' &&
+        <Toast2
+          alert={ResponseStatus.ERROR}
+          message={error.message}
+          clearToast={clearError}
+        />
+      }
+
       <section className="background  md:h-screen overlay flex items-center justify-center " style={backgroundImagePath}>
         {response && <Toast message={response.message} status={response.status} role={role} />}
         <div className="flex rounded-2xl p-5 justify-center">

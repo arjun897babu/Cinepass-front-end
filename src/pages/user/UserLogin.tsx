@@ -1,7 +1,7 @@
 
-import React, { FormEvent, useEffect } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import '../../index.css';
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { FaArrowLeft } from "react-icons/fa";
 import backGroundImage from '/Iconic Movie Posters Collage.webp';
 import { useForm } from '../../hooks/UseForm';
@@ -15,17 +15,19 @@ import { useLoggedOwner } from '../../hooks/useLoggedUser';
 import useAction from '../../hooks/UseAction';
 
 import GoogleSignUp from '../../component/user/GoogleSignUp';
-import Toast from '../../component/Toast';
+
 import { PasswordInput } from '../../component/PasswordInput';
+import Toast2 from '../../component/Toast2';
 
 
 
 export const UserLogin: React.FC = (): JSX.Element => {
+  const location = useLocation();
 
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { error, isAuthenticated } = useLoggedOwner(Role.users);
-  const { clearError } = useAction(Role.users)
+  const { clearError } = useAction(Role.users)  
 
   const {
     formData,
@@ -34,7 +36,8 @@ export const UserLogin: React.FC = (): JSX.Element => {
     setInputError
   } = useForm({ email: '', password: '' }, Role.users);
 
-  useEffect(() => {
+  useEffect(() => { 
+
     if (isAuthenticated) {
       navigate('/')
     }
@@ -68,7 +71,18 @@ export const UserLogin: React.FC = (): JSX.Element => {
   return (
 
     <section className="background overlay flex items-center justify-center " style={background_image_path}>
-      {error?.error === 'googleAuth' && <Toast message={error.message} status={ResponseStatus.ERROR} role={Role.users} />}
+
+      {
+        error?.error === 'googleAuth'
+        ||
+        error?.error === 'blocked' &&
+        <Toast2
+          message={error.message}
+          clearToast={clearError}
+          alert={ResponseStatus.ERROR}
+        />
+      } 
+      
       <div className="flex p-5 justify-center">
 
         <div className={`relative md:w-3/5 px-4 sm:px-24 py-24 space-y-8  `}>

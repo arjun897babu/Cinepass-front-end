@@ -1,12 +1,12 @@
-import React, {  useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import backgroundImage from '/Iconic Movie Posters Collage.webp'
 import { useForm } from "../../hooks/UseForm";
 import { useFormSubmit } from "../../hooks/UseFormSubmitt";
-import { useDispatch,  } from "react-redux";
-import { AppDispatch,  } from "../../redux/store";
-import {  verifyUser } from "../../redux/actions/userAction";
+import { useDispatch, } from "react-redux";
+import { AppDispatch, } from "../../redux/store";
+import { verifyUser } from "../../redux/actions/userAction";
 import { ResponseData, ResponseStatus, Role } from "../../interface/Interface";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { clearUserError } from "../../redux/reducers/userReducer";
 import { useLoggedOwner } from "../../hooks/useLoggedUser";
 import { formatTime } from "../../utils/format";
@@ -14,6 +14,7 @@ import { isErrorResponse } from "../../utils/customError";
 import Toast from "../../component/Toast";
 import { useTimer } from "../../hooks/useTimer";
 import ResendOTP from "../../component/ResendOTP";
+import useAction from "../../hooks/UseAction";
 
 
 
@@ -25,6 +26,30 @@ const UserOTPVerification: React.FC = (): JSX.Element => {
 
   const { error, tempMail } = useLoggedOwner(Role.users);
 
+  const { clearTempMail, clearError } = useAction(Role.users)
+
+  useEffect(() => {
+
+    if (!tempMail) {
+      navigate('/login')
+    }
+
+    clearError()
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+
+      event.preventDefault();
+      clearTempMail ?
+        clearTempMail()
+        : null
+
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+
+  }, [])
+
   const { formData, inputError, handleChange, setInputError } = useForm({
     otp: ''
   }, Role.users);
@@ -32,9 +57,7 @@ const UserOTPVerification: React.FC = (): JSX.Element => {
   const [response, setResponse] = useState<ResponseData | null>(null);
   const { timeRemaining, isActive, resetTimer } = useTimer(120);
 
-  useEffect(() => {
-    dispatch(clearUserError())
-  }, []);
+
 
   const { handleSubmit } = useFormSubmit(formData, setInputError);
 
@@ -45,21 +68,24 @@ const UserOTPVerification: React.FC = (): JSX.Element => {
         if (tempMail) {
           const result = await dispatch(verifyUser({ ...formData, email: tempMail.email })).unwrap();
           if (result.status === ResponseStatus.SUCCESS) {
-            navigate(result.redirectURL)
+            navigate(result.redirectURL, { replace: true, state: { verified: true } })
           }
 
         } else {
-          navigate('/login')
+          navigate('/login', { replace: true })
         }
       }
     } catch (err) {
       if (isErrorResponse(error)) {
         setResponse({ message: error.message, status: error.status, redirectURL: error?.redirectURL })
       }
+    } finally {
+      setResponse(null)
     }
 
   };
   const backgroundImagePath = { backgroundImage: `url(${backgroundImage})` };
+
   return (
     <>
 

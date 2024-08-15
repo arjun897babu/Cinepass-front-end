@@ -1,7 +1,7 @@
 import React, { ChangeEvent, MouseEvent, RefObject, useRef, useState } from "react";
 import { SubmitHandler, useForm as useForms } from 'react-hook-form'
 
-import { IMovie, ResponseData, ResponseStatus } from "../../interface/Interface";
+import { IMovie, ResponseStatus } from "../../interface/Interface";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../redux/store";
 import { addMovie } from "../../redux/actions/adminAction";

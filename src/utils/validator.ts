@@ -127,7 +127,7 @@ const validateField = (
   value2?: string,
 ): ReturnObject => {
 
-  console.log(field)
+ 
   if (field !== 'confirm password' && isEmpty(value)) {
 
     return { message: errorMessage(field), isValid: false }

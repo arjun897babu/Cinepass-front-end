@@ -47,7 +47,7 @@ export const UserSignUp: React.FC = (): JSX.Element => {
         const response = await dispatch(signUpUser(formData)).unwrap();
         console.log(response)
         if (response.status === ResponseStatus.SUCCESS) {
-          navigate(response.redirectURL)
+          navigate(response.redirectURL,{})
         }
       } catch (err) {
         console.log(err)
