@@ -1,4 +1,4 @@
-import { serverInstance } from '../../services'
+import {  serverUser } from '../../services'
 import { AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit'
 import { UserSignUpData } from '../../interface/user/IUserData'
 import { userEndPoints } from '../../services/endpoints/endPoints'
@@ -10,7 +10,7 @@ export const signUpUser: AsyncThunk<ResponseData, UserSignUpData, {}> = createAs
   async (userData: UserSignUpData, { rejectWithValue }) => {
     console.log('reaching the signup async thunk')
     try {
-      const response = await serverInstance.post(userEndPoints.signup, userData);
+      const response = await serverUser.post(userEndPoints.signup, userData);
       console.log('response from thunk middle ware', response);
       return await response.data
     } catch (error) {
@@ -27,7 +27,7 @@ export const getAllCities: AsyncThunk<string[], void, {}> = createAsyncThunk(
   'user/getCities',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await serverInstance.get(userEndPoints.getAllCities, {});
+      const response = await serverUser.get(userEndPoints.getAllCities, {});
 
       const { cities } = response.data?.data
       return await cities
@@ -46,7 +46,7 @@ export const loginUser: AsyncThunk<ResponseData, LoginData, {}> = createAsyncThu
   async (userData: LoginData, { rejectWithValue }) => {
 
     try {
-      const response = await serverInstance.post(userEndPoints.login, userData);
+      const response = await serverUser.post(userEndPoints.login, userData);
       return await response.data
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -64,7 +64,7 @@ export const verifyUser: AsyncThunk<ResponseData, OTPVerification, {}> = createA
   async (otpData: OTPVerification, { rejectWithValue }) => {
 
     try {
-      const response = await serverInstance.post(userEndPoints.verifyOTP, otpData);
+      const response = await serverUser.post(userEndPoints.verifyOTP, otpData);
 
       return await response.data
     } catch (error) {
@@ -81,7 +81,7 @@ export const logoutUser = createAsyncThunk<ResponseData, void, {}>(
   async (_: void, { rejectWithValue }) => {
 
     try {
-      const response = await serverInstance.post(userEndPoints.logout, {});
+      const response = await serverUser.post(userEndPoints.logout, {});
 
       return response.data as ResponseData;
     } catch (error) {
@@ -96,7 +96,7 @@ export const forgotPasswordUser: AsyncThunk<ResponseData, Record<string, string>
   '/user/forgot-password',
   async (formData, { rejectWithValue }) => {
     try {
-      const response = await serverInstance.post(userEndPoints.forgotPassword, formData);
+      const response = await serverUser.post(userEndPoints.forgotPassword, formData);
       return await response.data
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -111,7 +111,7 @@ export const resetPassword: AsyncThunk<ResponseData, Record<string, string>, {}>
   '/user/resetPassword',
   async ({ password, token }, { rejectWithValue }) => {
     try {
-      const response = await serverInstance.put(userEndPoints.resetPassword(token), { password });
+      const response = await serverUser.put(userEndPoints.resetPassword(token), { password });
       return await response.data
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -126,7 +126,7 @@ export const resendOTPUser: AsyncThunk<ResponseData, string, {}> = createAsyncTh
   '/user/resendOTP',
   async (email, { rejectWithValue }) => {
     try {
-      const response = await serverInstance.post(userEndPoints.resendOTP, { email });
+      const response = await serverUser.post(userEndPoints.resendOTP, { email });
       return await response.data
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -141,7 +141,7 @@ export const googleSignUp: AsyncThunk<ResponseData, GoogleSignUp, {}> = createAs
   '/user/googleSignUp',
   async (data, { rejectWithValue }) => {
     try {
-      const response = await serverInstance.post(userEndPoints.googleSignUp, data);
+      const response = await serverUser.post(userEndPoints.googleSignUp, data);
       return await response.data
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -156,7 +156,7 @@ export const getAllShows: AsyncThunk<IGetMovieShowResponse[], string, {}> = crea
   '/user/getAllShows',
   async (city, { rejectWithValue }) => {
     try {
-      const response = await serverInstance.get(userEndPoints.getMovieShows(city), {});
+      const response = await serverUser.get(userEndPoints.getMovieShows(city), {});
       const { shows } = response.data?.data
       return await shows
     } catch (error) {
@@ -171,7 +171,7 @@ export const getAllMovies: AsyncThunk<IMovie[], string, {}> = createAsyncThunk(
   '/user/getAllMovies',
   async (city, { rejectWithValue }) => {
     try {
-      const response = await serverInstance.get(userEndPoints.getAllMovies(city), {});
+      const response = await serverUser.get(userEndPoints.getAllMovies(city), {});
       const { movies } = response.data?.data
       return await movies
     } catch (error) {
@@ -187,7 +187,7 @@ export const getSingleMovie: AsyncThunk<any[], { city: string, movieId: string }
   '/user/getAllMovies',
   async ({ city, movieId }, { rejectWithValue }) => {
     try {
-      const response = await serverInstance.get(userEndPoints.getSingleMovie(city,movieId), {});
+      const response = await serverUser.get(userEndPoints.getSingleMovie(city,movieId), {});
       const { movies } = response.data?.data
       return await movies
     } catch (error) {

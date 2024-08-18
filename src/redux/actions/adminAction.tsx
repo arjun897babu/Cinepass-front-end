@@ -1,7 +1,7 @@
 import { AsyncThunk, createAsyncThunk } from "@reduxjs/toolkit";
 import {  IMovie, LoginData, ResponseData, ResponseData2 } from "../../interface/Interface";
 import { AxiosError } from "axios";
-import { serverInstance } from "../../services";
+import { serverAdmin } from "../../services";
 import { adminEndpoints } from "../../services/endpoints/endPoints";
 import { MovieType } from "../../component/admin/MovieForm";
 import { IResponseError } from "../../utils/customError";
@@ -10,7 +10,7 @@ export const loginAdmin: AsyncThunk<ResponseData, LoginData, {}> = createAsyncTh
   'admin/login',
   async (loginData: LoginData, { rejectWithValue }) => {
     try {
-      const response = await serverInstance.post(adminEndpoints.login, loginData);
+      const response = await serverAdmin.post(adminEndpoints.login, loginData);
       return await response.data
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -28,7 +28,7 @@ export const logoutAdmin = createAsyncThunk<ResponseData, void, {}>(
   async (_: void, { rejectWithValue }) => {
 
     try {
-      const response = await serverInstance.post(adminEndpoints.logout, {});
+      const response = await serverAdmin.post(adminEndpoints.logout, {});
 
       return response.data as ResponseData;
     } catch (error) {
@@ -44,7 +44,7 @@ export const getEntityDataForAdmin: AsyncThunk<ResponseData, string, {}> = creat
   'admin/theaters',
   async (role: string, { rejectWithValue }) => {
     try {
-      const response = await serverInstance.get(adminEndpoints.getEntityData(role), {});
+      const response = await serverAdmin.get(adminEndpoints.getEntityData(role), {});
       return response.data as ResponseData
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -59,7 +59,7 @@ export const updateTheaterApprovalForAdmin: AsyncThunk<ResponseData, { _id: stri
   'admin/updateTheaterApprovalStatus',
   async ({ _id, approval_status }, { rejectWithValue }) => {
     try {
-      const response = await serverInstance.put(adminEndpoints.updateApprovalStatus(_id), { approval_status })
+      const response = await serverAdmin.put(adminEndpoints.updateApprovalStatus(_id), { approval_status })
       return await response.data
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -75,7 +75,7 @@ export const manageEntitiesByAdmin: AsyncThunk<ResponseData, Record<string, stri
   'admin/manageEntities',
   async ({ role, _id }, { rejectWithValue }) => {
     try {
-      const response = await serverInstance.put(adminEndpoints.manageEntities(_id, role), {});
+      const response = await serverAdmin.put(adminEndpoints.manageEntities(_id, role), {});
       return await response.data
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -91,7 +91,7 @@ export const addMovie: AsyncThunk<IMovie, { movieData: IMovie; movieType: MovieT
   async ({ movieData, movieType }, { rejectWithValue }) => {
     try {
       console.log('this is the moviedata', movieData)
-      const response = await serverInstance.post(adminEndpoints.addMovie(movieType), movieData);
+      const response = await serverAdmin.post(adminEndpoints.addMovie(movieType), movieData);
       const { movie } = response.data?.data
 
       return await movie
@@ -124,7 +124,7 @@ export const getMovie: AsyncThunk<IMovie[], MovieType, {}> = createAsyncThunk(
   async (movieType: MovieType, { rejectWithValue }) => {
     try {
 
-      const response = await serverInstance.get(adminEndpoints.getMovie(movieType), {});
+      const response = await serverAdmin.get(adminEndpoints.getMovie(movieType), {});
       const { movies } = response.data?.data
       return await movies
     } catch (error) {
@@ -151,7 +151,7 @@ export const manageMovie: AsyncThunk<IManageMovieResponse, { movieType: MovieTyp
   'admin/manageMovie',
   async ({ movieType, movieId }, { rejectWithValue }) => {
     try {
-      const response = await serverInstance.patch(adminEndpoints.deleteMovie(movieType, movieId), {})
+      const response = await serverAdmin.patch(adminEndpoints.deleteMovie(movieType, movieId), {})
 
       return await response.data
 

@@ -1,3 +1,4 @@
+import { number } from "zod";
 import { UploadError } from "./customError";
 
 export function formatTime(time: number): string {
@@ -76,3 +77,13 @@ export function convertFile(file: File): Promise<string> {
     reader.readAsDataURL(file);
   });
 };
+
+
+export function setDefaultDate(date: Date, days: number): string {
+
+  const newDate = new Date(date);
+  
+  newDate.setDate(newDate.getDate() + days);
+  
+  return newDate.toISOString().split('T')[0]; 
+}

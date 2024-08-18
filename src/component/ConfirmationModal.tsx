@@ -4,11 +4,11 @@ import { MdBlock } from "react-icons/md";
 import { ResponseStatus } from "../interface/Interface";
 
 interface ConfirmationModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  message: string;
-  btnType: ResponseStatus
+  isOpen: boolean; // based on this sate the modal will up . passed through the parent
+  onClose: () => void; // this will close the modal by chaing the modalshowing state into false.
+  onConfirm: () => void;//this is to perfom the submission. if clickin on confirm it will call the call
+  message: string; // modal alert mesage
+  btnType: ResponseStatus // style pf the button colcor based on the status of form
 }
 
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ isOpen, onClose, onConfirm, message, btnType }) => {

@@ -32,7 +32,7 @@ export interface IResponseError {
   }
 }
 
-export function isReponseError(error: unknown): error is IResponseError {
+export function isResponseError(error: unknown): error is IResponseError {
   return (
     typeof error === 'object' &&
     error != null &&

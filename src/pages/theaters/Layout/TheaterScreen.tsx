@@ -9,7 +9,7 @@ import { useLoggedOwner } from "../../../hooks/useLoggedUser"
 import { useFormSubmit } from "../../../hooks/UseFormSubmitt"
 import { createTheaterScreen, getScreen } from "../../../redux/actions/theaterAction"
 import { ISeat, ITheaterScreenResponse } from "../../../interface/theater/ITheaterScreen"
-import { isReponseError } from "../../../utils/customError"
+import { isResponseError } from "../../../utils/customError"
 import { IoIosInformationCircleOutline } from "react-icons/io"
 
 const SeatRow: React.FC<{ rowNumber: number; columnCount: number }> = ({ rowNumber, columnCount }) => {
@@ -117,7 +117,7 @@ const TheaterScreen: React.FC = () => {
   const { error } = useLoggedOwner(Role.theaters);
 
   const fetchScreen = async () => {
-
+   console.log('running')
     try {
       const response = await dispatch(getScreen()).unwrap()
       if (response) {
@@ -211,7 +211,7 @@ const TheaterScreen: React.FC = () => {
       setUpdateForm(false)
     } catch (error) {
 
-      if (isReponseError(error)) {
+      if (isResponseError(error)) {
 
         setInputError((prev) => (
           {

@@ -12,7 +12,7 @@ const initialState: IInitialState = {
   loading: false,
   isAuthenticated: false,
   tempMail: null,
-  error: null
+  error: null,
 }
 
 const adminSlice = createSlice({

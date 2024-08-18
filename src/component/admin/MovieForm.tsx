@@ -1,17 +1,17 @@
-import React, { ChangeEvent, MouseEvent, RefObject, useRef, useState } from "react";
+import React, { ChangeEvent, MouseEvent, RefObject, useEffect, useRef, useState } from "react";
 import { SubmitHandler, useForm as useForms } from 'react-hook-form'
 
 import { IMovie, ResponseStatus } from "../../interface/Interface";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../redux/store";
 import { addMovie } from "../../redux/actions/adminAction";
-import { isReponseError, UploadError } from "../../utils/customError";
+import { isResponseError, UploadError } from "../../utils/customError";
 
 import { Genre, Language, MovieFormat } from "../../utils/validator";
 import { movieSchema } from "../../utils/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IoCloudUploadOutline } from "react-icons/io5";
-import { convertFile } from "../../utils/format";
+import { convertFile, getIST, setDefaultDate } from "../../utils/format";
 import { MultiSelect } from "./MultiSelect";
 
 
@@ -60,6 +60,13 @@ export const MovieForm: React.FC<MovieFormProps> = (
   const [moviePoster, setMoviePoster] = useState<File | null>(null);
   const coverPhotoRef = useRef<HTMLInputElement>(null)
   const moviePosterRef = useRef<HTMLInputElement>(null)
+  
+  const [minDate, setMinDate] = useState<string>('');
+  useEffect(() => {
+    const defaultDate = setDefaultDate(new Date, 1)
+    setMinDate(defaultDate);
+  }, []);
+
   const {
     register,
     handleSubmit,
@@ -148,7 +155,7 @@ export const MovieForm: React.FC<MovieFormProps> = (
       }
 
       //error during the submission
-      else if (isReponseError(err)) {
+      else if (isResponseError(err)) {
         if (err.statusCode === 413) {
           setModalToast(ResponseStatus.ERROR, err.data.message) /// need to set as a modal toast
         }
@@ -246,6 +253,7 @@ export const MovieForm: React.FC<MovieFormProps> = (
           <input
             className="input input-bordered w-full max-w-xs"
             type="date"
+            min={minDate}
             {...register('release_date')}
           />
           {errors.release_date &&

@@ -11,6 +11,8 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../redux/store';
 import { RiMovie2Fill } from "react-icons/ri";
 import { MdOutlineScreenSearchDesktop } from "react-icons/md";
+import { useLoggedOwner } from '../../hooks/useLoggedUser';
+import { Role } from '../../interface/Interface';
 
 
 const menu = [
@@ -19,11 +21,11 @@ const menu = [
     logo: FaHome,
     link: '/theaters/home'
   },
-  {
-    title: 'Movies',
-    logo: RiMovie2Fill,
-    link: '/theaters/movies'
-  },
+  // {
+  //   title: 'Movies',
+  //   logo: RiMovie2Fill,
+  //   link: '/theaters/movies'
+  // },
   {
     title: 'Theater',
     logo: GiTheater,
@@ -54,12 +56,16 @@ export const TheatersParent: React.FC = (): JSX.Element => {
     e.preventDefault();
     try {
       await dispatch(logoutTheaters());
-      navigate('/theaters/login')
+      navigate('/theaters/login', { replace: true })
     } catch (error) {
       console.log(error)
     }
 
   }
+  const { loggedOwner } = useLoggedOwner(Role.theaters)
+  console.log(loggedOwner)
+  if(!loggedOwner)  navigate('/theaters/login', { replace: true })
+
   return (
     <>
       <div className="flex ">
@@ -94,8 +100,8 @@ export const TheatersParent: React.FC = (): JSX.Element => {
           <div className=" h-28">
             {/* welcome note */}
             <div className=" p-5 pt-8">
-              <h1 className='font-extrabold font-serif text-2xl'> Hello Arjun</h1>
-              <h2 className='font-semi font-serif text-lg'>Welcome Back !!</h2>
+              {/* <h1 className='font-extrabold font-serif text-2xl'> Hello {loggedOwner?.name}</h1>
+              <h2 className='font-semi font-serif text-lg'>Welcome Back !!</h2> */}
             </div>
             {/* welcome note */}
           </div>

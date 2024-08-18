@@ -1,28 +1,23 @@
 import { AsyncThunk, createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosError, AxiosHeaders } from "axios";
-import { serverInstance } from "../../services";
+import { serverTheater } from "../../services";
 import { theatersEndPoints } from "../../services/endpoints/endPoints";
 import { TheaterSignUpData } from "../../interface/theater/ITheatersData";
-import { IGetMovieShowResponse, IMovie, LoginData, OTPVerification, ResponseData } from "../../interface/Interface";
+import { IGetMovieShowResponse, IMovie, LoginData, OTPVerification, ResponseData, ResponseData2 } from "../../interface/Interface";
 import { ITheaterDetailResponse } from "../../interface/theater/ITheaterDetail";
 import { ITheaterScreen, ITheaterScreenResponse } from "../../interface/theater/ITheaterScreen";
 import { MovieType } from "../../component/admin/MovieForm";
 import { IMovieShow } from "../../interface/theater/IMovieShow";
 import { IResponseError } from "../../utils/customError";
-interface UpdateTheaterInput {
-  theater_name: string,
-  theater_license: string,
-  city: string,
-  address: string,
-  images: string[]
-}
+import { ITheaterOwnerEntity, TheaterOwnerProfile, TheaterProfile } from "../../interface/theater/ITheaterOwner";
+
 
 export const signupTheaters: AsyncThunk<ResponseData, TheaterSignUpData, {}> = createAsyncThunk(
   'theaters/signup',
   async (userData: TheaterSignUpData, { rejectWithValue }) => {
     console.log('reaching the theaterssignup async thunk')
     try {
-      const response = await serverInstance.post(theatersEndPoints.signup, userData);
+      const response = await serverTheater.post(theatersEndPoints.signup, userData);
       console.log('response from thunk middle ware', response);
       return await response.data
     } catch (error) {
@@ -39,7 +34,7 @@ export const loginTheaters: AsyncThunk<ResponseData, LoginData, {}> = createAsyn
   'theaters/login',
   async (loginData: LoginData, { rejectWithValue }) => {
     try {
-      const response = await serverInstance.post(theatersEndPoints.login, loginData)
+      const response = await serverTheater.post(theatersEndPoints.login, loginData)
 
       return await response.data
     } catch (error) {
@@ -55,7 +50,7 @@ export const verifyOTPTheaters: AsyncThunk<ResponseData, OTPVerification, {}> = 
   'theaters/otp-verification',
   async (otpData: OTPVerification, { rejectWithValue }) => {
     try {
-      const response = await serverInstance.post(theatersEndPoints.verifyOTP, otpData)
+      const response = await serverTheater.post(theatersEndPoints.verifyOTP, otpData)
 
       return await response.data
     } catch (error) {
@@ -72,7 +67,7 @@ export const logoutTheaters = createAsyncThunk<ResponseData, void, {}>(
   async (_: void, { rejectWithValue }) => {
 
     try {
-      const response = await serverInstance.post(theatersEndPoints.logout, {});
+      const response = await serverTheater.post(theatersEndPoints.logout, {});
 
       return response.data as ResponseData;
     } catch (error) {
@@ -88,7 +83,7 @@ export const forgotPasswordTheaters: AsyncThunk<ResponseData, Record<string, str
   '/theaters/forgot-password',
   async (formData, { rejectWithValue }) => {
     try {
-      const response = await serverInstance.post(theatersEndPoints.forgotPassword, formData);
+      const response = await serverTheater.post(theatersEndPoints.forgotPassword, formData);
       return await response.data
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -103,7 +98,7 @@ export const resetPasswordTheaters: AsyncThunk<ResponseData, Record<string, stri
   '/theaters/resetPassword',
   async ({ password, token }, { rejectWithValue }) => {
     try {
-      const response = await serverInstance.put(theatersEndPoints.resetPassword(token), { password });
+      const response = await serverTheater.put(theatersEndPoints.resetPassword(token), { password });
       return await response.data
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -117,7 +112,7 @@ export const resendOTPTheaters: AsyncThunk<ResponseData, string, {}> = createAsy
   '/theaters/resendOTP',
   async (email, { rejectWithValue }) => {
     try {
-      const response = await serverInstance.post(theatersEndPoints.resendOTP, { email });
+      const response = await serverTheater.post(theatersEndPoints.resendOTP, { email });
       return await response.data
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -128,12 +123,12 @@ export const resendOTPTheaters: AsyncThunk<ResponseData, string, {}> = createAsy
   }
 )
 
-export const getTheaterDetails: AsyncThunk<ITheaterDetailResponse, void, {}> = createAsyncThunk(
+export const getTheaterDetails: AsyncThunk<ITheaterOwnerEntity, void, {}> = createAsyncThunk(
   'theaters/theater',
   async (_: void, { rejectWithValue }) => {
 
     try {
-      const response = await serverInstance.get(theatersEndPoints.getTheaterDetails, {})
+      const response = await serverTheater.get(theatersEndPoints.getTheaterDetails, {})
       const { theater } = response?.data?.data
       return await theater
     } catch (error) {
@@ -146,18 +141,35 @@ export const getTheaterDetails: AsyncThunk<ITheaterDetailResponse, void, {}> = c
 
 );
 
-export const updateTheater: AsyncThunk<ITheaterDetailResponse, UpdateTheaterInput, {}> = createAsyncThunk(
+interface IUpdateTheaterData extends ResponseData2 {
+  data: {
+    theater: ITheaterOwnerEntity;
+  }
+}
+
+export const updateTheater: AsyncThunk<IUpdateTheaterData, (TheaterOwnerProfile | TheaterProfile), {}> = createAsyncThunk(
   'theaters/updateTheater',
-  async (theaterData: UpdateTheaterInput, { rejectWithValue }) => {
+  async (theaterData: TheaterOwnerProfile | TheaterProfile, { rejectWithValue }) => {
     try {
-      const response = await serverInstance.put(theatersEndPoints.updateTheater, theaterData);
-      const { theater } = response.data?.data
-      return await theater
+      const response = await serverTheater.put(theatersEndPoints.updateTheater, theaterData);
+      return await response.data
     } catch (error) {
       if (error instanceof AxiosError) {
-        return rejectWithValue(error.response)
+        const { response } = error
+        if (response) {
+          return rejectWithValue({
+            statusCode: response.status,
+            data: response.data.error
+          } as IResponseError);
+        }
       }
-      return rejectWithValue('an unknown error')
+      return rejectWithValue({
+        statusCode: 500,
+        data: {
+          error: 'unknown_error',
+          message: 'an unknown error occured'
+        }
+      } as IResponseError)
     }
   }
 )
@@ -166,7 +178,7 @@ export const createTheaterScreen: AsyncThunk<ITheaterScreenResponse, ITheaterScr
   'theaters/add-screen',
   async (theaterScreenData: ITheaterScreen, { rejectWithValue }) => {
     try {
-      const response = await serverInstance.post(theatersEndPoints.createScreen, theaterScreenData);
+      const response = await serverTheater.post(theatersEndPoints.createScreen, theaterScreenData);
 
       const { screen } = response.data?.data
 
@@ -200,7 +212,7 @@ export const getMovie: AsyncThunk<IMovie[], MovieType, {}> = createAsyncThunk(
   async (movieType: MovieType, { rejectWithValue }) => {
     try {
 
-      const response = await serverInstance.get(theatersEndPoints.getMovie(movieType), {});
+      const response = await serverTheater.get(theatersEndPoints.getMovie(movieType), {});
       const { movies } = response.data?.data
       return await movies
     } catch (error) {
@@ -218,12 +230,12 @@ export const getScreen: AsyncThunk<ITheaterScreenResponse[], void, {}> = createA
   async (_, { rejectWithValue }) => {
     try {
 
-      const response = await serverInstance.get(theatersEndPoints.getScreen, {});
-       const { screens } = response.data?.data
-       console.log(screens)
+      const response = await serverTheater.get(theatersEndPoints.getScreen, {});
+      const { screens } = response.data?.data
+
       return await screens
     } catch (error) {
-      
+
       if (error instanceof AxiosError) {
         const { response } = error
         if (response) {
@@ -248,18 +260,35 @@ export const getScreen: AsyncThunk<ITheaterScreenResponse[], void, {}> = createA
 
 )
 
-export const addMovieShows: AsyncThunk<IMovieShow, IMovieShow, {}> = createAsyncThunk(
+interface addMovieShowResponse extends ResponseData2 {
+  data: {
+    show: IMovieShow
+  }
+}
+export const addMovieShows: AsyncThunk<addMovieShowResponse, IMovieShow, {}> = createAsyncThunk(
   'theaters/addMovieShows',
   async (formData, { rejectWithValue }) => {
     try {
-      const response = await serverInstance.post(theatersEndPoints.addMovieShows, formData);
-      const { show } = response.data?.data
-      return await show
+      const response = await serverTheater.post(theatersEndPoints.addMovieShows, formData);
+
+      return await response.data
     } catch (error) {
       if (error instanceof AxiosError) {
-        return rejectWithValue(error.response)
+        const { response } = error
+        if (response) {
+          return rejectWithValue({
+            statusCode: response.status,
+            data: response.data.error
+          } as IResponseError);
+        }
       }
-      return rejectWithValue('an unknown error')
+      return rejectWithValue({
+        statusCode: 500,
+        data: {
+          error: 'unknown_error',
+          message: 'an unknown error occured'
+        }
+      } as IResponseError)
     }
   }
 
@@ -270,7 +299,7 @@ export const getAllShows: AsyncThunk<IGetMovieShowResponse[], void, {}> = create
   '/theaters/getAllShows',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await serverInstance.get(theatersEndPoints.getMovieShows, {});
+      const response = await serverTheater.get(theatersEndPoints.getMovieShows, {});
       const { shows } = response.data?.data
       return await shows
     } catch (error) {

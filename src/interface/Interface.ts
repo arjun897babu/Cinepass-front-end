@@ -109,9 +109,18 @@ export interface ITheaterScreen {
 export interface IGetMovieShowResponse {
   _id: string,
   showTime: string,
-  theater: Pick<ITheaterOwnerEntity, 'address' | 'city' | 'theater_name'>
+  endTime: string,
+  language: string,
+  format: string,
+  theater: Pick<ITheaterOwnerEntity, '_id' | 'address' | 'city' | 'theater_name'>
   movie: IMovie,
   screen: Pick<ITheaterScreenResponse, '_id' | 'amenity' | 'screen_name'>
+  opening_date?:string|Date
 }
 
+export enum Action   {
+  ADD = 'add',
+  UPDATE='update',
+  DELETE='delete'
+}
 

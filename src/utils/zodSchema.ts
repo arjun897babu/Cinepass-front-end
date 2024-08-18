@@ -1,4 +1,5 @@
-import { z } from 'zod'
+import { string, z } from 'zod'
+import { MovieFormat, Language } from './validator';
 
 export const movieSchema = z.object({
   movie_name: z
@@ -34,7 +35,112 @@ export const movieSchema = z.object({
     .string()
     .optional(),
 });
-
 export const movieShowSchema = z.object({
-  
+  movieId: z
+    .string({
+      required_error: 'select a movie'
+    })
+    .nonempty('select movie'),
+
+  language: z
+    .nativeEnum(Language, {
+      errorMap: (issue, _ctx) => {
+        return { message: 'choose a langauge' }
+      }
+    }),
+  screenId: z
+    .string({
+      required_error: 'select screen'
+    })
+    .nonempty('select a screen '),
+  showTime: z
+    .string({
+      required_error: 'choose show time'
+    })
+    .nonempty('set a show time'),
+  format: z
+    .nativeEnum(MovieFormat, {
+      errorMap: (issue, _ctx) => {
+        return { message: 'choose a format' }
+      }
+    }),
+  endTime: z
+    .string({
+      required_error: 'choose end Time'
+    }),
+
+  opening_date: z
+    .string() 
+    .nonempty('choose a opening date for booking')
 })
+
+const TheaterOwnerEntitySchema = z.object({
+  name: z
+    .string()
+    .nonempty('This filed is required')
+    .min(3, 'enter name(3-20 characters)')
+    .max(20, 'enter name(3-20 characters)')
+    .regex(/^[a-zA-Z0-9]+(?: [a-zA-Z0-9]+)*$/, 'Invalid name'),
+  email: z
+    .string()
+    .nonempty('This filed is required')
+    .regex(/^(?=.{11,100}$)([a-zA-Z\d]+([.-_]?[a-zA-Z\d]+)*)\@([a-zA-Z]{5,9})+\.com$/, 'invalid email'),
+  mobile_number: z
+    .union([z.string(), z.number()])
+    .transform((value) => String(value))
+    .refine((value) => /^\d{10}$/.test(value), {
+      message: 'Invalid mobile number',
+    }),
+  password: z
+    .string()
+    .nonempty('This filed is required'),
+  adhaar_number: z
+    .union([z.string(), z.number()])
+    .transform((value) => String(value))
+    .refine((value) => /^\d{12}$/.test(value), {
+      message: 'invalid adhaar number',
+    }),
+  theater_name: z
+    .string()
+    .nonempty('this filed is requied')
+    .min(3, 'enter name(3-150 characters)')
+    .max(150, 'enter name(3-150 characters)')
+    .regex(/^[a-zA-Z0-9,]+(?: [a-zA-Z0-9,]+)*$/),
+  theater_license: z
+    .string()
+    .nonempty('this filed is requied')
+    .regex(/^[a-zA-Z0-9]+$/, 'invalid theater license'),
+  address: z
+    .string()
+    .min(30, 'enter name(3-120 characters)')
+    .max(120, 'enter name(3-120 characters)')
+    .regex(/^[a-zA-Z0-9, ]+$/, 'invalid address'),
+  city: z
+    .string()
+    .min(3, 'enter name(3-25 characters)')
+    .max(25, 'enter name(3-25 characters)')
+    .regex(/^[a-zA-Z0-9, ]+$/, 'invalid address'),
+
+});
+
+export const TheaterOwnerSchema = TheaterOwnerEntitySchema.pick({
+  name: true,
+  email: true,
+  mobile_number: true,
+  adhaar_number: true,
+});
+
+export const TheaterProfileSchema = TheaterOwnerEntitySchema.pick({
+  theater_name: true,
+  theater_license: true,
+  address: true,
+  city: true,
+})
+// .extend({
+//   images: z
+//     .array(z.string())
+//     .min(1, "At least one image is required")
+//     .max(4, "You can upload up to 4 images")
+//     .optional()
+
+// })

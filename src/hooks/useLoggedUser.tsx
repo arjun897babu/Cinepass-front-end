@@ -26,7 +26,7 @@ export const useLoggedOwner = (role: Role): LoggedOwnerState => {
       case Role.users:
         return state.user;
       default:
-        return { owner: null, isAuthenticated: false, error: null, loading: false, tempMail: null, city: undefined };
+        return { owner: null, isAuthenticated: false, error: null, loading: false, tempMail: null, city: undefined};
     }
   });
 

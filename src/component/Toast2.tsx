@@ -3,6 +3,11 @@ import { ResponseStatus, Role } from "../interface/Interface";
 import { FaCheckCircle } from "react-icons/fa";
 import useAction from "../hooks/UseAction";
 
+export type Toast={
+  alert:ResponseStatus;
+  message:string
+}
+
 interface ToastProps {
   alert: ResponseStatus, // success or false
   message: string, // alert message
@@ -10,7 +15,6 @@ interface ToastProps {
   modalToast?: boolean
   
 }
-
 
 const Toast2: React.FC<ToastProps> = ({ alert, message, clearToast, modalToast }) => {
 
