@@ -1,4 +1,19 @@
-import axios from "axios";
+import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
+
+import { Role } from "../interface/Interface";
+
+const onResponse = (response: AxiosResponse): AxiosResponse => response
+
+const onResponseError = (error: AxiosError, role: Role): Promise<AxiosError> => {
+
+  if (error.response?.status === 403) {
+
+    console.error('Access denied. You do not have permission.');
+
+  }
+  return Promise.reject(error);
+}
+
 const {
 
   VITE_API_URL,
@@ -30,3 +45,12 @@ export const serverTheater = axios.create({
   withCredentials: true,
   baseURL: API_URL_THEATERS
 })
+
+setupInterceptorsTo(serverTheater, Role.theaters)
+setupInterceptorsTo(serverUser, Role.users)
+
+
+function setupInterceptorsTo(axiosInstance: AxiosInstance, role: Role): AxiosInstance {
+  axiosInstance.interceptors.response.use(onResponse, (error: AxiosError) => onResponseError(error, role));
+  return axiosInstance;
+}

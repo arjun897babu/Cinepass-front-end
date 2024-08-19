@@ -62,9 +62,10 @@ export const TheatersParent: React.FC = (): JSX.Element => {
     }
 
   }
-  const { loggedOwner } = useLoggedOwner(Role.theaters)
-  console.log(loggedOwner)
-  if(!loggedOwner)  navigate('/theaters/login', { replace: true })
+
+  // const { loggedOwner } = useLoggedOwner(Role.theaters)
+  // console.log(loggedOwner)
+  // if(!loggedOwner)  navigate('/theaters/login', { replace: true })
 
   return (
     <>

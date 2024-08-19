@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IInitialState } from "./IState";
-import { createTheaterScreen, forgotPasswordTheaters, getTheaterDetails, loginTheaters, logoutTheaters, resendOTPTheaters, resetPasswordTheaters, signupTheaters, verifyOTPTheaters } from "../actions/theaterAction";
+import { createTheaterScreen, forgotPasswordTheaters, getScreen, getTheaterDetails, loginTheaters, logoutTheaters, resendOTPTheaters, resetPasswordTheaters, signupTheaters, verifyOTPTheaters } from "../actions/theaterAction";
 import { IInitialStateError, ResponseData } from "../../interface/Interface";
-import { isErrorResponse } from "../../utils/customError";
+import { isErrorResponse, isResponseError } from "../../utils/customError";
 import { LoggedOwner } from "../../interface/user/IUserData";
 
 
@@ -148,17 +148,7 @@ const theaterSlice = createSlice({
           }
         }
       })
-      //get theater details of owner
-      .addCase(getTheaterDetails.pending,(state)=>{
-        state.loading = true
-      })
-      .addCase(getTheaterDetails.fulfilled, (state) => {
-        state.loading = false;
-      })
-      .addCase(getTheaterDetails.rejected, (state) => {
-        state.loading = false;
-        
-      })
+       
       //create theater screen
       .addCase(createTheaterScreen.pending,(state)=>{
         state.loading = true
@@ -168,6 +158,36 @@ const theaterSlice = createSlice({
       })
       .addCase(createTheaterScreen.rejected, (state) => {
         state.loading = false;
+         
+      })
+
+      .addCase(getScreen.pending,(state)=>{
+        state.loading = true
+      })
+      .addCase(getScreen.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(getScreen.rejected, (state,action) => {
+        state.loading = false;
+        console.log(action)
+        if(isResponseError(action.payload)){
+          state.isAuthenticated = false
+        }
+         
+      })
+      .addCase(getTheaterDetails.pending,(state)=>{
+        state.loading = true
+      })
+      .addCase(getTheaterDetails.fulfilled, (state) => {
+        state.loading = false;
+        console.log('reacged')
+      })
+      .addCase(getTheaterDetails.rejected, (state,action) => {
+        state.loading = false;
+        console.log(action)
+        if(isResponseError(action.payload)){
+          // state.isAuthenticated = false
+        }
          
       })
 

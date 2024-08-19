@@ -133,9 +133,21 @@ export const getTheaterDetails: AsyncThunk<ITheaterOwnerEntity, void, {}> = crea
       return await theater
     } catch (error) {
       if (error instanceof AxiosError) {
-        return rejectWithValue(error.response)
+        const { response } = error
+        if (response) {
+          return rejectWithValue({
+            statusCode: response.status,
+            data: response.data.error
+          } as IResponseError);
+        }
       }
-      return rejectWithValue('an unknown error')
+      return rejectWithValue({
+        statusCode: 500,
+        data: {
+          error: 'unknown_error',
+          message: 'an unknown error occured'
+        }
+      } as IResponseError)
     }
   }
 
