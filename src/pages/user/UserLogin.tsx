@@ -17,17 +17,19 @@ import useAction from '../../hooks/UseAction';
 import GoogleSignUp from '../../component/user/GoogleSignUp';
 
 import { PasswordInput } from '../../component/PasswordInput';
-import Toast2 from '../../component/Toast2';
+import Toast2, { Toast } from '../../component/Toast2';
 
 
 
 export const UserLogin: React.FC = (): JSX.Element => {
   const location = useLocation();
 
+
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { error, isAuthenticated } = useLoggedOwner(Role.users);
-  const { clearError } = useAction(Role.users)  
+  const { clearError } = useAction(Role.users)
+  const [toastMessage, setToastMessage] = useState<Toast | null>(null)
 
   const {
     formData,
@@ -36,12 +38,12 @@ export const UserLogin: React.FC = (): JSX.Element => {
     setInputError
   } = useForm({ email: '', password: '' }, Role.users);
 
-  useEffect(() => { 
+  useEffect(() => {
 
     if (isAuthenticated) {
       navigate('/')
     }
-    clearError
+    clearError()
   }, [isAuthenticated])
 
   const { handleSubmit } = useFormSubmit(formData, setInputError);
@@ -63,7 +65,41 @@ export const UserLogin: React.FC = (): JSX.Element => {
       }
     }
   }
+  useEffect(() => {
+    const state = location.state;
 
+    if (state?.blocked) {
+      setToastMessage({
+        alert: ResponseStatus.ERROR,
+        message: 'Account Blocked'
+      })
+    }
+    if (state?.verified) {
+      setToastMessage({
+        alert: ResponseStatus.SUCCESS,
+        message: 'Account verified successfully'
+      })
+    }
+    if (state?.password) {
+      setToastMessage({
+        alert: ResponseStatus.SUCCESS,
+        message: 'Password updated successfully'
+      })
+    }
+    if (state?.serverError) {
+      setToastMessage({
+        alert: ResponseStatus.ERROR,
+        message: 'Something went wrong'
+      })
+    }
+    if (state?.google) {
+      setToastMessage({
+        alert: ResponseStatus.ERROR,
+        message: 'use google auth'
+      })
+    }
+    navigate(location.pathname, { replace: true })
+  }, [location.state])
 
 
   let background_image_path = { backgroundImage: `url(${backGroundImage})` };
@@ -81,8 +117,17 @@ export const UserLogin: React.FC = (): JSX.Element => {
           clearToast={clearError}
           alert={ResponseStatus.ERROR}
         />
-      } 
-      
+      }
+
+      {
+        toastMessage &&
+        <Toast2
+          alert={toastMessage.alert}
+          message={toastMessage.message}
+          clearToast={() => setToastMessage(null)}
+        />
+      }
+
       <div className="flex p-5 justify-center">
 
         <div className={`relative md:w-3/5 px-4 sm:px-24 py-24 space-y-8  `}>

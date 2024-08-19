@@ -9,18 +9,13 @@ interface children {
 }
 export const ProtectedRoutes = ({ children }: children) => {
   const { isAuthenticated, city } = useSelector((state: RootState) => state.user);
-  // const dispatch = useDispatch<AppDispatch>();
 
-  // (() => {
-
-  //     dispatch(setUserAuthentication())
-
-  // })()
   if (!city) {
     return <Navigate to={'/'} />
   }
+
   if (!isAuthenticated) {
-    return <Navigate to={'/login'} />
+    return <Navigate to={'/login'} replace={true} />
   } else {
     return children
   }

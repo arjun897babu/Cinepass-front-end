@@ -47,6 +47,10 @@ const LocationModal: React.FC<LocationModalProps> = ({ onClose }) => {
     fetchCities()
   }, [])
 
+  if(cities.length===0){
+    return <></>
+  }
+
   return (
     <>
       <dialog ref={modalRef} className="modal modal-open ">
@@ -55,8 +59,9 @@ const LocationModal: React.FC<LocationModalProps> = ({ onClose }) => {
             <button onClick={closeModal} className="btn btn-sm btn-circle">✕</button>
           </div>}
           <h3 className="font-bold text-2xl text-center capitalize ">select your city</h3>
-          {
-            cities?.length > 0 ? (
+          
+          
+          
               <div className="p-1 m-1">
                 {cities.map((city) => (
                   <button
@@ -69,10 +74,9 @@ const LocationModal: React.FC<LocationModalProps> = ({ onClose }) => {
                 ))}
 
               </div>
-            ) : (
-              <div></div>
-            )
-          }
+            
+             
+            
         </div>
       </dialog >
     </>

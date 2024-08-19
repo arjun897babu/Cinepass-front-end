@@ -17,7 +17,7 @@ import Toast2 from "./Toast2";
 
 
 const ForgotPassword: React.FC<{ role: Role }> = ({ role }): JSX.Element => {
-  console.log(role) 
+  console.log(role)
   const { error } = useLoggedOwner(role)
   const backgroundImagePath = { backgroundImage: `url(${role === Role.users ? backgroundImage : backgroundImage1})` };
   const dispatch = useDispatch<AppDispatch>();
@@ -40,7 +40,7 @@ const ForgotPassword: React.FC<{ role: Role }> = ({ role }): JSX.Element => {
         }
         else if (role === Role.theaters) {
           response = await dispatch(forgotPasswordTheaters(formData)).unwrap()
-          
+
         }
         if (response?.status === ResponseStatus.SUCCESS) {
           setTimeout(() => {
@@ -51,9 +51,11 @@ const ForgotPassword: React.FC<{ role: Role }> = ({ role }): JSX.Element => {
       }
     } catch (error) {
       if (isErrorResponse(error)) {
-        console.log(error)
+
         if (error.error?.error) {
-          setError({ error: error.error?.error as string, message: error.message })
+          navigate(role === Role.users ?
+            '/login'
+            : `${role}/login` ,{replace:true,state:{google:true}})
         }
       }
     }

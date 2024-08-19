@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { forgotPasswordUser, getAllShows, googleSignUp, loginUser, logoutUser, resendOTPUser, resetPassword, signUpUser, verifyUser } from "../actions/userAction";
+import { forgotPasswordUser, getAllShows, getSingleMovie, googleSignUp, loginUser, logoutUser, resendOTPUser, resetPassword, signUpUser, verifyUser } from "../actions/userAction";
 import { IInitialState } from "./IState";
 import { IInitialStateError, ResponseData, ResponseStatus } from "../../interface/Interface";
-import { isErrorResponse } from "../../utils/customError";
+import { isErrorResponse, isResponseError } from "../../utils/customError";
 import { LoggedOwner } from "../../interface/user/IUserData";
 
 
@@ -68,7 +68,7 @@ const userSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action: PayloadAction<ResponseData>) => {
         state.loading = false;
         state.error = null
-        state.isAuthenticated = action.payload.status === ResponseStatus.SUCCESS
+        state.isAuthenticated = true  
         state.owner = action.payload.data ? action.payload.data as unknown as LoggedOwner : null
       })
       .addCase(loginUser.rejected, (state, action) => {
@@ -178,17 +178,37 @@ const userSlice = createSlice({
           }
         }
       })
+
+      //get all shows running in current city
       .addCase(getAllShows.pending, (state) => {
         state.loading = true;
       })
       .addCase(getAllShows.fulfilled, (state) => {
         state.loading = false;
-
       })
       .addCase(getAllShows.rejected, (state, action) => {
         state.loading = false;
-        if (isErrorResponse(action.payload)) {
-
+        if (isResponseError(action.payload)) {
+          if (action.payload.statusCode === 403) {
+            state.isAuthenticated = false
+          }
+        }
+      })
+      
+      //get single movie
+      .addCase(getSingleMovie.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getSingleMovie.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(getSingleMovie.rejected, (state, action) => {
+        state.loading = false;
+        if (isResponseError(action.payload)) {
+          console.log(action.payload)
+          if (action.payload.statusCode === 403) {
+            state.isAuthenticated = false
+          }
         }
       })
 
@@ -202,6 +222,6 @@ export const {
   setIsAuthenticated: setUserAuthentication,
   setLoading: setUserLoading,
   setCity: setUserCity,
-  clearTempMail:clearUserTempMail
+  clearTempMail: clearUserTempMail
 } = userSlice.actions
 export default userSlice.reducer

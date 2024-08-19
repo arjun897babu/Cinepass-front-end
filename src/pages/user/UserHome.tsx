@@ -1,4 +1,4 @@
-import React, { lazy, useEffect, useState } from "react"
+import React, { lazy, useEffect, useLayoutEffect, useState } from "react"
 // import { Carousel } from "../../component/user/carousel"
 const CarouselModule = lazy(() => import('./../../component/user/carousel'))
 import { SearchWithFilters } from "../../component/user/footer/SearchWithFilters"
@@ -11,9 +11,13 @@ import { IGetMovieShowResponse, IMovie, Role } from "../../interface/Interface"
 import { getAllMovies, getAllShows } from "../../redux/actions/userAction"
 import { Loader } from "../../component/Loader"
 import useAction from "../../hooks/UseAction"
+import { isResponseError } from "../../utils/customError"
+import EmptyData from "../../component/EmptyData"
+import LocationModal from "./LocationModal"
 
 const UserHome: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false)
+
   const { city } = useParams<{ city: string }>();
   const { setCity } = useAction(Role.users)
   const [movies, setMovies] = useState<IMovie[] | []>([])
@@ -32,27 +36,45 @@ const UserHome: React.FC = () => {
           setCity(city)
         }
         const response = await dispatch(getAllMovies(city)).unwrap()
-
-        setMovies(response)
+        if (response) {
+          setMovies(response)
+        }
       } else {
-        navigate('/')
+        navigate('/', { replace: true })
       }
     } catch (error) {
-      console.log(error)
+      if (isResponseError(error)) {
+        if (error.statusCode === 403) {
+          navigate('/login', { replace: true, state: { blocked: true } })
+        }
+      }
     } finally {
       setLoading(false)
     }
   }
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     fetchMovies()
   }, [city]);
 
-  // if (loading) return <Loader/> 
+  if (loading) {
+    return <Loader />
+  }
+
+
+  if (movies.length === 0) {
+    return (
+
+      <div className="flex justify-center items-cente">
+        <LocationModal />
+        <EmptyData />
+      </div>
+    )
+  }
 
   return (
-    <>
 
+    <>
       <div className="p-2   bg-gray-200">
         <CarouselModule movie={movies} />
         <SearchWithFilters />
@@ -74,7 +96,13 @@ const UserHome: React.FC = () => {
       </div>
 
 
+
+
+
     </>
+
+
+
   )
 }
 

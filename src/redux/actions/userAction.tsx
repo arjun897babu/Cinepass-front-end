@@ -1,9 +1,11 @@
-import {  serverUser } from '../../services'
+import { serverUser } from '../../services'
 import { AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit'
 import { UserSignUpData } from '../../interface/user/IUserData'
 import { userEndPoints } from '../../services/endpoints/endPoints'
-import { AxiosError } from 'axios'
+import { Axios, AxiosError, AxiosResponse } from 'axios'
 import { GoogleSignUp, IGetMovieShowResponse, IMovie, LoginData, OTPVerification, ResponseData } from '../../interface/Interface'
+import { IResponseError, isResponseError } from '../../utils/customError'
+import { ErrorResponse } from 'react-router-dom'
 
 export const signUpUser: AsyncThunk<ResponseData, UserSignUpData, {}> = createAsyncThunk(
   'user/signup',
@@ -115,6 +117,7 @@ export const resetPassword: AsyncThunk<ResponseData, Record<string, string>, {}>
       return await response.data
     } catch (error) {
       if (error instanceof AxiosError) {
+        console.log(error)
         return rejectWithValue(error.response?.data)
       }
       return rejectWithValue('an unknown error occured')
@@ -161,7 +164,15 @@ export const getAllShows: AsyncThunk<IGetMovieShowResponse[], string, {}> = crea
       return await shows
     } catch (error) {
       if (error instanceof AxiosError) {
-        return rejectWithValue(error.response)
+        const { response } = error
+
+        if (response) {
+          return rejectWithValue({
+            statusCode: response.status,
+            data: response.data.error
+          } as IResponseError);
+        }
+
       }
       return rejectWithValue('an unknown error occured')
     }
@@ -175,11 +186,10 @@ export const getAllMovies: AsyncThunk<IMovie[], string, {}> = createAsyncThunk(
       const { movies } = response.data?.data
       return await movies
     } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log(error.status)
-        return rejectWithValue(error)
-      }
-      return rejectWithValue('an unknown error occured')
+
+      const errorPayload = handleAxiosError(error)
+      return rejectWithValue(errorPayload)
+
     }
   }
 );
@@ -187,20 +197,38 @@ export const getSingleMovie: AsyncThunk<any[], { city: string, movieId: string }
   '/user/getAllMovies',
   async ({ city, movieId }, { rejectWithValue }) => {
     try {
-      const response = await serverUser.get(userEndPoints.getSingleMovie(city,movieId), {});
+      const response = await serverUser.get(userEndPoints.getSingleMovie(city, movieId), {});
       const { movies } = response.data?.data
       return await movies
     } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log(error.status)
-        return rejectWithValue(error)
-      }
-      return rejectWithValue('an unknown error occured')
+      const errorPayload = handleAxiosError(error)
+      return rejectWithValue(errorPayload)
     }
   }
 );
 
 
+export function handleAxiosError(error: unknown): IResponseError {
 
+  if (error instanceof AxiosError) {
+    const { response } = error
+    console.log(response?.status)
+    if (response) {
+      return {
+        statusCode: response.status,
+        data: response.data.error
+      } as IResponseError
+    }
+  }
+
+  return {
+    statusCode: 500,
+    data: {
+      error: 'unknown_error',
+      message: 'An unknown error occurred',
+    },
+  } as IResponseError;
+
+}
 
 

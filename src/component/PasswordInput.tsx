@@ -49,7 +49,7 @@ export const PasswordInput: React.FC<PasswordInputProps> = ({
         >
           {passwordVisible ? <AiOutlineEyeInvisible size={24} /> : <AiOutlineEye size={24} />}
         </button>
-        {inputError && <span className={`text-red-600 capitalize absolute  font-mono text-sm left-0 -bottom-5`}>{inputError}</span>}
+        {inputError && <span className={`text-red-600 capitalize absolute  font-mono text-sm left-0 -bottom-5 `}>{inputError}</span>}
       {responseError && <span className={`text-red-600 capitalize absolute  font-mono text-sm left-0 -bottom-5`}>{responseError}</span>}
       </div>
       

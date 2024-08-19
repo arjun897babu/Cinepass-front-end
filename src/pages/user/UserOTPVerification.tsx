@@ -124,7 +124,7 @@ const UserOTPVerification: React.FC = (): JSX.Element => {
                 <ResendOTP isActive={isActive} resetTimer={resetTimer} role={Role.users} setResponse={setResponse} />
 
               </div>
-              <button className="bg-black rounded-md  text-white py-2  "  >
+              <button className="bg-black rounded-md  text-white py-2  " disabled={timeRemaining ===0} >
                 Verify OTP
               </button>
               <div className="mt-2 text-white text-sm text-center">

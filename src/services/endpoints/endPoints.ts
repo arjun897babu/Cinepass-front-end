@@ -44,6 +44,6 @@ export const adminEndpoints: AdminEndpoint = {
   updateApprovalStatus: (theaterOwnerId) => `/approval/${theaterOwnerId}`,
   manageEntities: (entityId, role) => `/manage-status/${role}/${entityId}`,
   addMovie: (movieType) => `/add-movie/${movieType}`,
-  getMovie: (movieType) => `admin/get-movie/${movieType}`,
+  getMovie: (movieType) => `/get-movie/${movieType}`,
   deleteMovie: (movieTpe, movieId) => `/delete/${movieTpe}/${movieId}`
 }
