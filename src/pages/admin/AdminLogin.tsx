@@ -18,9 +18,14 @@ export const AdminLogin: React.FC = (): JSX.Element => {
   const dispatch = useDispatch<AppDispatch>();
   const { error, isAuthenticated } = useLoggedOwner(Role.admin)
   const navigate = useNavigate();
+
   useEffect(() => {
     dispatch(clearAdminError())
-  }, [])
+    if (isAuthenticated) {
+      navigate('/admin/home', { replace: true });
+      return
+    }
+  }, [isAuthenticated])
   const { formData, inputError, setInputError, handleChange } = useForm({
     email: '',
     password: ''
@@ -62,7 +67,7 @@ export const AdminLogin: React.FC = (): JSX.Element => {
           </h1>
           {/* form */}
           <form onSubmit={onSubmit} className="flex flex-col gap-1 ">
-            
+
             <div className="p-2 mt-1 text-white rounded-md w-full relative ">
               <label htmlFor="email">Email</label>
               <input

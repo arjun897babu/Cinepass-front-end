@@ -3,7 +3,7 @@ import { ITheaterOwnerEntity } from "../../interface/theater/ITheaterOwner";
 import { ApprovalStatus, Status } from "../../interface/Interface";
 import { RiRadioButtonLine } from "react-icons/ri";
 import { ImBlocked } from "react-icons/im";
- 
+
 
 interface TheaterDetailsProps {
   owner: ITheaterOwnerEntity
@@ -19,7 +19,7 @@ export const TheaterDetails: React.FC<TheaterDetailsProps> = ({ owner }) => {
       modal.showModal()
     }
   };
-  
+
   const closeModal = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     e.stopPropagation();
@@ -37,13 +37,13 @@ export const TheaterDetails: React.FC<TheaterDetailsProps> = ({ owner }) => {
     }
   }
 
-  
+
   return (
     <>
       <button className="btn" onClick={showModal}>View</button>
       <dialog id={owner._id} className="modal backdrop:overflow-y-hidden">
         <div className="modal-box  max-w-2xl">
-            <button onClick={closeModal} className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+          <button onClick={closeModal} className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
           <div className="mt-10">
             <div className="  sm:flex sm:justify-between sm:gap-4">
               <div>
@@ -98,7 +98,7 @@ export const TheaterDetails: React.FC<TheaterDetailsProps> = ({ owner }) => {
                     value={owner.email}
                     readOnly
                   />
-                 
+
                 </div>
 
                 <div className="flex-1 flex justify-center items-center gap-3 relative">
@@ -141,29 +141,32 @@ export const TheaterDetails: React.FC<TheaterDetailsProps> = ({ owner }) => {
                 <hr className="border-gray-400 mb-3" />
                 <div className="mb-3">
                   <label htmlFor="address" className="mb-1">Address</label>
-                  <textarea className="w-full rounded-lg border p-3 focus:outline-none" name="address" value={owner.address} readOnly>
+                  <textarea className="cursor-not-allowed  w-full rounded-lg border p-3 focus:outline-none" name="address" value={owner.address} readOnly>
                   </textarea>
                 </div>
-                <div className="mb-4 flex flex-wrap gap-3">
-                  <div className="flex-1 flex justify-center items-center gap-3 relative">
-                    <label className="text-xs font-medium " htmlFor="city">City</label>
-                    <input
-                      className="cursor-not-allowed rounded-lg text-gray-500 border p-3 text-sm focus:outline-none"
-                      placeholder="city"
-                      type="text"
-                      value={owner.city}
-                      readOnly
-                    />
-                  </div>
-                  <form onSubmit={setCity} className="flex flex-1 justify-center items-center gap-2 relative">
+
+
+                <label className="text-xs font-medium " htmlFor="city">City</label>
+                <div className="mb-3">
+                  <input
+                    className="cursor-not-allowed rounded-lg text-gray-500 border p-3 text-sm focus:outline-none"
+                    placeholder="city"
+                    type="text"
+                    value={owner.city}
+                    readOnly
+                  />
+                </div>
+
+
+                {/* <form onSubmit={setCity} className="flex flex-1 justify-center items-center gap-2 relative">
                     <input
                       className="rounded-lg border p-3 text-sm  focus:outline-none"
                       placeholder="set city"
                       type="text"
                     />
                     <button className="btn btn-sm btn-neutral" type="submit">Submit</button>
-                  </form>
-                </div>
+                  </form> */}
+
               </div>
             </div>
           </div>

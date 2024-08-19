@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IInitialState } from "./IState";
-import { createTheaterScreen, forgotPasswordTheaters, getScreen, getTheaterDetails, loginTheaters, logoutTheaters, resendOTPTheaters, resetPasswordTheaters, signupTheaters, verifyOTPTheaters } from "../actions/theaterAction";
+import { createTheaterScreen, forgotPasswordTheaters, getScreen, getTheaterDetails, loginTheaters, logoutTheaters, resendOTPTheaters, resetPasswordTheaters, signupTheaters, updateTheater, verifyOTPTheaters } from "../actions/theaterAction";
 import { IInitialStateError, ResponseData } from "../../interface/Interface";
 import { isErrorResponse, isResponseError } from "../../utils/customError";
 import { LoggedOwner } from "../../interface/user/IUserData";
@@ -156,11 +156,16 @@ const theaterSlice = createSlice({
       .addCase(createTheaterScreen.fulfilled, (state) => {
         state.loading = false;
       })
-      .addCase(createTheaterScreen.rejected, (state) => {
-        state.loading = false;
+      .addCase(createTheaterScreen.rejected, (state,action) => {
+        state.loading = false; 
+        if(isResponseError(action.payload)){
+          if(action.payload.statusCode===403||action.payload.statusCode===401){
+            state.isAuthenticated = false
+          }
+        }
          
       })
-
+      //get theater screen  
       .addCase(getScreen.pending,(state)=>{
         state.loading = true
       })
@@ -168,25 +173,44 @@ const theaterSlice = createSlice({
         state.loading = false;
       })
       .addCase(getScreen.rejected, (state,action) => {
-        state.loading = false;
-        console.log(action)
+        state.loading = false; 
         if(isResponseError(action.payload)){
-          state.isAuthenticated = false
+           console.log(action.payload)
+          if(action.payload.statusCode===403||action.payload.statusCode===401){
+            state.isAuthenticated = false
+          }
         }
          
       })
+      //get theater details
       .addCase(getTheaterDetails.pending,(state)=>{
         state.loading = true
       })
       .addCase(getTheaterDetails.fulfilled, (state) => {
-        state.loading = false;
-        console.log('reacged')
+        state.loading = false; 
       })
       .addCase(getTheaterDetails.rejected, (state,action) => {
-        state.loading = false;
-        console.log(action)
+        state.loading = false; 
         if(isResponseError(action.payload)){
-          // state.isAuthenticated = false
+          if(action.payload.statusCode===403||action.payload.statusCode===401){
+            state.isAuthenticated = false
+          }
+        }
+         
+      })
+      //update theater details
+      .addCase(updateTheater.pending,(state)=>{
+        state.loading = true
+      })
+      .addCase(updateTheater.fulfilled, (state) => {
+        state.loading = false; 
+      })
+      .addCase(updateTheater.rejected, (state,action) => {
+        state.loading = false; 
+        if(isResponseError(action.payload)){
+          if(action.payload.statusCode===403||action.payload.statusCode===401){
+            state.isAuthenticated = false
+          }
         }
          
       })

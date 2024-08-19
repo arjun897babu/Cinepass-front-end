@@ -12,6 +12,7 @@ import { Toast } from "../Toast2";
 import { isResponseError } from "../../utils/customError";
 import ConfirmationModal from "../ConfirmationModal";
 import { FaRegEdit } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 export interface TheaterProps {
   selectedData: TheaterProfile;
@@ -25,9 +26,8 @@ const TheaterUpdateForm: React.FC<TheaterProps> = ({ selectedData, setTheaterDat
   const [loading, setLoading] = useState<boolean>(false)
   const [confirmation, setConfirmation] = useState<boolean>(false)
   const [formData, setFormData] = useState<TheaterProfile | null>(null)
+  const navigate = useNavigate()
   const closeConfirmation = () => setConfirmation(false)
-
-
 
   const dispatch = useDispatch<AppDispatch>()
   const {
@@ -57,9 +57,7 @@ const TheaterUpdateForm: React.FC<TheaterProps> = ({ selectedData, setTheaterDat
   const onSubmit = async () => {
     if (!formData) return
     try {
-      setLoading(true);
-      console.log('Submission started');
-      console.log(formData);
+      setLoading(true); 
       const response = await dispatch(updateTheater(formData)).unwrap();
 
       const { theater } = response.data
@@ -78,8 +76,6 @@ const TheaterUpdateForm: React.FC<TheaterProps> = ({ selectedData, setTheaterDat
     } catch (error) {
 
       if (isResponseError(error)) {
-        console.log(error.statusCode)
-        console.log(error.data)
         if (error.statusCode == 400) {
           console.log(error)
           setError(
@@ -88,6 +84,8 @@ const TheaterUpdateForm: React.FC<TheaterProps> = ({ selectedData, setTheaterDat
               message: error.data.message
             }
           )
+        } else if (error.statusCode === 403) {
+          navigate('/theaters/login', { replace: true, state: { blocked: true } })
         }
         else {
           setToast(
@@ -97,8 +95,8 @@ const TheaterUpdateForm: React.FC<TheaterProps> = ({ selectedData, setTheaterDat
             }
           )
         }
-        
-        
+
+
       }
     }
     finally {
@@ -114,7 +112,7 @@ const TheaterUpdateForm: React.FC<TheaterProps> = ({ selectedData, setTheaterDat
     if (modal) {
       modal.showModal();
     }
-  }; 
+  };
   const closeModal = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const modal = document.getElementById('theater_details') as HTMLDialogElement

@@ -1,15 +1,16 @@
 import { AsyncThunk, createAsyncThunk } from "@reduxjs/toolkit";
-import { AxiosError, AxiosHeaders } from "axios";
+import { AxiosError } from "axios";
 import { serverTheater } from "../../services";
 import { theatersEndPoints } from "../../services/endpoints/endPoints";
 import { TheaterSignUpData } from "../../interface/theater/ITheatersData";
 import { IGetMovieShowResponse, IMovie, LoginData, OTPVerification, ResponseData, ResponseData2 } from "../../interface/Interface";
-import { ITheaterDetailResponse } from "../../interface/theater/ITheaterDetail";
+
 import { ITheaterScreen, ITheaterScreenResponse } from "../../interface/theater/ITheaterScreen";
 import { MovieType } from "../../component/admin/MovieForm";
 import { IMovieShow } from "../../interface/theater/IMovieShow";
 import { IResponseError } from "../../utils/customError";
 import { ITheaterOwnerEntity, TheaterOwnerProfile, TheaterProfile } from "../../interface/theater/ITheaterOwner";
+import { handleAxiosError } from "./userAction";
 
 
 export const signupTheaters: AsyncThunk<ResponseData, TheaterSignUpData, {}> = createAsyncThunk(
@@ -248,23 +249,7 @@ export const getScreen: AsyncThunk<ITheaterScreenResponse[], void, {}> = createA
       return await screens
     } catch (error) {
 
-      if (error instanceof AxiosError) {
-        const { response } = error
-        if (response) {
-          return rejectWithValue({
-            statusCode: response.status,
-            data: response.data.error
-          } as IResponseError);
-        }
-      }
-
-      return rejectWithValue({
-        statusCode: 500,
-        data: {
-          error: 'unknown_error',
-          message: 'an unknown error occured'
-        }
-      } as IResponseError)
+     return rejectWithValue(handleAxiosError(error))
 
 
     }

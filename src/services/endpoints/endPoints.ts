@@ -28,7 +28,7 @@ export const theatersEndPoints: TheaterEndpoint = {
   resetPassword: (token: string) => `/reset-password/${token}`,
   getTheaterDetails: `/theater`,
   updateTheater: `/update-theater`,
-  createScreen: `theaters/add-screen`,
+  createScreen: `/add-screen`,
   getMovie: (movieType) => `/get-movie/${movieType}`,
   getScreen: `/get-allScreen`,
   addMovieShows: `/add-shows`,

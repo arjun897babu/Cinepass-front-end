@@ -9,7 +9,7 @@ interface children {
 export const TheaterProtectedRoutes = ({ children }: children) => {
 
   const {isAuthenticated} = useLoggedOwner(Role.theaters)
- 
+ console.log(isAuthenticated)
   if (!isAuthenticated) {
     return <Navigate to={'/theaters/login'}   />
   } else {

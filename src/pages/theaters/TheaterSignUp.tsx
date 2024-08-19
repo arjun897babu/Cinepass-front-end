@@ -23,12 +23,16 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
 
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate()
-  const { loading, error } = useLoggedOwner(Role.theaters);
+  const { loading, error, isAuthenticated } = useLoggedOwner(Role.theaters);
 
 
   useEffect(() => {
     dispatch(clearTheaterError())
-  }, [])
+    if (isAuthenticated) {
+      navigate('/theaters/home', { replace: true })
+      return
+    }
+  }, [isAuthenticated])
 
   const { formData, handleChange, inputError, setInputError } = useForm({
     name: '',

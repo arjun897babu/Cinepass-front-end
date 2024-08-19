@@ -16,10 +16,10 @@ const TheaterInfo: React.FC<TheaterProps> = ({ selectedData, setTheaterDataRespo
           />
         </div>
         <figure className="px-10 pt-10">
-          <img
-            src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+          {/* <img
+            src="https://www.hollywoodreporter.com/wp-content/uploads/2023/04/Samsung-Onyx-at-Star-Cinema-Grill_094128-H-2023.jpg?w=1296&h=730&crop=1"
             alt="Shoes"
-            className="rounded-xl" />
+            className="rounded-xl" /> */}
         </figure>
         <div className="card-body items-center text-center ">
           <h2 className="max-w-full break-words text-2xl font-bold ">{selectedData.theater_name}</h2>

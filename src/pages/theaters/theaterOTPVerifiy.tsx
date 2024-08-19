@@ -25,7 +25,7 @@ export const TheaterOTPVerification: React.FC = (): JSX.Element => {
   const navigate = useNavigate();
 
   const { error, tempMail, } = useLoggedOwner(Role.theaters)
-  const { clearTempMail,clearError } = useAction(Role.theaters)
+  const { clearTempMail, clearError } = useAction(Role.theaters)
   const [response, setResponse] = useState<ResponseData | null>(null)
   const { isActive, resetTimer, timeRemaining } = useTimer(120)
 
@@ -37,7 +37,7 @@ export const TheaterOTPVerification: React.FC = (): JSX.Element => {
   useEffect(() => {
 
     if (!tempMail) {
-      navigate('/login')
+      navigate('/theaters/login', { replace: true })
     }
 
     dispatch(clearTheaterError())

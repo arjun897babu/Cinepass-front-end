@@ -27,7 +27,7 @@ export const UserLogin: React.FC = (): JSX.Element => {
 
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { error, isAuthenticated } = useLoggedOwner(Role.users);
+  const { error, isAuthenticated, city } = useLoggedOwner(Role.users);
   const { clearError } = useAction(Role.users)
   const [toastMessage, setToastMessage] = useState<Toast | null>(null)
 
@@ -38,14 +38,47 @@ export const UserLogin: React.FC = (): JSX.Element => {
     setInputError
   } = useForm({ email: '', password: '' }, Role.users);
 
+
   useEffect(() => {
-
     if (isAuthenticated) {
-      navigate('/')
+      console.log('dd');
+      navigate(`/home/${city}`, { replace: true });
+      return; 
     }
-    clearError()
-  }, [isAuthenticated])
-
+  
+    const state = location.state;
+  
+    if (state?.blocked) {
+      setToastMessage({
+        alert: ResponseStatus.ERROR,
+        message: 'Account Blocked'
+      });
+    } else if (state?.verified) {
+      setToastMessage({
+        alert: ResponseStatus.SUCCESS,
+        message: 'Account verified successfully'
+      });
+    } else if (state?.password) {
+      setToastMessage({
+        alert: ResponseStatus.SUCCESS,
+        message: 'Password updated successfully'
+      });
+    } else if (state?.serverError) {
+      setToastMessage({
+        alert: ResponseStatus.ERROR,
+        message: 'Something went wrong'
+      });
+    } else if (state?.google) {
+      setToastMessage({
+        alert: ResponseStatus.ERROR,
+        message: 'use google auth'
+      });
+    }
+  
+    clearError();
+    navigate(location.pathname, { replace: true });
+  }, [isAuthenticated, location.state, city]);
+  
   const { handleSubmit } = useFormSubmit(formData, setInputError);
 
   const onSubmit = async (event: FormEvent) => {
@@ -56,7 +89,7 @@ export const UserLogin: React.FC = (): JSX.Element => {
       try {
         const result = await dispatch(loginUser(formData)).unwrap();
         if (result.status === ResponseStatus.SUCCESS) {
-          navigate(result.redirectURL)
+          navigate(result.redirectURL, { replace: true })
         }
       } catch (err) {
         if (isErrorResponse(err)) {
@@ -65,41 +98,7 @@ export const UserLogin: React.FC = (): JSX.Element => {
       }
     }
   }
-  useEffect(() => {
-    const state = location.state;
 
-    if (state?.blocked) {
-      setToastMessage({
-        alert: ResponseStatus.ERROR,
-        message: 'Account Blocked'
-      })
-    }
-    if (state?.verified) {
-      setToastMessage({
-        alert: ResponseStatus.SUCCESS,
-        message: 'Account verified successfully'
-      })
-    }
-    if (state?.password) {
-      setToastMessage({
-        alert: ResponseStatus.SUCCESS,
-        message: 'Password updated successfully'
-      })
-    }
-    if (state?.serverError) {
-      setToastMessage({
-        alert: ResponseStatus.ERROR,
-        message: 'Something went wrong'
-      })
-    }
-    if (state?.google) {
-      setToastMessage({
-        alert: ResponseStatus.ERROR,
-        message: 'use google auth'
-      })
-    }
-    navigate(location.pathname, { replace: true })
-  }, [location.state])
 
 
   let background_image_path = { backgroundImage: `url(${backGroundImage})` };
@@ -228,19 +227,3 @@ export const UserLogin: React.FC = (): JSX.Element => {
     </section >
   )
 }
-
-
-{/* <div className="p-2 mt-1 text-white rounded-md w-full relative">
-              <label htmlFor="Password">Password</label>
-              <input
-                className="p-2 mt-3  text-black rounded-md w-full focus:outline"
-                type="password"
-                name="password"
-                placeholder="password"
-                value={formData.password}
-                onChange={handleChange}
-              />
-
-              {inputError.password && <small className='text-red-600 capitalize absolute -bottom-3 left-3'>{inputError.password}</small>}
-              {error?.error === 'password' && <small className='text-red-600 capitalize absolute -bottom-3 left-3'>{error.message}</small>}
-            </div> */}

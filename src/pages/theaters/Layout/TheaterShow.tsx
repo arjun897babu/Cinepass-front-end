@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux"
 import { AppDispatch } from "../../../redux/store"
 import { getAllShows, } from "../../../redux/actions/theaterAction"
 import { Loader } from "../../../component/Loader"
-import { formatRunTime, getIST, getMovieSrc, } from "../../../utils/format"
+import { convertTo12HourFormat, formatRunTime, getIST, getMovieSrc, } from "../../../utils/format"
 import { IMovieShow } from "../../../interface/theater/IMovieShow"
 
 import Toast2, { Toast } from "../../../component/Toast2"
@@ -160,7 +160,7 @@ const TheaterShow: React.FC = () => {
                     </div>
                   </td>
                   <td>
-                    <span className="badge font-bold rounded-none ">{show.showTime}</span>
+                    <span className="badge font-bold rounded-none ">{convertTo12HourFormat(show.showTime)}</span>
                   </td>
                   <td>
                     <span className="badge font-bold rounded-none ">{show.screen.screen_name}</span>

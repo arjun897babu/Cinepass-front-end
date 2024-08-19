@@ -27,8 +27,16 @@ const ResetPassWord: React.FC<{ role: Role }> = ({ role }) => {
   const { formData, handleChange, inputError, setInputError } = useForm({ password: '', confirm_password: '' }, role)
   const { clearError } = useAction(role)
   const { handleSubmit } = useFormSubmit(formData, setInputError)
+  const { isAuthenticated } = useLoggedOwner(role)
 
+  useEffect(() => {
 
+    if (isAuthenticated) {
+      navigate('/theaters/home', { replace: true })
+      return
+    }
+
+  }, [isAuthenticated])
 
   const onSubmit = async (e: FormEvent) => {
     const isValid = handleSubmit(e);
@@ -105,7 +113,7 @@ const ResetPassWord: React.FC<{ role: Role }> = ({ role }) => {
 
             </h1>
             {/* form */}
-            <form onSubmit={onSubmit} className="flex flex-col gap-1  "> 
+            <form onSubmit={onSubmit} className="flex flex-col gap-1  ">
 
               <PasswordInput
                 label="password"
@@ -140,7 +148,7 @@ const ResetPassWord: React.FC<{ role: Role }> = ({ role }) => {
 }
 
 export default ResetPassWord
-                {/* <div className="p-2 mt-1  text-white rounded-md w-full relative ">
+{/* <div className="p-2 mt-1  text-white rounded-md w-full relative ">
                   <label htmlFor="confirm_password">  New Password</label>
                   <input
                     className="p-2 mt-3  text-black rounded-md w-full focus:outline"

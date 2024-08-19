@@ -1,4 +1,4 @@
-import React, { FormEvent, memo, useState } from "react"
+import React, { FormEvent, memo, useEffect, useState } from "react"
 import backgroundImage from '/Iconic Movie Posters Collage.webp'
 import backgroundImage1 from '/movie_projector.jpg'
 import { useDispatch } from "react-redux";
@@ -18,10 +18,19 @@ import Toast2 from "./Toast2";
 
 const ForgotPassword: React.FC<{ role: Role }> = ({ role }): JSX.Element => {
   console.log(role)
-  const { error } = useLoggedOwner(role)
+  const { error,isAuthenticated } = useLoggedOwner(role)
   const backgroundImagePath = { backgroundImage: `url(${role === Role.users ? backgroundImage : backgroundImage1})` };
   const dispatch = useDispatch<AppDispatch>();
   const { setError, clearError } = UseAction(role)
+
+  useEffect(() => {
+
+    if (isAuthenticated) {
+      navigate('/theaters/home', { replace: true })
+      return
+    }
+
+  }, [isAuthenticated])
 
   const navigate = useNavigate();
   const [response, setResponse] = useState<ResponseData | null>(null)

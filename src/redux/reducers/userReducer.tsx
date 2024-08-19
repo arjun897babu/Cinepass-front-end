@@ -189,7 +189,7 @@ const userSlice = createSlice({
       .addCase(getAllShows.rejected, (state, action) => {
         state.loading = false;
         if (isResponseError(action.payload)) {
-          if (action.payload.statusCode === 403) {
+          if (action.payload.statusCode===403||action.payload.statusCode===401) {
             state.isAuthenticated = false
           }
         }
@@ -206,7 +206,7 @@ const userSlice = createSlice({
         state.loading = false;
         if (isResponseError(action.payload)) {
           console.log(action.payload)
-          if (action.payload.statusCode === 403) {
+          if (action.payload.statusCode===403||action.payload.statusCode===401) {
             state.isAuthenticated = false
           }
         }

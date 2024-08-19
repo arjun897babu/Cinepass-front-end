@@ -32,6 +32,18 @@ export function formatRunTime(time: string): string {
 
 }
 
+export function convertTo12HourFormat(time: string) {
+  
+  const [hour, minute] = time.split(':').map(Number);
+
+   
+  const period = hour >= 12 ? 'PM' : 'AM';
+ 
+  const hour12 = hour % 12 || 12;
+ 
+  return `${hour12}:${minute < 10 ? '0' + minute : minute} ${period}`;
+}
+
 export function getMovieTime(time: string): [number, number] {
   const movieHour = Math.floor(parseInt(time, 10) / 60)
   const movieMin = parseInt(time, 10) % 60
@@ -82,8 +94,8 @@ export function convertFile(file: File): Promise<string> {
 export function setDefaultDate(date: Date, days: number): string {
 
   const newDate = new Date(date);
-  
+
   newDate.setDate(newDate.getDate() + days);
-  
-  return newDate.toISOString().split('T')[0]; 
+
+  return newDate.toISOString().split('T')[0];
 }

@@ -4,13 +4,15 @@ import { GiCancel } from "react-icons/gi"
 import { useDispatch } from "react-redux"
 import { AppDispatch } from "../../../redux/store"
 import { useForm } from "../../../hooks/UseForm"
-import { ITheaterScreen, Role } from "../../../interface/Interface"
+import { ITheaterScreen, ResponseStatus, Role } from "../../../interface/Interface"
 import { useLoggedOwner } from "../../../hooks/useLoggedUser"
 import { useFormSubmit } from "../../../hooks/UseFormSubmitt"
 import { createTheaterScreen, getScreen } from "../../../redux/actions/theaterAction"
 import { ISeat, ITheaterScreenResponse } from "../../../interface/theater/ITheaterScreen"
 import { isResponseError } from "../../../utils/customError"
 import { IoIosInformationCircleOutline } from "react-icons/io"
+import { useNavigate } from "react-router-dom"
+import Toast2, { Toast } from "../../../component/Toast2"
 
 const SeatRow: React.FC<{ rowNumber: number; columnCount: number }> = ({ rowNumber, columnCount }) => {
   const seats = Array.from({ length: columnCount }, (_, col) => (
@@ -18,7 +20,7 @@ const SeatRow: React.FC<{ rowNumber: number; columnCount: number }> = ({ rowNumb
       key={`${rowNumber}-${col + 1}`}
       className="seat border border-blue-300 rounded-md w-7 h-7 m-0.5"
     >
-      
+
     </div>
 
   ));
@@ -97,7 +99,8 @@ const TheaterScreen: React.FC = () => {
   const [screens, setScreens] = useState<ITheaterScreenResponse[] | []>([]);
   const [selectedScreen, setSelectedScreen] = useState<ITheaterScreenResponse | null>(null)
   const [showmodal, setShowmodal] = useState<boolean>(false);
-
+  const [toast, setToast] = useState<Toast | null>(null)
+  const navigate = useNavigate()
   const closeViewModal = () => {
     setSelectedScreen(null)
   }
@@ -117,14 +120,28 @@ const TheaterScreen: React.FC = () => {
   const { error } = useLoggedOwner(Role.theaters);
 
   const fetchScreen = async () => {
-   console.log('running')
     try {
       const response = await dispatch(getScreen()).unwrap()
       if (response) {
         setScreens(response)
       }
     } catch (error) {
-      console.log(error)
+      if (isResponseError(error)) {
+        if (error.statusCode === 403) {
+          navigate('/theaters/login', { replace: true, state: { blocked: true } })
+        }
+        else if (error.statusCode == 404) {
+          setToast({
+            alert: ResponseStatus.ERROR,
+            message: error.data.message
+          })
+        } else if (error.statusCode === 500) {
+          setToast({
+            alert: ResponseStatus.ERROR,
+            message: error.data.message
+          })
+        }
+      }
     }
   }
 
@@ -207,19 +224,37 @@ const TheaterScreen: React.FC = () => {
         }
 
         const response = await dispatch(createTheaterScreen({ ...formData, layout: screenLayout })).unwrap()
+        if (response) {
+          setScreens((prev) =>
+            [...prev, response]
+          )
+        }
       }
-      setUpdateForm(false)
+      setAddForm(false)
     } catch (error) {
 
       if (isResponseError(error)) {
+        console.log('working')
+        if (error.statusCode === 400 || error.statusCode == 409) {
+          setInputError((prev) => (
+            {
+              ...prev,
+              [error.data.error]: error.data.message
+            }
+          ))
+        }
+        else if (error.statusCode === 403) {
+          navigate('/theaters/login', { replace: true, state: { blocked: true } })
+          setAddForm(false)
+        } else if (error.statusCode === 500) {
+          setAddForm(false)
+          setToast({
+            alert: ResponseStatus.ERROR,
+            message: error.data.message
+          })
+        }
 
-        setInputError((prev) => (
-          {
-            ...prev,
-            [error.data.error]: error.data.message
-          }
-        )
-        )
+
       }
     } finally {
 
@@ -228,7 +263,18 @@ const TheaterScreen: React.FC = () => {
 
 
   return (
+
     <>
+
+      {
+        toast &&
+        <Toast2
+          alert={toast.alert}
+          clearToast={() => setToast(null)}
+          message={toast.message}
+        />
+      }
+
       {!addForm ? (<>
         <div
           className="flex justify-end items-center mb-6">
@@ -393,7 +439,7 @@ const TheaterScreen: React.FC = () => {
                         {inputError.seating_capacity && <small className='text-red-600 capitalize absolute left-0 -bottom-4  text-xs'>{inputError.seating_capacity}</small>}
                         {error?.error === 'seating_capacity' && <small className='text-red-600 capitalize absolute left-0 -bottom-4  text-xs'>{error.message}</small>}
                       </div>
-                       
+
                     </div>
                     <div className="flex justify-end gap-2">
                       <button type="button" className="btn btn-sm  bg-sky-400 hover:bg-sky-500" onClick={setActionModal}>Seat Layout</button>
@@ -410,17 +456,6 @@ const TheaterScreen: React.FC = () => {
           </>
         )
       }
-
-
-
-
-
-
-
-      {/* add screen form */}
-
-
-
 
 
 

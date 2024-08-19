@@ -9,12 +9,15 @@ import Toast2, { Toast } from "../../../component/Toast2"
 import TheaterInfo from "../../../component/theaters/TheaterInfo"
 import TheaterOwnerInfo from "../../../component/theaters/TheaterOwnerInfo"
 import { useLoggedOwner } from "../../../hooks/useLoggedUser"
-import { Role } from "../../../interface/Interface"
+import { ResponseStatus, Role } from "../../../interface/Interface"
+import { isErrorResponse, isResponseError } from "../../../utils/customError"
+import { useNavigate } from "react-router-dom"
 
 const TheaterDetail: React.FC = () => {
-
+  const navigate = useNavigate()
   const dispatch = useDispatch<AppDispatch>();
   const [theaterData, setTheaterData] = useState<ITheaterOwnerEntity | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
   const [toast, setToast] = useState<Toast | null>(null)
   const clearToast = () => setToast(null)
   const updateToastData = (toastData: Toast) => {
@@ -22,10 +25,29 @@ const TheaterDetail: React.FC = () => {
   }
   const fetchTheaterDetails = async () => {
     try {
+      setLoading(true)
       const response = await dispatch(getTheaterDetails()).unwrap();
       setTheaterData(response);
     } catch (error) {
-      console.log(error)
+      if (isResponseError(error)) {
+        if (error.statusCode === 403) {
+          navigate('/theaters/login', { replace: true, state: { blocked: true } })
+        }
+        else if (error.statusCode == 404) {
+          setToast({
+            alert: ResponseStatus.ERROR,
+            message: error.data.message
+          })
+        } else if (error.statusCode === 500) {
+          setToast({
+            alert: ResponseStatus.ERROR,
+            message: error.data.message
+          })
+        }
+
+      }
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -39,7 +61,7 @@ const TheaterDetail: React.FC = () => {
     console.log('data updated')
 
   };
-  console.log(theaterData)
+
   useEffect(() => {
     fetchTheaterDetails()
   }, [])

@@ -1,7 +1,7 @@
 
-import React, { FormEvent, useEffect } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import '../../index.css';
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import backGroundImage from '/movie_projector.jpg'
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../redux/store';
@@ -12,29 +12,68 @@ import { loginTheaters } from '../../redux/actions/theaterAction';
 import { ResponseStatus, Role } from '../../interface/Interface';
 import { isErrorResponse } from '../../utils/customError';
 import { clearTheaterError } from '../../redux/reducers/theatersReducer';
-import Toast from '../../component/Toast';
 import { PasswordInput } from '../../component/PasswordInput';
-import Toast2 from '../../component/Toast2';
+import Toast2, { Toast } from '../../component/Toast2';
 import useAction from '../../hooks/UseAction';
 
 
 export const TheatersLogin: React.FC = (): JSX.Element => {
+  const location = useLocation()
 
   const dispatch = useDispatch<AppDispatch>();
-  const { error } = useLoggedOwner(Role.theaters);
+  const { error, isAuthenticated } = useLoggedOwner(Role.theaters);
 
   const navigate = useNavigate();
+ 
 
+  const [toastMessage, setToastMessage] = useState<Toast | null>(null)
 
+  
   useEffect(() => {
-    dispatch(clearTheaterError())
-  }, [])
+    dispatch(clearTheaterError());
+  
+    if (isAuthenticated) {
+  
+      navigate('/theaters/home', { replace: true });
+      return;  
+    }
+  
+    const state = location.state;
+  
+    if (state?.blocked) {
+      setToastMessage({
+        alert: ResponseStatus.ERROR,
+        message: 'Account Blocked',
+      });
+    } else if (state?.verified) {
+      setToastMessage({
+        alert: ResponseStatus.SUCCESS,
+        message: 'Account verified successfully',
+      });
+    } else if (state?.password) {
+      setToastMessage({
+        alert: ResponseStatus.SUCCESS,
+        message: 'Password updated successfully',
+      });
+    } else if (state?.serverError) {
+      setToastMessage({
+        alert: ResponseStatus.ERROR,
+        message: 'Something went wrong',
+      });
+    }
+  
+  
+    navigate(location.pathname, { replace: true });
+  
+  }, [ isAuthenticated,location.state]);
+  
 
   const { formData, handleChange, inputError, setInputError } = useForm({
     email: '',
     password: ''
   }, Role.theaters)
   const { handleSubmit } = useFormSubmit(formData, setInputError)
+  let background_image_path = { backgroundImage: `url(${backGroundImage})` };
   const onSubmit = async (e: FormEvent) => {
 
     try {
@@ -43,7 +82,7 @@ export const TheatersLogin: React.FC = (): JSX.Element => {
         const response = await dispatch(loginTheaters(formData)).unwrap();
 
         if (response.status === ResponseStatus.SUCCESS) {
-          navigate(response.redirectURL)
+          navigate(response.redirectURL, { replace: true })
         }
       }
 
@@ -60,7 +99,6 @@ export const TheatersLogin: React.FC = (): JSX.Element => {
 
   }
   const { clearError } = useAction(Role.theaters)
-  let background_image_path = { backgroundImage: `url(${backGroundImage})` };
 
   return (
     <>
@@ -74,6 +112,16 @@ export const TheatersLogin: React.FC = (): JSX.Element => {
           message={error.message}
           clearToast={clearError}
         />}
+
+      {
+        toastMessage &&
+        <Toast2
+          alert={toastMessage.alert}
+          message={toastMessage.message}
+          clearToast={() => setToastMessage(null)}
+        />
+      }
+
       <section className="background overlay flex items-center justify-center " style={background_image_path}>
 
 
@@ -117,9 +165,6 @@ export const TheatersLogin: React.FC = (): JSX.Element => {
                 responseError={error?.error === 'password' ? error.message : undefined}
                 theater={true}
               />
-
-
-
               <div className="flex justify-end">
                 <Link to={`/theaters/forgot-password`}>
                   <button className="m-5 text-xs text-white" >
@@ -167,19 +212,3 @@ export const TheatersLogin: React.FC = (): JSX.Element => {
     </>
   )
 }
-
-{/* <div className="p-2 mt-1 text-white w-full relative flex justify-center items-center text-center gap-4">
-              <label className='w-24 text-left' htmlFor="Password">Password</label>
-              <div className="relative w-full">
-                <input
-                  className="p-2   text-black rounded-md w-full focus:outline"
-                  type="password"
-                  name="password"
-                  placeholder="password"
-                  onChange={handleChange}
-                  value={formData.password}
-                />
-                {inputError.password && <small className='text-red-600 capitalize absolute  left-0 -bottom-5 font-mono '>{inputError.password}</small>}
-                {error?.error === 'password' && <small className='text-red-600 capitalize absolute  left-0 -bottom-5 font-mono '>{error.message}</small>}
-              </div>
-            </div> */}
