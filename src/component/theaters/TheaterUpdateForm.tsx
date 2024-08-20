@@ -13,6 +13,7 @@ import { isResponseError } from "../../utils/customError";
 import ConfirmationModal from "../ConfirmationModal";
 import { FaRegEdit } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import  Autocomplete  from "../Autocomplete";
 
 export interface TheaterProps {
   selectedData: TheaterProfile;
@@ -46,7 +47,9 @@ const TheaterUpdateForm: React.FC<TheaterProps> = ({ selectedData, setTheaterDat
     }
   )
 
-
+  const changeCity = (city: string) => {
+    setValue('city', city)
+  }
   const modalRef = useRef<HTMLDialogElement>(null);
 
   const handleConfirmation: SubmitHandler<TheaterProfile> = async (data) => {
@@ -57,7 +60,7 @@ const TheaterUpdateForm: React.FC<TheaterProps> = ({ selectedData, setTheaterDat
   const onSubmit = async () => {
     if (!formData) return
     try {
-      setLoading(true); 
+      setLoading(true);
       const response = await dispatch(updateTheater(formData)).unwrap();
 
       const { theater } = response.data
@@ -176,14 +179,20 @@ const TheaterUpdateForm: React.FC<TheaterProps> = ({ selectedData, setTheaterDat
 
               <div>
                 <label className="sr-only" htmlFor="city">City</label>
-                <input
+                {/* <input
                   className="w-full focus:outline-none rounded-lg border p-3 text-sm"
                   placeholder="City"
                   type="text"
                   id="city"
                   {...register('city')}
 
+                /> */}
+                <Autocomplete
+                  changeCity={changeCity}
+                  update={true}
+                  value={selectedData.city}
                 />
+
                 {errors.city && <p className="text-red-500 text-xs">{errors.city.message}</p>}
               </div>
             </div>

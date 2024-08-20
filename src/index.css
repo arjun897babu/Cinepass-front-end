@@ -113,3 +113,10 @@ body {
 input:focus,select:focus{
   outline: none !important;
 }
+
+.geoapify-autocomplete-input {
+  @apply p-2 w-full text-black rounded-md focus:outline-none bg-white border border-gray-300 shadow-sm;
+}
+.geoapify-close-button{
+  @apply bg-white
+}

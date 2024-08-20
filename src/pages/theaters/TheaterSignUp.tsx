@@ -1,5 +1,5 @@
 
-import React, { FormEvent, useEffect } from 'react';
+import React, { FormEvent, useCallback, useEffect } from 'react';
 import '../../index.css';
 import { Link, useNavigate } from 'react-router-dom'
 import backGroundImage from '/movie_projector.jpg'
@@ -13,6 +13,7 @@ import { isErrorResponse } from '../../utils/customError';
 import { useLoggedOwner } from '../../hooks/useLoggedUser';
 import { clearTheaterError } from '../../redux/reducers/theatersReducer';
 import { PasswordInput } from '../../component/PasswordInput';
+import Autocomplete from '../../component/Autocomplete';
 
 
 
@@ -34,7 +35,7 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
     }
   }, [isAuthenticated])
 
-  const { formData, handleChange, inputError, setInputError } = useForm({
+  const { formData, handleChange, inputError, setInputError, setFormData } = useForm({
     name: '',
     email: '',
     mobile_number: '',
@@ -47,14 +48,24 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
     city: ''
   }, Role.theaters)
 
+  const changeCity = (city: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      city: city
+    }))
+  };
+
+  // const changeCityI = useCallback(changeCity,[formData])
 
   const { handleSubmit } = useFormSubmit(formData, setInputError);
 
 
   const onSubmit = async (e: FormEvent) => {
     const isValid = handleSubmit(e)
+    console.log(formData.city)
     try {
       if (isValid) {
+
         const result = await dispatch(signupTheaters(formData)).unwrap();
         if (result.status === ResponseStatus.SUCCESS) {
           navigate(result.redirectURL)
@@ -135,37 +146,6 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
               </div>
             </div>
 
-            {/* <div className="p-2 mt-1 text-white rounded-md w-full relative flex text-left justify-center items-center" >
-              <label className='capitalize w-28 ' htmlFor="password">Password</label>
-              <div className="relative w-full">
-                <input
-                  className="p-2 text-black rounded-md w-full focus:outline"
-                  type="password"
-                  name="password"
-                  placeholder="Password"
-                  value={formData.password}
-                  onChange={handleChange}
-                />
-                {inputError.password && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.password}</small>}
-                {error?.error === 'password' && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{error.message}</small>}
-              </div>
-            </div>
-
-            <div className="p-2 mt-1 text-white rounded-md w-full relative flex text-left justify-center items-center" >
-              <label className='capitalize w-28' htmlFor="confirm_password">Confirm Password</label>
-              <div className="relative w-full">
-                <input
-                  className="p-2 text-black rounded-md w-full focus:outline"
-                  type="password"
-                  name="confirm_password"
-                  placeholder="Confirm Password"
-                  value={formData.confirm_password}
-                  onChange={handleChange}
-                />
-                {inputError.confirm_password && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.confirm_password}</small>}
-              </div>
-            </div> */}
-
             <PasswordInput
               label='password'
               name='password'
@@ -236,7 +216,7 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
               <label className='capitalize w-28' htmlFor="theater_license">address</label>
               <div className="relative w-full justify-between flex ">
                 <input
-                  className="p-2 text-black rounded-md     focus:outline"
+                  className="p-2 text-black rounded-md  w-full   focus:outline"
                   type="text"
                   name="address"
                   placeholder="Enter the address"
@@ -245,17 +225,28 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
                 />
                 {inputError.address && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.address}</small>}
                 {inputError.address && <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '>{inputError.address}</small>}
-                <input
+
+
+                {/* <input
                   className="p-2 text-black rounded-md     focus:outline"
                   type="text"
                   name="city"
                   placeholder="choose city"
                   value={formData.city}
                   onChange={handleChange}
-                />
-                {inputError.city && <small className='text-red-600 capitalize absolute right-20 -bottom-5 font-mono '>{inputError.city}</small>}
-                {inputError.city && <small className='text-red-600 capitalize absolute right-20 -bottom-5 font-mono '>{inputError.city}</small>}
+                /> */}
+
               </div>
+
+            </div>
+            <div className="p-2 mt-1 text-white rounded-md w-full relative flex text-left justify-center items-center ">
+
+              <label className='capitalize w-28' htmlFor="theater_license">city</label>
+              <Autocomplete
+                changeCity={changeCity}
+              />
+              {inputError.city && <small className='text-red-600 capitalize absolute right-20 -bottom-5 font-mono '>{inputError.city}</small>}
+              {inputError.city && <small className='text-red-600 capitalize absolute right-20 -bottom-5 font-mono '>{inputError.city}</small>}
             </div>
 
             <button className="bg-white rounded-md text-black mt-6 hover:bg-gray-600 py-2">

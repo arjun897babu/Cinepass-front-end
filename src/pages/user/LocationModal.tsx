@@ -58,16 +58,15 @@ const LocationModal: React.FC<LocationModalProps> = ({ onClose }) => {
           {onClose && <div className="flex justify-end">
             <button onClick={closeModal} className="btn btn-sm btn-circle">✕</button>
           </div>}
-          <h3 className="font-bold text-2xl text-center capitalize ">select your city</h3>
+          <h3 className="font-bold text-2xl text-center capitalize mb-7 ">select your city</h3>
           
           
-          
-              <div className="p-1 m-1">
+              <div className="p-1 m-1 flex gap-2">
                 {cities.map((city) => (
                   <button
                     key={city}
                     onClick={() => handleCitySelect(city)}
-                    className="p-2 hover:bg-gray-200 rounded"
+                    className="p-2 hover:bg-gray-200 rounded bg-sky-200 font-medium"
                   >
                     {city}
                   </button>
