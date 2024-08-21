@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import { ResponseData } from "../interface/Interface";
 
 export interface ErrorResponse extends ResponseData {
@@ -41,5 +42,26 @@ export function isResponseError(error: unknown): error is IResponseError {
   )
 }
 
+export function handleAxiosError(error: unknown): IResponseError {
 
+  if (error instanceof AxiosError) {
+    const { response } = error
+    console.log(response?.status)
+    if (response) {
+      return {
+        statusCode: response.status,
+        data: response.data.error
+      } as IResponseError
+    }
+  }
+
+  return {
+    statusCode: 500,
+    data: {
+      error: 'unknown_error',
+      message: 'An unknown error occurred',
+    },
+  } as IResponseError;
+
+}
 

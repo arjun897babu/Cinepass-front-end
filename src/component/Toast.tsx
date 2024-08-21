@@ -1,7 +1,11 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { ResponseStatus, Role } from '../interface/Interface';
+import {   userClearError } from '../redux/reducers/userReducer'
+import {   theaterClearError } from '../redux/reducers/theatersReducer'
+import {   adminClearError } from '../redux/reducers/adminReducer'
 
-import UseAction from '../hooks/UseAction';
+import { useDispatch } from 'react-redux';
+import type { AppDispatch } from '../redux/store';
 
 interface ToastProp {
   message: string;
@@ -10,18 +14,26 @@ interface ToastProp {
 }
 
 const Toast: React.FC<ToastProp> = ({ message, status, role }) => {
-  
-  const { clearError } = UseAction(role);
+  const dispatch = useDispatch<AppDispatch>();
+  let clearErrorAction
+
+  if (Role.admin === role) {
+    clearErrorAction = adminClearError
+  } else if (Role.theaters === role) {
+    clearErrorAction = theaterClearError
+  } else {
+    clearErrorAction = userClearError
+  }
+
   useEffect(() => {
     const timer = setTimeout(() => {
-
-      clearError()
+      dispatch(clearErrorAction())
     }, 2000);
 
     return () => {
       clearTimeout(timer);
     };
-  }, [ ])
+  }, [])
 
   return (
     <div>

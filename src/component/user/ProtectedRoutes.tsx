@@ -1,4 +1,4 @@
-import { AppDispatch, RootState } from "../../redux/store";
+import type { AppDispatch, RootState } from "../../redux/store";
 import { ReactNode } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, } from "react-router-dom";

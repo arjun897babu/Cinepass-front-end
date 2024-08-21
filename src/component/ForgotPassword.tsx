@@ -1,8 +1,8 @@
 import React, { FormEvent, memo, useEffect, useState } from "react"
 import backgroundImage from '/Iconic Movie Posters Collage.webp'
 import backgroundImage1 from '/movie_projector.jpg'
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch } from "../redux/store";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "../hooks/UseForm";
 import { useLoggedOwner } from "../hooks/useLoggedUser";
@@ -10,23 +10,28 @@ import { ResponseData, ResponseStatus, Role } from "../interface/Interface";
 import { useFormSubmit } from "../hooks/UseFormSubmitt";
 import { forgotPasswordUser } from "../redux/actions/userAction";
 import { forgotPasswordTheaters } from "../redux/actions/theaterAction";
-import Toast from "./Toast";
-import UseAction from "../hooks/UseAction";
+import Toast from "./Toast"; 
 import { isErrorResponse } from "../utils/customError";
 import Toast2 from "./Toast2";
-
+import {   theaterClearError } from '../redux/reducers/theatersReducer'
+import {   userClearError } from '../redux/reducers/userReducer'
 
 const ForgotPassword: React.FC<{ role: Role }> = ({ role }): JSX.Element => {
-  console.log(role)
-  const { error,isAuthenticated } = useLoggedOwner(role)
+
+  const { error, isAuthenticated } = useLoggedOwner(role)
   const backgroundImagePath = { backgroundImage: `url(${role === Role.users ? backgroundImage : backgroundImage1})` };
   const dispatch = useDispatch<AppDispatch>();
-  const { setError, clearError } = UseAction(role)
+
+  const clearErrorAction = (Role.theaters === role) ? theaterClearError : userClearError;
+
+  const dipatchClearError = () => {
+    dispatch(clearErrorAction());
+  }
 
   useEffect(() => {
-
+    //forgot password page is not acccessible for logged user
     if (isAuthenticated) {
-      navigate('/theaters/home', { replace: true })
+      navigate('/theaters/home', { replace: true }) // redirect to home page
       return
     }
 
@@ -64,7 +69,7 @@ const ForgotPassword: React.FC<{ role: Role }> = ({ role }): JSX.Element => {
         if (error.error?.error) {
           navigate(role === Role.users ?
             '/login'
-            : `${role}/login` ,{replace:true,state:{google:true}})
+            : `${role}/login`, { replace: true, state: { google: true } })
         }
       }
     }
@@ -81,7 +86,7 @@ const ForgotPassword: React.FC<{ role: Role }> = ({ role }): JSX.Element => {
         <Toast2
           alert={ResponseStatus.ERROR}
           message={error.message}
-          clearToast={clearError}
+          clearToast={dipatchClearError}
         />}
 
       <section className="background  md:h-screen overlay flex items-center justify-center " style={backgroundImagePath}>

@@ -1,5 +1,5 @@
 import React, { MouseEvent, useEffect, useRef, useState } from "react";
-import { AppDispatch } from "../../redux/store";
+import type { AppDispatch } from "../../redux/store";
 import { useDispatch } from "react-redux";
 import { getAllCities } from "../../redux/actions/userAction";
 import { Link, useNavigate } from "react-router-dom";

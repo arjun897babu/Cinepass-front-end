@@ -5,7 +5,7 @@ import logo from '/cinepass logo.png'
 import { GiHamburgerMenu } from "react-icons/gi"
 import { RxCross1 } from "react-icons/rx";
 import { useDispatch } from 'react-redux'
-import { AppDispatch } from '../../redux/store'
+import type { AppDispatch } from '../../redux/store'
 import { logoutUser } from '../../redux/actions/userAction'
 import { useLoggedOwner } from '../../hooks/useLoggedUser'
 import { Role } from '../../interface/Interface'

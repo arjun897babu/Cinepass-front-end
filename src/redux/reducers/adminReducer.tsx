@@ -3,7 +3,7 @@ import { IInitialState } from "./IState";
 
 import { IInitialStateError } from "../../interface/Interface";
 import { getEntityDataForAdmin, loginAdmin, logoutAdmin, manageEntitiesByAdmin, updateTheaterApprovalForAdmin } from "../actions/adminAction";
-import { isErrorResponse } from "../../utils/customError";
+import { isErrorResponse, isResponseError } from "../../utils/customError";
 import { LoggedOwner } from "../../interface/user/IUserData";
 
 
@@ -19,16 +19,16 @@ const adminSlice = createSlice({
   name: 'admin',
   initialState,
   reducers: {
-    clearError(state) {
+    adminClearError(state) {
       state.error = null
     },
-    setError(state, action: PayloadAction<IInitialStateError>) {
+    adminSetError(state, action: PayloadAction<IInitialStateError>) {
       state.error = action.payload
     },
-    setIsAuthenticated(state) {
+    adminSetIsAuthenticated(state) {
       state.isAuthenticated = !state.isAuthenticated
     },
-    setLoading(state) {
+    adminSetLoading(state) {
       state.loading = !state.loading
     },
 
@@ -64,7 +64,11 @@ const adminSlice = createSlice({
       })
       .addCase(logoutAdmin.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload as IInitialStateError | null
+        if (isResponseError(action.payload)) {
+          if (action.payload.statusCode === 401) {
+            state.isAuthenticated = false
+          }
+        }
       })
       //get entity data  for admin
       .addCase(getEntityDataForAdmin.pending, (state) => {
@@ -72,7 +76,7 @@ const adminSlice = createSlice({
           state.error = null
       })
       .addCase(getEntityDataForAdmin.fulfilled, (state) => {
-          state.loading = false;
+        state.loading = false;
       })
       .addCase(getEntityDataForAdmin.rejected, (state, action) => {
         state.loading = false
@@ -83,7 +87,7 @@ const adminSlice = createSlice({
       //updating approval status
       .addCase(updateTheaterApprovalForAdmin.pending, (state) => {
         // state.loading = true,
-          state.error = null
+        state.error = null
       })
       .addCase(updateTheaterApprovalForAdmin.fulfilled, (state) => {
         state.loading = false;
@@ -113,10 +117,7 @@ const adminSlice = createSlice({
 });
 
 export const {
-  clearError: clearAdminError,
-  setError: setAdminError,
-  setIsAuthenticated: setAdminAuthentication,
-  setLoading: setAdminLoading
+ adminClearError,adminSetError,adminSetIsAuthenticated,adminSetLoading
 } = adminSlice.actions
 
 export default adminSlice.reducer

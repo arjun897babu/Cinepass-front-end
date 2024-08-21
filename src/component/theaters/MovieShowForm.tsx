@@ -3,7 +3,7 @@ import { Action, IMovie, ResponseStatus } from "../../interface/Interface";
 import { Controller, SubmitHandler, useForm as useForms } from "react-hook-form";
 import { ITheaterScreenResponse } from "../../interface/theater/ITheaterScreen";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../redux/store";
+import type { AppDispatch } from "../../redux/store";
 import { addMovieShows, getMovie, getScreen } from "../../redux/actions/theaterAction";
 import { MovieType } from "../admin/MovieForm";
 import { calculateEndTime, getIST, getMovieTime, setDefaultDate } from "../../utils/format";

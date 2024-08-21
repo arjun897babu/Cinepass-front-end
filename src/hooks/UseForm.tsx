@@ -1,3 +1,6 @@
+import { theaterClearError } from '../redux/reducers/theatersReducer'
+import { userClearError } from '../redux/reducers/userReducer'
+import { adminClearError } from '../redux/reducers/adminReducer'
 import { ChangeEvent, useState } from "react";
 import {
   validateEmail,
@@ -17,10 +20,9 @@ import {
   validateMovieName
 } from '../utils/validator';
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../redux/store";
+import type { AppDispatch } from "../redux/store";
 import { useLoggedOwner } from "./useLoggedUser";
 import { Role } from "../interface/Interface";
-import useAction from "./UseAction";
 
 
 type FormData = {
@@ -34,7 +36,15 @@ export const useForm = <T extends FormData>(initialValue: T, owner: Role) => {
   const { error } = useLoggedOwner(owner);
 
   const dispatch = useDispatch<AppDispatch>();
-  const { clearError } = useAction(owner);
+  let clearErrorAction
+
+  if (Role.admin === owner) {
+    clearErrorAction = adminClearError
+  } else if (Role.theaters === owner) {
+    clearErrorAction = theaterClearError
+  } else {
+    clearErrorAction = userClearError
+  }
 
   const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     event.stopPropagation();
@@ -73,9 +83,7 @@ export const useForm = <T extends FormData>(initialValue: T, owner: Role) => {
     }
 
     if (error?.error === name) {
-      if (clearError) {
-        clearError();
-      }
+      dispatch(clearErrorAction())
     }
   };
 
@@ -135,13 +143,13 @@ export function checkInputValue(name: string, value: string, value2?: string): R
     case 'column':
       validationResponse = validateCol(value);
       break
-    case 'aminety'||'language':
+    case 'aminety' || 'language':
       validationResponse = validateEnumValue(name, value);
       break
     case 'movie_name':
       validationResponse = validateMovieName(value);
       break
-      
+
     default:
       validationResponse = { message: "", isValid: true };
       break;

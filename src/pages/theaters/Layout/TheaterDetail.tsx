@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
-import { AppDispatch } from "../../../redux/store"
+import type { AppDispatch } from "../../../redux/store"
 import { getTheaterDetails } from "../../../redux/actions/theaterAction"
 
 import { ITheaterOwnerEntity } from "../../../interface/theater/ITheaterOwner"

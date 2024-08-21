@@ -21,19 +21,19 @@ const theaterSlice = createSlice({
   name: 'theaters',
   initialState,
   reducers: {
-    clearError(state) {
+    theaterClearError(state) {
       state.error = null
     },
-    setLoading(state) {
+    theaterSetLoading(state) {
       state.loading = !state.loading
     },
-    setError(state, action: PayloadAction<IInitialStateError>) {
+    theaterSetError(state, action: PayloadAction<IInitialStateError>) {
       state.error = action.payload
     },
-    setIsAuthenticated(state) {
+    theaterSetIsAuthenticated(state) {
       state.isAuthenticated = !state.isAuthenticated
     },
-    clearTempMail(state) {
+    TheaterClearTempMail(state) {
       state.tempMail = null
     }
   },
@@ -148,80 +148,77 @@ const theaterSlice = createSlice({
           }
         }
       })
-       
+
       //create theater screen
-      .addCase(createTheaterScreen.pending,(state)=>{
+      .addCase(createTheaterScreen.pending, (state) => {
         state.loading = true
       })
       .addCase(createTheaterScreen.fulfilled, (state) => {
         state.loading = false;
       })
-      .addCase(createTheaterScreen.rejected, (state,action) => {
-        state.loading = false; 
-        if(isResponseError(action.payload)){
-          if(action.payload.statusCode===403||action.payload.statusCode===401){
+      .addCase(createTheaterScreen.rejected, (state, action) => {
+        state.loading = false;
+        if (isResponseError(action.payload)) {
+          if (action.payload.statusCode === 403 || action.payload.statusCode === 401) {
             state.isAuthenticated = false
           }
         }
-         
+
       })
       //get theater screen  
-      .addCase(getScreen.pending,(state)=>{
+      .addCase(getScreen.pending, (state) => {
         state.loading = true
       })
       .addCase(getScreen.fulfilled, (state) => {
         state.loading = false;
       })
-      .addCase(getScreen.rejected, (state,action) => {
-        state.loading = false; 
-        if(isResponseError(action.payload)){
-           console.log(action.payload)
-          if(action.payload.statusCode===403||action.payload.statusCode===401){
+      .addCase(getScreen.rejected, (state, action) => {
+        state.loading = false;
+        if (isResponseError(action.payload)) {
+          console.log(action.payload)
+          if (action.payload.statusCode === 403 || action.payload.statusCode === 401) {
             state.isAuthenticated = false
           }
         }
-         
+
       })
       //get theater details
-      .addCase(getTheaterDetails.pending,(state)=>{
+      .addCase(getTheaterDetails.pending, (state) => {
         state.loading = true
       })
       .addCase(getTheaterDetails.fulfilled, (state) => {
-        state.loading = false; 
+        state.loading = false;
       })
-      .addCase(getTheaterDetails.rejected, (state,action) => {
-        state.loading = false; 
-        if(isResponseError(action.payload)){
-          if(action.payload.statusCode===403||action.payload.statusCode===401){
+      .addCase(getTheaterDetails.rejected, (state, action) => {
+        state.loading = false;
+        if (isResponseError(action.payload)) {
+          if (action.payload.statusCode === 403 || action.payload.statusCode === 401) {
             state.isAuthenticated = false
           }
         }
-         
+
       })
       //update theater details
-      .addCase(updateTheater.pending,(state)=>{
+      .addCase(updateTheater.pending, (state) => {
         state.loading = true
       })
       .addCase(updateTheater.fulfilled, (state) => {
-        state.loading = false; 
+        state.loading = false;
       })
-      .addCase(updateTheater.rejected, (state,action) => {
-        state.loading = false; 
-        if(isResponseError(action.payload)){
-          if(action.payload.statusCode===403||action.payload.statusCode===401){
+      .addCase(updateTheater.rejected, (state, action) => {
+        state.loading = false;
+        if (isResponseError(action.payload)) {
+          if (action.payload.statusCode === 403 || action.payload.statusCode === 401) {
             state.isAuthenticated = false
           }
         }
-         
+
       })
 
   }
 })
 export const {
-  clearError: clearTheaterError,
-  setLoading: setTheaterLoading,
-  setError: setTheaterError,
-  setIsAuthenticated: setTheatersAuthentication,
-  clearTempMail:clearTheaterTempMail
+  TheaterClearTempMail, theaterClearError,
+  theaterSetError, theaterSetIsAuthenticated, theaterSetLoading
 } = theaterSlice.actions
 export default theaterSlice.reducer

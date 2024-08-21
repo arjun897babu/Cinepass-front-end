@@ -4,17 +4,17 @@ import '../../index.css';
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import backGroundImage from '/movie_projector.jpg'
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../redux/store';
+import type { AppDispatch } from '../../redux/store';
 import { useLoggedOwner } from '../../hooks/useLoggedUser';
 import { useForm } from '../../hooks/UseForm';
 import { useFormSubmit } from '../../hooks/UseFormSubmitt';
 import { loginTheaters } from '../../redux/actions/theaterAction';
 import { ResponseStatus, Role } from '../../interface/Interface';
 import { isErrorResponse } from '../../utils/customError';
-import { clearTheaterError } from '../../redux/reducers/theatersReducer';
+import { theaterClearError } from '../../redux/reducers/theatersReducer';
 import { PasswordInput } from '../../component/PasswordInput';
 import Toast2, { Toast } from '../../component/Toast2';
-import useAction from '../../hooks/UseAction';
+
 
 
 export const TheatersLogin: React.FC = (): JSX.Element => {
@@ -24,22 +24,25 @@ export const TheatersLogin: React.FC = (): JSX.Element => {
   const { error, isAuthenticated } = useLoggedOwner(Role.theaters);
 
   const navigate = useNavigate();
- 
+
+  const dispatchError = () => {
+    dispatch(theaterClearError())
+  }
 
   const [toastMessage, setToastMessage] = useState<Toast | null>(null)
 
-  
+
   useEffect(() => {
-    dispatch(clearTheaterError());
-  
+    dispatch(theaterClearError());
+
     if (isAuthenticated) {
-  
+
       navigate('/theaters/home', { replace: true });
-      return;  
+      return;
     }
-  
+
     const state = location.state;
-  
+
     if (state?.blocked) {
       setToastMessage({
         alert: ResponseStatus.ERROR,
@@ -61,12 +64,12 @@ export const TheatersLogin: React.FC = (): JSX.Element => {
         message: 'Something went wrong',
       });
     }
-  
-  
+
+
     navigate(location.pathname, { replace: true });
-  
-  }, [ isAuthenticated,location.state]);
-  
+
+  }, [isAuthenticated, location.state]);
+
 
   const { formData, handleChange, inputError, setInputError } = useForm({
     email: '',
@@ -98,7 +101,7 @@ export const TheatersLogin: React.FC = (): JSX.Element => {
     }
 
   }
-  const { clearError } = useAction(Role.theaters)
+   
 
   return (
     <>
@@ -110,7 +113,7 @@ export const TheatersLogin: React.FC = (): JSX.Element => {
         <Toast2
           alert={ResponseStatus.ERROR}
           message={error.message}
-          clearToast={clearError}
+          clearToast={dispatchError}
         />}
 
       {

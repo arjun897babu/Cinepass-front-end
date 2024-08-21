@@ -4,11 +4,11 @@ import '../../index.css';
 import { Link, useNavigate } from 'react-router-dom'
 import backGroundImage from '/Iconic Movie Posters Collage.webp';
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../redux/store';
+import type { AppDispatch } from '../../redux/store';
 import { signUpUser } from '../../redux/actions/userAction';
 import { useForm } from '../../hooks/UseForm';
 import { useFormSubmit } from '../../hooks/UseFormSubmitt';
-import { clearUserError } from '../../redux/reducers/userReducer';
+import {userClearError} from '../../redux/reducers/userReducer';
 import { useLoggedOwner } from '../../hooks/useLoggedUser';
 import { ResponseStatus, Role } from '../../interface/Interface';
 import { PasswordInput } from '../../component/PasswordInput';
@@ -22,7 +22,7 @@ export const UserSignUp: React.FC = (): JSX.Element => {
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    dispatch(clearUserError())
+    dispatch(userClearError())
   }, [])
 
   const { error } = useLoggedOwner(Role.users);
@@ -158,18 +158,4 @@ export const UserSignUp: React.FC = (): JSX.Element => {
 
     </section>
   )
-}
-
-
-  {/* <div className="p-2 mt-1 text-white rounded-md w-full relative">
-              <label htmlFor="confirm_password">Confirm Password</label>
-              <input
-                className="p-2 mt-3 text-black rounded-md w-full focus:outline"
-                type="password"
-                name="confirm_password"
-                placeholder="Confirm Password"
-                onChange={handleChange}
-              />
-              {inputError.confirm_password && <small className='text-red-600 capitalize absolute -bottom-2.5 left-3'>{inputError.confirm_password}</small>}
-
-            </div> */}
+} 

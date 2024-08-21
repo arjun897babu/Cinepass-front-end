@@ -5,13 +5,13 @@ import backGroundImage from '/Iconic Movie Posters Collage.webp';
 import { useForm } from '../../hooks/UseForm';
 import { useFormSubmit } from '../../hooks/UseFormSubmitt';
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../redux/store';
+import type { AppDispatch } from '../../redux/store';
 import { useNavigate } from 'react-router-dom';
 import { loginAdmin } from '../../redux/actions/adminAction';
 import { ResponseStatus, Role } from '../../interface/Interface';
 import { isErrorResponse } from '../../utils/customError';
 import { useLoggedOwner } from '../../hooks/useLoggedUser';
-import { clearAdminError } from '../../redux/reducers/adminReducer';
+import { adminClearError } from '../../redux/reducers/adminReducer';
 import { PasswordInput } from '../../component/PasswordInput';
 
 export const AdminLogin: React.FC = (): JSX.Element => {
@@ -20,7 +20,7 @@ export const AdminLogin: React.FC = (): JSX.Element => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(clearAdminError())
+    dispatch(adminClearError())
     if (isAuthenticated) {
       navigate('/admin/home', { replace: true });
       return

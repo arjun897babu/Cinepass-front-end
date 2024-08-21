@@ -12,23 +12,25 @@ import { loginUser } from '../../redux/actions/userAction';
 import { ResponseStatus, Role } from '../../interface/Interface';
 import { isErrorResponse } from '../../utils/customError';
 import { useLoggedOwner } from '../../hooks/useLoggedUser';
-import useAction from '../../hooks/UseAction';
 
 import GoogleSignUp from '../../component/user/GoogleSignUp';
 
 import { PasswordInput } from '../../component/PasswordInput';
 import Toast2, { Toast } from '../../component/Toast2';
+import {   userClearError } from '../../redux/reducers/userReducer';
 
 
 
 export const UserLogin: React.FC = (): JSX.Element => {
   const location = useLocation();
-
+  const dispatchClearError = () => {
+    dispatch(userClearError())
+  }
 
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { error, isAuthenticated, city } = useLoggedOwner(Role.users);
-  const { clearError } = useAction(Role.users)
+
   const [toastMessage, setToastMessage] = useState<Toast | null>(null)
 
   const {
@@ -43,11 +45,11 @@ export const UserLogin: React.FC = (): JSX.Element => {
     if (isAuthenticated) {
       console.log('dd');
       navigate(`/home/${city}`, { replace: true });
-      return; 
+      return;
     }
-  
+
     const state = location.state;
-  
+
     if (state?.blocked) {
       setToastMessage({
         alert: ResponseStatus.ERROR,
@@ -74,11 +76,11 @@ export const UserLogin: React.FC = (): JSX.Element => {
         message: 'use google auth'
       });
     }
-  
-    clearError();
+
+    dispatch(userClearError());
     navigate(location.pathname, { replace: true });
   }, [isAuthenticated, location.state, city]);
-  
+
   const { handleSubmit } = useFormSubmit(formData, setInputError);
 
   const onSubmit = async (event: FormEvent) => {
@@ -113,7 +115,7 @@ export const UserLogin: React.FC = (): JSX.Element => {
         error?.error === 'blocked' &&
         <Toast2
           message={error.message}
-          clearToast={clearError}
+          clearToast={dispatchClearError}
           alert={ResponseStatus.ERROR}
         />
       }

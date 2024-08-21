@@ -1,19 +1,22 @@
+// import store, { AppDispatch } from "../redux/store";
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
 
 import { Role } from "../interface/Interface";
-
+import store from "../redux/store";
+ 
 const onResponse = (response: AxiosResponse): AxiosResponse => response
 
 const onResponseError = (error: AxiosError, role: Role): Promise<AxiosError> => {
-
+  
   if (error.response?.status === 403) {
-
+    
+    // const dispatch=store.dispatch
     console.error('Access denied. You do not have permission.');
-
+ 
   }
   return Promise.reject(error);
 }
-
+ 
 const {
 
   VITE_API_URL,

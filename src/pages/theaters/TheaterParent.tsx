@@ -8,7 +8,7 @@ import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { RiLogoutCircleLine } from "react-icons/ri";
 import { logoutTheaters } from '../../redux/actions/theaterAction';
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../redux/store';
+import type { AppDispatch } from '../../redux/store';
 import { RiMovie2Fill } from "react-icons/ri";
 import { MdOutlineScreenSearchDesktop } from "react-icons/md";
 import { useLoggedOwner } from '../../hooks/useLoggedUser';

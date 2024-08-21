@@ -4,7 +4,7 @@ import { UserSignUpData } from '../../interface/user/IUserData'
 import { userEndPoints } from '../../services/endpoints/endPoints'
 import { Axios, AxiosError, AxiosResponse } from 'axios'
 import { GoogleSignUp, IGetMovieShowResponse, IMovie, LoginData, OTPVerification, ResponseData } from '../../interface/Interface'
-import { IResponseError, isResponseError } from '../../utils/customError'
+import { handleAxiosError, IResponseError, isResponseError } from '../../utils/customError'
 import { ErrorResponse } from 'react-router-dom'
 
 export const signUpUser: AsyncThunk<ResponseData, UserSignUpData, {}> = createAsyncThunk(
@@ -208,27 +208,6 @@ export const getSingleMovie: AsyncThunk<any[], { city: string, movieId: string }
 );
 
 
-export function handleAxiosError(error: unknown): IResponseError {
 
-  if (error instanceof AxiosError) {
-    const { response } = error
-    console.log(response?.status)
-    if (response) {
-      return {
-        statusCode: response.status,
-        data: response.data.error
-      } as IResponseError
-    }
-  }
-
-  return {
-    statusCode: 500,
-    data: {
-      error: 'unknown_error',
-      message: 'An unknown error occurred',
-    },
-  } as IResponseError;
-
-}
 
 

@@ -1,6 +1,6 @@
 import React, { ChangeEvent, MouseEvent, useEffect, useRef, useState } from "react"
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../../redux/store";
+import type { AppDispatch } from "../../../redux/store";
 import { getEntityDataForAdmin, manageEntitiesByAdmin, updateTheaterApprovalForAdmin } from "../../../redux/actions/adminAction";
 ;
 import { ApprovalResponse, ApprovalStatus, ResponseStatus, Role } from "../../../interface/Interface";

@@ -4,14 +4,14 @@ import '../../index.css';
 import { Link, useNavigate } from 'react-router-dom'
 import backGroundImage from '/movie_projector.jpg'
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../redux/store';
+import type { AppDispatch } from '../../redux/store';
 import { useForm } from '../../hooks/UseForm';
 import { useFormSubmit } from '../../hooks/UseFormSubmitt';
 import { signupTheaters } from '../../redux/actions/theaterAction';
 import { ResponseStatus, Role } from '../../interface/Interface';
 import { isErrorResponse } from '../../utils/customError';
 import { useLoggedOwner } from '../../hooks/useLoggedUser';
-import { clearTheaterError } from '../../redux/reducers/theatersReducer';
+import {theaterClearError } from '../../redux/reducers/theatersReducer';
 import { PasswordInput } from '../../component/PasswordInput';
 import Autocomplete from '../../component/Autocomplete';
 
@@ -28,7 +28,7 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
 
 
   useEffect(() => {
-    dispatch(clearTheaterError())
+    dispatch(theaterClearError())
     if (isAuthenticated) {
       navigate('/theaters/home', { replace: true })
       return

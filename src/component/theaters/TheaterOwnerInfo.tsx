@@ -8,7 +8,7 @@ import { TheaterOwnerSchema } from "../../utils/zodSchema";
 import { ResponseStatus } from "../../interface/Interface";
 import ConfirmationModal from "../ConfirmationModal";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../redux/store";
+import type { AppDispatch } from "../../redux/store";
 import { updateTheater } from "../../redux/actions/theaterAction";
 import { isResponseError } from "../../utils/customError";
 import { FaRegEdit } from "react-icons/fa";

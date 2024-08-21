@@ -3,7 +3,7 @@ import { SubmitHandler, useForm as useForms } from 'react-hook-form'
 
 import { IMovie, ResponseStatus } from "../../interface/Interface";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../redux/store";
+import type { AppDispatch } from "../../redux/store";
 import { addMovie } from "../../redux/actions/adminAction";
 import { isResponseError, UploadError } from "../../utils/customError";
 

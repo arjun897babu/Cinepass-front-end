@@ -3,7 +3,7 @@ import { useLoggedOwner } from "../hooks/useLoggedUser";
 import { ResponseData, ResponseStatus, Role } from "../interface/Interface"
 import { resendOTPUser } from "../redux/actions/userAction";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../redux/store";
+import type { AppDispatch } from "../redux/store";
 import { useNavigate } from "react-router-dom";
 import { isErrorResponse } from "../utils/customError";
 import { resendOTPTheaters } from "../redux/actions/theaterAction";

@@ -1,7 +1,7 @@
 import { Dispatch, FormEvent, MouseEvent, SetStateAction, useRef, useState } from "react";
 
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../redux/store";
+import type { AppDispatch } from "../../redux/store";
 import { updateTheater } from "../../redux/actions/theaterAction";
 import { ITheaterOwnerEntity, TheaterProfile } from "../../interface/theater/ITheaterOwner";
 import { SubmitHandler, useForm as useForms } from "react-hook-form";

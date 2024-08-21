@@ -7,7 +7,7 @@ const UserOTPVerification = lazy(() => import('../pages/user/UserOTPVerification
 import UserNavBar from "../component/user/UserNavBar";
 import UserFooter from "../component/user/footer/UserFooter";
 import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
+import type { RootState } from "../redux/store";
 import { Loader } from "../component/Loader";
 import { ProtectedRoutes } from "../component/user/ProtectedRoutes";
 import { UserProfile } from "../pages/user/userProfile";

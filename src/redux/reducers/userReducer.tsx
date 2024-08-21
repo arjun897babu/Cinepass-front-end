@@ -22,22 +22,22 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    clearError(state) {
+    userClearError(state) {
       state.error = null;
     },
-    setError(state, action: PayloadAction<IInitialStateError>) {
+    userSetError(state, action: PayloadAction<IInitialStateError>) {
       state.error = action.payload
     },
-    setIsAuthenticated(state) {
+    userSetIsAuthenticated(state) {
       state.isAuthenticated = !state.isAuthenticated
     },
-    setLoading(state) {
+    userSetLoading(state) {
       state.loading = !state.loading
     },
-    setCity(state, action: PayloadAction<string>) {
+    userSetCity(state, action: PayloadAction<string>) {
       state.city = action.payload
     },
-    clearTempMail(state) {
+    userClearTempMail(state) {
       state.tempMail = null
     }
   },
@@ -217,11 +217,11 @@ const userSlice = createSlice({
 });
 
 export const {
-  clearError: clearUserError,
-  setError: setUserError,
-  setIsAuthenticated: setUserAuthentication,
-  setLoading: setUserLoading,
-  setCity: setUserCity,
-  clearTempMail: clearUserTempMail
+  userClearError ,
+  userSetError ,
+  userSetIsAuthenticated ,
+  userSetLoading,
+  userSetCity ,
+  userClearTempMail 
 } = userSlice.actions
 export default userSlice.reducer

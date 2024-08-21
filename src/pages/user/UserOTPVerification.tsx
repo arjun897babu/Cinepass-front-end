@@ -7,17 +7,13 @@ import { AppDispatch, } from "../../redux/store";
 import { verifyUser } from "../../redux/actions/userAction";
 import { ResponseData, ResponseStatus, Role } from "../../interface/Interface";
 import { useNavigate } from "react-router-dom";
-import { clearUserError } from "../../redux/reducers/userReducer";
 import { useLoggedOwner } from "../../hooks/useLoggedUser";
 import { formatTime } from "../../utils/format";
 import { isErrorResponse } from "../../utils/customError";
 import Toast from "../../component/Toast";
 import { useTimer } from "../../hooks/useTimer";
 import ResendOTP from "../../component/ResendOTP";
-import useAction from "../../hooks/UseAction";
-
-
-
+import {  userClearTempMail,  userClearError } from "../../redux/reducers/userReducer";
 
 const UserOTPVerification: React.FC = (): JSX.Element => {
 
@@ -25,22 +21,18 @@ const UserOTPVerification: React.FC = (): JSX.Element => {
   const navigate = useNavigate();
 
   const { error, tempMail } = useLoggedOwner(Role.users);
-
-  const { clearTempMail, clearError } = useAction(Role.users)
-
+ 
   useEffect(() => {
 
     if (!tempMail) {
       navigate('/login')
     }
 
-    clearError()
+    dispatch(userClearError())
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
 
       event.preventDefault();
-      clearTempMail ?
-        clearTempMail()
-        : null
+      dispatch(userClearTempMail())
 
     };
 
@@ -124,7 +116,7 @@ const UserOTPVerification: React.FC = (): JSX.Element => {
                 <ResendOTP isActive={isActive} resetTimer={resetTimer} role={Role.users} setResponse={setResponse} />
 
               </div>
-              <button className="bg-black rounded-md  text-white py-2  " disabled={timeRemaining ===0} >
+              <button className="bg-black rounded-md  text-white py-2  " disabled={timeRemaining === 0} >
                 Verify OTP
               </button>
               <div className="mt-2 text-white text-sm text-center">

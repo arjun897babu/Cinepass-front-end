@@ -6,20 +6,20 @@ import MovieCard from "../../component/user/MovieCard"
 import { AccordionAllOpen } from "../../component/user/Accordian"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { useDispatch } from "react-redux"
-import { AppDispatch } from "../../redux/store"
+import type { AppDispatch } from "../../redux/store"
 import { IGetMovieShowResponse, IMovie, Role } from "../../interface/Interface"
 import { getAllMovies, getAllShows } from "../../redux/actions/userAction"
 import { Loader } from "../../component/Loader"
-import useAction from "../../hooks/UseAction"
 import { isResponseError } from "../../utils/customError"
 import EmptyData from "../../component/EmptyData"
 import LocationModal from "./LocationModal"
+import { userSetCity } from "../../redux/reducers/userReducer"
 
 const UserHome: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false)
 
   const { city } = useParams<{ city: string }>();
-  const { setCity } = useAction(Role.users)
+
   const [movies, setMovies] = useState<IMovie[] | []>([])
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
@@ -32,8 +32,8 @@ const UserHome: React.FC = () => {
 
       if (city) {
 
-        if (setCity) {
-          setCity(city)
+        if (userSetCity) {
+          dispatch(userSetCity(city))
         }
         const response = await dispatch(getAllMovies(city)).unwrap()
         if (response) {

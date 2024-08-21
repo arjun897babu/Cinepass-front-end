@@ -3,19 +3,20 @@ import backgroundImage from '/movie_projector.jpg'
 import { useForm } from "../../hooks/UseForm";
 import { useFormSubmit } from "../../hooks/UseFormSubmitt";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../redux/store";
+import type { AppDispatch } from "../../redux/store";
 
 import { ResponseData, ResponseStatus, Role } from "../../interface/Interface";
 import { useNavigate } from "react-router-dom";
 import { useLoggedOwner } from "../../hooks/useLoggedUser";
-import { clearTheaterError } from "../../redux/reducers/theatersReducer";
+ 
 import { verifyOTPTheaters } from "../../redux/actions/theaterAction";
 import { formatTime } from "../../utils/format";
 import ResendOTP from "../../component/ResendOTP";
 import { useTimer } from "../../hooks/useTimer";
 import Toast from "../../component/Toast";
 import { isErrorResponse } from "../../utils/customError";
-import useAction from "../../hooks/UseAction";
+import { theaterClearError, TheaterClearTempMail } from "../../redux/reducers/theatersReducer";
+
 
 
 
@@ -25,7 +26,7 @@ export const TheaterOTPVerification: React.FC = (): JSX.Element => {
   const navigate = useNavigate();
 
   const { error, tempMail, } = useLoggedOwner(Role.theaters)
-  const { clearTempMail, clearError } = useAction(Role.theaters)
+
   const [response, setResponse] = useState<ResponseData | null>(null)
   const { isActive, resetTimer, timeRemaining } = useTimer(120)
 
@@ -40,12 +41,10 @@ export const TheaterOTPVerification: React.FC = (): JSX.Element => {
       navigate('/theaters/login', { replace: true })
     }
 
-    dispatch(clearTheaterError())
+    dispatch(theaterClearError())
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
       event.preventDefault();
-      clearTempMail ?
-        clearTempMail()
-        : null
+      dispatch(TheaterClearTempMail())
     };
 
     window.addEventListener('beforeunload', handleBeforeUnload);

@@ -4,7 +4,7 @@ import { AxiosError } from "axios";
 import { serverAdmin } from "../../services";
 import { adminEndpoints } from "../../services/endpoints/endPoints";
 import { MovieType } from "../../component/admin/MovieForm";
-import { IResponseError } from "../../utils/customError";
+import { handleAxiosError, IResponseError } from "../../utils/customError";
 
 export const loginAdmin: AsyncThunk<ResponseData, LoginData, {}> = createAsyncThunk(
   'admin/login',
@@ -32,10 +32,7 @@ export const logoutAdmin = createAsyncThunk<ResponseData, void, {}>(
 
       return response.data as ResponseData;
     } catch (error) {
-      if (error instanceof AxiosError) {
-        return rejectWithValue(error.response?.data);
-      }
-      return rejectWithValue('An unknown error occurred');
+      return rejectWithValue(handleAxiosError(error))
     }
   }
 );

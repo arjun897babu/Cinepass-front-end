@@ -1,6 +1,6 @@
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google"
 import { useDispatch, useSelector } from "react-redux"
-import { AppDispatch, RootState } from "../../redux/store"
+import type { AppDispatch, RootState } from "../../redux/store"
 import { googleSignUp } from "../../redux/actions/userAction"
 import { isErrorResponse } from "../../utils/customError"
 

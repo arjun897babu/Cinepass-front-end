@@ -5,7 +5,7 @@ import { IUser } from "../../../interface/user/IUserData";
 import { getEntityDataForAdmin, manageEntitiesByAdmin } from "../../../redux/actions/adminAction";
 import { ResponseStatus, Role } from "../../../interface/Interface";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../../redux/store";
+import type { AppDispatch } from "../../../redux/store";
 import { isErrorResponse } from "../../../utils/customError";
 // import { Loader } from "../../../component/Loader";
  

@@ -10,7 +10,7 @@ import { FiUsers } from "react-icons/fi";
 import { RiLogoutCircleLine, RiMovieLine } from "react-icons/ri";
 import { logoutAdmin } from '../../redux/actions/adminAction';
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../redux/store';
+import type { AppDispatch } from '../../redux/store';
 // import { TheaterDetails } from './layout/AdminTheaters';
 
 const menu = [

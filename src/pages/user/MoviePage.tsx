@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
 import { useNavigate, useParams } from "react-router-dom"
-import { AppDispatch } from "../../redux/store"
+import type { AppDispatch } from "../../redux/store"
 import { useLoggedOwner } from "../../hooks/useLoggedUser"
 import { IMovie, Role } from "../../interface/Interface"
 import { getSingleMovie } from "../../redux/actions/userAction"

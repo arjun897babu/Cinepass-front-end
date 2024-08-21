@@ -2,7 +2,7 @@ import { FormEvent, useEffect, useState } from "react"
 import backgroundImage from '/Iconic Movie Posters Collage.webp'
 import backgroundImage1 from '/movie_projector.jpg'
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../redux/store";
+import type { AppDispatch } from "../redux/store";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useForm } from "../hooks/UseForm";
@@ -14,7 +14,8 @@ import Toast from "./Toast";
 import { resetPassword } from "../redux/actions/userAction";
 import { resetPasswordTheaters } from "../redux/actions/theaterAction";
 import Toast2 from "./Toast2";
-import useAction from "../hooks/UseAction";
+import {  theaterClearError } from '../redux/reducers/theatersReducer'
+import { userClearError } from '../redux/reducers/userReducer'
 import { PasswordInput } from "./PasswordInput";
 
 const ResetPassWord: React.FC<{ role: Role }> = ({ role }) => {
@@ -25,7 +26,11 @@ const ResetPassWord: React.FC<{ role: Role }> = ({ role }) => {
   const [response, setResponse] = useState<ResponseData | null>()
   const { error } = useLoggedOwner(role);
   const { formData, handleChange, inputError, setInputError } = useForm({ password: '', confirm_password: '' }, role)
-  const { clearError } = useAction(role)
+  const clearErrorAction = (Role.theaters === role) ? theaterClearError : userClearError;
+
+  const dipatchClearError = () => {
+    dispatch(clearErrorAction());
+  }
   const { handleSubmit } = useFormSubmit(formData, setInputError)
   const { isAuthenticated } = useLoggedOwner(role)
 
@@ -96,7 +101,7 @@ const ResetPassWord: React.FC<{ role: Role }> = ({ role }) => {
         <Toast2
           alert={ResponseStatus.ERROR}
           message={error.message}
-          clearToast={clearError}
+          clearToast={dipatchClearError}
         />
       }
 
@@ -148,16 +153,3 @@ const ResetPassWord: React.FC<{ role: Role }> = ({ role }) => {
 }
 
 export default ResetPassWord
-{/* <div className="p-2 mt-1  text-white rounded-md w-full relative ">
-                  <label htmlFor="confirm_password">  New Password</label>
-                  <input
-                    className="p-2 mt-3  text-black rounded-md w-full focus:outline"
-                    type="text"
-                    name="confirm_password"
-                    placeholder="confirm password"
-                    value={formData.confirm_password}
-                    onChange={handleChange}
-                  />
-                  {!error?.error && inputError.confirm_password && <small className='text-red-600 capitalize absolute -bottom-4 left-3 font-mono'>{inputError.confirm_password}</small>}
-  
-                </div> */}

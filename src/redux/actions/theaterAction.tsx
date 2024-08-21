@@ -8,9 +8,9 @@ import { IGetMovieShowResponse, IMovie, LoginData, OTPVerification, ResponseData
 import { ITheaterScreen, ITheaterScreenResponse } from "../../interface/theater/ITheaterScreen";
 import { MovieType } from "../../component/admin/MovieForm";
 import { IMovieShow } from "../../interface/theater/IMovieShow";
-import { IResponseError } from "../../utils/customError";
+import { handleAxiosError, IResponseError } from "../../utils/customError";
 import { ITheaterOwnerEntity, TheaterOwnerProfile, TheaterProfile } from "../../interface/theater/ITheaterOwner";
-import { handleAxiosError } from "./userAction";
+ 
 
 
 export const signupTheaters: AsyncThunk<ResponseData, TheaterSignUpData, {}> = createAsyncThunk(
