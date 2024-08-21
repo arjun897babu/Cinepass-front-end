@@ -6,10 +6,9 @@ import { useLoggedOwner } from "../../hooks/useLoggedUser"
 import { IMovie, Role } from "../../interface/Interface"
 import { getSingleMovie } from "../../redux/actions/userAction"
 import { Loader } from "../../component/Loader"
-import { formatRunTime, formatTime, getIST } from "../../utils/format"
+import { convertTo12HourFormat, formatRunTime, formatTime, getIST } from "../../utils/format"
 import { IoIosInformationCircle } from "react-icons/io"
-import { isResponseError } from "../../utils/customError"
-import EmptyData from "../../component/EmptyData"
+import { isResponseError } from "../../utils/customError" 
 
 const MoviePage: React.FC = () => {
   const { movieId } = useParams()
@@ -114,7 +113,7 @@ const MoviePage: React.FC = () => {
                 return <>
                   <div className="flex  text-xs">
                     <button className="p-1 px-6 border rounded-lg text-green-500 border-green-500 hover:bg-green-100 transition">
-                      {show.showDetails.showTime as string} <br />
+                      {convertTo12HourFormat(show.showDetails.showTime as string)} <br />
                       <span className="text-gray-400">{show.screen_name}</span>
                     </button>
                   </div>

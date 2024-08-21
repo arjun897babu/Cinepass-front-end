@@ -30,15 +30,13 @@ interface AutocompleteProps {
       );  
  
       autocomplete.on('select', (location) => {
-        console.log('Selected:', location.properties.county);
+       
         const selectedCity = location.properties.county
         divref.current!.querySelector('input')!.value = selectedCity
         changeCity(selectedCity)
       });
   
-      autocomplete.on('suggestions', (suggestion) => {
-        console.log(suggestion)
-      })
+    
       autocomplete.on('input', (input) => {
         console.log('input:', input);
       });

@@ -14,7 +14,7 @@ export const loginAdmin: AsyncThunk<ResponseData, LoginData, {}> = createAsyncTh
       return await response.data
     } catch (error) {
       if (error instanceof AxiosError) {
-        console.log(error.response?.data, 'rejetionvalue')
+   
         return rejectWithValue(error.response?.data)
       }
 
@@ -59,7 +59,7 @@ export const updateTheaterApprovalForAdmin: AsyncThunk<ResponseData, { _id: stri
   'admin/updateTheaterApprovalStatus',
   async ({ _id, approval_status }, { rejectWithValue }) => {
     try {
-      const response = await serverAdmin.put(adminEndpoints.updateApprovalStatus(_id), { approval_status })
+      const response = await serverAdmin.patch(adminEndpoints.updateApprovalStatus(_id), { approval_status })
       return await response.data
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -75,7 +75,7 @@ export const manageEntitiesByAdmin: AsyncThunk<ResponseData, Record<string, stri
   'admin/manageEntities',
   async ({ role, _id }, { rejectWithValue }) => {
     try {
-      const response = await serverAdmin.put(adminEndpoints.manageEntities(_id, role), {});
+      const response = await serverAdmin.patch(adminEndpoints.manageEntities(_id, role), {});
       return await response.data
     } catch (error) {
       if (error instanceof AxiosError) {

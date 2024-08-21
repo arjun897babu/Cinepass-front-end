@@ -11,10 +11,10 @@ export const userEndPoints: UserEndpoint = {
   resetPassword: (token: string) => `/reset-password/${token}`,
   googleSignUp: '/google-signup',
   googleLogout: 'users/google-logout',
-  getMovieShows: (city) => `/get-shows/${city}`,
-  getAllCities: `/get-cities`,
-  getAllMovies: (city) => `/get-movies/${city}`,
-  getSingleMovie: (city, movieId) => `/get-movies/${city}?movieId=${movieId}`,
+  getMovieShows: (city) => `/shows/${city}`,
+  getAllCities: `/cities`,
+  getAllMovies: (city) => `/movies/${city}`,
+  getSingleMovie: (city, movieId) => `/movies/${city}?movieId=${movieId}`,
 };
 
 export const theatersEndPoints: TheaterEndpoint = {
@@ -27,14 +27,12 @@ export const theatersEndPoints: TheaterEndpoint = {
   forgotPassword: '/forgot-password',
   resetPassword: (token: string) => `/reset-password/${token}`,
   getTheaterDetails: `/theater`,
-  updateTheater: `/update-theater`,
-  createScreen: `/add-screen`,
-  getMovie: (movieType) => `/get-movie/${movieType}`,
-  getScreen: `/get-allScreen`,
-  addMovieShows: `/add-shows`,
-  getMovieShows: `/get-shows`
-
-
+  updateTheater: `/theater`,
+  createScreen: `/screen`,
+  getScreen: `/screen`,
+  getMovie: (movieType) => `/movie/${movieType}`,
+  getMovieShows: `/shows`,
+  addMovieShows: `/shows`, 
 };
 
 export const adminEndpoints: AdminEndpoint = {
@@ -42,8 +40,8 @@ export const adminEndpoints: AdminEndpoint = {
   logout: '/logout',
   getEntityData: (role) => `/${role}`,
   updateApprovalStatus: (theaterOwnerId) => `/approval/${theaterOwnerId}`,
-  manageEntities: (entityId, role) => `/manage-status/${role}/${entityId}`,
-  addMovie: (movieType) => `/add-movie/${movieType}`,
-  getMovie: (movieType) => `/get-movie/${movieType}`,
-  deleteMovie: (movieTpe, movieId) => `/delete/${movieTpe}/${movieId}`
+  manageEntities: (entityId, role) => `/${role}/${entityId}`,
+  addMovie: (movieType) => `/movie/add-movie/${movieType}`,
+  getMovie: (movieType) => `/movie/${movieType}`,
+  deleteMovie: (movieTpe, movieId) => `/movie/${movieTpe}/${movieId}`
 }
