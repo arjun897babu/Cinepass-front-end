@@ -10,7 +10,7 @@ import { MovieType } from "../../component/admin/MovieForm";
 import { IMovieShow } from "../../interface/theater/IMovieShow";
 import { handleAxiosError, IResponseError } from "../../utils/customError";
 import { ITheaterOwnerEntity, TheaterOwnerProfile, TheaterProfile } from "../../interface/theater/ITheaterOwner";
- 
+
 
 
 export const signupTheaters: AsyncThunk<ResponseData, TheaterSignUpData, {}> = createAsyncThunk(
@@ -19,14 +19,10 @@ export const signupTheaters: AsyncThunk<ResponseData, TheaterSignUpData, {}> = c
     console.log('reaching the theaterssignup async thunk')
     try {
       const response = await serverTheater.post(theatersEndPoints.signup, userData);
-      console.log('response from thunk middle ware', response);
-      return await response.data
+       return await response.data
     } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log(error.response?.data)
-        return rejectWithValue(error.response?.data);
-      }
-      return rejectWithValue('An unknown error occurred');
+      
+      return rejectWithValue(handleAxiosError(error));
     }
   }
 );
@@ -47,7 +43,7 @@ export const loginTheaters: AsyncThunk<ResponseData, LoginData, {}> = createAsyn
   }
 )
 
-export const verifyOTPTheaters: AsyncThunk<ResponseData, OTPVerification, {}> = createAsyncThunk(
+export const verifyOTPTheaters: AsyncThunk<ResponseData2, OTPVerification, {}> = createAsyncThunk(
   'theaters/otp-verification',
   async (otpData: OTPVerification, { rejectWithValue }) => {
     try {
@@ -55,11 +51,8 @@ export const verifyOTPTheaters: AsyncThunk<ResponseData, OTPVerification, {}> = 
 
       return await response.data
     } catch (error) {
-      if (error instanceof AxiosError) {
-        return rejectWithValue(error.response?.data)
-      }
-      console.log('unknown theater otp verification error : ', error)
-      return rejectWithValue('an unknown error')
+
+      return rejectWithValue(handleAxiosError(error))
     }
   }
 )
@@ -85,12 +78,12 @@ export const forgotPasswordTheaters: AsyncThunk<ResponseData, Record<string, str
   async (formData, { rejectWithValue }) => {
     try {
       const response = await serverTheater.post(theatersEndPoints.forgotPassword, formData);
+      console.log(response)
       return await response.data
     } catch (error) {
-      if (error instanceof AxiosError) {
-        return rejectWithValue(error.response?.data)
-      }
-      return rejectWithValue('an unknown error occured')
+
+      console.log(error)
+      return rejectWithValue(handleAxiosError(error))
     }
   }
 )
@@ -102,10 +95,8 @@ export const resetPasswordTheaters: AsyncThunk<ResponseData, Record<string, stri
       const response = await serverTheater.put(theatersEndPoints.resetPassword(token), { password });
       return await response.data
     } catch (error) {
-      if (error instanceof AxiosError) {
-        return rejectWithValue(error.response?.data)
-      }
-      return rejectWithValue('an unknown error occured')
+
+      return rejectWithValue(handleAxiosError(error))
     }
   }
 )
@@ -116,10 +107,8 @@ export const resendOTPTheaters: AsyncThunk<ResponseData, string, {}> = createAsy
       const response = await serverTheater.post(theatersEndPoints.resendOTP, { email });
       return await response.data
     } catch (error) {
-      if (error instanceof AxiosError) {
-        return rejectWithValue(error.response?.data)
-      }
-      return rejectWithValue('an unknown error occured')
+
+      return rejectWithValue(handleAxiosError(error))
     }
   }
 )
@@ -133,22 +122,7 @@ export const getTheaterDetails: AsyncThunk<ITheaterOwnerEntity, void, {}> = crea
       const { theater } = response?.data?.data
       return await theater
     } catch (error) {
-      if (error instanceof AxiosError) {
-        const { response } = error
-        if (response) {
-          return rejectWithValue({
-            statusCode: response.status,
-            data: response.data.error
-          } as IResponseError);
-        }
-      }
-      return rejectWithValue({
-        statusCode: 500,
-        data: {
-          error: 'unknown_error',
-          message: 'an unknown error occured'
-        }
-      } as IResponseError)
+      return rejectWithValue(handleAxiosError(error))
     }
   }
 
@@ -249,7 +223,7 @@ export const getScreen: AsyncThunk<ITheaterScreenResponse[], void, {}> = createA
       return await screens
     } catch (error) {
 
-     return rejectWithValue(handleAxiosError(error))
+      return rejectWithValue(handleAxiosError(error))
 
 
     }
@@ -270,22 +244,8 @@ export const addMovieShows: AsyncThunk<addMovieShowResponse, IMovieShow, {}> = c
 
       return await response.data
     } catch (error) {
-      if (error instanceof AxiosError) {
-        const { response } = error
-        if (response) {
-          return rejectWithValue({
-            statusCode: response.status,
-            data: response.data.error
-          } as IResponseError);
-        }
-      }
-      return rejectWithValue({
-        statusCode: 500,
-        data: {
-          error: 'unknown_error',
-          message: 'an unknown error occured'
-        }
-      } as IResponseError)
+       
+      return rejectWithValue(handleAxiosError(error) )
     }
   }
 

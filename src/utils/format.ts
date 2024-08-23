@@ -33,14 +33,14 @@ export function formatRunTime(time: string): string {
 }
 
 export function convertTo12HourFormat(time: string) {
-  
+
   const [hour, minute] = time.split(':').map(Number);
 
-   
+
   const period = hour >= 12 ? 'PM' : 'AM';
- 
+
   const hour12 = hour % 12 || 12;
- 
+
   return `${hour12}:${minute < 10 ? '0' + minute : minute} ${period}`;
 }
 

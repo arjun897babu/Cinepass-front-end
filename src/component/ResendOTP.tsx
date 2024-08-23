@@ -5,17 +5,18 @@ import { resendOTPUser } from "../redux/actions/userAction";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../redux/store";
 import { useNavigate } from "react-router-dom";
-import { isErrorResponse } from "../utils/customError";
+import { isErrorResponse, isResponseError } from "../utils/customError";
 import { resendOTPTheaters } from "../redux/actions/theaterAction";
+import { Toast } from "./Toast2";
 
 interface ResendOTPProps {
   role: Role;
   isActive: boolean;
   resetTimer: () => void
-  setResponse: Dispatch<SetStateAction<ResponseData | null>>
+  setToast: (toast: Toast) => void
 }
 
-const ResendOTP: React.FC<ResendOTPProps> = ({ role, isActive, setResponse, resetTimer }) => {
+const ResendOTP: React.FC<ResendOTPProps> = ({ role, isActive, setToast, resetTimer }) => {
   const { tempMail } = useLoggedOwner(role);
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>()
@@ -33,37 +34,26 @@ const ResendOTP: React.FC<ResendOTPProps> = ({ role, isActive, setResponse, rese
 
         if (result.status === ResponseStatus.SUCCESS) {
           resetTimer();
-          setTimeout(() => {
-            setResponse(null)
-          }, 2000)
-          setResponse(prevResponse => ({
-            ...prevResponse,
-            message: result.message,
-            status: result.status,
-            redirectURL: result.redirectURL,
-          }));
+          setToast({
+            alert: result.status,
+            message: result.message
+          })
         }
-      } else {
-        setTimeout(() => {
-          navigate( `${Role.users === role ? '/login' : `/${role}/login`}`)
-          setResponse(null)
-        }, 2000)
-        setResponse((prevResponse) => ({
-          ...prevResponse,
-          message: 'Something went wrong',
-          status: ResponseStatus.ERROR,
-          redirectURL: `#`
-        }))
-
       }
     } catch (error) {
-      if (isErrorResponse(error)) {
-
-        if (error.error?.error !== 'otp') {
-          setTimeout(() => {
-            navigate( `${Role.users === role ? '/login' : `/${role}/login`}`)
-          }, 2000)
-          setResponse({ message: error.message, status: error.status, redirectURL: error?.redirectURL })
+      if (isResponseError(error)) {
+        if (error.statusCode === 403) {
+          navigate(role === Role.theaters ? '/theaters/login' : '/login', {
+            replace: true, state: { blocked: true }
+          })
+        } else {
+          navigate(role === Role.theaters ? '/theaters/login' : '/login', {
+            replace: true,
+          })
+          setToast({
+            alert: ResponseStatus.ERROR,
+            message: error.data.message
+          })
         }
       }
     }

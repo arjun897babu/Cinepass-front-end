@@ -8,14 +8,14 @@ import type { AppDispatch } from "../../redux/store";
 import { ResponseData, ResponseStatus, Role } from "../../interface/Interface";
 import { useNavigate } from "react-router-dom";
 import { useLoggedOwner } from "../../hooks/useLoggedUser";
- 
+
 import { verifyOTPTheaters } from "../../redux/actions/theaterAction";
 import { formatTime } from "../../utils/format";
 import ResendOTP from "../../component/ResendOTP";
 import { useTimer } from "../../hooks/useTimer";
-import Toast from "../../component/Toast";
-import { isErrorResponse } from "../../utils/customError";
+import { isErrorResponse, isResponseError } from "../../utils/customError";
 import { theaterClearError, TheaterClearTempMail } from "../../redux/reducers/theatersReducer";
+import Toast2, { Toast } from "../../component/Toast2";
 
 
 
@@ -27,9 +27,11 @@ export const TheaterOTPVerification: React.FC = (): JSX.Element => {
 
   const { error, tempMail, } = useLoggedOwner(Role.theaters)
 
-  const [response, setResponse] = useState<ResponseData | null>(null)
-  const { isActive, resetTimer, timeRemaining } = useTimer(120)
 
+  const { isActive, resetTimer, timeRemaining } = useTimer(120)
+  const [toastMessage, setToastMessage] = useState<Toast | null>(null)
+  const clearToast = () => setToastMessage(null)
+  const setToast = (toast: Toast) => setToastMessage({ alert: toast.alert, message: toast.message })
 
   const { formData, inputError, handleChange, setInputError } = useForm({
     otp: ''
@@ -63,21 +65,32 @@ export const TheaterOTPVerification: React.FC = (): JSX.Element => {
 
         if (tempMail) {
           const response = await dispatch(verifyOTPTheaters({ ...formData, email: tempMail.email })).unwrap();
-          if (response.status === ResponseStatus.SUCCESS) {
-            console.log(response.redirectURL)
-            navigate(response.redirectURL)
+          if (response.status === ResponseStatus.SUCCESS && response.redirectURL) {
+            navigate(response.redirectURL, { replace: true, state: { verified: true } })
           }
-        } else {
-          navigate('/theaters/login')
         }
-
       }
     } catch (err) {
-      if (isErrorResponse(error)) {
-        setResponse({ message: error.message, status: error.status, redirectURL: error?.redirectURL })
+      console.log(err)
+      if (isResponseError(err)) {
+        if (err.statusCode === 403) {
+          navigate('/theaters/login', { replace: true, state: { blocked: true } });
+        } else if (err.statusCode === 400) {
+          console.log(err.data)
+          setInputError({ [err.data.error]: err.data.message })
+        } else {
+          setTimeout(() => {
+            navigate('/theaters/login', { replace: true });
+          }, 1000)
+
+          setToastMessage({
+            alert: ResponseStatus.ERROR,
+            message: err.data.message
+          })
+        }
       }
     } finally {
-      setResponse(null)
+
     }
 
   };
@@ -87,10 +100,17 @@ export const TheaterOTPVerification: React.FC = (): JSX.Element => {
 
   return (
     <>
-
+      {
+        toastMessage &&
+        <Toast2
+          alert={toastMessage.alert}
+          message={toastMessage.message}
+          clearToast={clearToast}
+          // modalToast={toastMessage}
+        />
+      }
 
       <section className="background  md:h-screen overlay flex items-center justify-center " style={backgroundImagePath}>
-        {response && <Toast status={response?.status} message={response?.message} role={Role.users} />}
         <div className="flex rounded-2xl p-5 justify-center">
 
           <div className={`relative px-8 md:px-24 py-24 space-y-8 bg-black bg-opacity-50`}>
@@ -120,7 +140,7 @@ export const TheaterOTPVerification: React.FC = (): JSX.Element => {
               </div>
               <div className="flex justify-end mb-2">
 
-                <ResendOTP isActive={isActive} resetTimer={resetTimer} role={Role.theaters} setResponse={setResponse} />
+                <ResendOTP isActive={isActive} resetTimer={resetTimer} role={Role.theaters} setToast={setToast} />
 
               </div>
               <button className="bg-black rounded-md mt-6 text-white py-2  ">

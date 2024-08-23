@@ -1,32 +1,26 @@
 import React, { FormEvent, memo, useEffect, useState } from "react"
 import backgroundImage from '/Iconic Movie Posters Collage.webp'
 import backgroundImage1 from '/movie_projector.jpg'
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../redux/store";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "../hooks/UseForm";
 import { useLoggedOwner } from "../hooks/useLoggedUser";
-import { ResponseData, ResponseStatus, Role } from "../interface/Interface";
+import {  ResponseStatus, Role } from "../interface/Interface";
 import { useFormSubmit } from "../hooks/UseFormSubmitt";
 import { forgotPasswordUser } from "../redux/actions/userAction";
 import { forgotPasswordTheaters } from "../redux/actions/theaterAction";
-import Toast from "./Toast"; 
-import { isErrorResponse } from "../utils/customError";
-import Toast2 from "./Toast2";
-import {   theaterClearError } from '../redux/reducers/theatersReducer'
-import {   userClearError } from '../redux/reducers/userReducer'
+import {  isResponseError } from "../utils/customError";
+import Toast2, { Toast } from "./Toast2";
+
 
 const ForgotPassword: React.FC<{ role: Role }> = ({ role }): JSX.Element => {
 
-  const { error, isAuthenticated } = useLoggedOwner(role)
+  const {  isAuthenticated } = useLoggedOwner(role)
   const backgroundImagePath = { backgroundImage: `url(${role === Role.users ? backgroundImage : backgroundImage1})` };
   const dispatch = useDispatch<AppDispatch>();
 
-  const clearErrorAction = (Role.theaters === role) ? theaterClearError : userClearError;
 
-  const dipatchClearError = () => {
-    dispatch(clearErrorAction());
-  }
 
   useEffect(() => {
     //forgot password page is not acccessible for logged user
@@ -38,7 +32,8 @@ const ForgotPassword: React.FC<{ role: Role }> = ({ role }): JSX.Element => {
   }, [isAuthenticated])
 
   const navigate = useNavigate();
-  const [response, setResponse] = useState<ResponseData | null>(null)
+  const [toastMessage, setToastMessage] = useState<Toast | null>(null)
+  const clearToast = () => setToastMessage(null)
   const { formData, handleChange, inputError, setInputError } = useForm({
     email: '',
   }, role)
@@ -54,39 +49,51 @@ const ForgotPassword: React.FC<{ role: Role }> = ({ role }): JSX.Element => {
         }
         else if (role === Role.theaters) {
           response = await dispatch(forgotPasswordTheaters(formData)).unwrap()
-
         }
         if (response?.status === ResponseStatus.SUCCESS) {
-          setTimeout(() => {
-            setResponse(null)
-          }, 2000)
-          setResponse({ message: response.message, status: response.status, redirectURL: response.redirectURL })
+          setToastMessage({
+            alert: response.status,
+            message: response.message
+          })
         }
       }
     } catch (error) {
-      if (isErrorResponse(error)) {
 
-        if (error.error?.error) {
+      if (isResponseError(error)) {
+        if (error.statusCode === 400 || error.statusCode === 403) {
+           
           navigate(role === Role.users ?
             '/login'
-            : `${role}/login`, { replace: true, state: { google: true } })
+            : `/${role}/login`, { replace: true, state: { [error.data.error]: true } })
+        }
+        else if (error.statusCode === 404) {
+          setInputError({
+            [error.data.error]: error.data.message,
+          })
+        } else {
+          setToastMessage({
+            alert: ResponseStatus.ERROR,
+            message: error.data.message
+          })
         }
       }
+
     }
 
   }
+
+
   return (
 
     <>
-      {response && <Toast message={response.message} status={response.status} role={role} />}
+
       {
-        error?.error === 'approval'
-        ||
-        error?.error === 'blocked' &&
+        toastMessage &&
         <Toast2
-          alert={ResponseStatus.ERROR}
-          message={error.message}
-          clearToast={dipatchClearError}
+          alert={toastMessage.alert}
+          message={toastMessage.message}
+          clearToast={clearToast}
+          modalToast={true}
         />}
 
       <section className="background  md:h-screen overlay flex items-center justify-center " style={backgroundImagePath}>
@@ -114,8 +121,7 @@ const ForgotPassword: React.FC<{ role: Role }> = ({ role }): JSX.Element => {
                   value={formData.email}
                   onChange={handleChange}
                 />
-                {!error?.error && inputError.email && <small className='text-red-600 capitalize absolute -bottom-4 left-3 font-mono'>{inputError.email}</small>}
-                {error?.error === 'email' && <small className='text-red-600 capitalize absolute -bottom-4 left-3 font-mono'>{error.message}</small>}
+                { inputError.email && <small className='text-red-600 capitalize absolute -bottom-4 left-3 font-mono'>{inputError.email}</small>}
               </div>
               <button className="bg-black font-bold uppercase rounded-md mt-6 border-2 border-white text-white py-2  ">
                 Submit

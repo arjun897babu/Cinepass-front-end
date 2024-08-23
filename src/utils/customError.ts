@@ -26,11 +26,11 @@ export class UploadError extends Error {
 
 export interface IResponseError {
   statusCode: number,
-  data: { 
-      error: string,
-      message: string
-     
-  }
+  data: {
+    error: string,
+    message: string,
+    tempMail?:{email:string}
+  },
 }
 
 export function isResponseError(error: unknown): error is IResponseError {
@@ -46,7 +46,6 @@ export function handleAxiosError(error: unknown): IResponseError {
 
   if (error instanceof AxiosError) {
     const { response } = error
-    console.log(response?.status)
     if (response) {
       return {
         statusCode: response.status,
@@ -59,7 +58,7 @@ export function handleAxiosError(error: unknown): IResponseError {
     statusCode: 500,
     data: {
       error: 'unknown_error',
-      message: 'An unknown error occurred',
+      message: 'something went wrong',
     },
   } as IResponseError;
 

@@ -62,45 +62,39 @@ const userSlice = createSlice({
 
       //login
       .addCase(loginUser.pending, (state) => {
-        state.loading = true;
+
         state.error = null
       })
-      .addCase(loginUser.fulfilled, (state, action: PayloadAction<ResponseData>) => {
-        state.loading = false;
+      .addCase(loginUser.fulfilled, (state, action) => {
         state.error = null
-        state.isAuthenticated = true  
-        state.owner = action.payload.data ? action.payload.data as unknown as LoggedOwner : null
+        state.isAuthenticated = true
+        state.owner = action.payload.data.user
+        state.isGoogleAuth = false
       })
       .addCase(loginUser.rejected, (state, action) => {
-        state.loading = false;
-        if (isErrorResponse(action.payload)) {
-          state.error = action.payload.error as IInitialStateError
-          state.tempMail = action.payload.data ? action.payload.data as { email: string } : null
+        if (isResponseError(action.payload)) {
+          if (action.payload.statusCode === 401 && action.payload.data.error === 'otp') {
+            state.tempMail = action.payload.data ? action.payload.data.tempMail as {email:string}  : null
+          }
         }
       })
 
       //google login
       .addCase(googleSignUp.pending, (state) => {
-        state.loading = true;
+
         state.error = null
       })
-      .addCase(googleSignUp.fulfilled, (state, action: PayloadAction<ResponseData>) => {
+      .addCase(googleSignUp.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null
-        state.isAuthenticated = action.payload.status === ResponseStatus.SUCCESS
-        state.owner = action.payload.data ? action.payload.data as unknown as LoggedOwner : null
+        state.isAuthenticated = true
+        state.owner = action.payload.data.user
         state.isGoogleAuth = true
       })
-      .addCase(googleSignUp.rejected, (state, action) => {
-        state.loading = false;
-        if (isErrorResponse(action.payload)) {
-          state.error = action.payload.error as IInitialStateError
-          state.tempMail = action.payload.data ? action.payload.data as { email: string } : null
-        }
-      })
+
       //logout
       .addCase(logoutUser.pending, (state) => {
-        state.loading = true;
+
         state.error = null
       })
       .addCase(logoutUser.fulfilled, (state) => {
@@ -108,74 +102,12 @@ const userSlice = createSlice({
         state.error = null
         state.isAuthenticated = false;
         state.owner = null
+        state.isGoogleAuth = true
       })
       .addCase(logoutUser.rejected, (state, action) => {
         state.loading = false;
         if (isErrorResponse(action.payload)) {
           state.error = action.payload.error as IInitialStateError | null
-        }
-      })
-
-      //verifying otp
-      .addCase(verifyUser.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(verifyUser.fulfilled, (state) => {
-        state.loading = false;
-        state.owner = null;
-        state.isAuthenticated = false;
-        state.tempMail = null;
-      })
-      .addCase(verifyUser.rejected, (state, action) => {
-        state.loading = false;
-        state.owner = null
-        state.isAuthenticated = false;
-        if (isErrorResponse(action.payload)) {
-          if (action.payload.error && action.payload.error.error === 'otp') {
-            state.error = action.payload.error as IInitialStateError | null
-          }
-        }
-      })
-      //forgot password
-      .addCase(forgotPasswordUser.pending, (state) => {
-        state.loading = true
-      })
-      .addCase(forgotPasswordUser.fulfilled, (state) => {
-        state.loading = false
-      })
-      .addCase(forgotPasswordUser.rejected, (state) => {
-        state.loading = false;
-
-      })
-      //reset password
-      .addCase(resetPassword.pending, (state) => {
-        state.loading = true
-      })
-      .addCase(resetPassword.fulfilled, (state) => {
-        state.loading = false
-      })
-      .addCase(resetPassword.rejected, (state, action) => {
-        state.loading = false
-        if (isErrorResponse(action.payload)) {
-          if (action.payload.error && action.payload.error.error === 'password') {
-            state.error = action.payload.error as IInitialStateError | null
-          }
-        }
-      })
-      //resend otp
-      .addCase(resendOTPUser.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(resendOTPUser.fulfilled, (state) => {
-        state.loading = false;
-      })
-      .addCase(resendOTPUser.rejected, (state, action) => {
-        state.loading = false;
-        if (isErrorResponse(action.payload)) {
-          if (action.payload.error && action.payload.error.error === 'otp') {
-            state.error = action.payload.error as IInitialStateError | null
-          }
         }
       })
 
@@ -189,12 +121,12 @@ const userSlice = createSlice({
       .addCase(getAllShows.rejected, (state, action) => {
         state.loading = false;
         if (isResponseError(action.payload)) {
-          if (action.payload.statusCode===403||action.payload.statusCode===401) {
+          if (action.payload.statusCode === 403 || action.payload.statusCode === 401) {
             state.isAuthenticated = false
           }
         }
       })
-      
+
       //get single movie
       .addCase(getSingleMovie.pending, (state) => {
         state.loading = true;
@@ -206,7 +138,7 @@ const userSlice = createSlice({
         state.loading = false;
         if (isResponseError(action.payload)) {
           console.log(action.payload)
-          if (action.payload.statusCode===403||action.payload.statusCode===401) {
+          if (action.payload.statusCode === 403 || action.payload.statusCode === 401) {
             state.isAuthenticated = false
           }
         }
@@ -217,11 +149,11 @@ const userSlice = createSlice({
 });
 
 export const {
-  userClearError ,
-  userSetError ,
-  userSetIsAuthenticated ,
+  userClearError,
+  userSetError,
+  userSetIsAuthenticated,
   userSetLoading,
-  userSetCity ,
-  userClearTempMail 
+  userSetCity,
+  userClearTempMail
 } = userSlice.actions
 export default userSlice.reducer

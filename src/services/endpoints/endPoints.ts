@@ -10,7 +10,7 @@ export const userEndPoints: UserEndpoint = {
   forgotPassword: '/forgot-password',
   resetPassword: (token: string) => `/reset-password/${token}`,
   googleSignUp: '/google-signup',
-  googleLogout: 'users/google-logout',
+  googleLogout: '/google-logout',
   getMovieShows: (city) => `/shows/${city}`,
   getAllCities: `/cities`,
   getAllMovies: (city) => `/movies/${city}`,

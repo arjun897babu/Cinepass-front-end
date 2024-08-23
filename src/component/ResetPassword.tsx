@@ -9,17 +9,18 @@ import { useForm } from "../hooks/UseForm";
 import { useLoggedOwner } from "../hooks/useLoggedUser";
 import { ResponseData, ResponseStatus, Role } from "../interface/Interface";
 import { useFormSubmit } from "../hooks/UseFormSubmitt";
-import { isErrorResponse } from "../utils/customError";
-import Toast from "./Toast";
+import { isErrorResponse, isResponseError } from "../utils/customError";
+
 import { resetPassword } from "../redux/actions/userAction";
 import { resetPasswordTheaters } from "../redux/actions/theaterAction";
-import Toast2 from "./Toast2";
-import {  theaterClearError } from '../redux/reducers/theatersReducer'
+import Toast2, { Toast } from "./Toast2";
+import { theaterClearError } from '../redux/reducers/theatersReducer'
 import { userClearError } from '../redux/reducers/userReducer'
 import { PasswordInput } from "./PasswordInput";
 
 const ResetPassWord: React.FC<{ role: Role }> = ({ role }) => {
   const navigate = useNavigate()
+  const [toastMessage, setToastMessage] = useState<Toast | null>(null)
   const { token } = useParams<{ token: string }>()
   const backgroundImagePath = { backgroundImage: `url(${role === Role.users ? backgroundImage : backgroundImage1})` };
   const dispatch = useDispatch<AppDispatch>();
@@ -31,13 +32,15 @@ const ResetPassWord: React.FC<{ role: Role }> = ({ role }) => {
   const dipatchClearError = () => {
     dispatch(clearErrorAction());
   }
+
+  const clearToast = () => setToastMessage(null)
   const { handleSubmit } = useFormSubmit(formData, setInputError)
   const { isAuthenticated } = useLoggedOwner(role)
 
   useEffect(() => {
-
+    //not accessible for logged user or logged theaeter owner
     if (isAuthenticated) {
-      navigate('/theaters/home', { replace: true })
+      navigate(role === Role.theaters ? '/theaters/home' : '/', { replace: true }) //based on the role page will navigate to the home
       return
     }
 
@@ -52,40 +55,46 @@ const ResetPassWord: React.FC<{ role: Role }> = ({ role }) => {
           result = await dispatch(resetPassword({ password: formData.password, token })).unwrap()
         } else {
           result = await dispatch(resetPasswordTheaters({ password: formData.password, token })).unwrap()
-          console.log(result)
-        }
-        if (result?.status === ResponseStatus.SUCCESS) {
 
-          navigate(result.redirectURL,
+        }
+        if (result?.status === ResponseStatus.SUCCESS && result?.redirectURL) {
+
+          navigate(result?.redirectURL,
             {
               replace: true,
               state: { password: true }
             })
 
         }
-      } else {
-        if (isValid) {
-          navigate(`${Role.users === role ?
-            '/login'
-            : `/${role}/login`}`,
-            {
-              replace: true,
-              state: { serverError: true }
-            })
-        }
       }
     } catch (error) {
       console.log(error)
-      if (isErrorResponse(error)) {
+      if (isResponseError(error)) {
         console.log(error)
-        if (error.error?.error !== 'password') {
-          navigate(`${Role.users === role ?
-            '/login'
-            : `/${role}/login`}`,
+        if (error.statusCode === 403) {
+          navigate(role === Role.theaters ? '/theaters/login' : '/login',
             {
               replace: true,
-              state: { serverError: true }
+              state: { blocked: true }
             })
+
+        } else if (error.statusCode === 400) {
+          setInputError({
+            [error.data.error]: error.data.message
+          })
+        } else {
+
+          setTimeout(() => {
+            navigate(role === Role.theaters ? '/theaters/login' : '/login',
+              {
+                replace: true,
+              })
+          }, 1000);
+
+          setToastMessage({
+            alert: ResponseStatus.ERROR,
+            message: error.data.message
+          })
         }
       }
     }
@@ -95,18 +104,16 @@ const ResetPassWord: React.FC<{ role: Role }> = ({ role }) => {
     <>
 
       {
-        error?.error === 'approval'
-        ||
-        error?.error === 'blocked' &&
+        toastMessage &&
         <Toast2
-          alert={ResponseStatus.ERROR}
-          message={error.message}
-          clearToast={dipatchClearError}
+          alert={toastMessage.alert}
+          message={toastMessage.message}
+          clearToast={clearToast}
         />
       }
 
       <section className="background  md:h-screen overlay flex items-center justify-center " style={backgroundImagePath}>
-        {response && <Toast message={response.message} status={response.status} role={role} />}
+
         <div className="flex rounded-2xl p-5 justify-center w-full">
 
           <div className={`relative px-8 md:px-24 py-24 space-y-8 bg-black bg-opacity-50  w-1/2`}>

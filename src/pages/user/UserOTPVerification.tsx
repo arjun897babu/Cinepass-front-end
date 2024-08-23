@@ -9,11 +9,12 @@ import { ResponseData, ResponseStatus, Role } from "../../interface/Interface";
 import { useNavigate } from "react-router-dom";
 import { useLoggedOwner } from "../../hooks/useLoggedUser";
 import { formatTime } from "../../utils/format";
-import { isErrorResponse } from "../../utils/customError";
-import Toast from "../../component/Toast";
+import { isErrorResponse, isResponseError } from "../../utils/customError";
+
 import { useTimer } from "../../hooks/useTimer";
 import ResendOTP from "../../component/ResendOTP";
-import {  userClearTempMail,  userClearError } from "../../redux/reducers/userReducer";
+import { userClearTempMail, userClearError } from "../../redux/reducers/userReducer";
+import Toast2, { Toast } from "../../component/Toast2";
 
 const UserOTPVerification: React.FC = (): JSX.Element => {
 
@@ -21,7 +22,7 @@ const UserOTPVerification: React.FC = (): JSX.Element => {
   const navigate = useNavigate();
 
   const { error, tempMail } = useLoggedOwner(Role.users);
- 
+
   useEffect(() => {
 
     if (!tempMail) {
@@ -46,8 +47,11 @@ const UserOTPVerification: React.FC = (): JSX.Element => {
     otp: ''
   }, Role.users);
 
-  const [response, setResponse] = useState<ResponseData | null>(null);
-  const { timeRemaining, isActive, resetTimer } = useTimer(120);
+
+  const { timeRemaining, isActive, resetTimer } = useTimer(5);
+  const [toastMessage, setToastMessage] = useState<Toast | null>(null)
+  const clearToast = () => setToastMessage(null)
+  const setToast = (toast: Toast) => setToastMessage({ alert: toast.alert, message: toast.message })
 
 
 
@@ -68,11 +72,24 @@ const UserOTPVerification: React.FC = (): JSX.Element => {
         }
       }
     } catch (err) {
-      if (isErrorResponse(error)) {
-        setResponse({ message: error.message, status: error.status, redirectURL: error?.redirectURL })
+      if (isResponseError(err)) {
+        if (err.statusCode === 403) {
+          navigate('/login', { replace: true, state: { blocked: true } });
+        } else if (err.statusCode === 400) { 
+          setInputError({ [err.data.error]: err.data.message })
+        } else {
+          setTimeout(() => {
+            navigate('/login', { replace: true });
+          }, 1000)
+
+          setToastMessage({
+            alert: ResponseStatus.ERROR,
+            message: err.data.message
+          })
+        }
       }
     } finally {
-      setResponse(null)
+
     }
 
   };
@@ -81,9 +98,18 @@ const UserOTPVerification: React.FC = (): JSX.Element => {
   return (
     <>
 
+      {
+        toastMessage &&
+        <Toast2
+          alert={toastMessage.alert}
+          message={toastMessage.message}
+          clearToast={clearToast}
+        // modalToast={toastMessage}
+        />
+      }
 
       <section className="background h-full  md:h-screen overlay flex items-center justify-center " style={backgroundImagePath}>
-        {response && <Toast status={response?.status} message={response?.message} role={Role.users} />}
+
         <div className="flex rounded-2xl p-5 justify-center">
 
           <div className={`relative px-8 md:px-24 py-24 space-y-8 bg-black bg-opacity-50`}>
@@ -113,7 +139,7 @@ const UserOTPVerification: React.FC = (): JSX.Element => {
               </div>
               <div className="flex justify-end mb-2">
 
-                <ResendOTP isActive={isActive} resetTimer={resetTimer} role={Role.users} setResponse={setResponse} />
+                <ResendOTP isActive={isActive} resetTimer={resetTimer} role={Role.users} setToast={setToast} />
 
               </div>
               <button className="bg-black rounded-md  text-white py-2  " disabled={timeRemaining === 0} >

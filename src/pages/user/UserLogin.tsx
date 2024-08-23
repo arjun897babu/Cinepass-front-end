@@ -10,18 +10,19 @@ import { useDispatch, } from 'react-redux';
 import { AppDispatch, } from '../../redux/store';
 import { loginUser } from '../../redux/actions/userAction';
 import { ResponseStatus, Role } from '../../interface/Interface';
-import { isErrorResponse } from '../../utils/customError';
+import { isErrorResponse, isResponseError } from '../../utils/customError';
 import { useLoggedOwner } from '../../hooks/useLoggedUser';
 
 import GoogleSignUp from '../../component/user/GoogleSignUp';
 
 import { PasswordInput } from '../../component/PasswordInput';
 import Toast2, { Toast } from '../../component/Toast2';
-import {   userClearError } from '../../redux/reducers/userReducer';
+import { userClearError } from '../../redux/reducers/userReducer';
 
 
 
 export const UserLogin: React.FC = (): JSX.Element => {
+
   const location = useLocation();
   const dispatchClearError = () => {
     dispatch(userClearError())
@@ -30,8 +31,9 @@ export const UserLogin: React.FC = (): JSX.Element => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { error, isAuthenticated, city } = useLoggedOwner(Role.users);
-
   const [toastMessage, setToastMessage] = useState<Toast | null>(null)
+
+  const handleToastMessage = (toast: Toast) => setToastMessage(toast)
 
   const {
     formData,
@@ -43,7 +45,6 @@ export const UserLogin: React.FC = (): JSX.Element => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      console.log('dd');
       navigate(`/home/${city}`, { replace: true });
       return;
     }
@@ -79,7 +80,7 @@ export const UserLogin: React.FC = (): JSX.Element => {
 
     dispatch(userClearError());
     navigate(location.pathname, { replace: true });
-  }, [isAuthenticated, location.state, city]);
+  }, [isAuthenticated]);
 
   const { handleSubmit } = useFormSubmit(formData, setInputError);
 
@@ -89,13 +90,38 @@ export const UserLogin: React.FC = (): JSX.Element => {
 
     if (isValid) {
       try {
-        const result = await dispatch(loginUser(formData)).unwrap();
-        if (result.status === ResponseStatus.SUCCESS) {
-          navigate(result.redirectURL, { replace: true })
-        }
-      } catch (err) {
-        if (isErrorResponse(err)) {
-          navigate(err.redirectURL);
+
+        await dispatch(loginUser(formData)).unwrap();
+        // if (result.status === ResponseStatus.SUCCESS) {
+        //   navigate(result.redirectURL, { replace: true })
+        // }
+      } catch (err) { 
+        if (isResponseError(err)) {
+          if (err.statusCode === 403) {
+            setToastMessage({
+              alert: ResponseStatus.ERROR,
+              message: err.data.message
+            })
+          } else if (err.statusCode === 500) {
+            setToastMessage({
+              alert: ResponseStatus.ERROR,
+              message: err.data.message
+            })
+          } else if (err.statusCode === 400 || err.statusCode === 404) {
+            setInputError(
+              {
+                [err.data.error]: err.data.message
+              }
+            )
+          }
+          else if (err.statusCode === 401 && err.data.error !== 'googleAuth') {
+            navigate('/otp-verification')
+          } else {
+            setToastMessage({
+              alert: ResponseStatus.ERROR,
+              message: err.data.message
+            })
+          }
         }
       }
     }
@@ -109,8 +135,8 @@ export const UserLogin: React.FC = (): JSX.Element => {
 
     <section className="background overlay flex items-center justify-center " style={background_image_path}>
 
-      {
-        error?.error === 'googleAuth'
+      {/* {
+        error?.error == 'googleAuth'
         ||
         error?.error === 'blocked' &&
         <Toast2
@@ -118,7 +144,7 @@ export const UserLogin: React.FC = (): JSX.Element => {
           clearToast={dispatchClearError}
           alert={ResponseStatus.ERROR}
         />
-      }
+      } */}
 
       {
         toastMessage &&
@@ -208,7 +234,9 @@ export const UserLogin: React.FC = (): JSX.Element => {
             </Link>
 
             <div className='w-full flex items-center justify-center'>
-              <GoogleSignUp />
+              <GoogleSignUp
+                handleToastMessage={handleToastMessage}
+              />
             </div>
 
 

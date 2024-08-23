@@ -2,9 +2,11 @@ import { CredentialResponse, GoogleLogin } from "@react-oauth/google"
 import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "../../redux/store"
 import { googleSignUp } from "../../redux/actions/userAction"
-import { isErrorResponse } from "../../utils/customError"
+import { isErrorResponse, isResponseError } from "../../utils/customError"
+import { Toast } from "../Toast2"
+import { ResponseStatus } from "../../interface/Interface"
 
-const GoogleSignUp = () => {
+const GoogleSignUp: React.FC<{ handleToastMessage: (toast: Toast) => void }> = ({ handleToastMessage }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { isGoogleAuth } = useSelector((state: RootState) => state.user)
   const handleLoginSuccess = async (credentialResponse: CredentialResponse) => {
@@ -13,8 +15,23 @@ const GoogleSignUp = () => {
         await dispatch(googleSignUp({ credential: credentialResponse.credential, client_id: credentialResponse.clientId })).unwrap();
       }
     } catch (error) {
-      if (isErrorResponse(error)) {
-        console.log(error)
+      if (isResponseError(error)) {
+        if (error.statusCode === 403) {
+          handleToastMessage(
+            {
+              alert: ResponseStatus.ERROR,
+              message: error.data.message
+            }
+          )
+        }
+        if (error.statusCode === 500) {
+          handleToastMessage(
+            {
+              alert: ResponseStatus.ERROR,
+              message: error.data.message
+            }
+          )
+        }
       }
     }
   }

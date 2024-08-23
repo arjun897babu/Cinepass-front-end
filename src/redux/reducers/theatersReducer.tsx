@@ -51,8 +51,10 @@ const theaterSlice = createSlice({
       })
       .addCase(signupTheaters.rejected, (state, action) => {
         state.loading = false;
-        if (isErrorResponse(action.payload)) {
-          state.error = action.payload.error as IInitialStateError
+        if (isResponseError(action.payload)) {
+          if (action.payload.statusCode === 401 && action.payload.data.error === 'otp') {
+            state.tempMail = action.payload.data ? action.payload.data.tempMail as {email:string}  : null
+          }
         }
       })
       //login
@@ -70,27 +72,10 @@ const theaterSlice = createSlice({
         state.loading = false
         if (isErrorResponse(action.payload)) {
           state.error = action.payload.error as IInitialStateError;
-          state.tempMail = action.payload.data ? action.payload.data as { email: string } : null
         }
       })
 
-      //otp-verification
-      .addCase(verifyOTPTheaters.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(verifyOTPTheaters.fulfilled, (state) => {
-        state.loading = false;
-        state.tempMail = null
-      })
-      .addCase(verifyOTPTheaters.rejected, (state, action) => {
-        state.loading = false;
-        state.isAuthenticated = false
-        if (isErrorResponse(action.payload)) {
 
-          state.error = action.payload.error as IInitialStateError | null
-        }
-      })
 
       //logout
       .addCase(logoutTheaters.pending, (state) => {
@@ -107,47 +92,7 @@ const theaterSlice = createSlice({
         state.loading = false;
         state.error = action.payload as IInitialStateError | null
       })
-      //forgot password
-      .addCase(forgotPasswordTheaters.pending, (state) => {
-        state.loading = true
-      })
-      .addCase(forgotPasswordTheaters.fulfilled, (state) => {
-        state.loading = false
-      })
-      .addCase(forgotPasswordTheaters.rejected, (state) => {
-        state.loading = false;
 
-      })
-      //reset password
-      .addCase(resetPasswordTheaters.pending, (state) => {
-        state.loading = true
-      })
-      .addCase(resetPasswordTheaters.fulfilled, (state) => {
-        state.loading = false
-      })
-      .addCase(resetPasswordTheaters.rejected, (state, action) => {
-        state.loading = false
-        if (isErrorResponse(action.payload)) {
-          if (action.payload.error && action.payload.error.error === 'password') {
-            state.error = action.payload.error as IInitialStateError | null
-          }
-        }
-      })
-      //resend otp
-      .addCase(resendOTPTheaters.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(resendOTPTheaters.fulfilled, (state) => {
-        state.loading = false;
-      })
-      .addCase(resendOTPTheaters.rejected, (state, action) => {
-        state.loading = false;
-        if (isErrorResponse(action.payload)) {
-          if (action.payload.error && action.payload.error.error === 'otp') {
-            state.error = action.payload.error as IInitialStateError | null
-          }
-        }
-      })
 
       //create theater screen
       .addCase(createTheaterScreen.pending, (state) => {

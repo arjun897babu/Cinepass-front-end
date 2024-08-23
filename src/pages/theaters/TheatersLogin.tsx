@@ -10,7 +10,7 @@ import { useForm } from '../../hooks/UseForm';
 import { useFormSubmit } from '../../hooks/UseFormSubmitt';
 import { loginTheaters } from '../../redux/actions/theaterAction';
 import { ResponseStatus, Role } from '../../interface/Interface';
-import { isErrorResponse } from '../../utils/customError';
+import { isResponseError } from '../../utils/customError';
 import { theaterClearError } from '../../redux/reducers/theatersReducer';
 import { PasswordInput } from '../../component/PasswordInput';
 import Toast2, { Toast } from '../../component/Toast2';
@@ -25,9 +25,6 @@ export const TheatersLogin: React.FC = (): JSX.Element => {
 
   const navigate = useNavigate();
 
-  const dispatchError = () => {
-    dispatch(theaterClearError())
-  }
 
   const [toastMessage, setToastMessage] = useState<Toast | null>(null)
 
@@ -89,32 +86,42 @@ export const TheatersLogin: React.FC = (): JSX.Element => {
         }
       }
 
-    } catch (error) {
+    } catch (err) {
 
-      if (isErrorResponse(error)) {
-        if (error.redirectURL) {
-          navigate(error.redirectURL)
+      if (isResponseError(err)) {
+        if (err.statusCode === 403) {
+          setToastMessage({
+            alert: ResponseStatus.ERROR,
+            message: err.data.message
+          })
+        } else if (err.statusCode === 500) {
+          setToastMessage({
+            alert: ResponseStatus.ERROR,
+            message: err.data.message
+          })
+        } else if (err.statusCode === 400 || err.statusCode === 404) {
+          setInputError(
+            {
+              [err.data.error]: err.data.message
+            }
+          )
+        }
+        else if (err.statusCode === 401 && err.data.error !== 'googleAuth') {
+          navigate('/otp-verification')
         } else {
-
+          setToastMessage({
+            alert: ResponseStatus.ERROR,
+            message: err.data.message
+          })
         }
       }
     }
 
   }
-   
+
 
   return (
     <>
-
-      {
-        error?.error === 'approval'
-        ||
-        error?.error === 'blocked' &&
-        <Toast2
-          alert={ResponseStatus.ERROR}
-          message={error.message}
-          clearToast={dispatchError}
-        />}
 
       {
         toastMessage &&

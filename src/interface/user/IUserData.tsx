@@ -25,4 +25,5 @@ export interface IUser {
   status: boolean;
   profile_picture: string,
   location: string
+  isGoogleAuth:boolean
 } 

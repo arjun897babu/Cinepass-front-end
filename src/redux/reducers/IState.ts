@@ -6,7 +6,7 @@ export interface IInitialState {
   loading: boolean;
   error: IInitialStateError | null;
   isAuthenticated: boolean
-  tempMail: { email: string } | null,
+  tempMail: {email:string}|null,
   isGoogleAuth?: boolean
   city?: undefined|string
 
