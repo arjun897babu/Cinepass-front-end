@@ -7,12 +7,14 @@ import { useForm } from "../../../hooks/UseForm"
 import { ITheaterScreen, ResponseStatus, Role } from "../../../interface/Interface"
 import { useLoggedOwner } from "../../../hooks/useLoggedUser"
 import { useFormSubmit } from "../../../hooks/UseFormSubmitt"
-import { createTheaterScreen, getScreen } from "../../../redux/actions/theaterAction"
+import { createTheaterScreen, deleteTheaterScreen, getScreen } from "../../../redux/actions/theaterAction"
 import { ISeat, ITheaterScreenResponse } from "../../../interface/theater/ITheaterScreen"
 import { isResponseError } from "../../../utils/customError"
 import { IoIosInformationCircleOutline } from "react-icons/io"
 import { useNavigate } from "react-router-dom"
 import Toast2, { Toast } from "../../../component/Toast2"
+import ConfirmationModal from "../../../component/ConfirmationModal"
+import useErrorHandler from "../../../hooks/useErrorHandler"
 
 const SeatRow: React.FC<{ rowNumber: number; columnCount: number }> = ({ rowNumber, columnCount }) => {
   const seats = Array.from({ length: columnCount }, (_, col) => (
@@ -98,8 +100,10 @@ const TheaterScreen: React.FC = () => {
   const [updateForm, setUpdateForm] = useState(false);
   const [screens, setScreens] = useState<ITheaterScreenResponse[] | []>([]);
   const [selectedScreen, setSelectedScreen] = useState<ITheaterScreenResponse | null>(null)
+  const [deleteScreen, setDeleteScreen] = useState<string | null>(null)
   const [showmodal, setShowmodal] = useState<boolean>(false);
-  const [toast, setToast] = useState<Toast | null>(null)
+  const [toast, setToast] = useState<Toast | null>(null);
+  const [confirmation, setConfirmation] = useState<boolean>(false);
   const navigate = useNavigate()
   const closeViewModal = () => {
     setSelectedScreen(null)
@@ -107,6 +111,23 @@ const TheaterScreen: React.FC = () => {
   const closeModal = () => {
     setShowmodal(false)
   }
+
+  const updateSelected = (e: MouseEvent<HTMLButtonElement>, id: string) => {
+    e.preventDefault()
+    const selected = screens.find((screen) => screen._id === id);
+    selected ?
+      (setSelectedScreen(selected)) : null
+    
+  }
+
+  const deleteSelected = (e: MouseEvent<HTMLButtonElement>, id: string) => {
+    e.preventDefault() 
+    id ?
+      setDeleteScreen(id) : null
+    setConfirmation(true)
+  }
+
+
 
   const setLayoutView = (e: MouseEvent<HTMLButtonElement>) => {
 
@@ -261,6 +282,31 @@ const TheaterScreen: React.FC = () => {
     }
   }
 
+  const handleApiError = useErrorHandler(Role.theaters, setToast)
+
+  const deleteSelectedScreen = async () => {
+    try {
+      if (deleteScreen) {
+        const response = await dispatch(deleteTheaterScreen(deleteScreen)).unwrap()
+        console.log(response)
+        if (response.status === ResponseStatus.SUCCESS) {
+          setToast({
+            alert: response.status,
+            message: response.message
+          })
+
+          const deleted = screens.filter((screen) => screen._id !== response.data._id)
+          setScreens((prev) =>
+            [...prev, ...deleted]
+          )
+        }
+      }
+    } catch (error) {
+      handleApiError(error)
+    } finally {
+      setConfirmation(false)
+    }
+  }
 
   return (
 
@@ -272,6 +318,17 @@ const TheaterScreen: React.FC = () => {
           alert={toast.alert}
           clearToast={() => setToast(null)}
           message={toast.message}
+        />
+      }
+
+      {
+        confirmation &&
+        <ConfirmationModal
+          btnType={ResponseStatus.Error}
+          isOpen={confirmation}
+          message="are you sure want to delte this"
+          onClose={() => setConfirmation(false)}
+          onConfirm={deleteSelectedScreen}
         />
       }
 
@@ -306,14 +363,15 @@ const TheaterScreen: React.FC = () => {
                     </th>
                     <td>
                       {screen.screen_name}
+                      {screen.amenity}
                     </td>
                     <td>
                       <span className="badge font-bold rounded-none ">{screen.seating_capacity}</span>
                     </td>
                     <td className="flex justify-center items-center gap-3">
 
-                      <button className="btn bg-transparent hover:bg-transparent  border-none hover: join-item text-black"><FaEdit /></button>
-                      <button className="btn bg-transparent hover:bg-transparent border-none hover: join-item text-red-600"><GiCancel /></button>
+                      <button onClick={(e) => updateSelected(e, screen._id)} className="btn bg-transparent hover:bg-transparent  border-none hover: join-item text-black"><FaEdit /></button>
+                      <button onClick={(e) => deleteSelected(e, screen._id)} className="btn bg-transparent hover:bg-transparent border-none hover: join-item text-red-600"><GiCancel /></button>
                     </td>
                     <td>
                       <button className="btn btn-sm   bg-sky-400" data-id={screen._id} onClick={setLayoutView}  >Seat Layout</button>

@@ -99,15 +99,14 @@ export const TheatersLogin: React.FC = (): JSX.Element => {
             alert: ResponseStatus.ERROR,
             message: err.data.message
           })
-        } else if (err.statusCode === 400 || err.statusCode === 404) {
+        } else if (err.statusCode === 401 && err.data.error == 'otp') {
+          navigate('/otp-verification')
+        } else if (err.statusCode === 400 || err.statusCode === 404 || err.statusCode === 401) {
           setInputError(
             {
               [err.data.error]: err.data.message
             }
           )
-        }
-        else if (err.statusCode === 401 && err.data.error !== 'googleAuth') {
-          navigate('/otp-verification')
         } else {
           setToastMessage({
             alert: ResponseStatus.ERROR,

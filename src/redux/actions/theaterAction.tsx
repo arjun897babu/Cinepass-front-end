@@ -1,6 +1,6 @@
 import { AsyncThunk, createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosError } from "axios";
-import { serverTheater } from "../../services";
+import { serverInstance, serverTheater } from "../../services";
 import { theatersEndPoints } from "../../services/endpoints/endPoints";
 import { TheaterSignUpData } from "../../interface/theater/ITheatersData";
 import { IGetMovieShowResponse, IMovie, LoginData, OTPVerification, ResponseData, ResponseData2 } from "../../interface/Interface";
@@ -11,7 +11,7 @@ import { IMovieShow } from "../../interface/theater/IMovieShow";
 import { handleAxiosError, IResponseError } from "../../utils/customError";
 import { ITheaterOwnerEntity, TheaterOwnerProfile, TheaterProfile } from "../../interface/theater/ITheaterOwner";
 
-
+/*..................auth.................. */
 
 export const signupTheaters: AsyncThunk<ResponseData, TheaterSignUpData, {}> = createAsyncThunk(
   'theaters/signup',
@@ -19,9 +19,9 @@ export const signupTheaters: AsyncThunk<ResponseData, TheaterSignUpData, {}> = c
     console.log('reaching the theaterssignup async thunk')
     try {
       const response = await serverTheater.post(theatersEndPoints.signup, userData);
-       return await response.data
+      return await response.data
     } catch (error) {
-      
+
       return rejectWithValue(handleAxiosError(error));
     }
   }
@@ -35,10 +35,8 @@ export const loginTheaters: AsyncThunk<ResponseData, LoginData, {}> = createAsyn
 
       return await response.data
     } catch (error) {
-      if (error instanceof AxiosError) {
-        return rejectWithValue(error.response?.data)
-      }
-      return rejectWithValue('an unknown error')
+
+      return rejectWithValue(handleAxiosError(error))
     }
   }
 )
@@ -113,6 +111,8 @@ export const resendOTPTheaters: AsyncThunk<ResponseData, string, {}> = createAsy
   }
 )
 
+/*..................auth.................. */
+
 export const getTheaterDetails: AsyncThunk<ITheaterOwnerEntity, void, {}> = createAsyncThunk(
   'theaters/theater',
   async (_: void, { rejectWithValue }) => {
@@ -141,24 +141,32 @@ export const updateTheater: AsyncThunk<IUpdateTheaterData, (TheaterOwnerProfile 
       const response = await serverTheater.put(theatersEndPoints.updateTheater, theaterData);
       return await response.data
     } catch (error) {
-      if (error instanceof AxiosError) {
-        const { response } = error
-        if (response) {
-          return rejectWithValue({
-            statusCode: response.status,
-            data: response.data.error
-          } as IResponseError);
-        }
-      }
-      return rejectWithValue({
-        statusCode: 500,
-        data: {
-          error: 'unknown_error',
-          message: 'an unknown error occured'
-        }
-      } as IResponseError)
+      return rejectWithValue(handleAxiosError(error))
     }
   }
+)
+
+
+/*..................screen.................. */
+
+
+export const getScreen: AsyncThunk<ITheaterScreenResponse[], string | undefined, {}> = createAsyncThunk(
+  'theaters/getScreen',
+  async (amenity, { rejectWithValue }) => {
+    try {
+
+      const response = await serverTheater.get(theatersEndPoints.getScreen(amenity), {});
+      const { screens } = response.data?.data
+
+      return await screens
+    } catch (error) {
+
+      return rejectWithValue(handleAxiosError(error))
+
+
+    }
+  }
+
 )
 
 export const createTheaterScreen: AsyncThunk<ITheaterScreenResponse, ITheaterScreen, {}> = createAsyncThunk(
@@ -173,64 +181,65 @@ export const createTheaterScreen: AsyncThunk<ITheaterScreenResponse, ITheaterScr
 
     } catch (error) {
 
-      if (error instanceof AxiosError) {
-        const { response } = error
-        if (response) {
-          return rejectWithValue({
-            statusCode: response.status,
-            data: response.data.error
-          } as IResponseError);
-        }
-      }
-
-      return rejectWithValue({
-        statusCode: 500,
-        data: {
-          error: 'unknown_error',
-          message: 'an unknown error occured'
-        }
-      } as IResponseError)
+      return rejectWithValue(handleAxiosError(error))
     }
   }
 )
+interface IDeleteScreenResponse extends ResponseData2 {
+  data: {
+    _id: string,
 
+  }
+}
+export const deleteTheaterScreen: AsyncThunk<IDeleteScreenResponse, string, {}> = createAsyncThunk(
+  '/theaters/deleteScreen',
+  async (screenId, { rejectWithValue }) => {
+    console.log('delete screen ayscnthunk is being callled')
+    try {
+      const response = await serverTheater.patch(theatersEndPoints.deleteScreen(screenId), {})
+      return response.data 
+    } catch (error) {
+      return rejectWithValue(handleAxiosError(error))
+    }
+  }
+) 
+/*..................screen.................. */
+
+/*..................movie.................. */
 export const getMovie: AsyncThunk<IMovie[], MovieType, {}> = createAsyncThunk(
   'theaters/getMovie',
   async (movieType: MovieType, { rejectWithValue }) => {
     try {
-
+      console.log('calleed')
       const response = await serverTheater.get(theatersEndPoints.getMovie(movieType), {});
+      console.log(response)
       const { movies } = response.data?.data
       return await movies
     } catch (error) {
-      if (error instanceof AxiosError) {
-        return rejectWithValue(error.response)
-      }
-
-      return rejectWithValue('an unknown error')
+      console.log(error)
+      return rejectWithValue(handleAxiosError(error))
     }
   }
 
 )
-export const getScreen: AsyncThunk<ITheaterScreenResponse[], void, {}> = createAsyncThunk(
-  'theaters/getScreen',
+/*..................movie.................. */
+
+/*..................show.................. */
+
+export const getAllShows: AsyncThunk<IGetMovieShowResponse[], void, {}> = createAsyncThunk(
+  '/theaters/getAllShows',
   async (_, { rejectWithValue }) => {
     try {
-
-      const response = await serverTheater.get(theatersEndPoints.getScreen, {});
-      const { screens } = response.data?.data
-
-      return await screens
+      console.log('getshow asyncthunk is called')
+      const response = await serverTheater.get(theatersEndPoints.getMovieShows, {});
+      const { shows } = response.data?.data
+      return await shows
     } catch (error) {
-
+      
       return rejectWithValue(handleAxiosError(error))
-
-
     }
   }
-
-)
-
+);
 interface addMovieShowResponse extends ResponseData2 {
   data: {
     show: IMovieShow
@@ -240,30 +249,46 @@ export const addMovieShows: AsyncThunk<addMovieShowResponse, IMovieShow, {}> = c
   'theaters/addMovieShows',
   async (formData, { rejectWithValue }) => {
     try {
+      console.log('add movieshow async thunk is called')
       const response = await serverTheater.post(theatersEndPoints.addMovieShows, formData);
-
+      console.log(response)
       return await response.data
     } catch (error) {
-       
-      return rejectWithValue(handleAxiosError(error) )
+      console.log(error)
+      return rejectWithValue(handleAxiosError(error))
     }
   }
 
 )
 
-
-export const getAllShows: AsyncThunk<IGetMovieShowResponse[], void, {}> = createAsyncThunk(
-  '/theaters/getAllShows',
-  async (_, { rejectWithValue }) => {
+export const updateMovieShow: AsyncThunk<ResponseData2, { payload: IMovieShow, showId: string }, {}> = createAsyncThunk(
+  '/theaters/updateShows',
+  async ({ payload, showId }, { rejectWithValue }) => {
+    console.log('update show asyncthunk is called')
     try {
-      const response = await serverTheater.get(theatersEndPoints.getMovieShows, {});
-      const { shows } = response.data?.data
-      return await shows
+
+      const respones = await serverTheater.put(theatersEndPoints.updateMovieShow(showId), { payload })
+      console.log(respones)
+      return respones.data
     } catch (error) {
-      if (error instanceof AxiosError) {
-        return rejectWithValue(error.response)
-      }
-      return rejectWithValue('an unknown error occured')
+      console.log(error)
+      return rejectWithValue(handleAxiosError(error))
     }
   }
 );
+
+export const deleteMovieShow: AsyncThunk<ResponseData2, string, {}> = createAsyncThunk(
+  '/theaters/deleteShows',
+  async (showId, { rejectWithValue }) => {
+    console.log('delete show asyncthunk is called')
+    try {
+      const respones = await serverTheater.patch(theatersEndPoints.delteMovieShow(showId), {})
+      console.log(respones)
+      return respones.data
+    } catch (error) {
+      console.log(error)
+      return rejectWithValue(handleAxiosError(error))
+    }
+  }
+)
+/*..................show.................. */

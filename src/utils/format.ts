@@ -8,19 +8,19 @@ export function formatTime(time: number): string {
 
   return `${min}:${formattedSec}`;
 }
-
 export function getIST(time: string): string {
 
-  return new Date(time)
-    .toLocaleDateString(
-      'en-IN',
-      {
+  const date = new Date(time);
 
-        day: "2-digit",
-        month: "2-digit",
-        year: "2-digit"
-      }
-    )
+  const day = date.getDate();
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
+
+  const formattedDay = (day < 10 ? '0' : '') + day;
+  const formattedMonth = (month < 10 ? '0' : '') + month;
+
+
+  return `${formattedDay}-${formattedMonth}-${year}`;
 }
 
 export function formatRunTime(time: string): string {
@@ -91,8 +91,8 @@ export function convertFile(file: File): Promise<string> {
 };
 
 
-export function setDefaultDate(date: Date, days: number): string {
-
+export function setDefaultDate(date: string, days: number): string {
+  console.log(typeof date)
   const newDate = new Date(date);
 
   newDate.setDate(newDate.getDate() + days);

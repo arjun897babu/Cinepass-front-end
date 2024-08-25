@@ -28,9 +28,13 @@ export interface TheaterEndpoint extends IEndPoints {
   updateTheater: string
   createScreen: string
   getMovie: (movieType: MovieType) => string
-  getScreen: string
+  getScreen: (amenity?: string) => string,
+  updateScreen: (screenId: string) => string
+  deleteScreen: (screenId: string) => string
   addMovieShows: string
   getMovieShows: string
+  updateMovieShow: (showId: string) => string
+  delteMovieShow: (showId: string) => string
 }
 export interface AdminEndpoint extends IEndPoints {
   getEntityData: (role: string) => string

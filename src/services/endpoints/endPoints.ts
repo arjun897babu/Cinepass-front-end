@@ -29,16 +29,20 @@ export const theatersEndPoints: TheaterEndpoint = {
   getTheaterDetails: `/theater`,
   updateTheater: `/theater`,
   createScreen: `/screen`,
-  getScreen: `/screen`,
+  getScreen: (amenity) => `/screen?amenity=${amenity}`,
+  updateScreen: (screenId) => `/screen/${screenId}`,
+  deleteScreen: (screenId) => `/screen/${screenId}`,
   getMovie: (movieType) => `/movie/${movieType}`,
   getMovieShows: `/shows`,
-  addMovieShows: `/shows`, 
+  addMovieShows: `/shows`,
+  updateMovieShow: (showId) => `/shows/${showId}`,
+  delteMovieShow: (showId) => `/shows/${showId}`,
 };
 
 export const adminEndpoints: AdminEndpoint = {
   login: '/login',
   logout: '/logout',
-  getEntityData: (role) => `/${role}`,
+  getEntityData: (role) => `/${role} `,
   updateApprovalStatus: (theaterOwnerId) => `/approval/${theaterOwnerId}`,
   manageEntities: (entityId, role) => `/${role}/${entityId}`,
   addMovie: (movieType) => `/movie/add-movie/${movieType}`,

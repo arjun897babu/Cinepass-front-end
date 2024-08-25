@@ -1,10 +1,10 @@
 import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from "react";
-import { Action, IMovie, ResponseStatus } from "../../interface/Interface";
+import { Action, IMovie, ResponseStatus, Role } from "../../interface/Interface";
 import { Controller, SubmitHandler, useForm as useForms } from "react-hook-form";
 import { ITheaterScreenResponse } from "../../interface/theater/ITheaterScreen";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../../redux/store";
-import { addMovieShows, getMovie, getScreen } from "../../redux/actions/theaterAction";
+import { addMovieShows, getMovie, getScreen, updateMovieShow } from "../../redux/actions/theaterAction";
 import { MovieType } from "../admin/MovieForm";
 import { calculateEndTime, getIST, getMovieTime, setDefaultDate } from "../../utils/format";
 import { IMovieShow } from "../../interface/theater/IMovieShow";
@@ -13,6 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { movieShowSchema } from "../../utils/zodSchema";
 import ConfirmationModal from "../ConfirmationModal";
 import { isResponseError } from "../../utils/customError";
+import useErrorHandler from "../../hooks/useErrorHandler";
 
 interface ShowModalProps {
   id: string;
@@ -28,15 +29,31 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
     screenId: '',
     language: '',
     format: '',
-    opening_date: 'dd-mm-yy',
+    opening_date: `${new Date()}`,
     showTime: '',
     endTime: '',
   }, action, closeModal, id, setToast }) => {
+
+  const {
+    clearErrors,
+    control,
+    setError,
+    setValue,
+    register,
+    reset, handleSubmit,
+    formState: { errors }
+  } = useForms({
+    resolver: zodResolver(movieShowSchema),
+    defaultValues: initialData
+  })
+
+  const dispatch = useDispatch<AppDispatch>()
 
   const modalRef = useRef<HTMLDialogElement>(null) // to control over modal
   const closeModalBtnRef = useRef<HTMLButtonElement>(null);//for closing the modal
 
   const [theaterMovies, setTheaterMovies] = useState<IMovie[] | []>([])//store available theaer movies
+
   const [screens, setScreens] = useState<ITheaterScreenResponse[] | []>([])//store available screens based on the movie format
   const [selectedMovie, setSelectedMovie] = useState<IMovie | null>(null)
   const [formData, setFormData] = useState<IMovieShow>()
@@ -45,6 +62,7 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
   const [format, setFormat] = useState<string[]>([]);
 
   const [confirmation, setConfirmation] = useState(false)
+  const closeConfirmationModal = () => setConfirmation(false)
 
   const durationRef = useRef<HTMLInputElement>(null)
   const openingDateRef = useRef<HTMLInputElement>(null);
@@ -52,62 +70,62 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
   const [fetching, setFetching] = useState(false);//for loading icon
 
 
-  const dispatch = useDispatch<AppDispatch>()
+  const handleApiError = useErrorHandler(Role.theaters, setToast)
 
-  const closeConfirmationModal = () => setConfirmation(false)
-
-  const fetchScreen = async () => {
+  const fetchScreen = async (selectedFormat: string) => {
     try {
-      // console.log('calling last after selection a movie')
-      const response = await dispatch(getScreen()).unwrap();
-
+      const response = await dispatch(getScreen(selectedFormat)).unwrap();
       if (response) {
-        return response
+        console.log(response)
+        setScreens(response)
       }
     } catch (error) {
-      console.log(error)
-    } finally {
-
+      handleApiError(error)
     }
   }
 
   //for fetching theater movies 
   const fetchMovies = async () => {
-    // console.log('movie fetchin 2nd')
     try {
       setFetching(true);
       const response = await dispatch(getMovie(MovieType.theater)).unwrap();
-      console.log("Fetched Movies:", response);
       setTheaterMovies(response);
     } catch (error) {
-      console.log(error);
+      throw error
     } finally {
       setFetching(false);
-      // console.log('Fetching completed');
     }
   };
 
   useEffect(() => {
-    // console.log('use effect is called 1st')
     fetchMovies()
       .then(() => {
         if (modalRef.current) {
-          // console.log('modal is opeing 3')
           modalRef.current.showModal();
         }
       })
       .catch(error => {
-        // console.error("Error in useEffect:", error);
+        if (isResponseError(error)) {
+          if (error.statusCode === 500) {
+            setToast({
+              alert: ResponseStatus.ERROR,
+              message: error.data.message
+            })
+            closeModal()
+          }
+        }
       });
+    if (action === Action.UPDATE) {
+      fetchScreen(initialData.format)
+    }
   }, []);
 
   useEffect(() => {
     if (initialData.movieId && theaterMovies.length > 0) {
-      // console.log('form ready for updation');
-      // console.log('updation movie id:', initialData.movieId);
       saveSelectMovie(initialData.movieId);
     }
   }, [initialData.movieId, theaterMovies]);
+
   const handleFormSubmit: SubmitHandler<IMovieShow> = (data) => {
     // console.log(data)
     setConfirmation(true)
@@ -124,30 +142,23 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
 
 
   const saveSelectMovie = async (movieId: string) => {
-    console.log('calling 4th')
-    console.log("Theater Movies State:", theaterMovies);
+
     const selectedMovie = theaterMovies.find((movie) => movie._id === movieId)
-    console.log('movie Id:', movieId);
-    console.log('selected movie:', selectedMovie);
+
     if (selectedMovie) {
       setSelectedMovie(selectedMovie)
       setReleaseDate(getIST(selectedMovie.release_date as string));
       setDuration(selectedMovie.run_time);
       setFormat([selectedMovie.format.join(',')]);
-
       const min = new Date().toISOString().split('T')[0]
-      const max = setDefaultDate(selectedMovie.release_date as Date, -1);
+      console.log(setDefaultDate(initialData?.opening_date as string, 0))
+      const max = setDefaultDate(selectedMovie?.release_date as string, -1);
 
       if (openingDateRef.current) {
         openingDateRef.current.min = min
         openingDateRef.current.max = max
+        openingDateRef.current.value = setDefaultDate(initialData?.opening_date as string, 0) ?? min
         setValue('opening_date', min)
-      }
-
-      const theaterScreens = await fetchScreen()
-      const filtered = theaterScreens?.filter((screen) => selectedMovie.format.includes(screen.amenity))
-      if (filtered) {
-        setScreens(filtered ?? [])
       }
     }
   }
@@ -176,50 +187,44 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
 
     try {
       if (formData) {
+        console.log(formData)
 
+        console.log(action)
+        let response
         if (action === Action.ADD) {
-          const response = await dispatch(addMovieShows(formData)).unwrap()
-          if (response.status === ResponseStatus.SUCCESS) {
-
-            localStorage.setItem('toastMessage', JSON.stringify({
-              alert: ResponseStatus.SUCCESS,
-              message: response.message,
-            }));
-
-            
-            window.location.reload();
-
-          }
+          response = await dispatch(addMovieShows(formData)).unwrap()
         } else {
-
+          if (!initialData._id) {
+            return
+          }
+          response = await dispatch(updateMovieShow({ payload: formData, showId: initialData._id })).unwrap()
+        }
+        console.log(response)
+        if (response.status === ResponseStatus.SUCCESS) {
+          localStorage.setItem('toastMessage', JSON.stringify({
+            alert: ResponseStatus.SUCCESS,
+            message: response.message,
+          }));
+          window.location.reload();
         }
       }
 
     } catch (error) {
+      console.log(error)
+      handleApiError(error);
+
       if (isResponseError(error)) {
-        console.log(error)
+        if (error.statusCode === 400) {
+          setError(
+            error.data.error as keyof IMovieShow,
+            {
+              message: error.data.message
+            }
+          )
+        }
       }
     }
-    finally {
-      setConfirmation(false)
-
-    }
   }
-
-  const {
-
-    clearErrors,
-    control,
-    setError,
-    setValue,
-    register,
-    reset, handleSubmit,
-    formState: { errors }
-  } = useForms({
-    resolver: zodResolver(movieShowSchema),
-    defaultValues: initialData
-  })
-
 
   return (
 
@@ -319,14 +324,24 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
               {/* opening Date */}
               <div className="gap-3 w-full relative flex justify-center items-center text-center">
                 <label className="w-20 font-bold text-left" htmlFor="opening_date">Opening Date</label>
-                <input
-                  ref={openingDateRef}
-                  type="date"
-                  {...register}
-                  id="opening_date"
-                  className="input w-full border border-gray-400 text-gray-500 max-w-xs"
-                  placeholder="opening date"
-                  disabled={!selectedMovie}
+
+                <Controller
+                  name="opening_date"
+                  control={control}
+                  render={({ field }) => (
+                    <input
+                      ref={openingDateRef}
+                      type="date"
+                      {...register}
+                      id="opening_date"
+                      onChange={(e) => {
+                        field.onChange(e)
+                      }}
+                      className="input w-full border border-gray-400 text-gray-500 max-w-xs"
+                      placeholder="opening date"
+                      disabled={!selectedMovie}
+                    />
+                  )}
                 />
                 {errors.opening_date &&
                   <small
@@ -361,8 +376,14 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
                         <select
                           id="format-select"
                           {...field}
-                          onChange={(e) => {
+                          onChange={async (e) => {
+
+                            const selectedFormat = e.target.value
                             field.onChange(e)
+                            if (selectedFormat) {
+                              await fetchScreen(selectedFormat)
+                            }
+
                           }}
                           className="select capitalize font-serif w-full border border-black max-w-xs"
                           disabled={!selectedMovie}
@@ -531,6 +552,7 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
                         type="time"
                         id='endTime'
                         {...field}
+                        readOnly
                         className="border p-2 border-black w-full mt-1  "
                       />
                     }

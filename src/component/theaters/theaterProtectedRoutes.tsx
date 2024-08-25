@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { Navigate,  } from "react-router-dom";
+import { Navigate, } from "react-router-dom";
 import { useLoggedOwner } from "../../hooks/useLoggedUser";
 import { Role } from "../../interface/Interface";
 
@@ -8,10 +8,10 @@ interface children {
 }
 export const TheaterProtectedRoutes = ({ children }: children) => {
 
-  const {isAuthenticated} = useLoggedOwner(Role.theaters)
- console.log(isAuthenticated)
+  const { isAuthenticated } = useLoggedOwner(Role.theaters)
+  console.log(isAuthenticated)
   if (!isAuthenticated) {
-    return <Navigate to={'/theaters/login'}   />
+    return <Navigate to={'/theaters/login'} replace={true} />
   } else {
     return children
   }
