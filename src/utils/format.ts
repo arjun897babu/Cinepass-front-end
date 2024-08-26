@@ -92,7 +92,7 @@ export function convertFile(file: File): Promise<string> {
 
 
 export function setDefaultDate(date: string, days: number): string {
-  console.log(typeof date)
+  
   const newDate = new Date(date);
 
   newDate.setDate(newDate.getDate() + days);

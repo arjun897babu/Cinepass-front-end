@@ -1,8 +1,8 @@
-import React, {   MouseEvent,  useEffect,   useState } from "react"
+import React, { MouseEvent, useEffect, useState } from "react"
 import { FaEdit } from "react-icons/fa"
 import { GiCancel } from "react-icons/gi"
-import  { MovieType } from "../../../component/admin/MovieForm"
-import { IMovie, ResponseStatus  } from "../../../interface/Interface"
+import { MovieType } from "../../../component/admin/MovieForm"
+import { IMovie, ResponseStatus, Role } from "../../../interface/Interface"
 import { useDispatch } from "react-redux"
 import type { AppDispatch } from "../../../redux/store"
 import { getMovie, manageMovie } from "../../../redux/actions/adminAction"
@@ -12,6 +12,7 @@ import { ToastMessage } from "./AdminUsers"
 import Toast2 from "../../../component/Toast2"
 import { MovieModal } from "../../../component/admin/MovieFromModal"
 import ConfirmationModal from "../../../component/ConfirmationModal"
+import useErrorHandler from "../../../hooks/useErrorHandler"
 
 
 
@@ -20,12 +21,42 @@ const AdminMovie: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>()
   const [loading, setLoading] = useState(false)
   const [theaterMovies, setTheaterMovies] = useState<IMovie[] | []>([]);
-  const [selectedMovie, setSelectedMovie] = useState<IMovie | null>(null); // Modal shows selected movie's info for update
-  const [addMovieModal, setAddMovieModal] = useState<boolean>(false) //for add movie form modal 
-  const [toastMessage, setToastMessage] = useState<ToastMessage | null>(null);
-  const [confirmation, setConfirmation] = useState<boolean>(false)
-  const [deleteMovieId, setDeleteMovieId] = useState<string | null>(null)
 
+  const [selectedMovie, setSelectedMovie] = useState<IMovie | null>(null); // Modal shows selected movie's info for update
+  const setNewMovies = (movieData: IMovie) => {
+    setTheaterMovies((prevMovies) => {
+      const existingMovieIndex = prevMovies.findIndex(movie => movie._id === movieData._id);
+
+      if (existingMovieIndex >= 0) {
+
+        const updatedMovies = [...prevMovies];
+        updatedMovies[existingMovieIndex] = movieData;
+        return updatedMovies;
+      } else {
+
+        return [...prevMovies, movieData];
+      }
+    });
+
+  };
+  //close modal for update form
+  const closeModalView = () => setSelectedMovie(null)
+
+
+  const [addMovieModal, setAddMovieModal] = useState<boolean>(false) //for add movie form modal 
+  //close modal for add form
+  const closeAddMovieModal = () => setAddMovieModal(false)
+
+
+  const [toastMessage, setToastMessage] = useState<ToastMessage | null>(null);
+  const setToast = (alert: ResponseStatus, message: string) => setToastMessage({ alert, message })
+  const clearToast = () => setToastMessage(null)
+  const handleApiError = useErrorHandler(Role.admin, setToastMessage)
+
+  const [confirmation, setConfirmation] = useState<boolean>(false)
+  const closeConfirmationModal = () => setConfirmation(false);
+
+  const [deleteMovieId, setDeleteMovieId] = useState<string | null>(null)
   const deleteButtonClicked = (e: MouseEvent<HTMLButtonElement>, _id: string | undefined) => {
     e.preventDefault()
     _id ?
@@ -48,7 +79,7 @@ const AdminMovie: React.FC = () => {
                 : item
 
             )
-          ); 
+          );
           setToastMessage({ alert: response.status, message: response.message })
         }
       } catch (error) {
@@ -59,43 +90,7 @@ const AdminMovie: React.FC = () => {
       }
     }
   }
-
-  const closeConfirmationModal = () => setConfirmation(false)
-  //call back for setting up toast message
-  const setToast = (alert: ResponseStatus, message: string) => setToastMessage({ alert, message })
-
-  // call back for clearing toast message
-  const clearToast = () => setToastMessage(null)
-
-  //call back for updating the theater movie list
-  const setNewMovies = (movieData: IMovie) => {
-    setTheaterMovies((prevMovies) => {
-      const existingMovieIndex = prevMovies.findIndex(movie => movie._id === movieData._id);
-
-      if (existingMovieIndex >= 0) {
-
-        const updatedMovies = [...prevMovies];
-        updatedMovies[existingMovieIndex] = movieData;
-        return updatedMovies;
-      } else {
-
-        return [...prevMovies, movieData];
-      }
-    });
-
-  };
-
-  //close modal for update form
-  const closeModalView = () => {
-    setSelectedMovie(null)
-
-  }
-
-  //close modal for add form
-  const closeAddMovieModal = () => {
-    setAddMovieModal(false)
-  }
-
+ 
   const fetchMovieData = async () => {
     try {
       setLoading(true)
@@ -104,7 +99,7 @@ const AdminMovie: React.FC = () => {
         setTheaterMovies(response)
       }
     } catch (error) {
-      console.log(error) //handle the error
+      handleApiError(error)
     } finally {
       setLoading(false)
     }
@@ -113,7 +108,7 @@ const AdminMovie: React.FC = () => {
 
   useEffect(() => {
     fetchMovieData()
-  }, [dispatch,deleteMovieId,selectedMovie])
+  }, [])
 
   const showUpdateForm = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
@@ -219,9 +214,9 @@ const AdminMovie: React.FC = () => {
                             <button onClick={(e) => deleteButtonClicked(e, movie._id)} className="btn bg-transparent hover:bg-transparent border-none hover: join-item text-red-600"><GiCancel /></button>
 
                           </td>
-                          <th>
+                          {/* <th>
                             <button className="btn btn-ghost btn-xs">details</button>
-                          </th>
+                          </th> */}
                         </tr>
 
                       )

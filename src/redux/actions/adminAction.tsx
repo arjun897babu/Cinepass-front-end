@@ -1,5 +1,5 @@
 import { AsyncThunk, createAsyncThunk } from "@reduxjs/toolkit";
-import {  IMovie, LoginData, ResponseData, ResponseData2 } from "../../interface/Interface";
+import { IMovie, LoginData, ResponseData, ResponseData2 } from "../../interface/Interface";
 import { AxiosError } from "axios";
 import { serverAdmin } from "../../services";
 import { adminEndpoints } from "../../services/endpoints/endPoints";
@@ -14,7 +14,7 @@ export const loginAdmin: AsyncThunk<ResponseData, LoginData, {}> = createAsyncTh
       return await response.data
     } catch (error) {
       if (error instanceof AxiosError) {
-   
+
         return rejectWithValue(error.response?.data)
       }
 
@@ -83,39 +83,6 @@ export const manageEntitiesByAdmin: AsyncThunk<ResponseData, Record<string, stri
   }
 )
 
-export const addMovie: AsyncThunk<IMovie, { movieData: IMovie; movieType: MovieType }, {}> = createAsyncThunk(
-  'admin/manageEntities',
-  async ({ movieData, movieType }, { rejectWithValue }) => {
-    try {
-      console.log('this is the moviedata', movieData)
-      const response = await serverAdmin.post(adminEndpoints.addMovie(movieType), movieData);
-      const { movie } = response.data?.data
-
-      return await movie
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        const { response } = error;
-
-        if (response) {
-          return rejectWithValue({
-            statusCode: response.status,
-            data: response.data.error
-          } as IResponseError);
-        }
-      }
-
-      return rejectWithValue({
-        statusCode: 500,
-        data: {
-          error: 'unknown_error',
-          message: 'an unknown error occured'
-        }
-      } as IResponseError)
-    }
-  }
-)
-
-
 export const getMovie: AsyncThunk<IMovie[], MovieType, {}> = createAsyncThunk(
   'admin/getMovie',
   async (movieType: MovieType, { rejectWithValue }) => {
@@ -125,15 +92,42 @@ export const getMovie: AsyncThunk<IMovie[], MovieType, {}> = createAsyncThunk(
       const { movies } = response.data?.data
       return await movies
     } catch (error) {
-      if (error instanceof AxiosError) {
-        return rejectWithValue(error.response)
-      }
-
-      return rejectWithValue('an unknown error')
+      return rejectWithValue(handleAxiosError(error))
     }
   }
 
 );
+
+interface IMovieRespone extends ResponseData2 {
+  data: { movie: IMovie }
+}
+
+export const addMovie: AsyncThunk<IMovieRespone, { movieData: IMovie; movieType: MovieType }, {}> = createAsyncThunk(
+  'admin/addmovie',
+  async ({ movieData, movieType }, { rejectWithValue }) => {
+    try {
+      console.log('this is the moviedata', movieData)
+      const response = await serverAdmin.post(adminEndpoints.addMovie(movieType), movieData);
+      const { movie } = response.data
+
+      return await movie
+    } catch (error) {
+      return rejectWithValue(handleAxiosError(error))
+    }
+  }
+)
+export const updateMovie: AsyncThunk<IMovieRespone, { payload: IMovie, movieType: MovieType, movieId: string }, {}> = createAsyncThunk(
+  'admin/updatemovie',
+  async ({ payload, movieType, movieId }, { rejectWithValue }) => {
+    try {
+      console.log('updatemovie admin create async thunk is called', payload)
+      const response = await serverAdmin.put(adminEndpoints.updateMovie(movieType, movieId), {payload});
+      return await response.data
+    } catch (error) {
+      return rejectWithValue(handleAxiosError(error))
+    }
+  }
+)
 
 
 interface IManageMovieResponse extends ResponseData2 {

@@ -1,11 +1,7 @@
 import { FieldValues } from "react-hook-form";
 import { ITheaterOwnerEntity } from "./theater/ITheaterOwner";
 import { ITheaterScreenResponse } from "./theater/ITheaterScreen";
-
-export enum ResponseStatus {
-  success = 'Success',
-  Error = 'Error'
-}
+ 
 
 export enum Role {
   users = 'users',

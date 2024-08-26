@@ -36,7 +36,7 @@ const Toast2: React.FC<ToastProps> = ({ alert, message, clearToast, modalToast }
     <>
       <div className={`toast ${modalToast ? "toast-top toast-end absolute " : " toast-center"} z-1`}>
         <div className={` bg-white  max-w-xl alert  rounded-lg  flex items-center ${alert === ResponseStatus.SUCCESS ? 'text-success border-success' : 'text-error border-error'}`}>
-          {alert === ResponseStatus.success ? <FaCheckCircle className="mr-1 " /> : <MdError className="mr-1 " />}
+          {alert === ResponseStatus.SUCCESS ? <FaCheckCircle className="mr-1 " /> : <MdError className="mr-1 " />}
           <span>{message}.</span>
         </div>
       </div>

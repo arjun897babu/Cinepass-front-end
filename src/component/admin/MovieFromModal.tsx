@@ -66,6 +66,7 @@ export const MovieModal: React.FC<MovieModalProp> = (
             setToast={setToast}
             closeModal={closeModal}
             setModalToast={setModalToastMessage}
+            action = {action}
           />
         </div>
       </dialog>

@@ -151,7 +151,6 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
       setDuration(selectedMovie.run_time);
       setFormat([selectedMovie.format.join(',')]);
       const min = new Date().toISOString().split('T')[0]
-      console.log(setDefaultDate(initialData?.opening_date as string, 0))
       const max = setDefaultDate(selectedMovie?.release_date as string, -1);
 
       if (openingDateRef.current) {

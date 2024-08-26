@@ -30,6 +30,8 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ isOpen, onClose, 
     onConfirm()
   }
 
+  console.log(btnType)
+
   return (
 
     <>
@@ -41,8 +43,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ isOpen, onClose, 
 
             <button className="btn btn-active rounded-xs" onClick={modalClose}  >cancel</button>
             <button className={`btn ${btnType === ResponseStatus.ERROR ? 'btn-error' : 'btn-success'} rounded-xs`}
-              onClick={confirmAction} >
-               
+              onClick={confirmAction} > 
               {btnType === ResponseStatus.ERROR  ? <MdBlock /> : <FaCheckCircle />}
 
               Confirm</button>

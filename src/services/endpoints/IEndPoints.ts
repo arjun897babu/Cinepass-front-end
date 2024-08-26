@@ -41,6 +41,7 @@ export interface AdminEndpoint extends IEndPoints {
   updateApprovalStatus: (theaterOwnerId: string) => string
   manageEntities: (_entityId: string, role: string) => string
   addMovie: (movieType: MovieType) => string
+  updateMovie: (movieType: MovieType, movieId: string) => string
   getMovie: (movieType: MovieType) => string
   deleteMovie: (movieTpe: MovieType, movieId: string) => string
 
