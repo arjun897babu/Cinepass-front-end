@@ -94,11 +94,6 @@ const UserHome: React.FC = () => {
           </div>
         </div>
       </div>
-
-
-
-
-
     </>
 
 

@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux'
 import type { AppDispatch } from '../../redux/store'
 import { logoutUser } from '../../redux/actions/userAction'
 import { useLoggedOwner } from '../../hooks/useLoggedUser'
-import { Role } from '../../interface/Interface'
+import { IMovie, Role } from '../../interface/Interface'
 
 
 const UserNavBar: React.FC = (): JSX.Element => {
@@ -19,10 +19,16 @@ const UserNavBar: React.FC = (): JSX.Element => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate();
   const { loggedOwner, isAuthenticated, city } = useLoggedOwner(Role.users);// state for logged in user
-
+  const [movies, setMovies] = useState<IMovie[] | []>([]);
+  const [theaters,setTheaters] = useState<[]|[]>([])
+  const [loading, setLoading] = useState<boolean>(false);
+  
   if (!city) {
     navigate('/')
-  }
+  };
+
+
+ 
 
   // Handler for toggle
   const handleToggle = () => {
