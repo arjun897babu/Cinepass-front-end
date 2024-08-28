@@ -168,19 +168,18 @@ export const getScreen: AsyncThunk<ITheaterScreenResponse[], string | undefined,
   }
 
 )
-
-export const createTheaterScreen: AsyncThunk<ITheaterScreenResponse, ITheaterScreen, {}> = createAsyncThunk(
+interface TheaterScreenResponse extends ResponseData2 {
+  data: { screen: ITheaterScreenResponse }
+}
+export const createTheaterScreen: AsyncThunk<TheaterScreenResponse, ITheaterScreen, {}> = createAsyncThunk(
   'theaters/add-screen',
   async (theaterScreenData: ITheaterScreen, { rejectWithValue }) => {
+    console.log('create theater screen is called');
     try {
       const response = await serverTheater.post(theatersEndPoints.createScreen, theaterScreenData);
-
-      const { screen } = response.data?.data
-
-      return await screen
-
+      console.log(response)
+      return await response.data
     } catch (error) {
-
       return rejectWithValue(handleAxiosError(error))
     }
   }
@@ -197,12 +196,26 @@ export const deleteTheaterScreen: AsyncThunk<IDeleteScreenResponse, string, {}> 
     console.log('delete screen ayscnthunk is being callled')
     try {
       const response = await serverTheater.patch(theatersEndPoints.deleteScreen(screenId), {})
-      return response.data 
+      return response.data
     } catch (error) {
       return rejectWithValue(handleAxiosError(error))
     }
   }
-) 
+)
+
+export const updateTheaterScreen: AsyncThunk<TheaterScreenResponse, { screenId: string, payload: ITheaterScreen }, {}> = createAsyncThunk(
+  '/theaters/updateScreen',
+  async ({ screenId, payload }, { rejectWithValue }) => {
+    console.log('update screen ayscnthunk is being callled');
+    console.log(payload)
+    try {
+      const response = await serverTheater.put(theatersEndPoints.updateScreen(screenId), { payload })
+      return response.data
+    } catch (error) {
+      return rejectWithValue(handleAxiosError(error))
+    }
+  }
+)
 /*..................screen.................. */
 
 /*..................movie.................. */
@@ -235,7 +248,7 @@ export const getAllShows: AsyncThunk<IGetMovieShowResponse[], void, {}> = create
       const { shows } = response.data?.data
       return await shows
     } catch (error) {
-      
+
       return rejectWithValue(handleAxiosError(error))
     }
   }

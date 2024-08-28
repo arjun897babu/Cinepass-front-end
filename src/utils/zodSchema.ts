@@ -1,5 +1,6 @@
 import { string, z } from 'zod'
 import { MovieFormat, Language } from './validator';
+import { ITheaterScreen } from '../interface/Interface';
 
 export const movieSchema = z.object({
   movie_name: z
@@ -70,7 +71,7 @@ export const movieShowSchema = z.object({
     }),
 
   opening_date: z
-    .string() 
+    .string()
     .nonempty('choose a opening date for booking')
 })
 
@@ -144,3 +145,43 @@ export const TheaterProfileSchema = TheaterOwnerEntitySchema.pick({
 //     .optional()
 
 // })
+
+
+export const theaterScreenSchema = z.object({
+  screen_name: z
+    .string() 
+    .min(4, { message: 'required at least 4 characters' })
+    .max(20, { message: 'required at most 20 characters' })
+    .regex(/^[a-zA-Z]+(?: [0-9]+)*$/, 'Invalid name'),
+  rows: z
+    .string()
+    .regex(/^\d+$/, 'Enter a number')
+    .refine((val) => parseInt(val, 10) >= 1, {
+      message: 'Enter a valid row',
+    }),
+  column: z
+    .string()
+    .regex(/^\d+$/, 'Enter a number')
+    .refine((val) => parseInt(val, 10) >= 1, {
+      message: 'enter a valid number',
+    }),
+  amenity: z
+    .nativeEnum(MovieFormat, {
+      errorMap: (issue, _ctx) => {
+        return { message: 'choose a format' }
+      }
+    }),
+  chargePerSeat: z
+    .string()
+    .regex(/^\d+$/, 'Enter a valid price')
+    .refine((val) => parseInt(val, 10) >= 1, {
+      message: 'enter a valid number',
+    }),
+  seating_capacity: z
+    .string()
+});
+
+const calculateSeatingCapacity = (rows: number, columns: number) => {
+  return rows * columns;
+};
+

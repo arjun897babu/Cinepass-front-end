@@ -2,7 +2,7 @@
 
 export interface ISeat {
   name: string,
-  booked: boolean,
+  available: boolean,
 }
 
 export interface ITheaterScreenResponse {
@@ -14,8 +14,7 @@ export interface ITheaterScreenResponse {
   amenity:string,
   column: number,
   chargePerSeat: number
-  layout: Array<Array<ISeat>>
-  slug:string
+  layout: Array<Array<ISeat>> 
 }
 export interface ITheaterScreen {
   screen_name: string,
