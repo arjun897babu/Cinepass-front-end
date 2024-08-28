@@ -110,7 +110,7 @@ export const MovieForm: React.FC<MovieFormProps> = (
     if (releaseDateRef.current) {
       releaseDateRef.current.min = min
       releaseDateRef.current.value = defaultDate
-      if (new Date(selectedData.release_date) <= new Date()) {
+      if (action===Action.UPDATE&&new Date(selectedData.release_date) <= new Date()) {
         releaseDateRef.current.max = defaultDate
       }
     }
@@ -128,7 +128,7 @@ export const MovieForm: React.FC<MovieFormProps> = (
     }
 
   }, []);
-
+  
   const [addFormData, setAddFormData] = useState<IMovie | null>(null);
   const [updateFormData, setUpdateFormData] = useState<IMovie | null>(null);
 
@@ -438,7 +438,7 @@ export const MovieForm: React.FC<MovieFormProps> = (
           )}
         </div>
 
-        {new Date(selectedData.release_date) >= new Date() && < div className="text-center">
+        < div className="text-center">
           <button
             type='submit'
             className="mt-3 btn bg-cyan-400 hover:bg-cyan-500 w-2/3"
@@ -452,7 +452,7 @@ export const MovieForm: React.FC<MovieFormProps> = (
                 )
             }</button>
 
-        </div>}
+        </div>
       </form >
     </>
   );

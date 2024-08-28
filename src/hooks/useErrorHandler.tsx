@@ -23,6 +23,12 @@ const useErrorHandler = (role: Role, setToast: (toast: Toast) => void) => {
         case 401:
           navigate(navigationLink, { replace: true });
           break;
+        case 400:
+          setToast({
+            alert: ResponseStatus.ERROR,
+            message: error.data.message,
+          });
+          break;
         default:
           setToast({
             alert: ResponseStatus.ERROR,

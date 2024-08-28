@@ -34,7 +34,7 @@ const TheaterShow: React.FC = () => {
   const updateSelected = (e: MouseEvent<HTMLButtonElement>, id: string) => {
     e.preventDefault()
     const selected = shows.find((show) => show._id === id);
-    console.log(selected)
+    
     selected ?
       setSelectedShow(
         {
@@ -159,7 +159,7 @@ const TheaterShow: React.FC = () => {
         <ConfirmationModal
           btnType={ResponseStatus.ERROR}
           isOpen={confirmation}
-          message='are you sure'
+          message='Are you sure want to delete this show'
           onClose={closeConfirmationModal}
           onConfirm={onSubmit}
         />

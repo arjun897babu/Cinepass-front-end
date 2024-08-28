@@ -108,9 +108,8 @@ export const addMovie: AsyncThunk<IMovieRespone, { movieData: IMovie; movieType:
     try {
       console.log('this is the moviedata', movieData)
       const response = await serverAdmin.post(adminEndpoints.addMovie(movieType), movieData);
-      const { movie } = response.data
-
-      return await movie
+        
+      return await response.data
     } catch (error) {
       return rejectWithValue(handleAxiosError(error))
     }
