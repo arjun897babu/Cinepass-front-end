@@ -125,6 +125,31 @@ const TheaterOwnerInfo: React.FC<TheaterInforProps> = ({ data, setTheaterDataRes
             : (<button className="absolute right-2 top-2 " onClick={update}> <GiCancel /> </button>)
         }
         <form className="card-body " onSubmit={handleSubmit(handleConfirmation)}>
+        <div className="form-control relative">
+            <label className="label">
+              <span className="label-text">email</span>
+            </label>
+            <input
+              disabled={true}
+              className="input input-bordered "
+              type="email" placeholder="email"
+              {...register('email')}
+            />
+            {errors.email && <p className="text-red-500 text-xs absolute  -bottom-4 ">{errors.email.message}</p>}
+          </div>
+          <div className="form-control relative">
+            <label className="label">
+              <span className="label-text">adhaar number</span>
+            </label>
+            <input
+              disabled={true}
+              className="input input-bordered "
+              type="text" placeholder="adhaar number"
+              {...register('adhaar_number')}
+              
+            />
+            {errors.adhaar_number && <p className="text-red-500 text-xs absolute  -bottom-4 ">{errors.adhaar_number.message}</p>}
+          </div>
           <div className="form-control relative">
             <label className="label">
               <span className="label-text">name</span>
@@ -137,31 +162,7 @@ const TheaterOwnerInfo: React.FC<TheaterInforProps> = ({ data, setTheaterDataRes
               {...register('name')}
             />
             {errors.name && <p className="text-red-500 text-xs absolute  -bottom-4 ">{errors.name.message}</p>}
-          </div>
-          <div className="form-control relative">
-            <label className="label">
-              <span className="label-text">email</span>
-            </label>
-            <input
-              disabled={!profileEdit}
-              className="input input-bordered "
-              type="email" placeholder="email"
-              {...register('email')}
-            />
-            {errors.email && <p className="text-red-500 text-xs absolute  -bottom-4 ">{errors.email.message}</p>}
-          </div>
-          <div className="form-control relative">
-            <label className="label">
-              <span className="label-text">adhaar number</span>
-            </label>
-            <input
-              disabled={!profileEdit}
-              className="input input-bordered "
-              type="text" placeholder="adhaar number"
-              {...register('adhaar_number')}
-            />
-            {errors.adhaar_number && <p className="text-red-500 text-xs absolute  -bottom-4 ">{errors.adhaar_number.message}</p>}
-          </div>
+          </div> 
           < div className="form-control relative">
             <label className="label">
               <span className="label-text">mobile number</span>

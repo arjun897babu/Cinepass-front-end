@@ -14,10 +14,10 @@ export interface ITheaterOwnerEntity {
   approval_status: ApprovalStatus;
   address: string
   city: string,
-  images?: string[];
+  image?: string;
   slug:string
 }
 
 export type TheaterOwnerProfile = Pick<ITheaterOwnerEntity, 'name' | 'email' | 'mobile_number' | 'adhaar_number'>;
 
-export type TheaterProfile = Pick<ITheaterOwnerEntity, 'theater_name' | 'theater_license' |   'address' | 'city' | 'images'>;
+export type TheaterProfile = Pick<ITheaterOwnerEntity, 'theater_name' | 'theater_license' |   'address' | 'city' | 'image'>;

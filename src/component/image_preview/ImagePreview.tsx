@@ -26,11 +26,12 @@ const ErrorAlert: React.FC = () => {
 };
 interface ImagePreviewProp {
   defaultImg: string
-  editable: boolean
+  preview: boolean
   removeSelectedImage: () => void
   updateSelectedImage: (ur: string) => void
+  aspectInit?: number;
 }
-const ImagePreview: React.FC<ImagePreviewProp> = ({ defaultImg, editable, removeSelectedImage, updateSelectedImage }) => {
+const ImagePreview: React.FC<ImagePreviewProp> = ({ defaultImg, preview, removeSelectedImage, updateSelectedImage, aspectInit }) => {
   const [images, setImages] = useState<string | null>(null);//store the dataURL 
   const [selected, setSelected] = useState<string | null>(null);//for showing the cropper ui
 
@@ -44,14 +45,14 @@ const ImagePreview: React.FC<ImagePreviewProp> = ({ defaultImg, editable, remove
   }
 
   useEffect(() => {
-      setSelected(defaultImg)
+    setSelected(defaultImg)
   }, [defaultImg])
 
   const setCroppedImageFor = (croppedImageUrl: string) => {
-    if (editable) {
+    if (preview) {
       setImages(croppedImageUrl);
     }
-    console.log(defaultImg,croppedImageUrl)
+    console.log(defaultImg, croppedImageUrl)
     updateSelectedImage(croppedImageUrl)
     onCancel()
   };
@@ -66,27 +67,34 @@ const ImagePreview: React.FC<ImagePreviewProp> = ({ defaultImg, editable, remove
     <>
       <div className="relative">
         <div className="relative">
-          {selected && <CropBackdrop imgURL={selected} onCancel={onCancel} setCroppedImageFor={setCroppedImageFor} />}
-          {images && (
+          {selected &&
+            <CropBackdrop
+              imgURL={selected}
+              onCancel={onCancel}
+              setCroppedImageFor={setCroppedImageFor}
+              aspectInit={aspectInit}
+            />}
+
+          {images && preview && (
             <div className="carousel carousel-center mb-3 bg-gray-200 space-x-4 w-full p-2">
               <div className="carousel-item border border-slate-400 h-48 w-48 relative">
                 <img src={images} className=" h-full w-full object-cover" />
-                {editable &&
-                  <>
-                    <button
-                      className="absolute bottom-2 left-1/2 transform -translate-x-1/2 z-20 text-black"
-                      onClick={(e) => removePreview(e)}
-                    >
-                      <MdDelete className="w-auto" />
-                    </button>
-                    <button
-                      className="absolute bg-black right-2 top-2 z-20 text-white"
-                      onClick={(e) => selectForCrop(e, images)}
-                    >
-                      <CiCrop />
-                    </button>
-                  </>
-                }
+
+                <>
+                  <button
+                    className="absolute bottom-2 left-1/2 transform -translate-x-1/2 z-20 text-black"
+                    onClick={(e) => removePreview(e)}
+                  >
+                    <MdDelete className="w-auto" />
+                  </button>
+                  <button
+                    className="absolute bg-black right-2 top-2 z-20 text-white"
+                    onClick={(e) => selectForCrop(e, images)}
+                  >
+                    <CiCrop />
+                  </button>
+                </>
+
               </div>
 
             </div>

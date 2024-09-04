@@ -26,7 +26,6 @@ const UserInfo: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>()
   const [profilePic, setProfilePic] = useState<{ profile_picture: string } | null>(null)
   const updateSelectedImage = (url: string) => {
-
     setProfileData({ profile_picture: url })
   }
   const removeSelectedImage = () => {
@@ -157,7 +156,7 @@ const UserInfo: React.FC = () => {
         <ImagePreview
           defaultImg={profilePic.profile_picture}
           updateSelectedImage={updateSelectedImage}
-          editable={false}
+          preview={false}
           removeSelectedImage={removeSelectedImage}
 
         />

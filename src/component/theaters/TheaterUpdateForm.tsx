@@ -167,11 +167,12 @@ const TheaterUpdateForm: React.FC<TheaterProps> = ({ selectedData, setTheaterDat
               <div>
                 <label className="sr-only" htmlFor="theater_license">Theater License</label>
                 <input
-                  className="w-full focus:outline-none rounded-lg border p-3 text-sm"
+                  className="w-full   rounded-lg border p-3 text-sm cursor-not-allowed"
                   placeholder="Theater License"
                   type="text"
                   id="theater_license"
                   {...register('theater_license')}
+                  disabled={true}
 
                 />
                 {errors.theater_license && <p className="text-red-500 text-xs">{errors.theater_license.message}</p>}

@@ -134,9 +134,9 @@ interface IUpdateTheaterData extends ResponseData2 {
   }
 }
 
-export const updateTheater: AsyncThunk<IUpdateTheaterData, (TheaterOwnerProfile | TheaterProfile), {}> = createAsyncThunk(
+export const updateTheater: AsyncThunk<IUpdateTheaterData, (TheaterOwnerProfile | Partial<TheaterProfile>), {}> = createAsyncThunk(
   'theaters/updateTheater',
-  async (theaterData: TheaterOwnerProfile | TheaterProfile, { rejectWithValue }) => {
+  async (theaterData , { rejectWithValue }) => {
     try {
       const response = await serverTheater.put(theatersEndPoints.updateTheater, theaterData);
       return await response.data
