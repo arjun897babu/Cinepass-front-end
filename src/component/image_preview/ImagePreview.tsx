@@ -30,11 +30,12 @@ interface ImagePreviewProp {
   removeSelectedImage: () => void
   updateSelectedImage: (ur: string) => void
   aspectInit?: number;
+  isCloudinaryImg?: boolean
 }
-const ImagePreview: React.FC<ImagePreviewProp> = ({ defaultImg, preview, removeSelectedImage, updateSelectedImage, aspectInit }) => {
+const ImagePreview: React.FC<ImagePreviewProp> = ({ defaultImg, preview, removeSelectedImage, updateSelectedImage, aspectInit, isCloudinaryImg }) => {
   const [images, setImages] = useState<string | null>(null);//store the dataURL 
   const [selected, setSelected] = useState<string | null>(null);//for showing the cropper ui
-
+  console.log(aspectInit)
   const removePreview = (e: MouseEvent<HTMLButtonElement>) => {
     setImages(null)
     removeSelectedImage()
@@ -45,24 +46,22 @@ const ImagePreview: React.FC<ImagePreviewProp> = ({ defaultImg, preview, removeS
   }
 
   useEffect(() => {
-    setSelected(defaultImg)
-  }, [defaultImg])
+    if (!isCloudinaryImg) {
+      setSelected(defaultImg)
+    }else{
+      setImages(defaultImg)
+    }
+  }, [])
 
   const setCroppedImageFor = (croppedImageUrl: string) => {
     if (preview) {
       setImages(croppedImageUrl);
     }
-    console.log(defaultImg, croppedImageUrl)
+
     updateSelectedImage(croppedImageUrl)
-    onCancel()
+
+    setSelected(null)
   };
-
-  const selectForCrop = (e: MouseEvent<HTMLButtonElement>, img: string) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setSelected(img)
-  }
-
   return (
     <>
       <div className="relative">
@@ -76,29 +75,17 @@ const ImagePreview: React.FC<ImagePreviewProp> = ({ defaultImg, preview, removeS
             />}
 
           {images && preview && (
-            <div className="carousel carousel-center mb-3 bg-gray-200 space-x-4 w-full p-2">
-              <div className="carousel-item border border-slate-400 h-48 w-48 relative">
-                <img src={images} className=" h-full w-full object-cover" />
-
-                <>
-                  <button
-                    className="absolute bottom-2 left-1/2 transform -translate-x-1/2 z-20 text-black"
-                    onClick={(e) => removePreview(e)}
-                  >
-                    <MdDelete className="w-auto" />
-                  </button>
-                  <button
-                    className="absolute bg-black right-2 top-2 z-20 text-white"
-                    onClick={(e) => selectForCrop(e, images)}
-                  >
-                    <CiCrop />
-                  </button>
-                </>
-
-              </div>
-
+            <div className={` mt-2 ${aspectInit == 1000 / 200 ? "   w-full " : "w-[280px] h-[420px]"} relative `}>
+              <img src={images} className=" h-full w-full object-contain  rounded-md" />
+              <>
+                <button
+                  className="absolute rounded-full bg-white bottom-[-1%] right-[-1%] glass  z-20 "
+                  onClick={(e) => removePreview(e)}
+                >
+                  <MdDelete className="text-black" size={22} />
+                </button>
+              </>
             </div>
-
           )}
         </div>
       </div>

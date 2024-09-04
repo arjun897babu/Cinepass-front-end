@@ -7,13 +7,14 @@ import type { AppDispatch } from "../../redux/store";
 import { addMovie, updateMovie } from "../../redux/actions/adminAction";
 import { isResponseError, UploadError } from "../../utils/customError";
 
-import { Genre, Language, MovieFormat } from "../../utils/validator";
+import { Genre, isCloudinaryUrl, Language, MovieFormat } from "../../utils/validator";
 import { movieSchema } from "../../utils/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { convertFile, getIST, setDefaultDate } from "../../utils/format";
 import { MultiSelect } from "./MultiSelect";
 import ConfirmationModal from "../ConfirmationModal";
+import ImagePreview from "../image_preview/ImagePreview";
 
 
 export enum MovieType {
@@ -43,7 +44,7 @@ export const MovieForm: React.FC<MovieFormProps> = (
     action
   }
 ) => {
-  console.log(selectedData, 'd')
+
   selectedData = selectedData ?? {
     movie_name: '',
     release_date: `${new Date()}`,
@@ -73,8 +74,8 @@ export const MovieForm: React.FC<MovieFormProps> = (
   const dispatch = useDispatch<AppDispatch>()
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [coverPhoto, setCoverPhoto] = useState<File | null>(null);
-  const [moviePoster, setMoviePoster] = useState<File | null>(null);
+  const [coverPhoto, setCoverPhoto] = useState<string | null>(null);
+  const [moviePoster, setMoviePoster] = useState<string | null>(null);
   const coverPhotoRef = useRef<HTMLInputElement>(null)
   const moviePosterRef = useRef<HTMLInputElement>(null)
 
@@ -105,12 +106,12 @@ export const MovieForm: React.FC<MovieFormProps> = (
   );
   const releaseDateRef = useRef<HTMLInputElement | null>(null)
   useEffect(() => {
-    const min =setDefaultDate(`${new Date()}`,  1)
+    const min = setDefaultDate(`${new Date()}`, 1)
     const defaultDate = setDefaultDate(`${selectedData.release_date}`, action === Action.UPDATE ? 0 : 1)
     if (releaseDateRef.current) {
       releaseDateRef.current.min = min
       releaseDateRef.current.value = defaultDate
-      if (action===Action.UPDATE&&new Date(selectedData.release_date) <= new Date()) {
+      if (action === Action.UPDATE && new Date(selectedData.release_date) <= new Date()) {
         releaseDateRef.current.max = defaultDate
       }
     }
@@ -127,11 +128,18 @@ export const MovieForm: React.FC<MovieFormProps> = (
       setValue('languages', selectedData.languages);
     }
 
+    if (selectedData.cover_photo) {
+      setCoverPhoto(selectedData.cover_photo)
+    }
+     if (selectedData.movie_poster) {
+      setMoviePoster(selectedData.movie_poster)
+    }
+
   }, []);
-  
+
   const [addFormData, setAddFormData] = useState<IMovie | null>(null);
   const [updateFormData, setUpdateFormData] = useState<IMovie | null>(null);
-
+  const [imageType, setImageType] = useState<'cover_photo' | 'movie_poster' | null>(null)
   const handleFormSubmit: SubmitHandler<IMovie> = (data) => {
     setConfirmation(true)
     action === Action.ADD ?
@@ -157,20 +165,45 @@ export const MovieForm: React.FC<MovieFormProps> = (
       : coverPhotoRef.current?.click();
 
   }
- 
-  const handleImageUpload = (e: ChangeEvent<HTMLInputElement>, imageType: string) => {
+
+  const updateSelectedImage = (url: string) => {
+    if (imageType === 'movie_poster') {
+      console.log('movie poster cropped')
+      setMoviePoster(url)
+    } else {
+      console.log('cover photo cropped')
+      setCoverPhoto(url)
+    }
+    setValue(imageType as keyof IMovie, url)
+    setImageType(null)
+  }
+
+  const removeSelectedImage = () => {
+    if (imageType === 'movie_poster') {
+      setMoviePoster(null)
+    } else {
+      setCoverPhoto(null)
+    }
+    setImageType(null)
+  }
+
+  const handleImageUpload = (e: ChangeEvent<HTMLInputElement>, imageName: "cover_photo" | "movie_poster") => {
     e.preventDefault();
     const file = e.target.files?.[0] || null;
-
-    imageType === 'cover_photo' ?
-      setCoverPhoto(file || null)
-      : setMoviePoster(file || null)
-
+    console.log(imageName)
     file ?
       convertFile(file)
         .then((result) => {
-          setValue(imageType as keyof IMovie, result)
-          clearErrors(imageType as keyof IMovie)
+
+          if (imageName === 'movie_poster') {
+            console.log('movie poster successfully done')
+            setMoviePoster(result)
+          } else {
+            console.log('cover photo successfully done')
+            setCoverPhoto(result)
+          }
+          setImageType(imageName)
+          clearErrors(imageName as keyof IMovie)
         })
         .catch((error) => {
           if (error instanceof UploadError) {
@@ -179,7 +212,6 @@ export const MovieForm: React.FC<MovieFormProps> = (
         })
       : null
   }
-
 
   const onSubmit = async (movieData: IMovie) => {
     console.log('form submission stated', movieData)
@@ -407,6 +439,18 @@ export const MovieForm: React.FC<MovieFormProps> = (
               {errors.movie_poster.message}
             </small>
           )}
+          {
+            moviePoster &&
+            <ImagePreview
+              defaultImg={selectedData.movie_poster !== '' ? selectedData.movie_poster : moviePoster}
+              preview={true}
+              removeSelectedImage={removeSelectedImage}
+              updateSelectedImage={updateSelectedImage}
+              aspectInit={280 / 420}
+              isCloudinaryImg={isCloudinaryUrl(selectedData.movie_poster)}
+            />
+          }
+
         </div>
 
         {/* Cover Photo */}
@@ -434,6 +478,18 @@ export const MovieForm: React.FC<MovieFormProps> = (
               {errors.cover_photo.message}
             </small>
           )}
+
+          {
+            coverPhoto &&
+            <ImagePreview
+              defaultImg={selectedData.cover_photo !== '' ? selectedData.cover_photo : coverPhoto}
+              preview={true}
+              removeSelectedImage={removeSelectedImage}
+              updateSelectedImage={updateSelectedImage}
+              aspectInit={1000 / 200}
+              isCloudinaryImg={isCloudinaryUrl(selectedData.cover_photo)}
+            />
+          }
         </div>
 
         < div className="text-center">

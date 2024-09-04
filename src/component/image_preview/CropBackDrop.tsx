@@ -22,7 +22,7 @@ export const CropBackdrop: React.FC<CropBackdropProps> = (
     setCroppedImageFor
   }
 ) => {
-
+  
   const [zoom, setZoom] = useState<number>(zoomInit);
   const [crop, setCrop] = useState<{ x: number; y: number }>(cropInit);
   const [aspect, setAspect] = useState<number>(aspectInit);
@@ -30,23 +30,23 @@ export const CropBackdrop: React.FC<CropBackdropProps> = (
 
   const onCropChange = (crop: { x: number, y: number }) => {
     setCrop(crop);
+    
   };
   const cancelCrop = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
-    e.stopPropagation()
-    onCancel()
+     onCancel()
   }
   const onZoomChange = (newZoom: number) => {
     setZoom(newZoom);
   };
 
   const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
-    setCroppedArea(croppedAreaPixels);
+    setCroppedArea(croppedAreaPixels); 
   };
 
   const onCrop = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    e.stopPropagation();
+  
     if (croppedArea) {
       const croppedImageUrl = await croppedImage(imgURL, croppedArea);
       setCroppedImageFor( croppedImageUrl);

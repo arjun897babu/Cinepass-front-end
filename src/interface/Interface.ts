@@ -76,9 +76,9 @@ export interface IMovie {
   run_time: string;
   genres: string[];
   format: string[];
-  cover_photo: string | File;
+  cover_photo: string  
   listed?: boolean;
-  movie_poster: string | File;
+  movie_poster: string 
   cast?: ICast[];
   trailer?: string;
   file?: string;
