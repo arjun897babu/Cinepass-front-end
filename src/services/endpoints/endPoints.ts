@@ -45,7 +45,7 @@ export const theatersEndPoints: TheaterEndpoint = {
 export const adminEndpoints: AdminEndpoint = {
   login: '/login',
   logout: '/logout',
-  getEntityData: (role) => `/${role} `,
+  getEntityData: (role,pageNumber) =>`/${role}${pageNumber ? `?pageNumber=${pageNumber}` : ''}`,
   updateApprovalStatus: (theaterOwnerId) => `/approval/${theaterOwnerId}`,
   manageEntities: (entityId, role) => `/${role}/${entityId}`,
   addMovie: (movieType) => `/movie/${movieType}`,

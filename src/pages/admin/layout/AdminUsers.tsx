@@ -1,16 +1,17 @@
-import {  MouseEvent, useEffect , useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import { IUser } from "../../../interface/user/IUserData";
-// import { EmptyData } from "../../../component/EmptyData";
-// const EmptyData = lazy(() => import('../../../component/EmptyData'))
 import { getEntityDataForAdmin, manageEntitiesByAdmin } from "../../../redux/actions/adminAction";
 import { ResponseStatus, Role } from "../../../interface/Interface";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../../../redux/store";
 import { isErrorResponse } from "../../../utils/customError";
-// import { Loader } from "../../../component/Loader";
- 
+
+
 import ConfirmationModal from "../../../component/ConfirmationModal";
 import Toast2 from "../../../component/Toast2";
+
+import { Loader } from "../../../component/Loader";
+import Pagination from "../../../component/Pagination";
 
 export type ToastMessage = {
   alert: ResponseStatus,
@@ -19,32 +20,40 @@ export type ToastMessage = {
 
 const AdminUsers: React.FC = (): JSX.Element => {
   const dispatch = useDispatch<AppDispatch>()
-  const [users, setUsers] = useState<IUser[] | []>([]);
-  
 
+  const [loading, setLoading] = useState(false)
   const [toastMessage, setToastMessage] = useState<ToastMessage | null>(null)
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false)
   const setModalClose = () => setIsConfirmModalOpen(false)
   const [selectedUser, setSelectedUser] = useState<{ _id: string, status: boolean } | null>(null);
 
+  const [maxPage, setMaxPage] = useState<number>(0)
+  const [currentPage, setCurrentPage] = useState<number>(1)
 
+  const handleChangePage = (newPage: number) => setCurrentPage(newPage)
+
+  const [users, setUsers] = useState<Partial<IUser>[] | []>([]);
   const fetchUsers = async () => {
-    try {
-      const response = await dispatch(getEntityDataForAdmin(Role.users)).unwrap();
-      if (response.status === ResponseStatus.SUCCESS) {
-        response.data ? setUsers(response.data.users as unknown as IUser[]) : setUsers([])
 
+    try {
+      const response = await dispatch(getEntityDataForAdmin({ role: Role.users, pageNumber: currentPage })).unwrap();
+      if (response.status === ResponseStatus.SUCCESS && response.data[Role.users]) {
+
+        setUsers(response.data.users?.data)
+        setMaxPage(response.data.users?.maxPage);
       }
     } catch (error) {
       if (isErrorResponse(error)) {
         console.error(error);
       }
+    } finally {
+
     }
   }
 
   useEffect(() => {
     fetchUsers()
-  }, [])
+  }, [currentPage])
 
   const clearToast = () => setToastMessage(null)
 
@@ -91,7 +100,7 @@ const AdminUsers: React.FC = (): JSX.Element => {
     }
   }
 
-  // if (loading) return <>< Loader /></>
+ 
 
 
   return (
@@ -100,7 +109,7 @@ const AdminUsers: React.FC = (): JSX.Element => {
       {toastMessage && <Toast2 alert={toastMessage.alert} clearToast={clearToast} message={toastMessage.message} />}
 
       {
-        users?.length > 0 &&
+        users.length > 0 &&
         (
           <div className="mt-8 overflow-x-auto overflow-y-hidden">
 
@@ -139,7 +148,7 @@ const AdminUsers: React.FC = (): JSX.Element => {
                     <td className=" text-left text-black">
 
                       <button
-                        onClick={(e) => BlockButtonClicked(e, value._id, value.status)}
+                        onClick={(e) => BlockButtonClicked(e, value._id!, value.status!)}
                         data-id={value._id}
                         className={
                           `w-32 bg-transparent
@@ -152,7 +161,6 @@ const AdminUsers: React.FC = (): JSX.Element => {
                 ))}
 
               </tbody>
-
             </table>
             {isConfirmModalOpen && <ConfirmationModal
               isOpen={isConfirmModalOpen}
@@ -163,11 +171,18 @@ const AdminUsers: React.FC = (): JSX.Element => {
             />}
           </div >
         )
-
-
       }
 
-
+      {
+         maxPage && users.length > 0 &&
+        <div className="flex justify-center"> 
+          <Pagination
+            currentPage={currentPage}
+            totalPages={maxPage}
+            onPageChange={handleChangePage}
+          />
+        </div>
+      }
     </>
   )
 };

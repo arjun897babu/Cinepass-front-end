@@ -40,7 +40,7 @@ export interface TheaterEndpoint extends IEndPoints {
   delteMovieShow: (showId: string) => string
 }
 export interface AdminEndpoint extends IEndPoints {
-  getEntityData: (role: string) => string
+  getEntityData: (role: string,pageNumber?:number) => string
   updateApprovalStatus: (theaterOwnerId: string) => string
   manageEntities: (_entityId: string, role: string) => string
   addMovie: (movieType: MovieType) => string

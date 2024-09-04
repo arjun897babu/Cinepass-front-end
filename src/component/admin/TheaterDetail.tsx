@@ -6,7 +6,7 @@ import { ImBlocked } from "react-icons/im";
 
 
 interface TheaterDetailsProps {
-  owner: ITheaterOwnerEntity
+  owner: Partial<ITheaterOwnerEntity>
 }
 export const TheaterDetails: React.FC<TheaterDetailsProps> = ({ owner }) => {
 
@@ -14,7 +14,7 @@ export const TheaterDetails: React.FC<TheaterDetailsProps> = ({ owner }) => {
     e.preventDefault();
     e.stopPropagation();
     console.log(owner)
-    const modal = document.getElementById(owner._id) as HTMLDialogElement
+    const modal = document.getElementById(owner._id!) as HTMLDialogElement
     if (modal) {
       modal.showModal()
     }
@@ -23,7 +23,7 @@ export const TheaterDetails: React.FC<TheaterDetailsProps> = ({ owner }) => {
   const closeModal = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     e.stopPropagation();
-    const modal = document.getElementById(owner._id) as HTMLDialogElement;
+    const modal = document.getElementById(owner._id!) as HTMLDialogElement;
     if (modal) {
       modal.close();
     }

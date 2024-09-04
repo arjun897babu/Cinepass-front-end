@@ -1,10 +1,13 @@
 import { AsyncThunk, createAsyncThunk } from "@reduxjs/toolkit";
-import { IMovie, LoginData, ResponseData, ResponseData2 } from "../../interface/Interface";
+import { IMovie, LoginData, ResponseData, ResponseData2, Role } from "../../interface/Interface";
 import { AxiosError } from "axios";
 import { serverAdmin } from "../../services";
 import { adminEndpoints } from "../../services/endpoints/endPoints";
 import { MovieType } from "../../component/admin/MovieForm";
 import { handleAxiosError } from "../../utils/customError";
+import { ITheaterOwnerEntity } from "../../interface/theater/ITheaterOwner";
+import { IUser } from "../../interface/user/IUserData";
+import { string } from "zod";
 
 export const loginAdmin: AsyncThunk<ResponseData, LoginData, {}> = createAsyncThunk(
   'admin/login',
@@ -37,12 +40,26 @@ export const logoutAdmin = createAsyncThunk<ResponseData, void, {}>(
   }
 );
 
-export const getEntityDataForAdmin: AsyncThunk<ResponseData, string, {}> = createAsyncThunk(
+
+export interface EntityResponse {
+  maxPage: number,
+  data: Partial<ITheaterOwnerEntity>[] | Partial<IUser>[];
+}
+
+interface IGetEntityDataForAdmin extends ResponseData2 {
+  data: { 
+      [Role.theaters]?: EntityResponse
+      [Role.users]?: EntityResponse 
+  }
+}
+
+export const getEntityDataForAdmin: AsyncThunk<IGetEntityDataForAdmin, { role: Role, pageNumber?: number }, {}> = createAsyncThunk(
   'admin/theaters',
-  async (role: string, { rejectWithValue }) => {
+  async ({ role, pageNumber }, { rejectWithValue }) => {
     try {
-      const response = await serverAdmin.get(adminEndpoints.getEntityData(role), {});
-      return response.data as ResponseData
+      const response = await serverAdmin.get(adminEndpoints.getEntityData(role, pageNumber), {});
+      console.log(response.data)
+      return await response.data
     } catch (error) {
       if (error instanceof AxiosError) {
         return rejectWithValue(error.response?.data)
@@ -108,7 +125,7 @@ export const addMovie: AsyncThunk<IMovieRespone, { movieData: IMovie; movieType:
     try {
       console.log('this is the moviedata', movieData)
       const response = await serverAdmin.post(adminEndpoints.addMovie(movieType), movieData);
-        
+
       return await response.data
     } catch (error) {
       return rejectWithValue(handleAxiosError(error))
@@ -120,7 +137,7 @@ export const updateMovie: AsyncThunk<IMovieRespone, { payload: IMovie, movieType
   async ({ payload, movieType, movieId }, { rejectWithValue }) => {
     try {
       console.log('updatemovie admin create async thunk is called', payload)
-      const response = await serverAdmin.put(adminEndpoints.updateMovie(movieType, movieId), {payload});
+      const response = await serverAdmin.put(adminEndpoints.updateMovie(movieType, movieId), { payload });
       return await response.data
     } catch (error) {
       return rejectWithValue(handleAxiosError(error))

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, MouseEvent, useEffect, useRef, useState } from "react"
+import React, { ChangeEvent, MouseEvent, Suspense, useEffect, useRef, useState } from "react"
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../../../redux/store";
 import { getEntityDataForAdmin, manageEntitiesByAdmin, updateTheaterApprovalForAdmin } from "../../../redux/actions/adminAction";
@@ -11,39 +11,46 @@ import { ToastMessage } from "./AdminUsers";
 import ConfirmationModal from "../../../component/ConfirmationModal";
 
 import { ITheaterOwnerEntity } from "../../../interface/theater/ITheaterOwner";
-import { string } from "zod";
-// import { Loader } from "../../../component/Loader";
-// const EmptyData = lazy(() => import('../../../component/EmptyData'))
 
-
+import Pagination from "../../../component/Pagination";
 
 const AdminTheaters: React.FC = (): JSX.Element => {
-  const [theaters, setTheaters] = useState<ITheaterOwnerEntity[] | []>([]);
+  const [theaters, setTheaters] = useState<Partial<ITheaterOwnerEntity>[] | []>([]);
   const [toastMessage, setToastMessage] = useState<ToastMessage | null>(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false)
   const [selectedTheater, setSelectedTheater] = useState<{ _id: string, status: boolean | string } | null>(null);
-  
+
   const setModalClose = () => setIsConfirmModalOpen(false)
   const clearToast = () => setToastMessage(null)
   const dispatch = useDispatch<AppDispatch>();
 
-  const fetchTheaters = async () => {
-    try {
-      const response = await dispatch(getEntityDataForAdmin(Role.theaters)).unwrap();
-      if (response.status === ResponseStatus.SUCCESS) {
+  const [maxPage, setMaxPage] = useState<number>(1)
+  const [currentPage, setCurrentPage] = useState<number>(1)
 
-        response.data ? setTheaters(response.data.theaters as unknown as ITheaterOwnerEntity[]) : setTheaters([])
+  const handleChangePage = (newPage: number) => setCurrentPage(newPage)
+  const [loading, setLoading] = useState(false)
+  const fetchTheaters = async () => {
+    setLoading(true)
+    try {
+      const response = await dispatch(getEntityDataForAdmin({ role: Role.theaters, pageNumber: currentPage })).unwrap();
+
+      if (response.status === ResponseStatus.SUCCESS && response.data[Role.theaters]) {
+        setTheaters(response.data.theaters?.data)
+
+        setMaxPage(response.data.theaters?.maxPage);
       }
     } catch (error) {
       if (isErrorResponse(error)) {
         console.error(error);
       }
+    } finally {
+      setLoading(false)
     }
   }
 
   useEffect(() => {
     fetchTheaters()
-  }, [])
+  }, [currentPage])
 
   const BlockButtonClicked = (e: (MouseEvent<HTMLButtonElement> | ChangeEvent<HTMLSelectElement>), _id: string, status: boolean) => {
     e.preventDefault();
@@ -61,11 +68,11 @@ const AdminTheaters: React.FC = (): JSX.Element => {
   }
 
   const handleBlock = async () => {
-    
+
     if (selectedTheater) {
       try {
         const response = await dispatch(manageEntitiesByAdmin({ _id: selectedTheater._id, role: 'theaters' })).unwrap();
-    
+
         if (response.status === ResponseStatus.SUCCESS) {
           const updateDocumentId = response.data as { _id: string };
           if (updateDocumentId) {
@@ -126,16 +133,14 @@ const AdminTheaters: React.FC = (): JSX.Element => {
     } finally {
       setSelectedTheater(null)
       setIsConfirmModalOpen(false)
+
     }
 
   }
 
-
-
-  // if (loading) return <>< Loader /></>
-
   return (
     <>
+
       {
         toastMessage &&
         <Toast2
@@ -183,7 +188,7 @@ const AdminTheaters: React.FC = (): JSX.Element => {
                             name="approval-status"
                             id="approval-status"
                             value={theater.approval_status}
-                            onChange={(e) => BlockButtonClicked(e, theater._id, true)}
+                            onChange={(e) => BlockButtonClicked(e, theater._id!, true)}
                             data-id={theater._id}
                             className="mt-1.5 w-32 focus:outline-none border-2   rounded-none p-1 capitalize border-gray-300 text-gray-700 sm:text-sm"
                           >
@@ -195,7 +200,7 @@ const AdminTheaters: React.FC = (): JSX.Element => {
                         (
                           theater.approval_status === ApprovalStatus.APPROVED ?
                             (<button
-                              onClick={(e) => BlockButtonClicked(e, theater._id, theater.status)}
+                              onClick={(e) => BlockButtonClicked(e, theater._id!, theater.status!)}
                               data-id={theater._id}
                               className={
                                 `w-32 bg-transparent
@@ -213,7 +218,7 @@ const AdminTheaters: React.FC = (): JSX.Element => {
                     <td>
                       <TheaterDetails
                         owner={theater}
-                      />
+                      /> 
                     </td>
 
                   </tr>
@@ -228,7 +233,7 @@ const AdminTheaters: React.FC = (): JSX.Element => {
               onClose={setModalClose}
               onConfirm={typeof selectedTheater?.status === 'boolean' ? handleBlock : handleStatusChange}
               message="Do you want to proceed with this action "
-              btnType={selectedTheater?.status ? ResponseStatus.success : ResponseStatus.ERROR}
+              btnType={selectedTheater?.status ? ResponseStatus.SUCCESS : ResponseStatus.ERROR}
             />}
 
           </div >
@@ -236,6 +241,16 @@ const AdminTheaters: React.FC = (): JSX.Element => {
 
       }
 
+      {
+        maxPage && theaters.length > 0 &&
+        <div className="flex justify-center mt-3">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={maxPage}
+            onPageChange={handleChangePage}
+          />
+        </div>
+      }
 
     </>
   )
