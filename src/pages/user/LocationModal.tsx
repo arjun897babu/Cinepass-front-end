@@ -3,6 +3,7 @@ import type { AppDispatch } from "../../redux/store";
 import { useDispatch } from "react-redux";
 import { getAllCities } from "../../redux/actions/userAction";
 import { Link, useNavigate } from "react-router-dom";
+import { userSetCity } from "../../redux/reducers/userReducer";
 interface LocationModalProps {
   onClose?: () => void
 }
@@ -25,10 +26,11 @@ const LocationModal: React.FC<LocationModalProps> = ({ onClose }) => {
       setLoading((prev) => !prev)
     }
   }
-  
+
   const handleCitySelect = (selectedCity: string) => {
 
     modalRef.current?.close()
+    dispatch(userSetCity(selectedCity))
     window.location.href = `/home/${selectedCity}`;
     onClose ?
       onClose()
@@ -47,7 +49,7 @@ const LocationModal: React.FC<LocationModalProps> = ({ onClose }) => {
     fetchCities()
   }, [])
 
-  if(cities.length===0){
+  if (cities.length === 0) {
     return <></>
   }
 
@@ -59,23 +61,23 @@ const LocationModal: React.FC<LocationModalProps> = ({ onClose }) => {
             <button onClick={closeModal} className="btn btn-sm btn-circle">✕</button>
           </div>}
           <h3 className="font-bold text-2xl text-center capitalize mb-7 ">select your city</h3>
-          
-          
-              <div className="p-1 m-1 flex gap-2">
-                {cities.map((city) => (
-                  <button
-                    key={city}
-                    onClick={() => handleCitySelect(city)}
-                    className="p-2 hover:bg-gray-200 rounded bg-sky-200 font-medium"
-                  >
-                    {city}
-                  </button>
-                ))}
 
-              </div>
-            
-             
-            
+
+          <div className="p-1 m-1 flex gap-2">
+            {cities.map((city) => (
+              <button
+                key={city}
+                onClick={() => handleCitySelect(city)}
+                className="p-2 hover:bg-gray-200 rounded bg-sky-200 font-medium"
+              >
+                {city}
+              </button>
+            ))}
+
+          </div>
+
+
+
         </div>
       </dialog >
     </>

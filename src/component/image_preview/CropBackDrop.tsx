@@ -1,14 +1,14 @@
 import React, { MouseEvent, useState } from "react"
 import Cropper, { Area } from "react-easy-crop"
 import { croppedImage } from "./imageCrop";
+ import { ImCheckmark, ImCross } from "react-icons/im";
 interface CropBackdropProps {
   imgURL: string;
   cropInit?: { x: number; y: number };
   zoomInit?: number;
   aspectInit?: number;
   onCancel: () => void;
-  setCroppedImageFor: (
-    imgURL:string,
+  setCroppedImageFor: ( 
     croppedImageUrl: string
   ) => void;
 }
@@ -48,17 +48,15 @@ export const CropBackdrop: React.FC<CropBackdropProps> = (
     e.preventDefault();
     e.stopPropagation();
     if (croppedArea) {
-      console.log(imgURL)
       const croppedImageUrl = await croppedImage(imgURL, croppedArea);
-      console.log(imgURL,croppedImageUrl)
-      setCroppedImageFor(imgURL, croppedImageUrl);
+      setCroppedImageFor( croppedImageUrl);
     }
   };
 
   return (
     <>
       <div className="fixed inset-0 h-full p-2  z-50 flex justify-center items-center bg-black bg-opacity-60">
-        <div className="relative w-[80vw] h-full ">
+        <div className="relative w-[70vw] h-full ">
           <Cropper
             image={imgURL}
             zoom={zoom}
@@ -67,10 +65,12 @@ export const CropBackdrop: React.FC<CropBackdropProps> = (
             onZoomChange={onZoomChange}
             onCropComplete={onCropComplete}
             aspect={aspect}
-            style={{ containerStyle: { width: '100%', height: '100%' }, mediaStyle: { width: 'auto', height: 'auto' } }}
+            style={{ containerStyle: { width: '100%', height: '100' }, mediaStyle: { width: 'auto', height: 'auto' } }}
           />
-          <button onClick={cancelCrop} className="text-sm text-white absolute bottom-2 left-60">Cancel</button>
-          <button onClick={onCrop} className="text-sm absolute text-white bottom-2 right-60">Done</button>
+          <div className="bg-white absolute w-full flex gap-2">
+            <button onClick={onCrop} className="bg-sky-300 hover:bg-sky-200 text-sm  btn-sm "> <ImCheckmark /></button>
+            <button onClick={cancelCrop} className="bg-sky-300 hover:bg-sky-200 text-sm btn-sm"> <ImCross /></button>
+          </div>
         </div>
       </div>
     </>

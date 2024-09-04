@@ -1,11 +1,10 @@
-import { Dispatch, MouseEvent, SetStateAction } from "react";
-import { useLoggedOwner } from "../hooks/useLoggedUser";
-import { ResponseData, ResponseStatus, Role } from "../interface/Interface"
+import {   MouseEvent  } from "react";
+ import {    ResponseStatus, Role } from "../interface/Interface"
 import { resendOTPUser } from "../redux/actions/userAction";
-import { useDispatch } from "react-redux";
-import type { AppDispatch } from "../redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "../redux/store";
 import { useNavigate } from "react-router-dom";
-import { isErrorResponse, isResponseError } from "../utils/customError";
+import {   isResponseError } from "../utils/customError";
 import { resendOTPTheaters } from "../redux/actions/theaterAction";
 import { Toast } from "./Toast2";
 
@@ -17,7 +16,20 @@ interface ResendOTPProps {
 }
 
 const ResendOTP: React.FC<ResendOTPProps> = ({ role, isActive, setToast, resetTimer }) => {
-  const { tempMail } = useLoggedOwner(role);
+  const { tempMail } = useSelector((state: RootState) => {
+    switch (role) {
+      case Role.users:
+        return state.user;
+      case Role.theaters:
+        return state.theaters;
+      case Role.admin:
+        return state.admin;
+
+      default:
+        return {   tempMail: null  };
+    }
+  }); 
+  
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>()
 

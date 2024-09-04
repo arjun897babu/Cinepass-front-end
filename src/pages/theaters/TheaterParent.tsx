@@ -9,10 +9,9 @@ import { RiLogoutCircleLine } from "react-icons/ri";
 import { logoutTheaters } from '../../redux/actions/theaterAction';
 import { useDispatch } from 'react-redux';
 import type { AppDispatch } from '../../redux/store';
-import { RiMovie2Fill } from "react-icons/ri";
+ 
 import { MdOutlineScreenSearchDesktop } from "react-icons/md";
-import { useLoggedOwner } from '../../hooks/useLoggedUser';
-import { Role } from '../../interface/Interface';
+ 
 
 
 const menu = [
@@ -62,11 +61,7 @@ export const TheatersParent: React.FC = (): JSX.Element => {
     }
 
   }
-
-  // const { loggedOwner } = useLoggedOwner(Role.theaters)
-  // console.log(loggedOwner)
-  // if(!loggedOwner)  navigate('/theaters/login', { replace: true })
-
+ 
   return (
     <>
       <div className="flex ">

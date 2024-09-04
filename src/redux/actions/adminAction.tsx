@@ -4,7 +4,7 @@ import { AxiosError } from "axios";
 import { serverAdmin } from "../../services";
 import { adminEndpoints } from "../../services/endpoints/endPoints";
 import { MovieType } from "../../component/admin/MovieForm";
-import { handleAxiosError, IResponseError } from "../../utils/customError";
+import { handleAxiosError } from "../../utils/customError";
 
 export const loginAdmin: AsyncThunk<ResponseData, LoginData, {}> = createAsyncThunk(
   'admin/login',
@@ -52,6 +52,20 @@ export const getEntityDataForAdmin: AsyncThunk<ResponseData, string, {}> = creat
   }
 )
 
+export const manageEntitiesByAdmin: AsyncThunk<ResponseData, Record<string, string>, {}> = createAsyncThunk(
+  'admin/manageEntities',
+  async ({ role, _id }, { rejectWithValue }) => {
+    try {
+      const response = await serverAdmin.patch(adminEndpoints.manageEntities(_id, role), {});
+      return await response.data
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return rejectWithValue(error.response?.data)
+      }
+      return rejectWithValue('an unknown error')
+    }
+  }
+)
 export const updateTheaterApprovalForAdmin: AsyncThunk<ResponseData, { _id: string, approval_status: string }, {}> = createAsyncThunk(
   'admin/updateTheaterApprovalStatus',
   async ({ _id, approval_status }, { rejectWithValue }) => {
@@ -68,20 +82,6 @@ export const updateTheaterApprovalForAdmin: AsyncThunk<ResponseData, { _id: stri
   }
 );
 
-export const manageEntitiesByAdmin: AsyncThunk<ResponseData, Record<string, string>, {}> = createAsyncThunk(
-  'admin/manageEntities',
-  async ({ role, _id }, { rejectWithValue }) => {
-    try {
-      const response = await serverAdmin.patch(adminEndpoints.manageEntities(_id, role), {});
-      return await response.data
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        return rejectWithValue(error.response?.data)
-      }
-      return rejectWithValue('an unknown error')
-    }
-  }
-)
 
 export const getMovie: AsyncThunk<IMovie[], MovieType, {}> = createAsyncThunk(
   'admin/getMovie',

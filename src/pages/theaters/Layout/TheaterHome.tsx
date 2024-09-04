@@ -1,12 +1,13 @@
 import { useEffect } from "react";
 import { DashBoardCard } from "../../../component/DashBoardCard"
-import { useLoggedOwner } from "../../../hooks/useLoggedUser";
-import { Role } from "../../../interface/Interface";
+ 
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import  type { Rootstate } from "../../../redux/store";
 
 const TheaterHome = () => {
 
-const {isAuthenticated} = useLoggedOwner(Role.theaters)
+const {isAuthenticated} = useSelector((state:RootState)=>state.theaters)
 const navigate = useNavigate()
   useEffect(() => {
 

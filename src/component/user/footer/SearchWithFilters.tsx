@@ -2,14 +2,15 @@ import React, { MouseEvent, useState } from "react"
 import { CiSearch } from "react-icons/ci"
 import { IoLocation } from "react-icons/io5";
 import { IoIosArrowDropdown } from "react-icons/io";
-import { useLoggedOwner } from "../../../hooks/useLoggedUser";
-import { Role } from "../../../interface/Interface";
+ 
 import { useNavigate } from "react-router-dom";
 import LocationModal from "../../../pages/user/LocationModal";
+import  type { Rootstate } from "../../../redux/store";
+import { useSelector } from "react-redux";
 
 export const SearchWithFilters: React.FC = () => {
 
-  const { city } = useLoggedOwner(Role.users);
+  const { city } =  useSelector((state:RootState)=>state.user)
   const [locationModal, setLocationModal] = useState(false)
   const navigate = useNavigate();
 

@@ -1,6 +1,6 @@
 import { AsyncThunk, createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosError } from "axios";
-import { serverInstance, serverTheater } from "../../services";
+import { serverTheater } from "../../services";
 import { theatersEndPoints } from "../../services/endpoints/endPoints";
 import { TheaterSignUpData } from "../../interface/theater/ITheatersData";
 import { IGetMovieShowResponse, IMovie, LoginData, OTPVerification, ResponseData, ResponseData2 } from "../../interface/Interface";
@@ -8,7 +8,7 @@ import { IGetMovieShowResponse, IMovie, LoginData, OTPVerification, ResponseData
 import { ITheaterScreen, ITheaterScreenResponse } from "../../interface/theater/ITheaterScreen";
 import { MovieType } from "../../component/admin/MovieForm";
 import { IMovieShow } from "../../interface/theater/IMovieShow";
-import { handleAxiosError, IResponseError } from "../../utils/customError";
+import { handleAxiosError } from "../../utils/customError";
 import { ITheaterOwnerEntity, TheaterOwnerProfile, TheaterProfile } from "../../interface/theater/ITheaterOwner";
 
 /*..................auth.................. */

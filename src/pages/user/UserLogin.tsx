@@ -6,12 +6,12 @@ import { FaArrowLeft } from "react-icons/fa";
 import backGroundImage from '/Iconic Movie Posters Collage.webp';
 import { useForm } from '../../hooks/UseForm';
 import { useFormSubmit } from '../../hooks/UseFormSubmitt';
-import { useDispatch, } from 'react-redux';
-import { AppDispatch, } from '../../redux/store';
+import { useDispatch, useSelector, } from 'react-redux';
+import { AppDispatch, RootState, } from '../../redux/store';
 import { loginUser } from '../../redux/actions/userAction';
 import { ResponseStatus, Role } from '../../interface/Interface';
-import { isErrorResponse, isResponseError } from '../../utils/customError';
-import { useLoggedOwner } from '../../hooks/useLoggedUser';
+import { isResponseError } from '../../utils/customError';
+
 
 import GoogleSignUp from '../../component/user/GoogleSignUp';
 
@@ -24,14 +24,13 @@ import { userClearError } from '../../redux/reducers/userReducer';
 export const UserLogin: React.FC = (): JSX.Element => {
 
   const location = useLocation();
-  const dispatchClearError = () => {
-    dispatch(userClearError())
-  }
+
 
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { error, isAuthenticated, city } = useLoggedOwner(Role.users);
+  const { error, isAuthenticated, city } = useSelector((state: RootState) => state.user)
   const [toastMessage, setToastMessage] = useState<Toast | null>(null)
+  const [loading, setLoading] = useState(false)
 
   const handleToastMessage = (toast: Toast) => setToastMessage(toast)
 
@@ -76,6 +75,11 @@ export const UserLogin: React.FC = (): JSX.Element => {
         alert: ResponseStatus.ERROR,
         message: 'use google auth'
       });
+    } else if (error) {
+      setToastMessage({
+        alert: ResponseStatus.ERROR,
+        message: 'something went wrong'
+      });
     }
 
     dispatch(userClearError());
@@ -89,13 +93,14 @@ export const UserLogin: React.FC = (): JSX.Element => {
     const isValid = handleSubmit(event);
 
     if (isValid) {
+      setLoading(true)
       try {
 
         await dispatch(loginUser(formData)).unwrap();
         // if (result.status === ResponseStatus.SUCCESS) {
         //   navigate(result.redirectURL, { replace: true })
         // }
-      } catch (err) { 
+      } catch (err) {
         if (isResponseError(err)) {
           if (err.statusCode === 403) {
             setToastMessage({
@@ -123,6 +128,8 @@ export const UserLogin: React.FC = (): JSX.Element => {
             })
           }
         }
+      } finally {
+        setLoading(false)
       }
     }
   }
@@ -210,8 +217,8 @@ export const UserLogin: React.FC = (): JSX.Element => {
             </div>
 
 
-            <button className="bg-black rounded-md text-white py-2  ">
-              Login
+            <button className={`bg-black rounded-md text-white   p-2`}>
+              {!loading?'Loading':<span className=" loading loading-xs m-0 p-0  "></span>} 
             </button>
           </form>
 

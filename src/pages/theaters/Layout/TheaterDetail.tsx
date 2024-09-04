@@ -8,9 +8,9 @@ import { ITheaterOwnerEntity } from "../../../interface/theater/ITheaterOwner"
 import Toast2, { Toast } from "../../../component/Toast2"
 import TheaterInfo from "../../../component/theaters/TheaterInfo"
 import TheaterOwnerInfo from "../../../component/theaters/TheaterOwnerInfo"
-import { useLoggedOwner } from "../../../hooks/useLoggedUser"
-import { ResponseStatus, Role } from "../../../interface/Interface"
-import { isErrorResponse, isResponseError } from "../../../utils/customError"
+ 
+import { ResponseStatus,   } from "../../../interface/Interface"
+import {   isResponseError } from "../../../utils/customError"
 import { useNavigate } from "react-router-dom"
 
 const TheaterDetail: React.FC = () => {

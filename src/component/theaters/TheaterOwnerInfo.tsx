@@ -19,7 +19,7 @@ interface TheaterInforProps {
   setToast: (toastData: Toast) => void
 }
 const TheaterOwnerInfo: React.FC<TheaterInforProps> = ({ data, setTheaterDataResponse, setToast }) => {
-  console.log('called')
+   
   const [formData, setFormData] = useState<TheaterOwnerProfile | null>(null)
   const [confirmation, setConfirmation] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false);

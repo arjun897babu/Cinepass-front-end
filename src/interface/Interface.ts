@@ -114,6 +114,20 @@ export interface IGetMovieShowResponse {
   opening_date?:string|Date
 }
 
+export interface IGetSingleShow {
+  movie: {
+    movie_name: Pick<IMovie, 'movie_name'>
+  };
+  theater: {
+    theater_name: Pick<ITheaterOwnerEntity, 'theater_name'>
+  };
+  screen: {
+    name: Pick<ITheaterScreen, 'screen_name'>;
+    layout: Pick<ITheaterScreen, 'layout'>;
+  };
+  show: Partial<IMovie>
+}
+
 export enum Action   {
   ADD = 'add',
   UPDATE='update',

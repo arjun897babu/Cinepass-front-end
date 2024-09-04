@@ -14,7 +14,8 @@ export interface ITheaterOwnerEntity {
   approval_status: ApprovalStatus;
   address: string
   city: string,
-  images?: string[]
+  images?: string[];
+  slug:string
 }
 
 export type TheaterOwnerProfile = Pick<ITheaterOwnerEntity, 'name' | 'email' | 'mobile_number' | 'adhaar_number'>;

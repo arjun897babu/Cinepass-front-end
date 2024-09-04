@@ -201,9 +201,11 @@ const validateEnumValue = (field: string, aminety: string): ReturnObject =>
 const validateMovieName = (movieName: string): ReturnObject =>
   validateField(movieName, 'movie Name')
 
-
+const isCloudinaryUrl = (url:string) =>   url.includes('cloudinary.com') 
+ 
 
 export {
+  isCloudinaryUrl,
   validateName,
   validateMobileNumber,
   validateEmail,

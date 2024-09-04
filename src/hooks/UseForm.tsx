@@ -19,9 +19,9 @@ import {
   validateEnumValue,
   validateMovieName
 } from '../utils/validator';
-import { useDispatch } from "react-redux";
-import type { AppDispatch } from "../redux/store";
-import { useLoggedOwner } from "./useLoggedUser";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "../redux/store";
+
 import { Role } from "../interface/Interface";
 
 
@@ -33,7 +33,19 @@ type FormData = {
 export const useForm = <T extends FormData>(initialValue: T, owner: Role) => {
   const [formData, setFormData] = useState<T>(initialValue);
   const [inputError, setInputError] = useState<Record<string, string>>({});
-  const { error } = useLoggedOwner(owner);
+  const { error } = useSelector((state: RootState) => {
+    switch (owner) {
+      case Role.users:
+        return state.user;
+      case Role.theaters:
+        return state.theaters;
+      case Role.admin:
+        return state.admin;
+
+      default:
+        return { error: null };
+    }
+  });
 
   const dispatch = useDispatch<AppDispatch>();
   let clearErrorAction

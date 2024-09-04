@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react"
 import backgroundImage from '/movie_projector.jpg'
 import { useForm } from "../../hooks/UseForm";
 import { useFormSubmit } from "../../hooks/UseFormSubmitt";
-import { useDispatch } from "react-redux";
-import type { AppDispatch } from "../../redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "../../redux/store";
 
 import { ResponseData, ResponseStatus, Role } from "../../interface/Interface";
 import { useNavigate } from "react-router-dom";
-import { useLoggedOwner } from "../../hooks/useLoggedUser";
+ 
 
 import { verifyOTPTheaters } from "../../redux/actions/theaterAction";
 import { formatTime } from "../../utils/format";
@@ -25,7 +25,7 @@ export const TheaterOTPVerification: React.FC = (): JSX.Element => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate();
 
-  const { error, tempMail, } = useLoggedOwner(Role.theaters)
+  const { error, tempMail, } =  useSelector((state:RootState)=>state.theaters)
 
 
   const { isActive, resetTimer, timeRemaining } = useTimer(120)

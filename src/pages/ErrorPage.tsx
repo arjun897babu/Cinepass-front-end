@@ -1,7 +1,8 @@
-import React, { memo, MouseEvent } from "react"
+import React, {   MouseEvent } from "react"
 import { useNavigate } from "react-router-dom"
-import { useLoggedOwner } from "../hooks/useLoggedUser";
-import { Role } from "../interface/Interface";
+
+import { useSelector } from "react-redux";
+import  type { RootState, } from "../redux/store";
 
 interface RedirectPath {
   redirectPath?: string
@@ -10,7 +11,7 @@ interface RedirectPath {
 export const ErroPage: React.FC<RedirectPath> = ({ redirectPath }) => {
 
   const navigate = useNavigate();
-  const { city } = useLoggedOwner(Role.users)
+  const { city } =useSelector((state:RootState)=>state.user)
   if (!city) navigate('/')
   const navigateHome = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -23,7 +24,7 @@ export const ErroPage: React.FC<RedirectPath> = ({ redirectPath }) => {
 
   return (
     <>
-      <div className="grid h-screen place-content-center bg-white px-4"  >
+      <div className="grid h-screen place-content-center bg-base-200 px-4"  >
         <div className="text-center"  >
           <h1 className="text-9xl font-black text-gray-200">404</h1>
 

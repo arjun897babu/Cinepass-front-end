@@ -8,13 +8,16 @@ export const userEndPoints: UserEndpoint = {
   verifyOTP: '/otp-verification',
   resendOTP: '/resend-otp',
   forgotPassword: '/forgot-password',
-  resetPassword: (token: string) => `/reset-password/${token}`,
+  resetPassword: (token) => `/reset-password${token ? `/${token}`:''}`,
   googleSignUp: '/google-signup',
   googleLogout: '/google-logout',
-  getMovieShows: (city) => `/shows/${city}`,
+  getMovieShows: (city, theaterId) => `/shows/${city}?theaterId=${theaterId}`,
+  getSingleShow: (city, showId) => `/shows/${city}?showId=${showId}`,
   getAllCities: `/cities`,
   getAllMovies: (city) => `/movies/${city}`,
   getSingleMovie: (city, movieId) => `/movies/${city}?movieId=${movieId}`,
+  getTheater: (city) => `/theater/${city}`,
+  userProfile: '/profile'
 };
 
 export const theatersEndPoints: TheaterEndpoint = {

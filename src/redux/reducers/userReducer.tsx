@@ -1,20 +1,20 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { forgotPasswordUser, getAllShows, getSingleMovie, googleSignUp, loginUser, logoutUser, resendOTPUser, resetPassword, signUpUser, verifyUser } from "../actions/userAction";
+import { getAllMovies, getAllShows, getSingleMovie, getTheatersByCity, getUserProfile, googleSignUp, loginUser, logoutUser, signUpUser, updateUserProfile, } from "../actions/userAction";
 import { IInitialState } from "./IState";
-import { IInitialStateError, ResponseData, ResponseStatus } from "../../interface/Interface";
+import { IInitialStateError, } from "../../interface/Interface";
 import { isErrorResponse, isResponseError } from "../../utils/customError";
-import { LoggedOwner } from "../../interface/user/IUserData";
-
+import { handleRejectedCase } from "./theatersReducer";
 
 
 const initialState: IInitialState = {
-  owner: null,
-  loading: false,
+  profile: null,
   error: null,
   isAuthenticated: false,
   tempMail: null,
   isGoogleAuth: false,
-  city: undefined
+  city: undefined,
+  movies: [],
+  cityTheaters: []
 
 };
 
@@ -22,104 +22,93 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    userClearError(state) {
+    userClearError(state: IInitialState) {
       state.error = null;
+
     },
-    userSetError(state, action: PayloadAction<IInitialStateError>) {
+    userSetError(state: IInitialState, action: PayloadAction<IInitialStateError>) {
       state.error = action.payload
+
     },
-    userSetIsAuthenticated(state) {
+    userSetIsAuthenticated(state: IInitialState) {
       state.isAuthenticated = !state.isAuthenticated
+
     },
-    userSetLoading(state) {
-      state.loading = !state.loading
-    },
-    userSetCity(state, action: PayloadAction<string>) {
+    userSetCity(state: IInitialState, action: PayloadAction<string>) {
       state.city = action.payload
+
     },
-    userClearTempMail(state) {
+    userClearTempMail(state: IInitialState) {
       state.tempMail = null
+
     }
   },
   extraReducers: (builder) => {
     builder
 
       //singup
-      .addCase(signUpUser.pending, (state) => {
-        state.loading = true;
+      .addCase(signUpUser.pending, (state: IInitialState) => {
         state.error = null;
       })
-      .addCase(signUpUser.fulfilled, (state, action) => {
-        state.loading = false;
+      .addCase(signUpUser.fulfilled, (state: IInitialState, action) => {
+
         state.tempMail = action.payload.data ? action.payload.data as { email: string } : null
       })
-      .addCase(signUpUser.rejected, (state, action) => {
-        state.loading = false;
+      .addCase(signUpUser.rejected, (state: IInitialState, action) => {
+
         if (isErrorResponse(action.payload)) {
           state.error = action.payload.error as IInitialStateError | null
         }
       })
 
       //login
-      .addCase(loginUser.pending, (state) => {
-
+      .addCase(loginUser.pending, (state: IInitialState) => {
         state.error = null
       })
-      .addCase(loginUser.fulfilled, (state, action) => {
+      .addCase(loginUser.fulfilled, (state: IInitialState) => {
         state.error = null
         state.isAuthenticated = true
-        state.owner = action.payload.data.user
-        state.isGoogleAuth = false
       })
-      .addCase(loginUser.rejected, (state, action) => {
+      .addCase(loginUser.rejected, (state: IInitialState, action) => {
         if (isResponseError(action.payload)) {
           if (action.payload.statusCode === 401 && action.payload.data.error === 'otp') {
-            state.tempMail = action.payload.data ? action.payload.data.tempMail as {email:string}  : null
+            state.tempMail = action.payload.data ? action.payload.data.tempMail as { email: string } : null
           }
         }
       })
 
       //google login
-      .addCase(googleSignUp.pending, (state) => {
+      .addCase(googleSignUp.pending, (state: IInitialState) => {
 
         state.error = null
       })
-      .addCase(googleSignUp.fulfilled, (state, action) => {
-        state.loading = false;
+      .addCase(googleSignUp.fulfilled, (state: IInitialState, action) => {
+
         state.error = null
         state.isAuthenticated = true
-        state.owner = action.payload.data.user
+        state.profile = action.payload.data.user
         state.isGoogleAuth = true
       })
 
       //logout
-      .addCase(logoutUser.pending, (state) => {
+
+      .addCase(logoutUser.fulfilled, (state: IInitialState) => {
 
         state.error = null
-      })
-      .addCase(logoutUser.fulfilled, (state) => {
-        state.loading = false;
-        state.error = null
         state.isAuthenticated = false;
-        state.owner = null
-        state.isGoogleAuth = true
+        state.profile = null
+
       })
-      .addCase(logoutUser.rejected, (state, action) => {
-        state.loading = false;
+      .addCase(logoutUser.rejected, (state: IInitialState, action) => {
+
         if (isErrorResponse(action.payload)) {
           state.error = action.payload.error as IInitialStateError | null
         }
       })
 
-      //get all shows running in current city
-      .addCase(getAllShows.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(getAllShows.fulfilled, (state) => {
-        state.loading = false;
-      })
-      .addCase(getAllShows.rejected, (state, action) => {
-        state.loading = false;
+      //get all shows running in current city 
+      .addCase(getAllShows.rejected, (state: IInitialState, action) => {
+
         if (isResponseError(action.payload)) {
           if (action.payload.statusCode === 403 || action.payload.statusCode === 401) {
             state.isAuthenticated = false
@@ -128,20 +117,50 @@ const userSlice = createSlice({
       })
 
       //get single movie
-      .addCase(getSingleMovie.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(getSingleMovie.fulfilled, (state) => {
-        state.loading = false;
-      })
-      .addCase(getSingleMovie.rejected, (state, action) => {
-        state.loading = false;
+      .addCase(getSingleMovie.rejected, (state: IInitialState, action) => {
+
         if (isResponseError(action.payload)) {
           console.log(action.payload)
           if (action.payload.statusCode === 403 || action.payload.statusCode === 401) {
             state.isAuthenticated = false
           }
         }
+      })
+
+      //getuser profile
+      .addCase(getUserProfile.fulfilled, (state: IInitialState, action) => {
+        state.profile = action.payload.data.user
+      })
+      .addCase(getUserProfile.rejected, (state: IInitialState, action) => {
+        isResponseError(action.payload) ?
+          handleRejectedCase(state, action.payload) : null
+      })
+
+      //update user profile
+      .addCase(updateUserProfile.fulfilled, (state: IInitialState, action) => {
+        state.profile = action.payload.data.user
+      })
+      .addCase(updateUserProfile.rejected, (state: IInitialState, action) => {
+        isResponseError(action.payload) ?
+          handleRejectedCase(state, action.payload) : null
+      })
+
+      //get all movies
+      .addCase(getAllMovies.fulfilled, (state: IInitialState, action) => {
+        state.movies = action.payload
+      })
+      .addCase(getAllMovies.rejected, (state: IInitialState, action) => {
+        isResponseError(action.payload) ?
+          handleRejectedCase(state, action.payload) : null
+      })
+
+      //get theater by city
+      .addCase(getTheatersByCity.fulfilled, (state: IInitialState, action) => {
+        state.cityTheaters = action.payload.data.theater
+      })
+      .addCase(getTheatersByCity.rejected, (state: IInitialState,action ) => {
+        isResponseError(action.payload) ?
+        handleRejectedCase(state, action.payload) : null
       })
 
   },
@@ -152,8 +171,8 @@ export const {
   userClearError,
   userSetError,
   userSetIsAuthenticated,
-  userSetLoading,
   userSetCity,
   userClearTempMail
 } = userSlice.actions
+
 export default userSlice.reducer

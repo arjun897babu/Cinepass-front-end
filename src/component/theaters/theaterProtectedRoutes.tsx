@@ -1,14 +1,15 @@
 import { ReactNode } from "react";
 import { Navigate, } from "react-router-dom";
-import { useLoggedOwner } from "../../hooks/useLoggedUser";
-import { Role } from "../../interface/Interface";
+ 
+import  type { Rootstate } from "../../redux/store";
+import { useSelector } from "react-redux";
 
 interface children {
   children: ReactNode
 }
 export const TheaterProtectedRoutes = ({ children }: children) => {
 
-  const { isAuthenticated } = useLoggedOwner(Role.theaters)
+  const { isAuthenticated } =useSelector((state:RootState)=>state.theaters)
   console.log(isAuthenticated)
   if (!isAuthenticated) {
     return <Navigate to={'/theaters/login'} replace={true} />

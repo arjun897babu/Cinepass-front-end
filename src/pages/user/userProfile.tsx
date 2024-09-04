@@ -1,24 +1,45 @@
-import React from "react"
+import React   from "react";
+ 
+import { Link, Outlet, useLocation } from "react-router-dom";
+
 
 export const UserProfile: React.FC = (): JSX.Element => {
+  const location = useLocation();
+ 
+ 
   return (
+
     <>
-
-      <div className="flex justify-center items-center">
-        <div className="card bg-base-100 w-96 shadow-xl">
-          <figure className="px-10 pt-10">
-            <img
-              src="https://t4.ftcdn.net/jpg/03/40/12/49/240_F_340124934_bz3pQTLrdFpH92ekknuaTHy8JuXgG7fi.jpg"
-              alt="Shoes"
-              className="rounded-xl" />
-          </figure>
-          <div className="card-body items-center text-center">
-            <h2 className="card-title">Arjun </h2>
-             
-          </div>
+      <div className="p-2">
+        <div className="navbar bg-white gap-3">
+          <Link to="/profile">
+            <button
+              className={`btn capitalize text-sm  ${location.pathname === "/profile" ? "bg-sky-300 hover:bg-sky-200" : "hover:bg-sky-200"}`}
+            >
+              Profile
+            </button>
+          </Link>
+          <Link to="/booking">
+            <button className={`btn capitalize text-sm  ${location.pathname === "/booking" ? "bg-sky-300 hover:bg-sky-200" : "hover:bg-sky-200"}`}
+            >
+              Your bookings
+            </button>
+          </Link>
+          <Link to="/stream">
+            <button
+              className={`btn capitalize text-sm  ${location.pathname === "/stream" ? "bg-sky-300 hover:bg-sky-200" : "hover:bg-sky-200"}`}
+            >
+              Stream
+            </button>
+          </Link>
         </div>
-
       </div>
+
+     <Outlet />
+
+
+
+
     </>
-  )
-}
+  );
+};

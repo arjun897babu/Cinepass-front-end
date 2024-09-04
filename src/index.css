@@ -119,4 +119,20 @@ input:focus,select:focus{
 }
 .geoapify-close-button{
   @apply bg-white
+} 
+
+ 
+/* ::-webkit-scrollbar {
+  width: 2px !important;  
 }
+
+::-webkit-scrollbar-track {
+  background-color: #bae6fd !important;  
+  border-radius: 5px !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #38bdf8 !important;    
+  border-radius: 5px !important;
+} */
+ 

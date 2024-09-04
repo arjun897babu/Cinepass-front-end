@@ -1,22 +1,33 @@
 import React, { FormEvent, memo, useEffect, useState } from "react"
 import backgroundImage from '/Iconic Movie Posters Collage.webp'
 import backgroundImage1 from '/movie_projector.jpg'
-import { useDispatch } from "react-redux";
-import type { AppDispatch } from "../redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "../redux/store";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "../hooks/UseForm";
-import { useLoggedOwner } from "../hooks/useLoggedUser";
-import {  ResponseStatus, Role } from "../interface/Interface";
+import { ResponseStatus, Role } from "../interface/Interface";
 import { useFormSubmit } from "../hooks/UseFormSubmitt";
 import { forgotPasswordUser } from "../redux/actions/userAction";
 import { forgotPasswordTheaters } from "../redux/actions/theaterAction";
-import {  isResponseError } from "../utils/customError";
+import { isResponseError } from "../utils/customError";
 import Toast2, { Toast } from "./Toast2";
 
 
 const ForgotPassword: React.FC<{ role: Role }> = ({ role }): JSX.Element => {
 
-  const {  isAuthenticated } = useLoggedOwner(role)
+  const { isAuthenticated } = useSelector((state: RootState) => {
+    switch (role) {
+      case Role.users:
+        return state.user;
+      case Role.theaters:
+        return state.theaters;
+      case Role.admin:
+        return state.admin;
+
+      default:
+        return { isAuthenticated: false };
+    }
+  });
   const backgroundImagePath = { backgroundImage: `url(${role === Role.users ? backgroundImage : backgroundImage1})` };
   const dispatch = useDispatch<AppDispatch>();
 
@@ -61,7 +72,7 @@ const ForgotPassword: React.FC<{ role: Role }> = ({ role }): JSX.Element => {
 
       if (isResponseError(error)) {
         if (error.statusCode === 400 || error.statusCode === 403) {
-           
+
           navigate(role === Role.users ?
             '/login'
             : `/${role}/login`, { replace: true, state: { [error.data.error]: true } })
@@ -121,7 +132,7 @@ const ForgotPassword: React.FC<{ role: Role }> = ({ role }): JSX.Element => {
                   value={formData.email}
                   onChange={handleChange}
                 />
-                { inputError.email && <small className='text-red-600 capitalize absolute -bottom-4 left-3 font-mono'>{inputError.email}</small>}
+                {inputError.email && <small className='text-red-600 capitalize absolute -bottom-4 left-3 font-mono'>{inputError.email}</small>}
               </div>
               <button className="bg-black font-bold uppercase rounded-md mt-6 border-2 border-white text-white py-2  ">
                 Submit

@@ -1,13 +1,16 @@
-import { IInitialStateError } from "../../interface/Interface";
+import { IInitialStateError, IMovie } from "../../interface/Interface";
+import { ITheaterOwnerEntity } from "../../interface/theater/ITheaterOwner";
 import { LoggedOwner } from "../../interface/user/IUserData";
 
 export interface IInitialState {
-  owner: LoggedOwner | null;
-  loading: boolean;
+  profile: LoggedOwner | null;
   error: IInitialStateError | null;
   isAuthenticated: boolean
-  tempMail: {email:string}|null,
+  tempMail: { email: string } | null,
   isGoogleAuth?: boolean
-  city?: undefined|string
-
+  city?: undefined | string
+  movies?: IMovie[] | []
+  cityTheaters?: Partial<ITheaterOwnerEntity>[]
 }
+
+

@@ -1,12 +1,12 @@
-import React, { lazy, Suspense, useEffect, useState } from "react";
+import React, { lazy, Suspense, } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { TheaterForgotPassword, TheatersLogin, TheatersParent, TheatersSignUp } from '../pages/theaters'
 import { TheaterOTPVerification } from "../pages/theaters/theaterOTPVerifiy";
-import { useLoggedOwner } from "../hooks/useLoggedUser";
+ 
 import { Loader } from "../component/Loader";
 import { TheaterProtectedRoutes } from "../component/theaters/theaterProtectedRoutes";
 import { ErroPage } from "../pages/ErrorPage";
-import { Role } from "../interface/Interface";
+ 
 import { TheaterResetPassWord } from "../pages/theaters/TheaterResetPassword";
 const TheaterShow = lazy(() => import("../pages/theaters/Layout/TheaterShow"));
 const TheaterScreen = lazy(() => import("../pages/theaters/Layout/TheaterScreen"));
@@ -14,7 +14,7 @@ const TheaterDetail = lazy(() => import('../pages/theaters/Layout/TheaterDetail'
 const TheaterHome = lazy(() => import('../pages/theaters/Layout/TheaterHome'))
 
 const TheatersRoutes: React.FC = () => {
-  const { loading } = useLoggedOwner(Role.theaters);
+  
 
 
   return (
@@ -29,7 +29,8 @@ const TheatersRoutes: React.FC = () => {
               <TheatersParent />
             </TheaterProtectedRoutes>
 
-          }>
+          }
+          >
             <Route path="home" element={<TheaterHome />} />
             <Route path="theater" element={<TheaterDetail />} />
             <Route path="screen" element={<TheaterScreen />} />

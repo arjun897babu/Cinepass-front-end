@@ -1,42 +1,49 @@
-// src/app/store.ts
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import userReducer from './reducers/userReducer'
+import { persistStore, persistReducer, createTransform } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+import userReducer from './reducers/userReducer';
 import theatersReducer from './reducers/theatersReducer';
 import adminReducer from './reducers/adminReducer';
-import { persistStore, persistReducer } from 'redux-persist'
-import storage from 'redux-persist/lib/storage';
-import { IInitialState } from './reducers/IState'
+import { IInitialState } from './reducers/IState';
+
+const userTransform = createTransform(
+
+  (inboundState:any ) => { 
+    const { movies, cityTheaters, ...rest } = inboundState;
+    return rest;
+  },
+
+  (outboundState ) => outboundState,
+  { whitelist: ['user'] }
+);
+
 
 
 const persistConfig = {
   key: 'cine',
-  version: 1,
   storage,
-}
+ 
+};
 
 const rootReducer = combineReducers({
   user: userReducer,
   theaters: theatersReducer,
-  admin:adminReducer
-})
+  admin: adminReducer,
+});
 
-const persistedReducer = persistReducer(persistConfig, rootReducer)
+const persistedReducer = persistReducer(persistConfig, rootReducer  );
 
 const store = configureStore({
   reducer: persistedReducer,
-  middleware: (getMiddleWare) =>
-    getMiddleWare({
-      serializableCheck: false
-    })
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
+});
 
-
-})
-
-
-export const persist = persistStore(store)
-export default store;
+export const persist = persistStore(store);
 
 export type AppDispatch = typeof store.dispatch;
-export type RootState = ReturnType<typeof store.getState>;
+export type RootState = ReturnType<typeof rootReducer>;
 
-export type { IInitialState };
+export default store;

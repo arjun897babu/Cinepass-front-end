@@ -1,22 +1,21 @@
 import { FormEvent, useEffect, useState } from "react"
 import backgroundImage from '/Iconic Movie Posters Collage.webp'
 import backgroundImage1 from '/movie_projector.jpg'
-import { useDispatch } from "react-redux";
-import type { AppDispatch } from "../redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "../redux/store";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useForm } from "../hooks/UseForm";
-import { useLoggedOwner } from "../hooks/useLoggedUser";
-import { ResponseData, ResponseStatus, Role } from "../interface/Interface";
+ import {  ResponseStatus, Role } from "../interface/Interface";
 import { useFormSubmit } from "../hooks/UseFormSubmitt";
-import { isErrorResponse, isResponseError } from "../utils/customError";
 
 import { resetPassword } from "../redux/actions/userAction";
 import { resetPasswordTheaters } from "../redux/actions/theaterAction";
 import Toast2, { Toast } from "./Toast2";
-import { theaterClearError } from '../redux/reducers/theatersReducer'
 import { userClearError } from '../redux/reducers/userReducer'
+import { theaterClearError } from '../redux/reducers/theatersReducer'
 import { PasswordInput } from "./PasswordInput";
+import { isResponseError } from "../utils/customError";
 
 const ResetPassWord: React.FC<{ role: Role }> = ({ role }) => {
   const navigate = useNavigate()
@@ -24,8 +23,20 @@ const ResetPassWord: React.FC<{ role: Role }> = ({ role }) => {
   const { token } = useParams<{ token: string }>()
   const backgroundImagePath = { backgroundImage: `url(${role === Role.users ? backgroundImage : backgroundImage1})` };
   const dispatch = useDispatch<AppDispatch>();
-  const [response, setResponse] = useState<ResponseData | null>()
-  const { error } = useLoggedOwner(role);
+
+  const { error, isAuthenticated } = useSelector((state: RootState) => {
+    switch (role) {
+      case Role.users:
+        return state.user;
+      case Role.theaters:
+        return state.theaters;
+      case Role.admin:
+        return state.admin;
+
+      default:
+        return { error: null, isAuthenticated: false };
+    }
+  });
   const { formData, handleChange, inputError, setInputError } = useForm({ password: '', confirm_password: '' }, role)
   const clearErrorAction = (Role.theaters === role) ? theaterClearError : userClearError;
 
@@ -35,7 +46,7 @@ const ResetPassWord: React.FC<{ role: Role }> = ({ role }) => {
 
   const clearToast = () => setToastMessage(null)
   const { handleSubmit } = useFormSubmit(formData, setInputError)
-  const { isAuthenticated } = useLoggedOwner(role)
+
 
   useEffect(() => {
     //not accessible for logged user or logged theaeter owner

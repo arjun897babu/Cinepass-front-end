@@ -1,6 +1,8 @@
 import { string, z } from 'zod'
 import { MovieFormat, Language } from './validator';
 import { ITheaterScreen } from '../interface/Interface';
+import { name } from '@cloudinary/url-gen/actions/namedTransformation';
+import { IUser, UserSignUpData } from '../interface/user/IUserData';
 
 export const movieSchema = z.object({
   movie_name: z
@@ -149,7 +151,7 @@ export const TheaterProfileSchema = TheaterOwnerEntitySchema.pick({
 
 export const theaterScreenSchema = z.object({
   screen_name: z
-    .string() 
+    .string()
     .min(4, { message: 'required at least 4 characters' })
     .max(20, { message: 'required at most 20 characters' })
     .regex(/^[a-zA-Z]+(?: [0-9]+)*$/, 'Invalid name'),
@@ -181,7 +183,48 @@ export const theaterScreenSchema = z.object({
     .string()
 });
 
-const calculateSeatingCapacity = (rows: number, columns: number) => {
-  return rows * columns;
-};
+
+
+export const userProfileSchem = z.object({
+  name: z
+    .string()
+    .nonempty('This filed is required')
+    .min(3, 'enter name(3-20 characters)')
+    .max(20, 'enter name(3-20 characters)')
+    .regex(/^[a-zA-Z0-9]+(?: [a-zA-Z0-9]+)*$/, 'Invalid name'),
+  mobile_number: z.preprocess(
+    (value) => (value !== null ? Number(value) : value),
+    z.union([z.number(), z.null()]).refine((value) => value !== null, {
+      message: 'Add a mobile number',
+    })
+    .refine((value) => value !== null && /^\d{10}$/.test(value.toString()), {
+      message: 'Invalid mobile number',
+    })
+  ),
+})
+
+export const ProfilePitcuteZchema = z.object({
+  profile_picture: string()
+})
+
+export const changePasswordSchema = z.object({
+  password: z
+    .string()
+    .nonempty('This filed is required')
+    .min(6, 'password must be 6 - 20 characters long')
+    .max(20, 'password must be 6 - 20 characters long'),
+  confirm_password: z
+    .string()
+    .nonempty('This filed is required'),
+})
+  .refine((data) => {
+    if (data.password && data.password !== data.confirm_password) {
+      return false;
+    }
+    return true;
+  }, {
+    message: "Passwords don't match",
+    path: ["confirm_password"],
+  })
+
 

@@ -3,9 +3,9 @@ import React, { FormEvent, useEffect, useState } from 'react';
 import '../../index.css';
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import backGroundImage from '/movie_projector.jpg'
-import { useDispatch } from 'react-redux';
-import type { AppDispatch } from '../../redux/store';
-import { useLoggedOwner } from '../../hooks/useLoggedUser';
+import { useDispatch, useSelector } from 'react-redux';
+import type { AppDispatch, RootState } from '../../redux/store';
+ 
 import { useForm } from '../../hooks/UseForm';
 import { useFormSubmit } from '../../hooks/UseFormSubmitt';
 import { loginTheaters } from '../../redux/actions/theaterAction';
@@ -21,7 +21,7 @@ export const TheatersLogin: React.FC = (): JSX.Element => {
   const location = useLocation()
 
   const dispatch = useDispatch<AppDispatch>();
-  const { error, isAuthenticated } = useLoggedOwner(Role.theaters);
+  const { error, isAuthenticated } = useSelector((state: RootState) => state.theaters)
 
   const navigate = useNavigate();
 

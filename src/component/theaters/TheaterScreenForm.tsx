@@ -11,7 +11,7 @@ import { isResponseError } from "../../utils/customError";
 import useErrorHandler from "../../hooks/useErrorHandler";
 import { Action, ResponseStatus, Role } from "../../interface/Interface";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../redux/store";
+import type { AppDispatch } from "../../redux/store";
 import { createTheaterScreen, updateTheaterScreen } from "../../redux/actions/theaterAction";
 import ConfirmationModal from "../ConfirmationModal";
 interface ITheaterScreenFormProps {
@@ -22,7 +22,16 @@ interface ITheaterScreenFormProps {
   screenId?: string
   selectedData?: ITheaterScreen
 }
-const TheaterScreenForm: React.FC<ITheaterScreenFormProps> = ({ action, setToast, selectedData, closeForm, screenId, updateScreenState }) => {
+const TheaterScreenForm: React.FC<ITheaterScreenFormProps> = (
+  {
+    action,
+    setToast,
+    selectedData,
+    closeForm,
+    screenId,
+    updateScreenState
+  }
+) => {
   const dispatch = useDispatch<AppDispatch>()
   const [confirmation, setConfirmation] = useState<boolean>(false);
   const closeConfirmationModal = () => setConfirmation(false)

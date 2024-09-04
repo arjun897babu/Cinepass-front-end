@@ -3,13 +3,13 @@ import React, { FormEvent, useEffect } from 'react';
 import '../../index.css';
 import { Link, useNavigate } from 'react-router-dom'
 import backGroundImage from '/Iconic Movie Posters Collage.webp';
-import { useDispatch } from 'react-redux';
-import type { AppDispatch } from '../../redux/store';
+import { useDispatch, useSelector } from 'react-redux';
+import type { AppDispatch, RootState } from '../../redux/store';
 import { signUpUser } from '../../redux/actions/userAction';
 import { useForm } from '../../hooks/UseForm';
 import { useFormSubmit } from '../../hooks/UseFormSubmitt';
-import {userClearError} from '../../redux/reducers/userReducer';
-import { useLoggedOwner } from '../../hooks/useLoggedUser';
+import { userClearError } from '../../redux/reducers/userReducer';
+ 
 import { ResponseStatus, Role } from '../../interface/Interface';
 import { PasswordInput } from '../../component/PasswordInput';
 
@@ -25,8 +25,7 @@ export const UserSignUp: React.FC = (): JSX.Element => {
     dispatch(userClearError())
   }, [])
 
-  const { error } = useLoggedOwner(Role.users);
-
+  const { error } = useSelector((state: RootState) => state.user)
   const { formData, handleChange, inputError, setInputError } = useForm({
     name: '',
     email: '',
@@ -47,7 +46,7 @@ export const UserSignUp: React.FC = (): JSX.Element => {
         const response = await dispatch(signUpUser(formData)).unwrap();
         console.log(response)
         if (response.status === ResponseStatus.SUCCESS) {
-          navigate(response.redirectURL,{})
+          navigate(response.redirectURL, {})
         }
       } catch (err) {
         console.log(err)
@@ -120,8 +119,8 @@ export const UserSignUp: React.FC = (): JSX.Element => {
               {inputError.mobile_number && <small className='text-red-600 capitalize absolute -bottom-2.5 left-3'>{inputError.mobile_number}</small>}
               {error?.error === 'mobile_number' && <small className='text-red-600 capitalize absolute -bottom-3 left-3'>{error.message}</small>}
 
-            </div> 
-            
+            </div>
+
             <PasswordInput
               label='password'
               name='password'
@@ -138,7 +137,7 @@ export const UserSignUp: React.FC = (): JSX.Element => {
               placeholder='re enter your password'
               value={formData.confirm_password}
               inputError={inputError.confirm_password ? inputError.confirm_password : undefined}
-            /> 
+            />
 
             <button type='submit' className="bg-black  mt-4 rounded-md text-white py-2">
               Register

@@ -3,14 +3,14 @@ import React, { FormEvent, useCallback, useEffect } from 'react';
 import '../../index.css';
 import { Link, useNavigate } from 'react-router-dom'
 import backGroundImage from '/movie_projector.jpg'
-import { useDispatch } from 'react-redux';
-import type { AppDispatch } from '../../redux/store';
+import { useDispatch, useSelector } from 'react-redux';
+import type { AppDispatch, RootState } from '../../redux/store';
 import { useForm } from '../../hooks/UseForm';
 import { useFormSubmit } from '../../hooks/UseFormSubmitt';
 import { signupTheaters } from '../../redux/actions/theaterAction';
 import { ResponseStatus, Role } from '../../interface/Interface';
 import { isErrorResponse } from '../../utils/customError';
-import { useLoggedOwner } from '../../hooks/useLoggedUser';
+ 
 import {theaterClearError } from '../../redux/reducers/theatersReducer';
 import { PasswordInput } from '../../component/PasswordInput';
 import Autocomplete from '../../component/Autocomplete';
@@ -24,7 +24,7 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
 
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate()
-  const { loading, error, isAuthenticated } = useLoggedOwner(Role.theaters);
+  const { error, isAuthenticated } = useSelector((state:RootState)=>state.theaters)
 
 
   useEffect(() => {

@@ -4,19 +4,19 @@ import '../../index.css';
 import backGroundImage from '/Iconic Movie Posters Collage.webp';
 import { useForm } from '../../hooks/UseForm';
 import { useFormSubmit } from '../../hooks/UseFormSubmitt';
-import { useDispatch } from 'react-redux';
-import type { AppDispatch } from '../../redux/store';
+import { useDispatch, useSelector } from 'react-redux';
+import type { AppDispatch, RootState } from '../../redux/store';
 import { useNavigate } from 'react-router-dom';
 import { loginAdmin } from '../../redux/actions/adminAction';
 import { ResponseStatus, Role } from '../../interface/Interface';
 import { isErrorResponse } from '../../utils/customError';
-import { useLoggedOwner } from '../../hooks/useLoggedUser';
+  
 import { adminClearError } from '../../redux/reducers/adminReducer';
 import { PasswordInput } from '../../component/PasswordInput';
 
 export const AdminLogin: React.FC = (): JSX.Element => {
   const dispatch = useDispatch<AppDispatch>();
-  const { error, isAuthenticated } = useLoggedOwner(Role.admin)
+  const { error, isAuthenticated } = useSelector((state:RootState)=>state.admin)
   const navigate = useNavigate();
 
   useEffect(() => {

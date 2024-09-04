@@ -157,9 +157,7 @@ export const MovieForm: React.FC<MovieFormProps> = (
       : coverPhotoRef.current?.click();
 
   }
-
-
-
+ 
   const handleImageUpload = (e: ChangeEvent<HTMLInputElement>, imageType: string) => {
     e.preventDefault();
     const file = e.target.files?.[0] || null;

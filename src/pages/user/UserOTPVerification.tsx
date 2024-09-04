@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react"
 import backgroundImage from '/Iconic Movie Posters Collage.webp'
 import { useForm } from "../../hooks/UseForm";
 import { useFormSubmit } from "../../hooks/UseFormSubmitt";
-import { useDispatch, } from "react-redux";
-import { AppDispatch, } from "../../redux/store";
+import { useDispatch, useSelector, } from "react-redux";
+import { AppDispatch, RootState, } from "../../redux/store";
 import { verifyUser } from "../../redux/actions/userAction";
 import { ResponseData, ResponseStatus, Role } from "../../interface/Interface";
 import { useNavigate } from "react-router-dom";
-import { useLoggedOwner } from "../../hooks/useLoggedUser";
+ 
 import { formatTime } from "../../utils/format";
 import { isErrorResponse, isResponseError } from "../../utils/customError";
 
@@ -21,7 +21,8 @@ const UserOTPVerification: React.FC = (): JSX.Element => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate();
 
-  const { error, tempMail } = useLoggedOwner(Role.users);
+  const { error, tempMail } = useSelector((state:RootState)=>state.user)
+
 
   useEffect(() => {
 

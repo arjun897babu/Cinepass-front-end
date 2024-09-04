@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react"
-import { useDispatch } from "react-redux"
-import { useNavigate, useParams } from "react-router-dom"
-import type { AppDispatch } from "../../redux/store"
-import { useLoggedOwner } from "../../hooks/useLoggedUser"
-import { IMovie, Role } from "../../interface/Interface"
+import { useDispatch, useSelector } from "react-redux"
+import { Link, useNavigate, useParams } from "react-router-dom"
+import type { AppDispatch, RootState } from "../../redux/store"
+import { IMovie } from "../../interface/Interface"
 import { getSingleMovie } from "../../redux/actions/userAction"
 import { Loader } from "../../component/Loader"
-import { convertTo12HourFormat, formatRunTime, formatTime, getIST } from "../../utils/format"
+import { convertTo12HourFormat, formatRunTime, getIST } from "../../utils/format"
 import { IoIosInformationCircle } from "react-icons/io"
-import { isResponseError } from "../../utils/customError" 
+import { isResponseError } from "../../utils/customError"
 
 const MoviePage: React.FC = () => {
   const { movieId } = useParams()
   const dispatch = useDispatch<AppDispatch>()
-  const { city } = useLoggedOwner(Role.users)
+  const { city } = useSelector((state: RootState) => state.user)
+
   const navigate = useNavigate()
   const [movieDetails, setMovieDetails] = useState<IMovie | null>(null);
   const [theaterDetails, setTheaterDetails] = useState<any[] | null>(null);
@@ -21,8 +21,8 @@ const MoviePage: React.FC = () => {
   if (!city) {
     navigate('/', { replace: true })
   }
-  async function fetchRunningMovie() {
 
+  async function fetchRunningMovie() {
     try {
       if (city && movieId) {
         setLoading(true)
@@ -111,12 +111,15 @@ const MoviePage: React.FC = () => {
               {/* Movie Show */}
               {theater.shows.map((show: any) => {
                 return <>
-                  <div className="flex  text-xs">
-                    <button className="p-1 px-6 border rounded-lg text-green-500 border-green-500 hover:bg-green-100 transition">
-                      {convertTo12HourFormat(show.showDetails.showTime as string)} <br />
-                      <span className="text-gray-400">{show.screen_name}</span>
-                    </button>
-                  </div>
+                  <Link to={`/movie/layout/${show.showDetails.showId}`} state={show}>
+                    <div className="flex  text-xs">
+                      <button className="p-1 px-6 border rounded-lg text-green-500 border-green-500 hover:bg-green-100 transition">
+                        {convertTo12HourFormat(show.showDetails.showTime as string)} <br />
+                        <span className="text-gray-400">{show.screen_name}</span>
+                      </button>
+                    </div>
+                  </Link>
+
                 </>
               })}
 

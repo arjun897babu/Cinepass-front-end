@@ -10,13 +10,16 @@ export interface UserEndpoint extends IEndPoints {
   verifyOTP: string;
   resendOTP: string;
   forgotPassword: string;
-  resetPassword: (token: string) => string;
+  resetPassword: (token?: string) => string;
   googleSignUp: string;
   googleLogout: string;
-  getMovieShows: (city: string) => string
+  getMovieShows: (city: string,theaterId:string) => string
+  getSingleShow:(city:string,showId:string)=>string
   getAllCities: string
   getAllMovies: (city: string) => string
   getSingleMovie: (city: string, movieId: string) => string
+  getTheater: (city: string) => string
+  userProfile:string
 }
 export interface TheaterEndpoint extends IEndPoints {
   signup: string;

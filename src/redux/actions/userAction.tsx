@@ -2,10 +2,10 @@ import { serverUser } from '../../services'
 import { AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit'
 import { IUser, LoggedOwner, UserSignUpData } from '../../interface/user/IUserData'
 import { userEndPoints } from '../../services/endpoints/endPoints'
-import { Axios, AxiosError, AxiosResponse } from 'axios'
-import { GoogleSignUp, IGetMovieShowResponse, IMovie, LoginData, OTPVerification, ResponseData, ResponseData2 } from '../../interface/Interface'
-import { handleAxiosError, IResponseError, isResponseError } from '../../utils/customError'
-import { ErrorResponse } from 'react-router-dom'
+import { AxiosError } from 'axios'
+import { GoogleSignUp, IGetMovieShowResponse, IGetSingleShow, IMovie, LoginData, OTPVerification, ResponseData, ResponseData2 } from '../../interface/Interface'
+import { handleAxiosError } from '../../utils/customError'
+import { ITheaterOwnerEntity, TheaterOwnerProfile } from '../../interface/theater/ITheaterOwner'
 
 export const signUpUser: AsyncThunk<ResponseData, UserSignUpData, {}> = createAsyncThunk(
   'user/signup',
@@ -42,8 +42,8 @@ export const getAllCities: AsyncThunk<string[], void, {}> = createAsyncThunk(
     }
   }
 );
-interface userLoginResponse extends ResponseData2{
-  data:{user:LoggedOwner}
+interface userLoginResponse extends ResponseData2 {
+  data: { user: LoggedOwner }
 }
 export const loginUser: AsyncThunk<userLoginResponse, LoginData, {}> = createAsyncThunk(
   'users/login',
@@ -52,7 +52,7 @@ export const loginUser: AsyncThunk<userLoginResponse, LoginData, {}> = createAsy
     try {
       const response = await serverUser.post(userEndPoints.login, userData);
       return await response.data
-    } catch (error) { 
+    } catch (error) {
       return rejectWithValue(handleAxiosError(error))
     }
   }
@@ -67,7 +67,7 @@ export const verifyUser: AsyncThunk<ResponseData, OTPVerification, {}> = createA
 
       return await response.data
     } catch (error) {
-      
+
       return rejectWithValue(handleAxiosError(error))
     }
   }
@@ -89,7 +89,7 @@ export const logoutUser = createAsyncThunk<ResponseData, void, {}>(
     }
   }
 );
- 
+
 export const forgotPasswordUser: AsyncThunk<ResponseData, Record<string, string>, {}> = createAsyncThunk(
   '/user/forgot-password',
   async (formData, { rejectWithValue }) => {
@@ -103,14 +103,14 @@ export const forgotPasswordUser: AsyncThunk<ResponseData, Record<string, string>
   }
 )
 
-export const resetPassword: AsyncThunk<ResponseData2, Record<string, string>, {}> = createAsyncThunk(
+export const resetPassword: AsyncThunk<ResponseData2, Record<string, string | undefined>, {}> = createAsyncThunk(
   '/user/resetPassword',
   async ({ password, token }, { rejectWithValue }) => {
     try {
       const response = await serverUser.patch(userEndPoints.resetPassword(token), { password });
       return await response.data
     } catch (error) {
-       
+
       return rejectWithValue(handleAxiosError(error))
     }
   }
@@ -123,15 +123,15 @@ export const resendOTPUser: AsyncThunk<ResponseData2, string, {}> = createAsyncT
       const response = await serverUser.post(userEndPoints.resendOTP, { email });
       return await response.data
     } catch (error) {
-     
+
       return rejectWithValue(handleAxiosError(error))
     }
   }
 );
 
 
-interface GoogleAuthResponse extends ResponseData2{
-  data:{user:LoggedOwner}
+interface GoogleAuthResponse extends ResponseData2 {
+  data: { user: LoggedOwner }
 }
 export const googleSignUp: AsyncThunk<GoogleAuthResponse, GoogleSignUp, {}> = createAsyncThunk(
   '/user/googleSignUp',
@@ -147,15 +147,16 @@ export const googleSignUp: AsyncThunk<GoogleAuthResponse, GoogleSignUp, {}> = cr
   }
 );
 
-export const getAllShows: AsyncThunk<IGetMovieShowResponse[], string, {}> = createAsyncThunk(
+export const getAllShows: AsyncThunk<any[], { city: string, theaterId: string }, {}> = createAsyncThunk(
   '/user/getAllShows',
-  async (city, { rejectWithValue }) => {
+  async ({ city, theaterId }, { rejectWithValue }) => {
     try {
-      const response = await serverUser.get(userEndPoints.getMovieShows(city), {});
+      console.log('get all shows for single thheatr is called')
+      const response = await serverUser.get(userEndPoints.getMovieShows(city, theaterId), {});
       const { shows } = response.data?.data
       return await shows
     } catch (error) {
-     
+
       return rejectWithValue(handleAxiosError(error))
     }
   }
@@ -168,15 +169,13 @@ export const getAllMovies: AsyncThunk<IMovie[], string, {}> = createAsyncThunk(
       const { movies } = response.data?.data
       return await movies
     } catch (error) {
-
       const errorPayload = handleAxiosError(error)
       return rejectWithValue(errorPayload)
-
     }
   }
 );
 export const getSingleMovie: AsyncThunk<any[], { city: string, movieId: string }, {}> = createAsyncThunk(
-  '/user/getAllMovies',
+  '/user/getSingleMovie',
   async ({ city, movieId }, { rejectWithValue }) => {
     try {
       const response = await serverUser.get(userEndPoints.getSingleMovie(city, movieId), {});
@@ -189,6 +188,67 @@ export const getSingleMovie: AsyncThunk<any[], { city: string, movieId: string }
   }
 );
 
+
+interface IGetTheaterByCityResponse extends ResponseData2 {
+  data: { theater: Partial<TheaterOwnerProfile>[] }
+}
+export const getTheatersByCity: AsyncThunk<IGetTheaterByCityResponse, string, {}> = createAsyncThunk(
+  '/user/theater',
+  async (city, { rejectWithValue }) => {
+    console.log('gettheater by city asynthunk is called')
+    try {
+      const response = await serverUser.get(userEndPoints.getTheater(city), {})
+      return await response.data
+    } catch (error) {
+      return rejectWithValue(handleAxiosError(error))
+    }
+  }
+)
+
+interface IGetUserProfileResponse extends ResponseData2 {
+  data: { user: LoggedOwner }
+}
+
+export const getUserProfile: AsyncThunk<IGetUserProfileResponse, void, {}> = createAsyncThunk(
+  '/user/getProfile',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await serverUser.get(userEndPoints.userProfile, {})
+      return await response.data
+    } catch (error) {
+      return rejectWithValue(handleAxiosError(error))
+    }
+  }
+)
+
+export const updateUserProfile: AsyncThunk<IGetUserProfileResponse, { payload: Partial<IUser> }, {}> = createAsyncThunk(
+  '/user/updateUserProfile',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await serverUser.put(userEndPoints.userProfile, payload)
+      return await response.data
+    } catch (error) {
+      return rejectWithValue(handleAxiosError(error))
+    }
+  }
+)
+
+interface IGetSingleShowDetails extends ResponseData2{
+  data: { shows: IGetSingleShow }
+}
+
+export const getSingleShowDetails: AsyncThunk<IGetSingleShowDetails, { city: string, showId: string }, {}> = createAsyncThunk(
+  '/user/getSingleShowDetails',
+  async ({ city, showId }, { rejectWithValue }) => {
+    console.log('get singleshow detials asyncthunk is being called')
+    try {
+      const respone = await serverUser.get(userEndPoints.getSingleShow(city, showId))
+      return await respone.data
+    } catch (error) {
+      return rejectWithValue(handleAxiosError)
+    }
+  }
+)
 
 
 

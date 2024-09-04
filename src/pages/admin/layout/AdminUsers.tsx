@@ -159,7 +159,7 @@ const AdminUsers: React.FC = (): JSX.Element => {
               onClose={setModalClose}
               onConfirm={handleBlock}
               message="Do you want to proceed with this action "
-              btnType={!selectedUser?.status ? ResponseStatus.success : ResponseStatus.ERROR}
+              btnType={!selectedUser?.status ? ResponseStatus.SUCCESS : ResponseStatus.ERROR}
             />}
           </div >
         )

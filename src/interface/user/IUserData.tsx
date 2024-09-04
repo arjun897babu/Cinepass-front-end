@@ -11,8 +11,6 @@ export interface LoggedOwner {
   name: string;
   email: string;
   mobile_number?: number;
-  verified?: boolean;
-  status?: boolean;
   profile_picture?: string | null;
 }
 
