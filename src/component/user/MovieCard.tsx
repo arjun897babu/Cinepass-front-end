@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { IMovie } from "../../interface/Interface"
 import { getIST, getMovieSrc } from "../../utils/format";
 
@@ -6,7 +7,7 @@ interface MovieCardProps {
 }
 
 const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
-
+    
   return (
     <>
       <div className=" ">
@@ -27,4 +28,4 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
   )
 };
 
-export default MovieCard
+export default memo(MovieCard)

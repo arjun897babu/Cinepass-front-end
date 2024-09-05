@@ -14,6 +14,7 @@ import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../../redux/store";
 import { createTheaterScreen, updateTheaterScreen } from "../../redux/actions/theaterAction";
 import ConfirmationModal from "../ConfirmationModal";
+import { getSeatName } from "../../utils/format";
 interface ITheaterScreenFormProps {
   setToast: (toast: Toast) => void;
   action: string,
@@ -135,7 +136,7 @@ const TheaterScreenForm: React.FC<ITheaterScreenFormProps> = (
 
     const initialSeats = Array.from({ length: numRows }, (_, rowIndex) =>
       Array.from({ length: numColumns }, (_, colIndex) => ({
-        name: `${String.fromCharCode(65 + rowIndex)}${colIndex + 1}`,
+        name: getSeatName(rowIndex,colIndex),
         available: true,
       }))
     );

@@ -1,7 +1,8 @@
 import { FieldValues } from "react-hook-form";
 import { ITheaterOwnerEntity } from "./theater/ITheaterOwner";
 import { ITheaterScreenResponse } from "./theater/ITheaterScreen";
- 
+import { IMovieShow } from "./theater/IMovieShow";
+
 
 export enum Role {
   users = 'users',
@@ -76,9 +77,9 @@ export interface IMovie {
   run_time: string;
   genres: string[];
   format: string[];
-  cover_photo: string  
+  cover_photo: string
   listed?: boolean;
-  movie_poster: string 
+  movie_poster: string
   cast?: ICast[];
   trailer?: string;
   file?: string;
@@ -90,7 +91,7 @@ export interface ISeat {
   name: string,
   booked: boolean,
 }
-
+ 
 export interface ITheaterScreen {
   _id?: string;
   theaterId?: string
@@ -111,26 +112,19 @@ export interface IGetMovieShowResponse {
   theater: Pick<ITheaterOwnerEntity, '_id' | 'address' | 'city' | 'theater_name'>
   movie: IMovie,
   screen: Pick<ITheaterScreenResponse, '_id' | 'amenity' | 'screen_name'>
-  opening_date?:string|Date
+  opening_date?: string | Date
 }
 
 export interface IGetSingleShow {
-  movie: {
-    movie_name: Pick<IMovie, 'movie_name'>
-  };
-  theater: {
-    theater_name: Pick<ITheaterOwnerEntity, 'theater_name'>
-  };
-  screen: {
-    name: Pick<ITheaterScreen, 'screen_name'>;
-    layout: Pick<ITheaterScreen, 'layout'>;
-  };
-  show: Partial<IMovie>
+  movie: Pick<IMovie, 'movie_name'>
+  theater: Pick<ITheaterOwnerEntity, 'theater_name'>
+  screen:  ITheaterScreenResponse 
+  show: Partial<IMovieShow>
 }
 
-export enum Action   {
+export enum Action {
   ADD = 'add',
-  UPDATE='update',
-  DELETE='delete'
+  UPDATE = 'update',
+  DELETE = 'delete'
 }
 

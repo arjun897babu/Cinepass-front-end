@@ -1,3 +1,8 @@
+export interface IReservedSeats {
+  booking_date: Date
+  reserved_seats: string[]
+}
+
 export interface IMovieShow {
   _id?: string
   movieId: string;
@@ -7,5 +12,6 @@ export interface IMovieShow {
   format:string,
   endTime: string,
   opening_date?: string | Date
+  reserved?:IReservedSeats[]
 }
 

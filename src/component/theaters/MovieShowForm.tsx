@@ -210,7 +210,7 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
 
     } catch (error) {
       console.log(error)
-      handleApiError(error);
+     
 
       if (isResponseError(error)) {
         if (error.statusCode === 400) {
@@ -220,8 +220,12 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
               message: error.data.message
             }
           )
+        }else{
+          handleApiError(error);
         }
       }
+    }finally{
+      setConfirmation(false)
     }
   }
 

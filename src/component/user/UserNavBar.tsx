@@ -54,8 +54,7 @@ const UserNavBar: React.FC = (): JSX.Element => {
   //for fetching theater movies 
   const fetchData = async () => {
     try {
-      setLoading(true);
-
+      setLoading(true); 
       if (city) {
         const [moviesResponse, theatersResponse] = await Promise.all([
           dispatch(getAllMovies(city)).unwrap(),

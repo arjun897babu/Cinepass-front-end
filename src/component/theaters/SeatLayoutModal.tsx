@@ -1,13 +1,19 @@
 import { MouseEvent, useEffect, useRef, useState } from "react";
 import { ISeat } from "../../interface/theater/ITheaterScreen";
+import { IReservedSeats } from "../../interface/theater/IMovieShow";
 
 interface ISeatRowProps {
   rowNumber: number;
   seats: ISeat[],
-  handleSeatClick?: (index: number) => void
+  selection?: boolean,
+  reserved?: IReservedSeats
+   handleSeatClick?: (index: number) => void
 }
 
-const SeatRow: React.FC<ISeatRowProps> = ({ rowNumber, seats, handleSeatClick }) => {
+export const SeatRow: React.FC<ISeatRowProps> = ({ rowNumber, seats, selection,reserved,  handleSeatClick }) => {
+
+
+
   return (
     <div key={rowNumber} className="relative flex items-center">
       <div className="absolute -left-7 font-light text-xs text-black flex items-center justify-center">
@@ -26,7 +32,7 @@ const SeatRow: React.FC<ISeatRowProps> = ({ rowNumber, seats, handleSeatClick })
 };
 
 
-const ColumnNumbers: React.FC<{ columnCount: number }> = ({ columnCount }) => {
+export const ColumnNumbers: React.FC<{ columnCount: number }> = ({ columnCount }) => {
   const columns = Array.from({ length: columnCount }, (_, col) => (
     <div
       key={`column-${col + 1}`}
@@ -59,13 +65,14 @@ export const SeatLayoutModal: React.FC<ISeatLayoutModalProps> = (
     seats,
     rows,
     column,
-    id, 
+    id,
     name,
     closeModal,
-    handleSeatClick
+    handleSeatClick,
+    action
   }
 ) => {
-  
+
   const columnCount = parseInt(column, 10);
   const layoutModalRef = useRef<HTMLDialogElement>(null)
 
@@ -96,14 +103,12 @@ export const SeatLayoutModal: React.FC<ISeatLayoutModalProps> = (
             {seats?.map((row, rowIndex) => (
               <SeatRow
                 key={rowIndex}
-                rowNumber={rowIndex + 1} 
+                rowNumber={rowIndex + 1}
                 seats={row}
                 handleSeatClick={(index: number) => handleSeatClick?.(rowIndex, index)}
               />
             ))}
-            {/* {Array.from({ length: rowCount }, (_, row) => (
-              <SeatRow key={row + 1} rowNumber={row + 1} columnCount={columnCount} action={action} />
-            ))} */}
+            
             <ColumnNumbers columnCount={columnCount} />
           </div>
         </div>

@@ -1,4 +1,3 @@
-import { number } from "zod";
 import { UploadError } from "./customError";
 
 export function formatTime(time: number): string {
@@ -98,4 +97,8 @@ export function setDefaultDate(date: string, days: number): string {
   newDate.setDate(newDate.getDate() + days);
 
   return newDate.toISOString().split('T')[0];
+}
+
+export function getSeatName(rowIndex: number, colIndex: number): string { 
+  return `${String.fromCharCode(65 + rowIndex)}${colIndex + 1}`;
 }

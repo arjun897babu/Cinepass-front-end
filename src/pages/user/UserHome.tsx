@@ -14,7 +14,7 @@ import LocationModal from "./LocationModal"
 
 const UserHome: React.FC = () => {
   
-  const { movies = [], cityTheaters = [] } = useSelector((state: RootState) => state.user)
+  const { movies = [] } = useSelector((state: RootState) => state.user)
 
   if (!movies.length) {
 
@@ -27,6 +27,8 @@ const UserHome: React.FC = () => {
       </div>
     )
   }
+
+ 
 
   return (
 
