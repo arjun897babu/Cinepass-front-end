@@ -47,9 +47,9 @@ export interface EntityResponse {
 }
 
 interface IGetEntityDataForAdmin extends ResponseData2 {
-  data: { 
-      [Role.theaters]?: EntityResponse
-      [Role.users]?: EntityResponse 
+  data: {
+    [Role.theaters]?: EntityResponse
+    [Role.users]?: EntityResponse
   }
 }
 
@@ -99,15 +99,21 @@ export const updateTheaterApprovalForAdmin: AsyncThunk<ResponseData, { _id: stri
   }
 );
 
+export interface MovieResponse {
+  maxPage: number,
+  movies: IMovie[] | []
+}
+export interface IGetMovieResponse extends ResponseData2 {
+  data: MovieResponse
+}
 
-export const getMovie: AsyncThunk<IMovie[], MovieType, {}> = createAsyncThunk(
+export const getMovie: AsyncThunk<IGetMovieResponse, { movieType: MovieType, pageNumber?: number }, {}> = createAsyncThunk(
   'admin/getMovie',
-  async (movieType: MovieType, { rejectWithValue }) => {
+  async ({ movieType, pageNumber }, { rejectWithValue }) => {
     try {
 
-      const response = await serverAdmin.get(adminEndpoints.getMovie(movieType), {});
-      const { movies } = response.data?.data
-      return await movies
+      const response = await serverAdmin.get(adminEndpoints.getMovie(movieType, pageNumber), {});
+      return await response.data
     } catch (error) {
       return rejectWithValue(handleAxiosError(error))
     }

@@ -12,6 +12,7 @@ import Toast2 from "../../../component/Toast2";
 
 import { Loader } from "../../../component/Loader";
 import Pagination from "../../../component/Pagination";
+import { getSerialNumber } from "../../../utils/format";
 
 export type ToastMessage = {
   alert: ResponseStatus,
@@ -128,7 +129,7 @@ const AdminUsers: React.FC = (): JSX.Element => {
 
                 {users?.length > 0 && users.map((value, index) => (
                   <tr key={value._id}>
-                    <td>{index + 1}</td>
+                    <td>{getSerialNumber(currentPage, index)}</td>
                     <td>
                       <div className="flex items-center gap-3   max-w-60  whitespace-nowrap overflow-hidden ">
                         <div className="avatar">

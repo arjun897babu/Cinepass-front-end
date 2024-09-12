@@ -306,7 +306,7 @@ export const MovieForm: React.FC<MovieFormProps> = (
 
         </div>
 
-        {/* multi Select componet */}
+        {/* multi Select component */}
         <div className="relative flex  gap-2 items-center">
           <div className="flex relative flex-col">
             <label className="label">Genres</label>
@@ -486,7 +486,7 @@ export const MovieForm: React.FC<MovieFormProps> = (
               preview={true}
               removeSelectedImage={removeSelectedImage}
               updateSelectedImage={updateSelectedImage}
-              aspectInit={1000 / 200}
+              aspectInit={1000 / 300}
               isCloudinaryImg={isCloudinaryUrl(selectedData.cover_photo)}
             />
           }

@@ -72,7 +72,7 @@ export const movieShowSchema = z.object({
       required_error: 'choose end Time'
     }),
 
-  opening_date: z
+  openingDate: z
     .string()
     .nonempty('choose a opening date for booking')
 })

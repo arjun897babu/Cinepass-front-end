@@ -112,11 +112,14 @@ export interface IGetMovieShowResponse {
   theater: Pick<ITheaterOwnerEntity, '_id' | 'address' | 'city' | 'theater_name'>
   movie: IMovie,
   screen: Pick<ITheaterScreenResponse, '_id' | 'amenity' | 'screen_name'>
-  opening_date?: string | Date
+  openingDate: Date
+  allowCancelation: boolean;
+  cancelationDeadline: number;
+  advanceBookingPeriod: number;
 }
 
 export interface IGetSingleShow {
-  movie: Pick<IMovie, 'movie_name'>
+  movie: Pick<IMovie, 'movie_name'|'movie_poster'>
   theater: Pick<ITheaterOwnerEntity, 'theater_name'>
   screen:  ITheaterScreenResponse 
   show: Partial<IMovieShow>
@@ -128,3 +131,19 @@ export enum Action {
   DELETE = 'delete'
 }
 
+export interface MovieFilter {
+  bookingDate: string;
+  search: string;
+  format: string;
+  genre: string;
+  language: string;
+  nowShowing:boolean;
+}
+
+export enum MovieFilterEnum {
+  SEARCH = 'search',
+  NOW_SHOWING = 'nowShowing',
+  GENRE = 'genre',
+  FORMAT = 'format',
+  LANGUAGE = 'language'
+}

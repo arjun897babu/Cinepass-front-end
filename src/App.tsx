@@ -1,11 +1,10 @@
 import { Route, Routes } from 'react-router-dom';
 import { AdminRoutes,TheatersRoutes,UserRoutes } from './routes';
-
+import './App.css'
 function App() {
 
   return (
-    <>
-
+    <> 
       <Routes>
 
         {/* user routes */}
@@ -16,9 +15,7 @@ function App() {
 
         {/* theaters routes */}
         <Route path="/theaters/*" element={<TheatersRoutes />} />
-
-
-
+ 
       </Routes>
 
     </>

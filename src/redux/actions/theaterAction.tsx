@@ -10,6 +10,7 @@ import { MovieType } from "../../component/admin/MovieForm";
 import { IMovieShow } from "../../interface/theater/IMovieShow";
 import { handleAxiosError } from "../../utils/customError";
 import { ITheaterOwnerEntity, TheaterOwnerProfile, TheaterProfile } from "../../interface/theater/ITheaterOwner";
+import { IGetMovieResponse } from "./adminAction";
 
 /*..................auth.................. */
 
@@ -219,15 +220,17 @@ export const updateTheaterScreen: AsyncThunk<TheaterScreenResponse, { screenId: 
 /*..................screen.................. */
 
 /*..................movie.................. */
-export const getMovie: AsyncThunk<IMovie[], MovieType, {}> = createAsyncThunk(
+
+
+
+export const getMovie: AsyncThunk<IGetMovieResponse, MovieType, {}> = createAsyncThunk(
   'theaters/getMovie',
   async (movieType: MovieType, { rejectWithValue }) => {
     try {
       console.log('calleed')
       const response = await serverTheater.get(theatersEndPoints.getMovie(movieType), {});
       console.log(response)
-      const { movies } = response.data?.data
-      return await movies
+      return await response.data
     } catch (error) {
       console.log(error)
       return rejectWithValue(handleAxiosError(error))
@@ -295,7 +298,7 @@ export const deleteMovieShow: AsyncThunk<ResponseData2, string, {}> = createAsyn
   async (showId, { rejectWithValue }) => {
     console.log('delete show asyncthunk is called')
     try {
-      const respones = await serverTheater.patch(theatersEndPoints.delteMovieShow(showId), {})
+      const respones = await serverTheater.patch(theatersEndPoints.deleteMovieShow(showId), {})
       console.log(respones)
       return respones.data
     } catch (error) {

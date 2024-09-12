@@ -13,6 +13,7 @@ import Toast2 from "../../../component/Toast2"
 import { MovieModal } from "../../../component/admin/MovieFromModal"
 import ConfirmationModal from "../../../component/ConfirmationModal"
 import useErrorHandler from "../../../hooks/useErrorHandler"
+import Pagination from "../../../component/Pagination"
 
 
 
@@ -21,7 +22,10 @@ const AdminMovie: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>()
   const [loading, setLoading] = useState(false)
   const [theaterMovies, setTheaterMovies] = useState<IMovie[] | []>([]);
+  const [maxPage, setMaxPage] = useState<number>(1)
+  const [currentPage, setCurrentPage] = useState<number>(1)
 
+  const handleChangePage = (newPage: number) => setCurrentPage(newPage)
   const [selectedMovie, setSelectedMovie] = useState<IMovie | null>(null); // Modal shows selected movie's info for update
   const setNewMovies = (movieData: IMovie) => {
     setTheaterMovies((prevMovies) => {
@@ -90,13 +94,14 @@ const AdminMovie: React.FC = () => {
       }
     }
   }
- 
+
   const fetchMovieData = async () => {
     try {
       setLoading(true)
-      const response = await dispatch(getMovie(MovieType.theater)).unwrap();
+      const response = await dispatch(getMovie({movieType:MovieType.theater,pageNumber:currentPage})).unwrap();
       if (response) {
-        setTheaterMovies(response)
+        setTheaterMovies(response.data.movies)
+        setMaxPage(response.data.maxPage)
       }
     } catch (error) {
       handleApiError(error)
@@ -108,7 +113,7 @@ const AdminMovie: React.FC = () => {
 
   useEffect(() => {
     fetchMovieData()
-  }, [])
+  }, [currentPage])
 
   const showUpdateForm = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
@@ -243,6 +248,17 @@ const AdminMovie: React.FC = () => {
             id="updateMovie"
             selectedData={selectedMovie}
           />
+        }
+
+        {
+          maxPage && theaterMovies.length > 0 &&
+          <div className="flex justify-center mt-3">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={maxPage}
+              onPageChange={handleChangePage}
+            />
+          </div>
         }
 
       </div >

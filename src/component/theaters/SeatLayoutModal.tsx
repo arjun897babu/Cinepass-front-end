@@ -1,32 +1,50 @@
-import { MouseEvent, useEffect, useRef, useState } from "react";
+import { MouseEvent, useEffect, useRef } from "react";
 import { ISeat } from "../../interface/theater/ITheaterScreen";
 import { IReservedSeats } from "../../interface/theater/IMovieShow";
+import { Role } from "../../interface/Interface";
 
 interface ISeatRowProps {
   rowNumber: number;
-  seats: ISeat[],
-  selection?: boolean,
-  reserved?: IReservedSeats
-   handleSeatClick?: (index: number) => void
+  seats: ISeat[];
+  reserved?: IReservedSeats[];
+  handleSeatClick?: (index: number) => void;
+  role?: Role;
+  selectedSeat?: string[]
 }
 
-export const SeatRow: React.FC<ISeatRowProps> = ({ rowNumber, seats, selection,reserved,  handleSeatClick }) => {
+export const SeatRow: React.FC<ISeatRowProps> = ({ rowNumber, seats, reserved, handleSeatClick, role, selectedSeat }) => {
 
 
 
   return (
-    <div key={rowNumber} className="relative flex items-center">
+    <div key={rowNumber} className="relative flex items-center ">
       <div className="absolute -left-7 font-light text-xs text-black flex items-center justify-center">
         {String.fromCharCode(64 + rowNumber)}
       </div>
-      {seats.map((seat, index) => (
-        <div
-          key={seat.name}
-          onClick={() => handleSeatClick?.(index)}
-          className={`seat border border-blue-300 rounded-md w-7 h-7 m-0.5 cursor-pointer ${seat.available ? "bg-white " : "  border-white"
-            }`}
-        />
-      ))}
+      {seats.map((seat, index) => {
+
+        const isBooked = reserved?.some((reservation) => reservation.reserved_seats.includes(seat.name));
+        // const isBooked = [ 'A16', 'B16', 'C16' ].includes(seat.name);
+        const isSelected = selectedSeat?.includes(seat.name)
+
+        if (isSelected) {
+          console.log(selectedSeat)
+        }
+        return (
+          <div className={`${role === Role.users && seat.available ? 'tooltip' : role !== Role.users ? 'tooltip' : ''}`} data-tip={seat.name}>
+            <div
+              key={seat.name}
+              onClick={() => handleSeatClick?.(index)}
+              className={`seat border rounded-md  w-7 h-7 m-0.5  
+              ${seat.available ? (isBooked ? "bg-gray-400 pointer-events-none " : isSelected ? "bg-sky-400" : "bg-white border-sky-300") : "border-white"}
+              ${role == Role.users
+                  ? `  ${seat.available && !isSelected ? "cursor-pointer hover:bg-sky-300" : !seat.available ? "pointer-events-none" : ""}`
+                  : `cursor-pointer   ${seat.available ? "" : "hover:bg-gray-500"}`
+                }`}
+            />
+          </div>
+        );
+      })}
     </div>
   );
 };
@@ -63,13 +81,12 @@ interface ISeatLayoutModalProps {
 export const SeatLayoutModal: React.FC<ISeatLayoutModalProps> = (
   {
     seats,
-    rows,
     column,
     id,
     name,
     closeModal,
     handleSeatClick,
-    action
+   
   }
 ) => {
 
@@ -108,7 +125,7 @@ export const SeatLayoutModal: React.FC<ISeatLayoutModalProps> = (
                 handleSeatClick={(index: number) => handleSeatClick?.(rowIndex, index)}
               />
             ))}
-            
+
             <ColumnNumbers columnCount={columnCount} />
           </div>
         </div>

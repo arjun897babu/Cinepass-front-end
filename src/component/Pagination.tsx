@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 
 interface PaginationProps {
   currentPage: number;
@@ -7,17 +7,17 @@ interface PaginationProps {
 }
 
 const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
-  if (totalPages <=0) return null;
+  if (totalPages <= 1) return null;
 
-  const handleClick =  (page: number) => onPageChange(page); 
-
+  const handleClick = (page: number) => onPageChange(page);
+   
   return (
     <div className="join  ">
       {Array.from({ length: totalPages }, (_, index) => (
 
         <button
           key={index}
-          className={`join-item btn-sm ${currentPage == (index + 1) ? ' bg-cyan-400' : 'bg-cyan-200'}  hover:bg-cyan-400 `}
+          className={`join-item btn-sm ${currentPage == (index + 1) ? ' bg-cyan-400' : 'bg-cyan-200'} `}
           onClick={() => handleClick(index + 1)}
         >
           {index + 1}
@@ -27,4 +27,4 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
   );
 };
 
-export default memo(Pagination);
+export default Pagination;

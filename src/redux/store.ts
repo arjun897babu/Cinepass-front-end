@@ -22,7 +22,7 @@ const userTransform = createTransform(
 const persistConfig = {
   key: 'cine',
   storage,
- 
+ transforms:[userTransform]
 };
 
 const rootReducer = combineReducers({
@@ -31,7 +31,7 @@ const rootReducer = combineReducers({
   admin: adminReducer,
 });
 
-const persistedReducer = persistReducer(persistConfig, rootReducer  );
+const persistedReducer = persistReducer(persistConfig, rootReducer as any );
 
 const store = configureStore({
   reducer: persistedReducer,

@@ -8,7 +8,7 @@ export const userEndPoints: UserEndpoint = {
   verifyOTP: '/otp-verification',
   resendOTP: '/resend-otp',
   forgotPassword: '/forgot-password',
-  resetPassword: (token) => `/reset-password${token ? `/${token}`:''}`,
+  resetPassword: (token) => `/reset-password${token ? `/${token}` : ''}`,
   googleSignUp: '/google-signup',
   googleLogout: '/google-logout',
   getMovieShows: (city, theaterId) => `/shows/${city}?theaterId=${theaterId}`,
@@ -17,7 +17,8 @@ export const userEndPoints: UserEndpoint = {
   getAllMovies: (city) => `/movies/${city}`,
   getSingleMovie: (city, movieId) => `/movies/${city}?movieId=${movieId}`,
   getTheater: (city) => `/theater/${city}`,
-  userProfile: '/profile'
+  userProfile: '/profile',
+  bookTicket: (showId) => `/tickets/${showId}`
 };
 
 export const theatersEndPoints: TheaterEndpoint = {
@@ -39,17 +40,17 @@ export const theatersEndPoints: TheaterEndpoint = {
   getMovieShows: `/shows`,
   addMovieShows: `/shows`,
   updateMovieShow: (showId) => `/shows/${showId}`,
-  delteMovieShow: (showId) => `/shows/${showId}`,
+  deleteMovieShow: (showId) => `/shows/${showId}`,
 };
 
 export const adminEndpoints: AdminEndpoint = {
   login: '/login',
   logout: '/logout',
-  getEntityData: (role,pageNumber) =>`/${role}${pageNumber ? `?pageNumber=${pageNumber}` : ''}`,
+  getEntityData: (role, pageNumber) => `/${role}${pageNumber ? `?pageNumber=${pageNumber}` : ''}`,
   updateApprovalStatus: (theaterOwnerId) => `/approval/${theaterOwnerId}`,
   manageEntities: (entityId, role) => `/${role}/${entityId}`,
   addMovie: (movieType) => `/movie/${movieType}`,
-  getMovie: (movieType) => `/movie/${movieType}`,
+  getMovie: (movieType,pageNumber) => `/movie/${movieType}${pageNumber?`?pageNumber=${pageNumber}` : ''}`,
   deleteMovie: (movieTpe, movieId) => `/movie/${movieTpe}/${movieId}`,
   updateMovie: (movieTpe, movieId) => `/movie/${movieTpe}/${movieId}`,
 }

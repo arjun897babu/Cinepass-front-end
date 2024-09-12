@@ -45,7 +45,7 @@ const TheaterShow: React.FC = () => {
           format: selected.format,
           movieId: selected.movie._id ?? '',
           screenId: selected.screen._id ?? '',
-          opening_date: selected.opening_date
+          openingDate: selected.openingDate
         }
       ) : null
   }

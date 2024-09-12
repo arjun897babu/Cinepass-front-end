@@ -57,7 +57,7 @@ export const MovieModal: React.FC<MovieModalProp> = (
         <div className="modal-box w-11/12 max-w-3xl  ">
 
           <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onClick={closeForm}>✕</button>
-          <h3 className="text-2xl font-bold mb-4 text-center">{action} Movie</h3>
+          <h3 className="text-2xl font-bold mb-4 text-center uppercase">{action} Movie</h3>
           <MovieForm
             movieType={MovieType.theater}
             updateMovieData={updateMovieData}

@@ -19,7 +19,8 @@ export interface UserEndpoint extends IEndPoints {
   getAllMovies: (city: string) => string
   getSingleMovie: (city: string, movieId: string) => string
   getTheater: (city: string) => string
-  userProfile:string
+  userProfile:string;
+  bookTicket:(showId:string)=>string
 }
 export interface TheaterEndpoint extends IEndPoints {
   signup: string;
@@ -37,7 +38,7 @@ export interface TheaterEndpoint extends IEndPoints {
   addMovieShows: string
   getMovieShows: string
   updateMovieShow: (showId: string) => string
-  delteMovieShow: (showId: string) => string
+  deleteMovieShow: (showId: string) => string
 }
 export interface AdminEndpoint extends IEndPoints {
   getEntityData: (role: string,pageNumber?:number) => string
@@ -45,7 +46,7 @@ export interface AdminEndpoint extends IEndPoints {
   manageEntities: (_entityId: string, role: string) => string
   addMovie: (movieType: MovieType) => string
   updateMovie: (movieType: MovieType, movieId: string) => string
-  getMovie: (movieType: MovieType) => string
+  getMovie: (movieType: MovieType,pageNumber?:number) => string
   deleteMovie: (movieTpe: MovieType, movieId: string) => string
 
 }

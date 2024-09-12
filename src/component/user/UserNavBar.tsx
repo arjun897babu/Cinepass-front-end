@@ -6,7 +6,7 @@ import { GiHamburgerMenu } from "react-icons/gi"
 import { RxCross1 } from "react-icons/rx";
 import { useDispatch, useSelector } from 'react-redux'
 import type { AppDispatch, RootState } from '../../redux/store'
-import { getAllMovies, getTheatersByCity, getUserProfile, logoutUser } from '../../redux/actions/userAction' 
+import { getAllMovies, getTheatersByCity, getUserProfile, logoutUser } from '../../redux/actions/userAction'
 import { IMovie, ResponseStatus, Role } from '../../interface/Interface'
 import useErrorHandler from '../../hooks/useErrorHandler'
 import { isResponseError } from '../../utils/customError'
@@ -54,10 +54,10 @@ const UserNavBar: React.FC = (): JSX.Element => {
   //for fetching theater movies 
   const fetchData = async () => {
     try {
-      setLoading(true); 
+      setLoading(true);
       if (city) {
         const [moviesResponse, theatersResponse] = await Promise.all([
-          dispatch(getAllMovies(city)).unwrap(),
+          dispatch(getAllMovies({ city })).unwrap(),
           dispatch(getTheatersByCity(city)).unwrap(),
         ]);
         if (moviesResponse) {

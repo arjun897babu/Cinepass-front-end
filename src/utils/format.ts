@@ -91,7 +91,7 @@ export function convertFile(file: File): Promise<string> {
 
 
 export function setDefaultDate(date: string, days: number): string {
-  
+
   const newDate = new Date(date);
 
   newDate.setDate(newDate.getDate() + days);
@@ -99,6 +99,29 @@ export function setDefaultDate(date: string, days: number): string {
   return newDate.toISOString().split('T')[0];
 }
 
-export function getSeatName(rowIndex: number, colIndex: number): string { 
+export function getSerialNumber<T extends number>(currentPage: T, index: T, limit: T = 3 as T): number {
+  return (currentPage - 1) * limit + index + 1
+}
+
+export function getSeatName(rowIndex: number, colIndex: number): string {
   return `${String.fromCharCode(65 + rowIndex)}${colIndex + 1}`;
+}
+
+export function getDayName(date: Date = new Date()): string {
+  return date.toLocaleDateString('en-IN', { weekday: 'long' })
+}
+export function getMonthName(date: Date = new Date()): string {
+  return date.toLocaleDateString('en-IN', { month: 'short' })
+}
+export function getDate(date:Date){
+  return date.toLocaleDateString('en-IN',{day:'2-digit'})
+}
+
+export function toValidJSDate(date: string): Date {
+  const [day, month, year] = date.split('-');
+  return new Date(`${year}-${month}-${day}`);
+}
+
+export function calculateTotalAmount<T extends number>(totalSeat: T, chargePerSeat: T, serviceCharge: T): number {
+  return (totalSeat * chargePerSeat) + (totalSeat * serviceCharge)
 }

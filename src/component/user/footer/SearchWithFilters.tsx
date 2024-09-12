@@ -1,18 +1,25 @@
-import React, { MouseEvent, useState } from "react"
+import React, { MouseEvent, useEffect, useState } from "react"
 import { CiSearch } from "react-icons/ci"
 import { IoLocation } from "react-icons/io5";
 import { IoIosArrowDropdown } from "react-icons/io";
- 
+
 import { useNavigate } from "react-router-dom";
 import LocationModal from "../../../pages/user/LocationModal";
-import  type { Rootstate } from "../../../redux/store";
-import { useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "../../../redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllMovies } from "../../../redux/actions/userAction";
+import useErrorHandler from "../../../hooks/useErrorHandler";
+import { Role } from "../../../interface/Interface";
 
 export const SearchWithFilters: React.FC = () => {
-
-  const { city } =  useSelector((state:RootState)=>state.user)
+  const dispatch = useDispatch<AppDispatch>()
+  const { city } = useSelector((state: RootState) => state.user)
   const [locationModal, setLocationModal] = useState(false)
   const navigate = useNavigate();
+
+
+  const [nowShowing, setNowShowing] = useState(true)
+
 
   if (!city) {
     navigate('/')
@@ -26,14 +33,35 @@ export const SearchWithFilters: React.FC = () => {
   const onClose = () => {
     setLocationModal(false);
   }
+  const handleApiError = useErrorHandler(Role.users);
+
+  const fetchFilteredMovies = async (isNowShowing: boolean) => {
+    try {
+      if (city) {
+        await dispatch(getAllMovies({ city, filter: { nowShowing: isNowShowing } })).unwrap();
+      }
+    } catch (error) {
+      handleApiError(error);
+    }
+  };
+
+
+  const handleNowShowingClick = () => {
+    setNowShowing(true);
+    fetchFilteredMovies(true);
+  };
+  const handleUpcomingClick = () => {
+    setNowShowing(false);
+    fetchFilteredMovies(false);
+  }
 
   return (
     <>
       <div className='w-full   p-2 bg-white hidden sm:flex justify-between items-center relative group'>
 
         <div className="w-72 h-9 p-1 bg-blue-100 flex justify-evenly rounded-md">
-          <button className="w-full h-full p-1 capitalize text-sm text-slate-800">now showing</button>
-          <button className="w-full h-full p-1 bg-white rounded-sm capitalize text-sm text-slate-800">Upcoming</button>
+          <button onClick={handleNowShowingClick} className={`${nowShowing && 'bg-white'} w-full h-full p-1  capitalize text-sm text-slate-800`}>now showing</button>
+          <button onClick={handleUpcomingClick} className={`w-full h-full p-1 ${!nowShowing && 'bg-white'}   rounded-sm capitalize text-sm text-slate-800`}>Upcoming</button>
         </div>
 
         <div className="relative">

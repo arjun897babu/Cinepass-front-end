@@ -1,14 +1,14 @@
 import React, { MouseEvent, useState } from "react"
 import Cropper, { Area } from "react-easy-crop"
 import { croppedImage } from "./imageCrop";
- import { ImCheckmark, ImCross } from "react-icons/im";
+import { ImCheckmark, ImCross } from "react-icons/im";
 interface CropBackdropProps {
   imgURL: string;
   cropInit?: { x: number; y: number };
   zoomInit?: number;
   aspectInit?: number;
   onCancel: () => void;
-  setCroppedImageFor: ( 
+  setCroppedImageFor: (
     croppedImageUrl: string
   ) => void;
 }
@@ -22,7 +22,7 @@ export const CropBackdrop: React.FC<CropBackdropProps> = (
     setCroppedImageFor
   }
 ) => {
-  
+
   const [zoom, setZoom] = useState<number>(zoomInit);
   const [crop, setCrop] = useState<{ x: number; y: number }>(cropInit);
   const [aspect, setAspect] = useState<number>(aspectInit);
@@ -30,26 +30,26 @@ export const CropBackdrop: React.FC<CropBackdropProps> = (
 
   const onCropChange = (crop: { x: number, y: number }) => {
     setCrop(crop);
-    
+
   };
   const cancelCrop = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
-     onCancel()
+    onCancel()
   }
   const onZoomChange = (newZoom: number) => {
     setZoom(newZoom);
   };
 
   const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
-    setCroppedArea(croppedAreaPixels); 
+    setCroppedArea(croppedAreaPixels);
   };
 
   const onCrop = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-  
+
     if (croppedArea) {
       const croppedImageUrl = await croppedImage(imgURL, croppedArea);
-      setCroppedImageFor( croppedImageUrl);
+      setCroppedImageFor(croppedImageUrl);
     }
   };
 
@@ -65,7 +65,7 @@ export const CropBackdrop: React.FC<CropBackdropProps> = (
             onZoomChange={onZoomChange}
             onCropComplete={onCropComplete}
             aspect={aspect}
-            style={{ containerStyle: { width: '100%', height: '100' }, mediaStyle: { width: 'auto', height: 'auto' } }}
+          style={{ containerStyle: { width: '100%', height: '100' }, mediaStyle: { width: 'auto', height: 'auto' } }}
           />
           <div className="bg-white absolute w-full flex gap-2">
             <button onClick={onCrop} className="bg-sky-300 hover:bg-sky-200 text-sm  btn-sm "> <ImCheckmark /></button>

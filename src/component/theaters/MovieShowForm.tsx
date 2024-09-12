@@ -29,7 +29,7 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
     screenId: '',
     language: '',
     format: '',
-    opening_date: `${new Date()}`,
+    openingDate: `${new Date()}`,
     showTime: '',
     endTime: '',
   }, action, closeModal, id, setToast }) => {
@@ -89,7 +89,7 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
     try {
       setFetching(true);
       const response = await dispatch(getMovie(MovieType.theater)).unwrap();
-      setTheaterMovies(response);
+      setTheaterMovies(response.data.movies);
     } catch (error) {
       throw error
     } finally {
@@ -133,7 +133,7 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
 
   }
 
-  //when movie select need to set some field automatically. the duration and relaese date are not part of the form but need to show as read only
+  //when movie select need to set some field automatically. the duration and release date are not part of the form but need to show as read only
   const handleMovieChange = (e: ChangeEvent<HTMLSelectElement>) => {
     e.preventDefault();
     const { value } = e.target;
@@ -156,8 +156,8 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
       if (openingDateRef.current) {
         openingDateRef.current.min = min
         openingDateRef.current.max = max
-        openingDateRef.current.value = setDefaultDate(initialData?.opening_date as string, 0) ?? min
-        setValue('opening_date', min)
+        openingDateRef.current.value = setDefaultDate(initialData?.openingDate as string, 0) ?? min
+        setValue('openingDate', min)
       }
     }
   }
@@ -179,7 +179,7 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
     modalRef.current?.close();
     closeModal()
   };
-  //this should perfom action for adding or updating the screen
+  //this should perform action for adding or updating the screen
 
   const onSubmit = async () => {
 
@@ -250,7 +250,7 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
             onClick={closeModalAction}
             className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
 
-          <h3 className="text-2xl font-bold mb-4 text-center ">{action} Show</h3>
+          <h3 className="text-2xl font-bold mb-4 text-center uppercase ">{action} Show</h3>
           <form className="space-y-7 mt-5" onSubmit={handleSubmit(handleFormSubmit)}>
             <>
               {/* Movie selection */}
@@ -326,17 +326,17 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
               </div>
               {/* opening Date */}
               <div className="gap-3 w-full relative flex justify-center items-center text-center">
-                <label className="w-20 font-bold text-left" htmlFor="opening_date">Opening Date</label>
+                <label className="w-20 font-bold text-left" htmlFor="openingDate">Opening Date</label>
 
                 <Controller
-                  name="opening_date"
+                  name="openingDate"
                   control={control}
                   render={({ field }) => (
                     <input
                       ref={openingDateRef}
                       type="date"
                       {...register}
-                      id="opening_date"
+                      id="openingDate"
                       onChange={(e) => {
                         field.onChange(e)
                       }}
@@ -346,10 +346,10 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
                     />
                   )}
                 />
-                {errors.opening_date &&
+                {errors.openingDate &&
                   <small
                     className='text-red-600 capitalize absolute -bottom-5 left-28 font-mono '
-                  >{errors.opening_date.message}</small>}
+                  >{errors.openingDate.message}</small>}
               </div>
 
               {/* Duration */}
@@ -451,7 +451,7 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
                       <input
                         type="text"
                         className="input w-full border border-gray-400 text-gray-500 max-w-xs"
-                        placeholder="chosse movie"
+                        placeholder="choose movie"
                         readOnly
                       />
                     )
@@ -466,7 +466,7 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
 
               {/* language selection */}
               <div className="gap-3 w-full relative flex justify-center items-center text-center">
-                <label className="w-20 font-bold text-left" htmlFor="langauge-select">language</label>
+                <label className="w-20 font-bold text-left" htmlFor="language-select">language</label>
 
                 {
                   selectedMovie ?
@@ -541,7 +541,7 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
                   />
                   {errors.showTime &&
                     <small
-                      className='text-red-600 capitaliFze absolute -bottom-5 left-14 font-mono '
+                      className='text-red-600 capitalize absolute -bottom-5 left-14 font-mono '
                     >{errors.showTime.message}</small>}
 
                 </div>

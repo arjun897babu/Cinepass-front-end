@@ -11,7 +11,7 @@ export interface IMovieShow {
   showTime: string,
   format:string,
   endTime: string,
-  opening_date?: string | Date
+  openingDate: string|Date
   reserved?:IReservedSeats[]
 }
 

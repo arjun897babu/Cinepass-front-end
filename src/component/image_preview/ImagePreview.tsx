@@ -75,7 +75,7 @@ const ImagePreview: React.FC<ImagePreviewProp> = ({ defaultImg, preview, removeS
             />}
 
           {images && preview && (
-            <div className={` mt-2 ${aspectInit == 1000 / 200 ? "   w-full " : "w-[280px] h-[420px]"} relative `}>
+            <div className={` mt-2 ${aspectInit == 1000 / 300 ? "   w-full " : "w-[280px] h-[420px]"} relative `}>
               <img src={images} className=" h-full w-full object-contain  rounded-md" />
               <>
                 <button

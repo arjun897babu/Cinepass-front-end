@@ -155,7 +155,7 @@ const TheaterScreen: React.FC = () => {
         <ConfirmationModal
           btnType={ResponseStatus.ERROR}
           isOpen={confirmation}
-          message="are you sure want to delte this"
+          message="are you sure want to delete this"
           onClose={() => setConfirmation(false)}
           onConfirm={deleteSelectedScreen}
         />

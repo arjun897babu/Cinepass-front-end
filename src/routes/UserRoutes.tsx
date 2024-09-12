@@ -5,7 +5,7 @@ import { UserSignUp } from "../pages/user/UserSignUp";
 import { UserLogin } from "../pages/user/UserLogin";
 const UserOTPVerification = lazy(() => import('../pages/user/UserOTPVerification'));
 import UserNavBar from "../component/user/UserNavBar";
-import UserFooter from "../component/user/footer/UserFooter"; 
+import UserFooter from "../component/user/footer/UserFooter";
 import { Loader } from "../component/Loader";
 import { ProtectedRoutes } from "../component/user/ProtectedRoutes";
 import { UserProfile } from "../pages/user/userProfile";
@@ -16,10 +16,12 @@ import UserInitPage from "../pages/user/UserInitPage";
 import UserInfo from "../pages/user/layout/UserInfo";
 import TheaterDetails from "../pages/user/TheaterDetails";
 import ScreenLayout from "../pages/user/ScreenLayout";
+import PaymentSuccess from "../pages/user/PaymentSuccess";
+import PaymentSummary from "../pages/user/PaymentSummary";
 const MoviePage = lazy(() => import("../pages/user/MoviePage"));
 
 const UserRoutes: React.FC = () => {
-  const location = useLocation(); 
+  const location = useLocation();
   const isAuthRoutes = /^\/(login|signup|forgot-password|movie\/layout|otp-verification|users\/reset-password)/.test(location.pathname);
 
   return (
@@ -50,6 +52,18 @@ const UserRoutes: React.FC = () => {
             <Route path='/movie/:movieId' element={<MoviePage />} />
             <Route path='/theater/:theaterId' element={<TheaterDetails />} />
             <Route path='/movie/layout/:showId' element={<ScreenLayout />} />
+            <Route path='/paymentsuccess' element={
+              <ProtectedRoutes>
+                <PaymentSuccess />
+              </ProtectedRoutes>
+            }
+            ></Route>
+            <Route path='/payment' element={
+              // <ProtectedRoutes>
+                <PaymentSummary />
+              // </ProtectedRoutes>
+            }
+            ></Route>
           </Routes>
         </main>
         {!isAuthRoutes && <UserFooter />}

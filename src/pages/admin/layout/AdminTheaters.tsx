@@ -13,6 +13,7 @@ import ConfirmationModal from "../../../component/ConfirmationModal";
 import { ITheaterOwnerEntity } from "../../../interface/theater/ITheaterOwner";
 
 import Pagination from "../../../component/Pagination";
+import { getSerialNumber } from "../../../utils/format";
 
 const AdminTheaters: React.FC = (): JSX.Element => {
   const [theaters, setTheaters] = useState<Partial<ITheaterOwnerEntity>[] | []>([]);
@@ -171,7 +172,7 @@ const AdminTheaters: React.FC = (): JSX.Element => {
 
                 {theaters?.length > 0 && theaters.map((theater, index) => (
                   <tr key={theater._id}>
-                    <td>{index + 1}</td>
+                    <td>{getSerialNumber(currentPage, index)}</td>
                     <td>
                       <div className="flex items-center gap-3   max-w-60  whitespace-nowrap overflow-hidden ">
                         <div>
@@ -218,7 +219,7 @@ const AdminTheaters: React.FC = (): JSX.Element => {
                     <td>
                       <TheaterDetails
                         owner={theater}
-                      /> 
+                      />
                     </td>
 
                   </tr>

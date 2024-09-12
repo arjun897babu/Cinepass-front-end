@@ -28,14 +28,12 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ isOpen, onClose, 
     e.preventDefault();
     modalRef.current?.close()
     onConfirm()
-  }
-
-  console.log(btnType)
+  } 
 
   return (
 
     <>
-      <dialog id="confirmatin_modal" ref={modalRef} className="modal rounded-xs">
+      <dialog id="confirmation_modal" ref={modalRef} className="modal rounded-xs">
         <div className="modal-box max-w-sm">
           <h3 className="font-bold text-xl">Are you sure?</h3>
           <h4 className=" p-1 my-4 font-semibold text-sm">{message} ?</h4>
