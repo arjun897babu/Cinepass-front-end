@@ -196,7 +196,7 @@ const TheaterScreen: React.FC = () => {
                       <td>
                         {screen.screen_name}
                         <br />
-                        {screen.amenity}
+                        <span className="badge bg-sky-300">{screen.amenity}</span>
                       </td>
                       <td>
                         <span className="badge font-bold rounded-none ">{screen.seating_capacity}</span>

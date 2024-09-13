@@ -1,9 +1,7 @@
-import React, { useState, ChangeEvent, MouseEvent, useRef, useEffect } from "react";
-import { CiCrop } from "react-icons/ci";
-import { MdDelete } from "react-icons/md";
+import React, { useState,  MouseEvent,  useEffect } from "react";
+ import { MdDelete } from "react-icons/md";
 import { CropBackdrop } from "./CropBackDrop";
-import { TfiControlShuffle } from "react-icons/tfi";
-
+ 
 const ErrorAlert: React.FC = () => {
   return (
     <div role="alert" className="alert alert-error absolute rounded-none max-w-44 p-1 top-5 right-1">
@@ -35,7 +33,7 @@ interface ImagePreviewProp {
 const ImagePreview: React.FC<ImagePreviewProp> = ({ defaultImg, preview, removeSelectedImage, updateSelectedImage, aspectInit, isCloudinaryImg }) => {
   const [images, setImages] = useState<string | null>(null);//store the dataURL 
   const [selected, setSelected] = useState<string | null>(null);//for showing the cropper ui
-  console.log(aspectInit)
+   
   const removePreview = (e: MouseEvent<HTMLButtonElement>) => {
     setImages(null)
     removeSelectedImage()

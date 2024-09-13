@@ -6,7 +6,7 @@ import { IMovie, ResponseStatus, Role } from "../../../interface/Interface"
 import { useDispatch } from "react-redux"
 import type { AppDispatch } from "../../../redux/store"
 import { getMovie, manageMovie } from "../../../redux/actions/adminAction"
-import { formatRunTime, getIST, getMovieSrc } from "../../../utils/format"
+import { formatRunTime, getIST, getMovieSrc, getSerialNumber } from "../../../utils/format"
 import { Loader } from "../../../component/Loader"
 import { ToastMessage } from "./AdminUsers"
 import Toast2 from "../../../component/Toast2"
@@ -98,17 +98,21 @@ const AdminMovie: React.FC = () => {
   const fetchMovieData = async () => {
     try {
       setLoading(true)
-      const response = await dispatch(getMovie({movieType:MovieType.theater,pageNumber:currentPage})).unwrap();
+
+      await Promise.resolve(setTimeout(() => { }, 30000))
+
+      const response = await dispatch(getMovie({ movieType: MovieType.theater, pageNumber: currentPage })).unwrap();
       if (response) {
         setTheaterMovies(response.data.movies)
         setMaxPage(response.data.maxPage)
-      }
+      } 
     } catch (error) {
       handleApiError(error)
     } finally {
       setLoading(false)
     }
   }
+
 
 
   useEffect(() => {
@@ -193,7 +197,7 @@ const AdminMovie: React.FC = () => {
                       return (
                         <tr key={`${movie._id ?? index}`}>
                           <th>
-                            {index + 1}
+                            {getSerialNumber(currentPage, index)}
                           </th>
                           <td>
                             <div className="flex items-center gap-3   max-w-60  whitespace-nowrap overflow-hidden ">

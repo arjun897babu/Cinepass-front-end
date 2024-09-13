@@ -24,7 +24,7 @@ export const SeatRow: React.FC<ISeatRowProps> = ({ rowNumber, seats, reserved, h
       {seats.map((seat, index) => {
 
         const isBooked = reserved?.some((reservation) => reservation.reserved_seats.includes(seat.name));
-        // const isBooked = [ 'A16', 'B16', 'C16' ].includes(seat.name);
+        // const isBooked = [ 'A1', 'B2', 'C4' ].includes(seat.name);
         const isSelected = selectedSeat?.includes(seat.name)
 
         if (isSelected) {
