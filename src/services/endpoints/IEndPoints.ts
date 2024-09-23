@@ -14,7 +14,7 @@ export interface UserEndpoint extends IEndPoints {
   googleSignUp: string;
   googleLogout: string;
   getMovieShows: (city: string,theaterId:string) => string
-  getSingleShow:(city:string,showId:string)=>string
+  getSingleShow:(city:string)=>string
   getAllCities: string
   getAllMovies: (city: string) => string
   getSingleMovie: (city: string, movieId: string) => string

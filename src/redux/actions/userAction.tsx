@@ -240,12 +240,15 @@ interface IGetSingleShowDetails extends ResponseData2 {
   data: { shows: IGetSingleShow }
 }
 
-export const getSingleShowDetails: AsyncThunk<IGetSingleShowDetails, { city: string, showId: string }, {}> = createAsyncThunk(
+export const getSingleShowDetails: AsyncThunk<IGetSingleShowDetails, { city: string, showId: string,filter:Partial<MovieFilter> }, {}> = createAsyncThunk(
   '/user/getSingleShowDetails',
-  async ({ city, showId }, { rejectWithValue }) => {
+  async ({ city, showId,filter }, { rejectWithValue }) => {
     console.log('get single show details asyncthunk is being called')
     try {
-      const response = await serverUser.get(userEndPoints.getSingleShow(city, showId))
+      const response = await serverUser.get(userEndPoints.getSingleShow(city),{params:{
+        showId,
+        ...filter
+      }})
       return await response.data
     } catch (error) {
       return rejectWithValue(handleAxiosError)
@@ -254,11 +257,17 @@ export const getSingleShowDetails: AsyncThunk<IGetSingleShowDetails, { city: str
 )
 
 interface SeatBookingPayload {
-  bookingDate: Date
+  bookingDate: string
   reservedSeats: string[]
 }
 
-export const bookTickets: AsyncThunk<{}, { showId: string, payload: SeatBookingPayload }, {}> = createAsyncThunk(
+interface BookTicketsResponse extends ResponseData2 {
+  data: {
+    clientSecret: string
+  }
+}
+
+export const bookTickets: AsyncThunk<BookTicketsResponse, { showId: string, payload: SeatBookingPayload }, {}> = createAsyncThunk(
   '/user/seatBooking',
   async ({ showId, payload }, { rejectWithValue }) => {
     try {

@@ -1,33 +1,43 @@
 import { PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js"
 import React, { FormEvent, MouseEvent, useEffect, useRef, useState } from "react"
+import logo from '/favicon_io/android-chrome-192x192.png'
+import { ITheaterOwnerEntity } from "../../interface/theater/ITheaterOwner"
+import { useParams, useSearchParams } from "react-router-dom"
 interface CheckoutModalPops {
-  closeModal: () => void
+  closeModal: () => void,
+  theaterDetail: Partial<ITheaterOwnerEntity>,
+  amount: number
 }
 
 
-const CheckoutModal: React.FC<CheckoutModalPops> = ({ closeModal }) => {
+const CheckoutModal: React.FC<CheckoutModalPops> = ({ closeModal, theaterDetail, amount }) => {
 
   const stripe = useStripe();
   const elements = useElements();
-
   const [message, setMessage] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    try {
+      if (!stripe || !elements) {
+        return;
+      }
+      setIsLoading(true);
 
-    if (!stripe || !elements) {
-      return;
+      const { error } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: "http://localhost:3000/paymentsuccess",
+
+        },
+      });
+
+    } catch (error) {
+
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(true);
-
-    const { error } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: "http://localhost:3000/paymentsuccess",
-      },
-    });
   }
 
   const paymentModalRef = useRef<HTMLDialogElement>(null)
@@ -41,23 +51,42 @@ const CheckoutModal: React.FC<CheckoutModalPops> = ({ closeModal }) => {
   useEffect(() => {
     if (paymentModalRef.current) {
       paymentModalRef.current.showModal();
+      console.log('payment modal is opening');
     }
   }, [])
 
   return (
     <>
       <dialog id="payment-modal" ref={paymentModalRef} className="modal">
-        <div className="modal-box">
-          <button onClick={closeLayoutModal} className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-          <form id="payment-form" onSubmit={handleSubmit}>
-            <PaymentElement id="payment-element" options={{ layout: 'tabs' }} />
-            <button disabled={isLoading || !stripe || !elements} id="submit">
-              <span id="button-text">
-                {isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}
-              </span>
-            </button>
-            {message && <div id="payment-message">{message}</div>}
-          </form>
+
+        <div className="modal-box p-0 items-center">
+          <div className="flex items-center gap-3 mb-2 bg-sky-400 p-2">
+            <div className="avatar">
+              <div className="mask  h-20 w-20">
+                <img
+                  src={logo}
+                  alt="cinepass logo" />
+              </div>
+            </div>
+            <div>
+              <div className="font-bold">{theaterDetail.theater_name}</div>
+              <div className="text-sm opacity-50">United States</div>
+            </div>
+          </div>
+          <button onClick={closeLayoutModal} className="btn btn-sm btn-circle btn-white absolute right-2 top-2">✕</button>
+          <div className=" p-4">
+
+            {stripe &&
+              <form id="payment-form" onSubmit={handleSubmit}>
+                <PaymentElement id="payment-element" options={{ layout: 'tabs' }} />
+                {message && <div id="payment-message">{message}</div>}
+                <button disabled={isLoading || !stripe || !elements} id="submit" className="w-full btn  mt-3 bg-sky-400 hover:bg-sky-500">
+                  <span id="button-text">
+                    {isLoading ? <div className="spinner" id="spinner"></div> : `Pay ₹ ${amount}`}
+                  </span>
+                </button>
+              </form>}
+          </div>
         </div>
       </dialog>
     </>

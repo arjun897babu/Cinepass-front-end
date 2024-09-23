@@ -1,8 +1,21 @@
-import { FieldValues } from "react-hook-form";
-import { ITheaterOwnerEntity } from "./theater/ITheaterOwner";
+ import { ITheaterOwnerEntity } from "./theater/ITheaterOwner";
 import { ITheaterScreenResponse } from "./theater/ITheaterScreen";
 import { IMovieShow } from "./theater/IMovieShow";
 
+export enum PaymentStatus {
+  PENDING = 'pending',
+  PAID = 'paid',
+  FAILED = 'failed',
+  REFUNDED = 'refunded'
+}
+export enum BookingStatus {
+  BOOKED = 'booked',
+  CANCELED = 'canceled'
+}
+export enum PurchasedItem {
+  TICKET = 'ticket',
+  RENTAL = 'rental'
+}
 
 export enum Role {
   users = 'users',

@@ -1,4 +1,8 @@
+import { date } from "zod";
 import { UploadError } from "./customError";
+
+const dateTypeGuard = (date: string | Date) => typeof date === 'string' ? new Date(date) : date
+
 
 export function formatTime(time: number): string {
   const min = Math.floor(time / 60);
@@ -107,14 +111,17 @@ export function getSeatName(rowIndex: number, colIndex: number): string {
   return `${String.fromCharCode(65 + rowIndex)}${colIndex + 1}`;
 }
 
-export function getDayName(date: Date = new Date()): string {
-  return date.toLocaleDateString('en-IN', { weekday: 'long' })
+export function getDayName(date: Date | string = new Date()): string {
+  date = dateTypeGuard(date)
+  return date.toLocaleDateString('en-IN', { weekday: 'short' })
 }
-export function getMonthName(date: Date = new Date()): string {
+export function getMonthName(date: Date | string = new Date()): string {
+  date = dateTypeGuard(date)
   return date.toLocaleDateString('en-IN', { month: 'short' })
 }
-export function getDate(date:Date){
-  return date.toLocaleDateString('en-IN',{day:'2-digit'})
+export function getDate(date: Date | string) {
+  date = dateTypeGuard(date)
+  return date.toLocaleDateString('en-IN', { day: '2-digit' })
 }
 
 export function toValidJSDate(date: string): Date {

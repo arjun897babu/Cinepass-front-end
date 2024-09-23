@@ -1,5 +1,5 @@
 import React from "react";
-import { InfinitySpin, TailSpin } from 'react-loader-spinner';
+import { InfinitySpin } from "react-loader-spinner";
 
 export const Loader: React.FC = (): JSX.Element => {
   return (

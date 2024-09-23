@@ -19,15 +19,15 @@ export const UserProfile: React.FC = (): JSX.Element => {
               Profile
             </button>
           </Link>
-          <Link to="/booking">
-            <button className={`btn capitalize text-sm  ${location.pathname === "/booking" ? "bg-sky-300 hover:bg-sky-200" : "hover:bg-sky-200"}`}
+          <Link to="/profile/booking">
+            <button className={`btn capitalize text-sm  ${location.pathname === "/profile/booking" ? "bg-sky-300 hover:bg-sky-200" : "hover:bg-sky-200"}`}
             >
               Your bookings
             </button>
           </Link>
-          <Link to="/stream">
+          <Link to="/profile/stream">
             <button
-              className={`btn capitalize text-sm  ${location.pathname === "/stream" ? "bg-sky-300 hover:bg-sky-200" : "hover:bg-sky-200"}`}
+              className={`btn capitalize text-sm  ${location.pathname === "/profile/stream" ? "bg-sky-300 hover:bg-sky-200" : "hover:bg-sky-200"}`}
             >
               Stream
             </button>

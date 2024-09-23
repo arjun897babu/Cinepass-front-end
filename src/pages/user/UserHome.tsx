@@ -37,7 +37,7 @@ const UserHome: React.FC = () => {
 
     <>
       <div className="p-2   bg-gray-200">
-        <CarouselModule moviePoster={movies.map((singleMovie)=>singleMovie.cover_photo)} />
+        <CarouselModule moviePoster={movies.map((singleMovie) => singleMovie.cover_photo)} />
         <SearchWithFilters />
         <div className="mx-auto gap-1 flex p-2 bg-gray-200">
           {/* Accordion  */}
@@ -58,7 +58,10 @@ const UserHome: React.FC = () => {
             {
               movies.length > 0 &&
               movies.map((movie) => {
-                return <Link key={movie._id} to={`/movie/${movie.slug}?bookingDate=${getIST(movie.release_date.toString())}`}> <MovieCard movie={movie} />  </Link>
+                const releaseDate = new Date(movie.release_date);
+                const currentDate = new Date();
+                const bookingDate = getIST(currentDate <= releaseDate ? releaseDate.toString() : currentDate.toString());
+                return <Link key={movie._id} to={`/movie/${movie.slug}?bookingDate=${ bookingDate}`}> <MovieCard movie={movie} />  </Link>
               })
             }
           </div>

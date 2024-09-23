@@ -1,4 +1,4 @@
-import React, { MouseEvent, useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { FaArrowLeft } from "react-icons/fa"
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom"
 import useErrorHandler from "../../hooks/useErrorHandler"
@@ -6,13 +6,11 @@ import { IGetSingleShow, ResponseStatus, Role } from "../../interface/Interface"
 import { Toast } from "../../component/Toast2"
 import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "../../redux/store"
-import { bookTickets, getSingleShowDetails } from "../../redux/actions/userAction"
+import { getSingleShowDetails } from "../../redux/actions/userAction"
 import screen_layout_icon from '/screen_icon.svg'
 import { Loader } from "../../component/Loader"
-import { convertTo12HourFormat, getDayName, getIST, getMonthName, getSeatName } from "../../utils/format"
+import { convertTo12HourFormat, getDate, getDayName, getMonthName, getSeatName } from "../../utils/format"
 import { ColumnNumbers, SeatRow } from "../../component/theaters/SeatLayoutModal"
-import ConfirmationModal from "../../component/ConfirmationModal"
-import { date } from "zod"
 
 const ScreenLayout: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -41,7 +39,15 @@ const ScreenLayout: React.FC = () => {
     setLoading(true)
     try {
       if (city && showId) {
-        const response = await dispatch(getSingleShowDetails({ city, showId })).unwrap()
+        const response = await dispatch(getSingleShowDetails(
+          {
+            city,
+            showId,
+            filter: {
+              bookingDate: location.state.bookingDate
+            }
+          }
+        )).unwrap()
         if (response.status === ResponseStatus.SUCCESS) {
           setShowDetails(response.data.shows)
         }
@@ -72,10 +78,11 @@ const ScreenLayout: React.FC = () => {
     });
   }
 
+
   const bookSeat = async () => {
     if (selectedSeats?.length && showId) {
       console.log('proceed to booking')
-      navigate('/payment', { state: { showDetails, showId, selectedSeats, bookingDate: searchParams.get('bookingDate') } })
+      navigate('/payment', { state: { showDetails, showId, selectedSeats, bookingDate: location.state.bookingDate } })
 
     }
   }
@@ -105,7 +112,7 @@ const ScreenLayout: React.FC = () => {
             <div className="join join-vertical gap-3">
               <h2 className="join-item font-semibold capitalize  ">{showDetails.movie.movie_name}</h2>
               <h6 className="join-item text-xs capitalize">
-                {`${showDetails.theater.theater_name}, ${city} | ${getMonthName()} ${getDayName(new Date())}, ${convertTo12HourFormat(showDetails.show.showTime!)}`}
+                {`${showDetails.theater.theater_name}, ${city} | ${getMonthName(location.state.bookingDate)} ${getDayName(location.state.bookingDate)} ${getDate(location.state.bookingDate)}, ${convertTo12HourFormat(showDetails.show.showTime!)}`}
               </h6>
             </div>
           </div>

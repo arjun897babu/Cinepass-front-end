@@ -5,7 +5,7 @@ import type { AppDispatch, RootState } from "../../redux/store"
 import { IMovie, MovieFilter } from "../../interface/Interface"
 import { getSingleMovie } from "../../redux/actions/userAction"
 import { Loader } from "../../component/Loader"
-import { convertTo12HourFormat, formatRunTime, getIST } from "../../utils/format"
+import { convertTo12HourFormat, formatRunTime, getIST, toValidJSDate } from "../../utils/format"
 import { IoIosInformationCircle } from "react-icons/io"
 import { isResponseError } from "../../utils/customError"
 import ShowFilter from "../../component/ShowFilter"
@@ -25,6 +25,8 @@ const MoviePage: React.FC = () => {
     navigate('/', { replace: true })
   }
 
+
+
   async function fetchRunningMovie() {
     try {
       if (city && movieId) {
@@ -35,6 +37,8 @@ const MoviePage: React.FC = () => {
         if (bookingDate) {
           filterItem.bookingDate = bookingDate
         }
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
         const [response] = await dispatch(getSingleMovie({ city, movieId, filter: filterItem })).unwrap()
         const { movie, theaters } = response
         if (movie) {
@@ -54,10 +58,14 @@ const MoviePage: React.FC = () => {
       setLoading(false)
     }
   }
-
+  const [filterDate, setFilterDate] = useState<Date | null>(null)
   useEffect(() => {
     fetchRunningMovie()
-  }, [movieId])
+    const bookingDate = searchParams.get('bookingDate')
+    if (bookingDate) {
+      setFilterDate(toValidJSDate(bookingDate))
+    }
+  }, [movieId, searchParams])
 
   if (loading) {
     return <Loader />
@@ -107,12 +115,14 @@ const MoviePage: React.FC = () => {
         theaterDetails &&
         <>
 
-          <ShowFilter /> 
+          <ShowFilter
+            maxAllocatedDate={Math.max(...theaterDetails.map((item) => item.maxAllocatedDays as number))}
+            bookingDate={movieDetails.release_date as Date}
+          />
           {theaterDetails.map((theater) => {
             return <>
               <div className="w-full block sm:flex gap-8 lg:gap-12 p-4 md:p-6 lg:p-9  border-t border-y-1 border-b-gray-200 my-1   rounded-lg border border-gray-300">
                 {/* Theater Name */}
-
                 <div className="text-left mb-4 w-1/3 flex-shrink-0">
                   <span className="text-xs lg:text-base font-bold flex items-center gap-2">
                     {theater.theater.theater_name}
@@ -122,19 +132,23 @@ const MoviePage: React.FC = () => {
                 {/* Movie Show */}
                 {theater.shows.map((show: any) => {
                   return <>
-                    <Link key={show.showDetails.showId} to={`/movie/layout/${show.showDetails.slug}?bookingDate=${getIST(movieDetails.release_date.toString())}`} state={show}>
+                    <Link
+                      key={show.showDetails.showId}
+                      to={`/movie/layout/${show.showDetails.slug}`}
+                      state={{ show, bookingDate: filterDate }}
+                    >
                       <div className="flex  text-xs">
                         <button className="p-1 px-6 border rounded-lg text-green-500 border-green-500 hover:bg-green-100 transition">
                           {convertTo12HourFormat(show.showDetails.showTime as string)} <br />
                           <span className="text-gray-400">{show.screen_name}</span>
                         </button>
                       </div>
-                    </Link>
+                    </Link >
 
                   </>
                 })}
 
-              </div>
+              </div >
             </>
           })}
 

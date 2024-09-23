@@ -106,16 +106,16 @@ export const MovieForm: React.FC<MovieFormProps> = (
   );
   const releaseDateRef = useRef<HTMLInputElement | null>(null)
   useEffect(() => {
-    const min = setDefaultDate(`${new Date()}`, 1)
-    const defaultDate = setDefaultDate(`${selectedData.release_date}`, action === Action.UPDATE ? 0 : 1)
-    if (releaseDateRef.current) {
-      releaseDateRef.current.min = min
-      releaseDateRef.current.value = defaultDate
-      if (action === Action.UPDATE && new Date(selectedData.release_date) <= new Date()) {
-        releaseDateRef.current.max = defaultDate
-      }
-    }
-    setValue('release_date', defaultDate)
+    // const min = setDefaultDate(`${new Date()}`, 1)
+    // const defaultDate = setDefaultDate(`${selectedData.release_date}`, action === Action.UPDATE ? 0 : 1)
+    // if (releaseDateRef.current) {
+    //   releaseDateRef.current.min = min
+    //   releaseDateRef.current.value = defaultDate
+    //   if (action === Action.UPDATE && new Date(selectedData.release_date) <= new Date()) {
+    //     releaseDateRef.current.max = defaultDate
+    //   }
+    // }
+    // setValue('release_date', defaultDate)
     if (selectedData.format.length > 0) {
       setValue('format', selectedData.format);
     }

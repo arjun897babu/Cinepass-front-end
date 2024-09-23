@@ -1,6 +1,6 @@
 export interface IReservedSeats {
-  booking_date: Date
-  reserved_seats: string[]
+  bookingDate: Date
+  reservedSeats: string[]
 }
 
 export interface IMovieShow {

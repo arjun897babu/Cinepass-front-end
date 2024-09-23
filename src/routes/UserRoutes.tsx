@@ -18,6 +18,7 @@ import TheaterDetails from "../pages/user/TheaterDetails";
 import ScreenLayout from "../pages/user/ScreenLayout";
 import PaymentSuccess from "../pages/user/PaymentSuccess";
 import PaymentSummary from "../pages/user/PaymentSummary";
+import TicketSummary from "../pages/user/layout/TicketSummary";
 const MoviePage = lazy(() => import("../pages/user/MoviePage"));
 
 const UserRoutes: React.FC = () => {
@@ -45,8 +46,7 @@ const UserRoutes: React.FC = () => {
             }
             >
               <Route path='' element={<UserInfo />} />
-              <Route path='booking' element={<MoviePage />} />
-              <Route path='stream' element={<MoviePage />} />
+              <Route path='booking' element={<TicketSummary />} />
 
             </Route>
             <Route path='/movie/:movieId' element={<MoviePage />} />

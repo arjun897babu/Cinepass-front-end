@@ -228,7 +228,7 @@ const TheaterShow: React.FC = () => {
                         </td>
                         {<td className="flex justify-center items-center gap-3">
 
-                          {new Date(show.movie.release_date) > new Date() &&
+                          { true &&
                             <button onClick={(e) => updateSelected(e, show._id)} className="btn bg-transparent hover:bg-transparent  border-none hover: join-item text-black">
                               <FaEdit />
                             </button>}

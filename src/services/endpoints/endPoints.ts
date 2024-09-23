@@ -12,13 +12,13 @@ export const userEndPoints: UserEndpoint = {
   googleSignUp: '/google-signup',
   googleLogout: '/google-logout',
   getMovieShows: (city, theaterId) => `/shows/${city}?theaterId=${theaterId}`,
-  getSingleShow: (city, showId) => `/shows/${city}?showId=${showId}`,
+  getSingleShow: (city ) => `/shows/${city}`,
   getAllCities: `/cities`,
   getAllMovies: (city) => `/movies/${city}`,
   getSingleMovie: (city, movieId) => `/movies/${city}?movieId=${movieId}`,
   getTheater: (city) => `/theater/${city}`,
   userProfile: '/profile',
-  bookTicket: (showId) => `/tickets/${showId}`
+  bookTicket: (showId) => `/booking/${showId}`
 };
 
 export const theatersEndPoints: TheaterEndpoint = {

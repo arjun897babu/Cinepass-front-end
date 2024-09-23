@@ -1,17 +1,20 @@
-import { useSelect } from "@nextui-org/select";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Link, useLocation, useNavigate } from "react-router-dom"
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom"
 import { RootState } from "../../redux/store";
 
 
 const PaymentSuccess = () => {
   const { city } = useSelector((state: RootState) => state.user)
   const location = useLocation();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams()
+
   useEffect(() => {
-    if (!location.state?.isPaymentSuccess) {
-      navigate(`/home/${city}`, { replace: true, state: {} })
+    const payment_intent = searchParams.get('payment_intent')
+    
+    if (!payment_intent) {
+      navigate(`/home/${city}`, { replace: true })
     }
   }, [location.state])
 

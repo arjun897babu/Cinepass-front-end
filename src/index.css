@@ -1,21 +1,40 @@
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap');
 
-@tailwind base; 
+@tailwind base;
 
 @tailwind components;
 @tailwind utilities;
+
+/* add the code bellow */
+@layer utilities {
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+  }
+ 
+}
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
-} 
+}
 
 .dancing-script {
-  font-family: "Dancing Script", cursive ;
+  font-family: "Dancing Script", cursive;
   font-optical-sizing: auto;
   font-weight: 700;
   font-style: normal;
-  
+
 }
 
 body {
@@ -40,6 +59,7 @@ body {
 .bg-size-100-100 {
   background-size: 100% 100%;
 }
+
 .left-section {
   width: 50%;
   height: 100%;
@@ -61,20 +81,22 @@ body {
   .auth-section {
     display: block !important;
   }
-  
+
 }
+
 @media (max-width:425px) {
 
-  .social-media{
+  .social-media {
     gap: 1rem;
     flex-direction: column !important;
   }
-  
+
 }
+
 .dropdown-menu {
   position: absolute;
   top: 50px;
-  right:0;
+  right: 0;
   background-color: #f6f3f3;
   border-radius: 8px;
   padding: 10px 20px;
@@ -110,14 +132,15 @@ body {
   transform: translateY(-20px);
 }
 
-input:focus,select:focus{
+input:focus,
+select:focus {
   outline: none !important;
 }
 
 .geoapify-autocomplete-input {
   @apply p-2 w-full text-black rounded-md focus:outline-none bg-white border border-gray-300 shadow-sm;
 }
-.geoapify-close-button{
-  @apply bg-white
-} 
 
+.geoapify-close-button {
+  @apply bg-white
+}
