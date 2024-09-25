@@ -164,10 +164,10 @@ export const getAllShows: AsyncThunk<any[], { city: string, theaterId: string },
 export const getAllMovies: AsyncThunk<IMovie[], { city: string, filter?: Partial<MovieFilter> }, {}> = createAsyncThunk(
   '/user/getAllMovies',
   async ({ city, filter }, { rejectWithValue }) => {
-
+    console.log(filter);
     try {
       const response = await serverUser.get(userEndPoints.getAllMovies(city), {
-        params: filter
+        params:{...filter}
       });
       const { movies } = response.data?.data
       return await movies

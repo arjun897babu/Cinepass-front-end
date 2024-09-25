@@ -3,7 +3,7 @@ import { DashBoardCard } from "../../../component/DashBoardCard"
  
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import  type { Rootstate } from "../../../redux/store";
+import  type { RootState  } from "../../../redux/store";
 
 const TheaterHome = () => {
 

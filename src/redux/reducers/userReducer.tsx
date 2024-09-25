@@ -13,7 +13,7 @@ const initialState: IInitialState = {
   tempMail: null,
   isGoogleAuth: false,
   city: undefined,
-  movies: [],
+  movies: null,
   cityTheaters: []
 
 };
@@ -147,7 +147,7 @@ const userSlice = createSlice({
 
       //get all movies
       .addCase(getAllMovies.fulfilled, (state: IInitialState, action) => {
-        state.movies = action.payload
+        state.movies = action.payload.length ? action.payload : null
       })
       .addCase(getAllMovies.rejected, (state: IInitialState, action) => {
         isResponseError(action.payload) ?

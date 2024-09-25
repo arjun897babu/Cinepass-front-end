@@ -3,7 +3,7 @@ import { AxiosError } from "axios";
 import { serverTheater } from "../../services";
 import { theatersEndPoints } from "../../services/endpoints/endPoints";
 import { TheaterSignUpData } from "../../interface/theater/ITheatersData";
-import { IGetMovieShowResponse, IMovie, LoginData, OTPVerification, ResponseData, ResponseData2 } from "../../interface/Interface";
+import { IGetMovieShowResponse, IMovie, ITheaterTicketData, IUserTicketData, LoginData, OTPVerification, ResponseData, ResponseData2, TicketFilter } from "../../interface/Interface";
 
 import { ITheaterScreen, ITheaterScreenResponse } from "../../interface/theater/ITheaterScreen";
 import { MovieType } from "../../component/admin/MovieForm";
@@ -11,6 +11,7 @@ import { IMovieShow } from "../../interface/theater/IMovieShow";
 import { handleAxiosError } from "../../utils/customError";
 import { ITheaterOwnerEntity, TheaterOwnerProfile, TheaterProfile } from "../../interface/theater/ITheaterOwner";
 import { IGetMovieResponse } from "./adminAction";
+import { IUser } from "../../interface/user/IUserData";
 
 /*..................auth.................. */
 
@@ -137,7 +138,7 @@ interface IUpdateTheaterData extends ResponseData2 {
 
 export const updateTheater: AsyncThunk<IUpdateTheaterData, (TheaterOwnerProfile | Partial<TheaterProfile>), {}> = createAsyncThunk(
   'theaters/updateTheater',
-  async (theaterData , { rejectWithValue }) => {
+  async (theaterData, { rejectWithValue }) => {
     try {
       const response = await serverTheater.put(theatersEndPoints.updateTheater, theaterData);
       return await response.data
@@ -298,9 +299,8 @@ export const deleteMovieShow: AsyncThunk<ResponseData2, string, {}> = createAsyn
   async (showId, { rejectWithValue }) => {
     console.log('delete show asyncthunk is called')
     try {
-      const respones = await serverTheater.patch(theatersEndPoints.deleteMovieShow(showId), {})
-      console.log(respones)
-      return respones.data
+      const response = await serverTheater.patch(theatersEndPoints.deleteMovieShow(showId), {})
+      return response.data
     } catch (error) {
       console.log(error)
       return rejectWithValue(handleAxiosError(error))
@@ -308,3 +308,28 @@ export const deleteMovieShow: AsyncThunk<ResponseData2, string, {}> = createAsyn
   }
 )
 /*..................show.................. */
+
+/*..................bookings.................. */
+
+
+interface IGetUserTicketResponse extends ResponseData2 {
+  data: {
+    maxPage: number,
+    data: ITheaterTicketData[]
+  }
+}
+
+export const getTicketBookings: AsyncThunk<IGetUserTicketResponse, { pageNumber:number, filter?: TicketFilter }, {}> = createAsyncThunk(
+  '/theater/getTicketBookings',
+  async ({ pageNumber,filter }, { rejectWithValue }) => {
+    try {
+      const response = await serverTheater.get(theatersEndPoints.getTicketBookings, { params: { ...filter,pageNumber } })
+      return response.data
+    } catch (error) {
+      return rejectWithValue(handleAxiosError(error))
+    }
+  }
+
+)
+
+/*..................bookings.................. */

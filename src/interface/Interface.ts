@@ -2,6 +2,7 @@ import { ITheaterOwnerEntity } from "./theater/ITheaterOwner";
 import { ITheaterScreenResponse } from "./theater/ITheaterScreen";
 import { IMovieShow } from "./theater/IMovieShow";
 import { IPayment } from "./user/IPayment";
+import { IUser } from "./user/IUserData";
 
 export enum PaymentStatus {
   PENDING = 'pending',
@@ -153,7 +154,7 @@ export interface MovieFilter {
   language: string;
   nowShowing: boolean;
 }
-export interface TicketFilter {
+export interface TicketFilter { 
   status: BookingStatus
 }
 
@@ -187,4 +188,8 @@ export interface IUserTicketData {
   theaterInfo: IGetSingleShow['theater'];
   screenInfo: IGetSingleShow['screen'];
   showInfo: IGetSingleShow['show']
+}
+
+export interface ITheaterTicketData extends IUserTicketData {
+  userInfo: Pick<IUser, '_id' | 'name' | 'email' | 'mobile_number' | 'profile_picture'>
 }

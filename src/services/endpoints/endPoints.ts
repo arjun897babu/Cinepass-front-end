@@ -42,6 +42,7 @@ export const theatersEndPoints: TheaterEndpoint = {
   addMovieShows: `/shows`,
   updateMovieShow: (showId) => `/shows/${showId}`,
   deleteMovieShow: (showId) => `/shows/${showId}`,
+  getTicketBookings: `/tickets`
 };
 
 export const adminEndpoints: AdminEndpoint = {

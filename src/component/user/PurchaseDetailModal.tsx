@@ -1,15 +1,15 @@
 import React, { MouseEvent, useEffect, useRef, useState } from "react"
 import { IPayment } from "../../interface/user/IPayment"
-import { BookingStatus, IUserTicketData, MovieStatus } from "../../interface/Interface"
+import { BookingStatus, IUserTicketData, MovieStatus, Role } from "../../interface/Interface"
 import TicketInfo from "./TicketInfo"
 import { checkMovieStatus } from "../../utils/validator"
 import { getMovieTextStatus } from "../../utils/format"
 import PaymentInfo from "./PaymentInfo"
 
-const PurchaseDetailModal: React.FC<{ data: IUserTicketData, closeModal: () => void }> = ({ data, closeModal }) => {
+const PurchaseDetailModal: React.FC<{ role: Role, data: IUserTicketData, closeModal: () => void }> = ({ role, data, closeModal }) => {
 
   const modalRef = useRef<HTMLDialogElement>(null)
-  
+
   const closePurchaseModal = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     if (modalRef.current) {
@@ -41,21 +41,33 @@ const PurchaseDetailModal: React.FC<{ data: IUserTicketData, closeModal: () => v
         <div className="modal-box p-0 bg-base-200 rounded-md">
           <div
             className={` p-6  capitalize text-white text-lg font-medium  tracking-wider
-               ${data.TicketInfo.bookingStatus === BookingStatus.CANCELED ?
-                "bg-red-500"
-                : status === MovieStatus.COMPLETED ?
-                  "bg-green-500"
-                  : status === MovieStatus.RUNNING ?
-                    "bg-yellow-500"
-                    : "bg-sky-500"
+               ${role === Role.users ?
+                (data.TicketInfo.bookingStatus === BookingStatus.CANCELED ?
+                  "bg-red-500"
+                  : status === MovieStatus.COMPLETED ?
+                    "bg-green-500"
+                    : status === MovieStatus.RUNNING ?
+                      "bg-yellow-500"
+                      : "bg-sky-500")
+                : (data.TicketInfo.bookingStatus === BookingStatus.CANCELED ?
+                  'bg-red-500'
+                  : 'bg-green-500'
+                )
               }`
             }
           >
+
             {
-              data.TicketInfo.bookingStatus === BookingStatus.CANCELED ?
-                ""
-                : getMovieTextStatus(status)
+              role === Role.users ?
+                (data.TicketInfo.bookingStatus === BookingStatus.CANCELED
+                  ? ""
+                  : getMovieTextStatus(status))
+                :
+                (data.TicketInfo.bookingStatus === BookingStatus.CANCELED
+                  ? "Canceled"
+                  : "Booked")
             }
+
 
           </div>
           <button

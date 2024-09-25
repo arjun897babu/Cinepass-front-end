@@ -87,7 +87,7 @@ const TicketSummary = () => {
       </div>
 
       {selected && (
-        <PurchaseDetailModal data={selected} closeModal={() => setSelected(null)} />
+        <PurchaseDetailModal role={Role.users} data={selected} closeModal={() => setSelected(null)} />
       )}
     </>
   );

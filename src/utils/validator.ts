@@ -1,4 +1,4 @@
-import { MovieStatus } from "../interface/Interface"
+import { MovieFilter, MovieStatus } from "../interface/Interface"
 import { extractHourAndMin } from "./format"
 
 export enum MovieFormat {
@@ -228,10 +228,14 @@ function checkMovieStatus(showTime: string, endTime: string, releaseDate: string
    
   return MovieStatus.COMPLETED;
 }
-
+const isFilterEmpty = (filter: Partial<MovieFilter> | null): boolean => {
+  if (!filter) return true;
+  return Object.values(filter).every(value => value === null || value === undefined);
+};
 
 
 export {
+  isFilterEmpty,
   checkMovieStatus,
   isCloudinaryUrl,
   validateName,

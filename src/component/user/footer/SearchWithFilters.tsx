@@ -9,9 +9,9 @@ import type { AppDispatch, RootState } from "../../../redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllMovies } from "../../../redux/actions/userAction";
 import useErrorHandler from "../../../hooks/useErrorHandler";
-import { Role } from "../../../interface/Interface";
+import { MovieFilter, Role } from "../../../interface/Interface";
 
-export const SearchWithFilters: React.FC = () => {
+export const SearchWithFilters: React.FC<{ setFilter: (filterItem: Partial<MovieFilter> | null) => void }> = ({ setFilter }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { city } = useSelector((state: RootState) => state.user)
   const [locationModal, setLocationModal] = useState(false)
@@ -54,6 +54,10 @@ export const SearchWithFilters: React.FC = () => {
     setNowShowing(false);
     fetchFilteredMovies(false);
   }
+
+  useEffect(() => {
+    setFilter({ nowShowing: nowShowing })
+  }, [nowShowing])
 
   return (
     <>

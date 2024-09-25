@@ -9,7 +9,7 @@ export interface IInitialState {
   tempMail: { email: string } | null,
   isGoogleAuth?: boolean
   city?: undefined | string
-  movies?: IMovie[] | []
+  movies?: IMovie[] | null
   cityTheaters?: Partial<ITheaterOwnerEntity>[]
 }
 

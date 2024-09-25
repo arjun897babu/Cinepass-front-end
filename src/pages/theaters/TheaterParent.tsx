@@ -43,7 +43,7 @@ const menu = [
   {
     title: ' Bookings ',
     logo: CiStreamOn,
-    link: '/theaters/booking'
+    link: '/theaters/bookings'
   }
 ];
 

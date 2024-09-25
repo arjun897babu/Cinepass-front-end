@@ -8,6 +8,7 @@ import { TheaterProtectedRoutes } from "../component/theaters/theaterProtectedRo
 import { ErroPage } from "../pages/ErrorPage";
  
 import { TheaterResetPassWord } from "../pages/theaters/TheaterResetPassword";
+import Bookings from "../pages/theaters/Layout/Bookings";
 const TheaterShow = lazy(() => import("../pages/theaters/Layout/TheaterShow"));
 const TheaterScreen = lazy(() => import("../pages/theaters/Layout/TheaterScreen"));
 const TheaterDetail = lazy(() => import('../pages/theaters/Layout/TheaterDetail'))
@@ -35,6 +36,7 @@ const TheatersRoutes: React.FC = () => {
             <Route path="theater" element={<TheaterDetail />} />
             <Route path="screen" element={<TheaterScreen />} />
             <Route path="shows" element={<TheaterShow />} />
+            <Route path="bookings" element={<Bookings />} />
 
           </Route>
           <Route path='/login' element={<TheatersLogin />} />
