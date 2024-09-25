@@ -253,7 +253,7 @@ const UserInfo: React.FC = () => {
                 <button className=" btn btn-sm capitalize btn-active btn-neutral" onClick={openModal}>reset password</button>
               </div>
               <div className="text-center">
-                <button type="submit" className={`${loading ? 'pointer-events-none' : ''} btn  w-full sm:btn-wide bg-sky-400 `}>{!loading ? 'loading' : <i className="loading loading-xs"></i>}</button>
+                <button type="submit" className={`${loading ? 'pointer-events-none' : ''} hover:bg-sky-500 btn capitalize tracking-wider font-bold  w-full sm:btn-wide bg-sky-400 `}>{!loading ? 'update' : <i className="loading loading-xs"></i>}</button>
               </div>
             </form>
           </div>

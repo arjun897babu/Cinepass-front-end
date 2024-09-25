@@ -66,7 +66,7 @@ export const AccordionAllOpen: React.FC<AccordionProps> = ({ AccordionData }) =>
 
       <div className="collapse bg-white collapse-arrow w-full ">
         <input type="radio" name="my-accordion-2" defaultChecked />
-        <div className="collapse-title text-md rounded font-medium">{AccordionData?.filterItem}</div>
+        <div className="collapse-title text-md rounded font-medium capitalize">{AccordionData?.filterItem}</div>
         <div className="collapse-content">
           <div onClick={(e) => resetFilterItem(e, AccordionData?.filterItem)} className={` cursor-pointer badge p-3 text-xs  tracking-wide m-0.5 capitalize ${filterItem && filterItem[AccordionData.filterItem] === null || !filterItem ? 'bg-sky-400' : 'bg-sky-200'}`}>all</div>
           {AccordionData?.data.map((item) => (

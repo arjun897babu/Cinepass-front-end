@@ -3,7 +3,7 @@ import { AsyncThunk, createAsyncThunk, isRejectedWithValue } from '@reduxjs/tool
 import { IUser, LoggedOwner, UserSignUpData } from '../../interface/user/IUserData'
 import { userEndPoints } from '../../services/endpoints/endPoints'
 import { AxiosError } from 'axios'
-import { GoogleSignUp, IGetMovieShowResponse, IGetSingleShow, IMovie, LoginData, MovieFilter, OTPVerification, ResponseData, ResponseData2 } from '../../interface/Interface'
+import { BookingStatus, GoogleSignUp, IGetMovieShowResponse, IGetSingleShow, IMovie, IUserTicketData, LoginData, MovieFilter, OTPVerification, ResponseData, ResponseData2, TicketFilter } from '../../interface/Interface'
 import { handleAxiosError } from '../../utils/customError'
 import { ITheaterOwnerEntity, TheaterOwnerProfile } from '../../interface/theater/ITheaterOwner'
 
@@ -240,15 +240,17 @@ interface IGetSingleShowDetails extends ResponseData2 {
   data: { shows: IGetSingleShow }
 }
 
-export const getSingleShowDetails: AsyncThunk<IGetSingleShowDetails, { city: string, showId: string,filter:Partial<MovieFilter> }, {}> = createAsyncThunk(
+export const getSingleShowDetails: AsyncThunk<IGetSingleShowDetails, { city: string, showId: string, filter: Partial<MovieFilter> }, {}> = createAsyncThunk(
   '/user/getSingleShowDetails',
-  async ({ city, showId,filter }, { rejectWithValue }) => {
+  async ({ city, showId, filter }, { rejectWithValue }) => {
     console.log('get single show details asyncthunk is being called')
     try {
-      const response = await serverUser.get(userEndPoints.getSingleShow(city),{params:{
-        showId,
-        ...filter
-      }})
+      const response = await serverUser.get(userEndPoints.getSingleShow(city), {
+        params: {
+          showId,
+          ...filter
+        }
+      })
       return await response.data
     } catch (error) {
       return rejectWithValue(handleAxiosError)
@@ -280,6 +282,26 @@ export const bookTickets: AsyncThunk<BookTicketsResponse, { showId: string, payl
   }
 )
 
+interface IGetUserTicketResponse extends ResponseData2{
+  data:{
+    maxPage:number,
+    data:IUserTicketData[]
+  }
+}
+
+export const getUserTickets: AsyncThunk<IGetUserTicketResponse, { filter?: TicketFilter }, {}> = createAsyncThunk
+  (
+    '/user/getUserTickets',
+    async ({ filter }, { rejectWithValue }) => {
+      try {
+        const response = await serverUser.get(userEndPoints.getTicket, { params: { ...filter } })
+        return await response.data
+      } catch (error) {
+        return rejectWithValue(handleAxiosError(error))
+
+      }
+    }
+  )
 
 
 

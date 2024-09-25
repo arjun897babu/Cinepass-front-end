@@ -66,7 +66,12 @@ const PaymentSummary = () => {
         <TicketInfo
           bookingDate={bookingDate}
           selectedSeats={selectedSeats}
-          showDetails={showDetails}
+          movie={showDetails.movie}
+          screen={showDetails.screen}
+          show={showDetails.show}
+          theater={showDetails.theater}
+
+
         />
         <div className="booking-summary bg-base-100 p-2 m-2 rounded-md">
           <h1 className="capitalize text-lg font-medium ">booking summary</h1>

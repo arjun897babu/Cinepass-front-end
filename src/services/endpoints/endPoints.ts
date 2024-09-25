@@ -18,7 +18,8 @@ export const userEndPoints: UserEndpoint = {
   getSingleMovie: (city, movieId) => `/movies/${city}?movieId=${movieId}`,
   getTheater: (city) => `/theater/${city}`,
   userProfile: '/profile',
-  bookTicket: (showId) => `/booking/${showId}`
+  bookTicket: (showId) => `/booking/${showId}`,
+  getTicket:`tickets`
 };
 
 export const theatersEndPoints: TheaterEndpoint = {

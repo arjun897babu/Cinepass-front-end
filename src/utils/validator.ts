@@ -1,3 +1,6 @@
+import { MovieStatus } from "../interface/Interface"
+import { extractHourAndMin } from "./format"
+
 export enum MovieFormat {
   TWO_D = "2D",
   THREE_D = "3D",
@@ -127,7 +130,7 @@ const validateField = (
   value2?: string,
 ): ReturnObject => {
 
- 
+
   if (field !== 'confirm password' && isEmpty(value)) {
 
     return { message: errorMessage(field), isValid: false }
@@ -201,10 +204,35 @@ const validateEnumValue = (field: string, aminety: string): ReturnObject =>
 const validateMovieName = (movieName: string): ReturnObject =>
   validateField(movieName, 'movie Name')
 
-const isCloudinaryUrl = (url:string) =>   url.includes('cloudinary.com') 
+const isCloudinaryUrl = (url: string) => url.includes('cloudinary.com')
+
+function checkMovieStatus(showTime: string, endTime: string, releaseDate: string): MovieStatus {
  
+  const currentDate = new Date();
+   if (currentDate < new Date(releaseDate)) {
+     return MovieStatus.UPCOMING;
+  }
+ 
+  const [startHour, startMin] = extractHourAndMin(showTime);
+  const [endHour, endMin] = extractHourAndMin(endTime);
+
+  const todayShowTime = new Date(currentDate)
+  todayShowTime.setHours(startHour, startMin, 0, 0);
+  const todayEndTime = new Date(currentDate)
+  todayEndTime.setHours(endHour, endMin, 0, 0);
+
+  if (currentDate >= todayShowTime && currentDate <= todayEndTime) {
+    console.log('running show')
+    return MovieStatus.RUNNING;
+  }
+   
+  return MovieStatus.COMPLETED;
+}
+
+
 
 export {
+  checkMovieStatus,
   isCloudinaryUrl,
   validateName,
   validateMobileNumber,

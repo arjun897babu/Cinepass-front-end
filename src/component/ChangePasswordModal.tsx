@@ -139,7 +139,7 @@ const ChangePasswordModal: React.FC<{ role: Role, closeModal: () => void, setToa
 
                 {
                   !loading ?
-                    'Loading'
+                    'Reset'
                     : <span className="loading "></span>
                 }
 

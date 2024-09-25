@@ -1,5 +1,7 @@
 import { date } from "zod";
 import { UploadError } from "./customError";
+import { TiMediaFastForward } from "react-icons/ti";
+import { MovieStatus } from "../interface/Interface";
 
 const dateTypeGuard = (date: string | Date) => typeof date === 'string' ? new Date(date) : date
 
@@ -34,10 +36,12 @@ export function formatRunTime(time: string): string {
   return `${hours}${remainingMinutes > 0 ? `h ${remainingMinutes}min` : 'h'}`;
 
 }
-
+export function extractHourAndMin(time: string) {
+  return time.split(':').map(Number);
+}
 export function convertTo12HourFormat(time: string) {
 
-  const [hour, minute] = time.split(':').map(Number);
+  const [hour, minute] = extractHourAndMin(time);
 
 
   const period = hour >= 12 ? 'PM' : 'AM';
@@ -131,4 +135,15 @@ export function toValidJSDate(date: string): Date {
 
 export function calculateTotalAmount<T extends number>(totalSeat: T, chargePerSeat: T, serviceCharge: T): number {
   return (totalSeat * chargePerSeat) + (totalSeat * serviceCharge)
+}
+
+export function getMovieTextStatus(status: MovieStatus): string {
+  switch (status) {
+    case MovieStatus.COMPLETED:
+      return "We hope you liked it!";
+    case MovieStatus.RUNNING:
+      return "Enjoy the show!";
+    default:
+      return "Stay tuned!!!!!!"
+  }
 }

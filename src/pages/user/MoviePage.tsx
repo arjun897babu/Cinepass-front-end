@@ -121,7 +121,7 @@ const MoviePage: React.FC = () => {
           />
           {theaterDetails.map((theater) => {
             return <>
-              <div className="w-full block sm:flex gap-8 lg:gap-12 p-4 md:p-6 lg:p-9  border-t border-y-1 border-b-gray-200 my-1   rounded-lg border border-gray-300">
+              <div className="w-full block sm:flex gap-8 lg:gap-12 p-4 md:p-6 lg:p-9 rounded-lg  bg-base-100 ">
                 {/* Theater Name */}
                 <div className="text-left mb-4 w-1/3 flex-shrink-0">
                   <span className="text-xs lg:text-base font-bold flex items-center gap-2">

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { getAllMovies, getAllShows, getSingleMovie, getTheatersByCity, getUserProfile, googleSignUp, loginUser, logoutUser, signUpUser, updateUserProfile, } from "../actions/userAction";
+import { getAllMovies, getAllShows, getSingleMovie, getTheatersByCity, getUserProfile, getUserTickets, googleSignUp, loginUser, logoutUser, signUpUser, updateUserProfile, } from "../actions/userAction";
 import { IInitialState } from "./IState";
 import { IInitialStateError, } from "../../interface/Interface";
 import { isErrorResponse, isResponseError } from "../../utils/customError";
@@ -158,9 +158,15 @@ const userSlice = createSlice({
       .addCase(getTheatersByCity.fulfilled, (state: IInitialState, action) => {
         state.cityTheaters = action.payload.data.theater
       })
-      .addCase(getTheatersByCity.rejected, (state: IInitialState,action ) => {
+      .addCase(getTheatersByCity.rejected, (state: IInitialState, action) => {
         isResponseError(action.payload) ?
-        handleRejectedCase(state, action.payload) : null
+          handleRejectedCase(state, action.payload) : null
+      })
+
+      //get  user ticket data
+      .addCase(getUserTickets.rejected, (state: IInitialState, action) => {
+        isResponseError(action.payload) ?
+          handleRejectedCase(state, action.payload) : null
       })
 
   },

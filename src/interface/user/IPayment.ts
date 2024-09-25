@@ -7,9 +7,11 @@ interface IRental{
   price:number,
   listed:boolean
 }
-export interface IPayment extends Document {
+export interface IPayment {
+  _id:string,
   movieId: string;
   showId?: string;
+  theaterId?:string;
   userId: string;
   rentalId: string;
   screenId?: string;

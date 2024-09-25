@@ -1,6 +1,7 @@
- import { ITheaterOwnerEntity } from "./theater/ITheaterOwner";
+import { ITheaterOwnerEntity } from "./theater/ITheaterOwner";
 import { ITheaterScreenResponse } from "./theater/ITheaterScreen";
 import { IMovieShow } from "./theater/IMovieShow";
+import { IPayment } from "./user/IPayment";
 
 export enum PaymentStatus {
   PENDING = 'pending',
@@ -104,7 +105,7 @@ export interface ISeat {
   name: string,
   booked: boolean,
 }
- 
+
 export interface ITheaterScreen {
   _id?: string;
   theaterId?: string
@@ -132,10 +133,10 @@ export interface IGetMovieShowResponse {
 }
 
 export interface IGetSingleShow {
-  movie: Pick<IMovie, 'movie_name'|'movie_poster'>
-  theater: Pick<ITheaterOwnerEntity, 'theater_name'>
-  screen:  ITheaterScreenResponse 
-  show: Partial<IMovieShow>
+  movie: Pick<IMovie, 'movie_name' | 'movie_poster' | 'release_date'>
+  theater: Pick<ITheaterOwnerEntity, 'theater_name' | 'city'>
+  screen: ITheaterScreenResponse
+  show: Pick<IMovieShow, 'showTime' | 'endTime' | 'format' | 'language' | '_id'>
 }
 
 export enum Action {
@@ -150,7 +151,10 @@ export interface MovieFilter {
   format: string;
   genre: string;
   language: string;
-  nowShowing:boolean;
+  nowShowing: boolean;
+}
+export interface TicketFilter {
+  status: BookingStatus
 }
 
 export enum MovieFilterEnum {
@@ -159,4 +163,28 @@ export enum MovieFilterEnum {
   GENRE = 'genre',
   FORMAT = 'format',
   LANGUAGE = 'language'
+}
+export interface ITickets {
+  _id: string;
+  userId: string;
+  theaterId: string;
+  showId: string;
+  paymentId: string;//paymentIntentId of the transaction
+  bookingDate: Date;
+  seats: string[];
+  bookingStatus: BookingStatus;
+}
+export enum MovieStatus{
+  UPCOMING,
+  RUNNING,
+  COMPLETED
+}
+
+export interface IUserTicketData {
+  paymentInfo: Pick<IPayment, 'extraCharge' | 'serviceCharge' | 'status' | 'totalAmount' | '_id' | 'paymentIntentId'>;
+  TicketInfo: Pick<ITickets, '_id' | 'bookingStatus' | 'bookingDate' | 'seats'>;
+  movieInfo: IGetSingleShow['movie'];
+  theaterInfo: IGetSingleShow['theater'];
+  screenInfo: IGetSingleShow['screen'];
+  showInfo: IGetSingleShow['show']
 }
