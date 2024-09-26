@@ -11,8 +11,7 @@ import { getIST, getSerialNumber } from "../../../utils/format";
 import { Loader } from "../../../component/Loader";
 import PurchaseDetailModal from "../../../component/user/PurchaseDetailModal";
 import Pagination from "../../../component/Pagination";
-import { number } from "zod";
-
+ 
 const Bookings = () => {
   const dispatch = useDispatch<AppDispatch>()
   const [ticketData, setTicketData] = useState<ITheaterTicketData[] | null>(null);
