@@ -266,6 +266,7 @@ interface SeatBookingPayload {
 interface BookTicketsResponse extends ResponseData2 {
   data: {
     clientSecret: string
+    paymentIntentId:string
   }
 }
 
@@ -303,5 +304,17 @@ export const getUserTickets: AsyncThunk<IGetUserTicketResponse, { filter?: Ticke
     }
   )
 
+  export const cancelUserPayment: AsyncThunk<ResponseData2, { paymentIntentId: string,  }, {}> = createAsyncThunk(
+    '/user/seatBooking',
+    async ({ paymentIntentId }, { rejectWithValue }) => {
+      try {
+        const response = await serverUser.post(userEndPoints.cancelPayment(paymentIntentId) )
+        return await response.data
+      } catch (error) {
+        return rejectWithValue(handleAxiosError(error))
+  
+      }
+    }
+  )
 
 

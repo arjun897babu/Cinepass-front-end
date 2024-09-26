@@ -137,7 +137,7 @@ export interface IGetSingleShow {
   movie: Pick<IMovie, 'movie_name' | 'movie_poster' | 'release_date'>
   theater: Pick<ITheaterOwnerEntity, 'theater_name' | 'city'>
   screen: ITheaterScreenResponse
-  show: Pick<IMovieShow, 'showTime' | 'endTime' | 'format' | 'language' | '_id'>
+  show: Pick<IMovieShow, 'showTime' | 'endTime' | 'format' | 'language' | '_id'|'cancelationDeadline'>
 }
 
 export enum Action {

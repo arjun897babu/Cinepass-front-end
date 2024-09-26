@@ -19,8 +19,9 @@ interface IPurchaseSummary {
 
 
 const PurchaseSummary: React.FC<IPurchaseSummary> = ({ purchasedItem, data, setSelected }) => {
-     const viewSelected = (e: MouseEvent<HTMLButtonElement>, paymentIntentId: string) => {
-    e.preventDefault(); 
+  console.log(data.showInfo.cancelationDeadline)
+  const viewSelected = (e: MouseEvent<HTMLButtonElement>, paymentIntentId: string) => {
+    e.preventDefault();
     setSelected(paymentIntentId)
   }
   return (

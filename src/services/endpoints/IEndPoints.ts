@@ -22,6 +22,7 @@ export interface UserEndpoint extends IEndPoints {
   userProfile: string;
   bookTicket: (showId: string) => string
   getTicket: string
+  cancelPayment: (paymentIntent: string) => string
 }
 export interface TheaterEndpoint extends IEndPoints {
   signup: string;

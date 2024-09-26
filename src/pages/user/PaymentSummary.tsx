@@ -21,6 +21,7 @@ const { VITE_TEST_PUBLISHABLE_API_KEY } = import.meta.env
 const PaymentSummary = () => {
   const stripePromise = loadStripe(VITE_TEST_PUBLISHABLE_API_KEY);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false)
   const location = useLocation()
   const dispatch = useDispatch<AppDispatch>()
@@ -43,7 +44,9 @@ const PaymentSummary = () => {
       if (showDetails && showDetails.show._id) {
         const response = await dispatch(bookTickets({ showId: showDetails.show._id, payload: { bookingDate, reservedSeats: selectedSeats } })).unwrap()
         if (response.status === ResponseStatus.SUCCESS) {
+          console.log(response.data)
           setClientSecret(response.data.clientSecret)
+          setPaymentIntentId(response.data.paymentIntentId)
           setCheckOutModal(true)
         }
       }
@@ -56,7 +59,7 @@ const PaymentSummary = () => {
   const closeCheckOutModal = () => {
 
     setCheckOutModal(false)
-    navigate(-2) 
+    navigate(-2)
   }
 
   return (
@@ -100,10 +103,11 @@ const PaymentSummary = () => {
         </div>
       </div>
 
-      {checkoutModal && stripePromise && clientSecret &&
+      {checkoutModal && stripePromise && clientSecret && paymentIntentId &&
 
         <Elements options={{ appearance: { theme: 'stripe' }, clientSecret }} stripe={stripePromise}>
           <CheckoutModal
+            paymentIntentId={paymentIntentId}
             closeModal={closeCheckOutModal}
             theaterDetail={showDetails.theater}
             amount={calculateTotalAmount(selectedSeats.length, showDetails.screen.chargePerSeat, 20)}
