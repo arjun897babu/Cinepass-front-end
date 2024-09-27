@@ -7,6 +7,9 @@ import { useDispatch } from "react-redux"
 import { AppDispatch } from "../../redux/store"
 import { cancelUserPayment } from "../../redux/actions/userAction"
 import { ResponseStatus } from "../../interface/Interface"
+import { TheaterDetails } from "../admin/TheaterDetail"
+import { formatTime } from "../../utils/format"
+import { useTimer } from "../../hooks/useTimer"
 interface CheckoutModalPops {
   closeModal: () => void,
   theaterDetail: Partial<ITheaterOwnerEntity>,
@@ -46,6 +49,12 @@ const CheckoutModal: React.FC<CheckoutModalPops> = ({ closeModal, theaterDetail,
     }
   }
 
+  const { timeRemaining } = useTimer(30)
+
+  if (timeRemaining === 0) {
+    navigate(-1)
+  }
+
   const paymentModalRef = useRef<HTMLDialogElement>(null)
 
   const closeLayoutModal = async (e: MouseEvent<HTMLButtonElement>) => {
@@ -53,17 +62,14 @@ const CheckoutModal: React.FC<CheckoutModalPops> = ({ closeModal, theaterDetail,
     const response = await dispatch(cancelUserPayment({ paymentIntentId })).unwrap()
     if (response.status === ResponseStatus.SUCCESS) {
       navigate(-1)
-      paymentModalRef.current?.close()
-      closeModal()
     }
   }
 
-  
+
 
   useEffect(() => {
     if (paymentModalRef.current) {
       paymentModalRef.current.showModal();
-      console.log('payment modal is opening');
     }
   }, [])
 
@@ -82,22 +88,31 @@ const CheckoutModal: React.FC<CheckoutModalPops> = ({ closeModal, theaterDetail,
             </div>
             <div>
               <div className="font-bold">{theaterDetail.theater_name}</div>
-              <div className="text-sm opacity-50">United States</div>
+              <div className="text-sm opacity-50">{theaterDetail.city}</div>
             </div>
           </div>
           <button onClick={closeLayoutModal} className="btn btn-sm btn-circle btn-white absolute right-2 top-2">✕</button>
           <div className=" p-4">
 
             {stripe &&
-              <form id="payment-form" onSubmit={handleSubmit}>
-                <PaymentElement id="payment-element" options={{ layout: 'tabs' }} />
-                {message && <div id="payment-message">{message}</div>}
-                <button disabled={isLoading || !stripe || !elements} id="submit" className="w-full btn  mt-3 bg-sky-400 hover:bg-sky-500">
-                  <span id="button-text">
-                    {isLoading ? <div className="spinner" id="spinner"></div> : `Pay ₹ ${amount}`}
-                  </span>
-                </button>
-              </form>}
+              <>
+                <div className="flex justify-center">
+                  <div className="m-2 text-red-600 text-lg font-bold text-center">
+                    Time remaining: {formatTime(timeRemaining)}
+                  </div>
+                </div>
+
+                <form id="payment-form" onSubmit={handleSubmit}>
+                  <PaymentElement id="payment-element" options={{ layout: 'tabs' }} />
+                  {message && <div id="payment-message">{message}</div>}
+                  <button disabled={isLoading || !stripe || !elements} id="submit" className="w-full btn  mt-3 bg-sky-400 hover:bg-sky-500">
+                    <span id="button-text">
+                      {isLoading ? <div className="spinner" id="spinner"></div> : `Pay ₹ ${amount}`}
+                    </span>
+                  </button>
+                </form>
+              </>
+            }
           </div>
         </div>
       </dialog>

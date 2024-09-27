@@ -37,8 +37,8 @@ const PurchaseDetailModal: React.FC<{ role: Role, data: IUserTicketData, closeMo
 
   return (
     <>
-      <dialog id="purchase-detail-modal" className="modal" ref={modalRef}>
-        <div className="modal-box p-0 bg-base-200 rounded-md">
+      <dialog id="purchase-detail-modal" className="modal modal-middle " ref={modalRef}>
+        <div className="modal-box p-0 bg-base-200 rounded-md max-w-xl">
           <div
             className={` p-6  capitalize text-white text-lg font-medium  tracking-wider
                ${role === Role.users ?
@@ -84,7 +84,9 @@ const PurchaseDetailModal: React.FC<{ role: Role, data: IUserTicketData, closeMo
               screen={data.screenInfo}
               selectedSeats={data.TicketInfo.seats}
               show={data.showInfo}
-              theater={data.theaterInfo} />
+              theater={data.theaterInfo}
+              bookingCode={data.TicketInfo.bookingCode}
+            />
             <div className="divider divider-neutral opacity-25 "> </div>
             {/* payment charges information */}
             <div className="">

@@ -29,11 +29,11 @@ const menu = [
     logo: GiTheater,
     link: '/admin/theaters'
   },
-  {
-    title: 'Tickets',
-    logo: IoTicketSharp,
-    link: '/admin/tickets'
-  },
+  // {
+  //   title: 'Tickets',
+  //   logo: IoTicketSharp,
+  //   link: '/admin/tickets'
+  // },
   // {
   //   title: 'Stream',
   //   logo: RiMovieLine,

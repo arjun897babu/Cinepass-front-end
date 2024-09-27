@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom"
 import { AppDispatch, RootState } from "../../redux/store"
 import { useEffect, useState } from "react"
 import { IGetSingleShow, ResponseStatus, Role } from "../../interface/Interface";
-import { calculateTotalAmount, convertTo12HourFormat, getDate, getDayName, getMonthName, toValidJSDate } from "../../utils/format";
+import { calculateTotalAmount } from "../../utils/format";
 import CheckoutModal from "../../component/user/CheckoutModal";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";

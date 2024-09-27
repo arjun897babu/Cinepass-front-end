@@ -68,7 +68,7 @@ export const SearchWithFilters: React.FC<{ setFilter: (filterItem: Partial<Movie
           <button onClick={handleUpcomingClick} className={`w-full h-full p-1 ${!nowShowing && 'bg-white'}   rounded-sm capitalize text-sm text-slate-800`}>Upcoming</button>
         </div>
 
-        <div className="relative">
+        <div className="relative hidden">
           <CiSearch size={20} className="absolute top-2.5 left-2 text-gray-400" />
           <input type="search" placeholder="search movie, theater..." className="pl-10 pr-4 w-full h-9 placeholder-gray-400 text-gray-900 focus:outline-none" />
         </div>

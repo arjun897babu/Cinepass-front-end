@@ -1,15 +1,16 @@
 import { memo } from "react";
 import { IGetSingleShow, IMovie } from "../../interface/Interface"
-import { convertTo12HourFormat, getDate, getDayName, getMonthName } from "../../utils/format"; 
+import { convertTo12HourFormat, getDate, getDayName, getMonthName } from "../../utils/format";
 import { IPayment } from "../../interface/user/IPayment";
 
- 
-interface ITicketInfoProps extends IGetSingleShow { 
+
+interface ITicketInfoProps extends IGetSingleShow {
   bookingDate: string;
   selectedSeats: string[]
+  bookingCode?: string
   // payment?: Pick<IPayment, 'status' | 'extraCharge' | 'serviceCharge' | 'paymentIntentId'>
 }
-const TicketInfo: React.FC<ITicketInfoProps> = ({ movie, screen, show, theater, bookingDate, selectedSeats }) => {
+const TicketInfo: React.FC<ITicketInfoProps> = ({ movie, screen, show, theater, bookingDate, selectedSeats, bookingCode }) => {
   return (
     <div className="ticket-summary  p-2 m-2 ">
       <div className="bg-base-100  rounded-md">
@@ -28,7 +29,7 @@ const TicketInfo: React.FC<ITicketInfoProps> = ({ movie, screen, show, theater, 
             </div>
             <h6 className="text-sm tracking-wider mt-3 ">{`${theater.theater_name}, ${theater.city} `}</h6>
 
-            <div className="divider  divider-neutral "> </div>
+            <div className="divider  divider-neutral text-xs tracking-wide"> {bookingCode && bookingCode}</div>
 
             <div className="grid grid-cols-3 gap-3 justify-between items-center mt-3">
               <div className="col-span-2">

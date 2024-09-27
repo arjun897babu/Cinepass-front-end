@@ -174,6 +174,7 @@ export interface ITickets {
   bookingDate: Date;
   seats: string[];
   bookingStatus: BookingStatus;
+  bookingCode:string
 }
 export enum MovieStatus{
   UPCOMING,
@@ -183,7 +184,7 @@ export enum MovieStatus{
 
 export interface IUserTicketData {
   paymentInfo: Pick<IPayment, 'extraCharge' | 'serviceCharge' | 'status' | 'totalAmount' | '_id' | 'paymentIntentId'>;
-  TicketInfo: Pick<ITickets, '_id' | 'bookingStatus' | 'bookingDate' | 'seats'>;
+  TicketInfo: Pick<ITickets, '_id' | 'bookingStatus' | 'bookingDate' | 'seats'|'bookingCode'>;
   movieInfo: IGetSingleShow['movie'];
   theaterInfo: IGetSingleShow['theater'];
   screenInfo: IGetSingleShow['screen'];

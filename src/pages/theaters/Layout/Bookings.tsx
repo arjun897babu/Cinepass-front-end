@@ -64,24 +64,24 @@ const Bookings = () => {
         <table className="table">
 
           <thead>
-            <tr className="capitalize text-black text-center ">
-              <th >Sl.No</th>
+            <tr className="capitalize text-black  ">
+              <th>Sl.No</th>
               <th>show time</th>
               <th>screen</th>
-              <th>booking date</th>
+              <th>booking code</th>
               <th>Movie</th>
               <th></th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="capitalize">
             {
               ticketData.map((item, index) => (
                 <>
 
                   <tr key={item.TicketInfo._id}>
-                    <td>{getSerialNumber(currentPage, index,2 )}</td>
+                    <td>{getSerialNumber(currentPage, index,1 )}</td>
                     <td>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1">
                         <div className="avatar">
                           <div className="mask  h-12 w-12">
                             <img
@@ -98,7 +98,11 @@ const Bookings = () => {
                     <td>
                       <span className="badge bg-sky-400 rounded-sm badge-sm">{item.screenInfo.screen_name}</span>
                     </td>
-                    <td ><span className="badge bg-sky-400 rounded-sm badge-sm">{getIST(item.TicketInfo.bookingDate.toString())}</span></td>
+                    <td className="" >
+                      <span className="badge bg-sky-400 rounded-sm p-3 badge-sm">{item.TicketInfo.bookingCode}</span>
+                      <br />
+                      {/* <span className="badge bg-sky-400 rounded-sm p-3 badge-sm">{getIST(item.TicketInfo.bookingDate.toString())}</span> */}
+                      </td>
                     <td>
                       <td>
                         <div className="flex items-center gap-2">
@@ -110,7 +114,7 @@ const Bookings = () => {
                             </div>
                           </div>
                           <div>
-                            <div className="font-bold">{item.movieInfo.movie_name}</div>
+                            <div className="font-bold">{item.movieInfo.movie_name}</div> 
                             <div className="font-bold">{getIST(item.movieInfo.release_date.toString())}</div>
 
                           </div>
@@ -118,7 +122,7 @@ const Bookings = () => {
                       </td>
                     </td>
                     <th>
-                      <button onClick={(e) => showDetails(e, item.TicketInfo._id)} className="btn bg-sky-400 rounded-sm hover:bg-sky-500 btn-xs">details</button>
+                      <button onClick={(e) => showDetails(e, item.TicketInfo._id)} className="btn bg-sky-400 rounded-sm hover:bg-sky-500 btn-xs">Details</button>
                     </th>
                   </tr>
                 </>

@@ -10,7 +10,7 @@ interface ConfirmationModalProps {
   message: string; // modal alert mesage
   btnType: ResponseStatus // style pf the button colcor based on the status of form
 }
-
+ 
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ isOpen, onClose, onConfirm, message, btnType }) => {
   const modalRef = useRef<HTMLDialogElement>(null);
   const modalClose = (e: MouseEvent<HTMLButtonElement>) => {
