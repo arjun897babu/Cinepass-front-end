@@ -10,13 +10,16 @@ import { Link } from "react-router-dom";
 const MovieCard: React.FC = () => {
 
   const { movies } = useSelector((state: RootState) => state.user)
+
   if (!movies) {
     return (
+     
       <div >
         <EmptyData />
       </div>
     )
   };
+
   return (
     <>
       {

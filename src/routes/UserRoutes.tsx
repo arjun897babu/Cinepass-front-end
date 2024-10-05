@@ -1,6 +1,6 @@
 import React, { lazy, Suspense } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
-import UserHome from "../pages/user/UserHome";
+const UserHome = lazy(() => import('../pages/user/UserHome'))
 import { UserSignUp } from "../pages/user/UserSignUp";
 import { UserLogin } from "../pages/user/UserLogin";
 const UserOTPVerification = lazy(() => import('../pages/user/UserOTPVerification'));
@@ -20,6 +20,7 @@ import PaymentSuccess from "../pages/user/PaymentSuccess";
 import PaymentSummary from "../pages/user/PaymentSummary";
 import TicketSummary from "../pages/user/layout/TicketSummary";
 const MoviePage = lazy(() => import("../pages/user/MoviePage"));
+const StreamHomePage = lazy(() => import('../pages/user/StreamHomePage'))
 
 const UserRoutes: React.FC = () => {
   const location = useLocation();
@@ -52,6 +53,7 @@ const UserRoutes: React.FC = () => {
             <Route path='/movie/:movieId' element={<MoviePage />} />
             <Route path='/theater/:theaterId' element={<TheaterDetails />} />
             <Route path='/movie/layout/:showId' element={<ScreenLayout />} />
+            <Route path='/streams' element={<StreamHomePage />} />
             <Route path='/paymentsuccess' element={
               <ProtectedRoutes>
                 <PaymentSuccess />
@@ -59,9 +61,7 @@ const UserRoutes: React.FC = () => {
             }
             ></Route>
             <Route path='/payment' element={
-              
-                <PaymentSummary />
-         
+              <PaymentSummary />
             }
             ></Route>
           </Routes>

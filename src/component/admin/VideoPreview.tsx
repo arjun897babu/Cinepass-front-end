@@ -25,6 +25,7 @@ const VideoPreview: React.FC<IVideoPreviewProps> = ({ file, removeFile }) => {
   }, [file])
 
   const deleteVideo = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
     removeFile()
     setFileUrl(null)
   }

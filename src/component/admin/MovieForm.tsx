@@ -577,7 +577,7 @@ export const MovieForm: React.FC<MovieFormProps> = ({
             <Controller
               name="file"
               control={control}
-              render={({ field }) => (
+              render={( ) => (
                 <input
                   type="file"
                   accept="video/mp4, video/mpeg, video/webm, video/x-matroska,video/mkv" 
