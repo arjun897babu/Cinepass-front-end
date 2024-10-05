@@ -69,8 +69,7 @@ const AdminMovie: React.FC = () => {
   }
 
   const deleteMovie = async () => {
-    console.log(deleteMovieId)
-    if (deleteMovieId) {
+     if (deleteMovieId) {
       try {
         const response = await dispatch(manageMovie({ movieType: MovieType.theater, movieId: deleteMovieId })).unwrap()
         if (response.status === ResponseStatus.SUCCESS) {
@@ -154,6 +153,7 @@ const AdminMovie: React.FC = () => {
           action="add"
           id="addMovie"
           setToast={setToast}
+          movieType={MovieType.theater}
         />
       }
 
@@ -250,6 +250,7 @@ const AdminMovie: React.FC = () => {
             setToast={setToast}
             action="update"
             id="updateMovie"
+            movieType={MovieType.theater}
             selectedData={selectedMovie}
           />
         }

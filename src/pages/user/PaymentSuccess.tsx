@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom"
 import { RootState } from "../../redux/store";
+import { useStripe } from "@stripe/react-stripe-js";
 
 
 const PaymentSuccess = () => {
@@ -9,14 +10,20 @@ const PaymentSuccess = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams()
+  // const [paymentStatus, setPaymentStatus] = useState<'processing' | 'succeeded' | 'failed' | null>(null);
+  // const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+
     const payment_intent = searchParams.get('payment_intent')
-    
-    if (!payment_intent) {
+    const payment_intent_client_secret = searchParams.get('payment_intent_client_secret') 
+    if (!payment_intent || !payment_intent_client_secret) {
       navigate(`/home/${city}`, { replace: true })
-    }
-  }, [location.state])
+      return
+    } 
+
+  }, [searchParams, city, navigate]);
+
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-white">

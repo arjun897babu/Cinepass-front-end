@@ -97,7 +97,7 @@ export interface IMovie {
   movie_poster: string
   cast?: ICast[];
   trailer?: string;
-  file?: string;
+  file?: File;
   plan?: string;
   slug?: string
 }
@@ -137,7 +137,16 @@ export interface IGetSingleShow {
   movie: Pick<IMovie, 'movie_name' | 'movie_poster' | 'release_date'>
   theater: Pick<ITheaterOwnerEntity, 'theater_name' | 'city'>
   screen: ITheaterScreenResponse
-  show: Pick<IMovieShow, 'showTime' | 'endTime' | 'format' | 'language' | '_id'|'cancelationDeadline'>
+  show: Pick<IMovieShow, 'showTime' | 'endTime' | 'format' | 'language' | '_id' | 'cancelationDeadline' | 'reserved'>
+}
+export interface ITicketSummaryLocationState {
+  showDetails: Omit<IGetSingleShow, 'show' | 'screen'> & {
+    show: Omit<IGetSingleShow['show'], 'reserved'>; // Remove 'reserved'  
+    screen: Omit<IGetSingleShow['screen'], 'layout'>; // Remove 'layout' field from 'screen'
+  };
+  showId: string;
+  selectedSeats: string[];
+  bookingDate: string;
 }
 
 export enum Action {
@@ -154,8 +163,24 @@ export interface MovieFilter {
   language: string;
   nowShowing: boolean;
 }
-export interface TicketFilter { 
+export interface TicketFilter {
   status: BookingStatus
+}
+
+export interface IStreamRentalPlan{
+  _id:string
+  planName: string;
+  price: number;
+  validity: number; //representing the months
+  listed: true
+}
+
+export interface IStreamPlanFilter {
+  pageNumber: number,
+  listed: boolean,
+  search: string,
+  sort: boolean;
+  all:boolean
 }
 
 export enum MovieFilterEnum {
@@ -174,9 +199,9 @@ export interface ITickets {
   bookingDate: Date;
   seats: string[];
   bookingStatus: BookingStatus;
-  bookingCode:string
+  bookingCode: string
 }
-export enum MovieStatus{
+export enum MovieStatus {
   UPCOMING,
   RUNNING,
   COMPLETED
@@ -184,7 +209,7 @@ export enum MovieStatus{
 
 export interface IUserTicketData {
   paymentInfo: Pick<IPayment, 'extraCharge' | 'serviceCharge' | 'status' | 'totalAmount' | '_id' | 'paymentIntentId'>;
-  TicketInfo: Pick<ITickets, '_id' | 'bookingStatus' | 'bookingDate' | 'seats'|'bookingCode'>;
+  TicketInfo: Pick<ITickets, '_id' | 'bookingStatus' | 'bookingDate' | 'seats' | 'bookingCode'>;
   movieInfo: IGetSingleShow['movie'];
   theaterInfo: IGetSingleShow['theater'];
   screenInfo: IGetSingleShow['screen'];

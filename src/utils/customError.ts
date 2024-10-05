@@ -43,7 +43,7 @@ export function isResponseError(error: unknown): error is IResponseError {
 }
 
 export function handleAxiosError(error: unknown): IResponseError {
-
+ 
   if (error instanceof AxiosError) {
     const { response } = error
     if (response) {

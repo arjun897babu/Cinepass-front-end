@@ -1,4 +1,4 @@
-import { MouseEvent, useEffect, useState } from "react"
+import { lazy, MouseEvent, useEffect, useState } from "react"
 import { ITheaterTicketData, ResponseStatus, Role } from "../../../interface/Interface"
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../redux/store";
@@ -6,7 +6,7 @@ import { getTicketBookings } from "../../../redux/actions/theaterAction";
 import { isResponseError } from "../../../utils/customError";
 import { HttpStatusCode } from "axios";
 import useErrorHandler from "../../../hooks/useErrorHandler";
-import EmptyData from "../../../component/EmptyData";
+ const EmptyData = lazy(()=>import("../../../component/EmptyData") )
 import { getIST, getSerialNumber } from "../../../utils/format";
 import { Loader } from "../../../component/Loader";
 import PurchaseDetailModal from "../../../component/user/PurchaseDetailModal";

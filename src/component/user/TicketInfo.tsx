@@ -1,16 +1,28 @@
 import { memo } from "react";
-import { IGetSingleShow, IMovie } from "../../interface/Interface"
+import { IGetSingleShow, ITicketSummaryLocationState } from "../../interface/Interface"
 import { convertTo12HourFormat, getDate, getDayName, getMonthName } from "../../utils/format";
-import { IPayment } from "../../interface/user/IPayment";
 
 
-interface ITicketInfoProps extends IGetSingleShow {
+
+interface ITicketInfoProps extends
+  Pick<IGetSingleShow, 'movie' | 'theater'>,
+  Pick<ITicketSummaryLocationState['showDetails'], 'show' | 'screen'> {
   bookingDate: string;
   selectedSeats: string[]
   bookingCode?: string
-  // payment?: Pick<IPayment, 'status' | 'extraCharge' | 'serviceCharge' | 'paymentIntentId'>
 }
-const TicketInfo: React.FC<ITicketInfoProps> = ({ movie, screen, show, theater, bookingDate, selectedSeats, bookingCode }) => {
+
+const TicketInfo: React.FC<ITicketInfoProps> = (
+  { 
+    
+    movie,  theater,
+    screen, show,
+    bookingDate,
+    selectedSeats,
+    bookingCode
+
+  }) => {
+
   return (
     <div className="ticket-summary  p-2 m-2 ">
       <div className="bg-base-100  rounded-md">

@@ -3,9 +3,10 @@ import { AsyncThunk, createAsyncThunk, isRejectedWithValue } from '@reduxjs/tool
 import { IUser, LoggedOwner, UserSignUpData } from '../../interface/user/IUserData'
 import { userEndPoints } from '../../services/endpoints/endPoints'
 import { AxiosError } from 'axios'
-import { BookingStatus, GoogleSignUp, IGetMovieShowResponse, IGetSingleShow, IMovie, IUserTicketData, LoginData, MovieFilter, OTPVerification, ResponseData, ResponseData2, TicketFilter } from '../../interface/Interface'
+import { BookingStatus, GoogleSignUp, IGetMovieShowResponse, IGetSingleShow, IMovie, ITicketSummaryLocationState, IUserTicketData, LoginData, MovieFilter, OTPVerification, ResponseData, ResponseData2, TicketFilter } from '../../interface/Interface'
 import { handleAxiosError } from '../../utils/customError'
 import { ITheaterOwnerEntity, TheaterOwnerProfile } from '../../interface/theater/ITheaterOwner'
+import { userResetBookingInfo } from '../reducers/userReducer'
 
 export const signUpUser: AsyncThunk<ResponseData, UserSignUpData, {}> = createAsyncThunk(
   'user/signup',
@@ -47,7 +48,7 @@ interface userLoginResponse extends ResponseData2 {
 }
 export const loginUser: AsyncThunk<userLoginResponse, LoginData, {}> = createAsyncThunk(
   'users/login',
-  async (userData: LoginData, { rejectWithValue }) => {
+  async (userData: LoginData, { dispatch, getState, rejectWithValue }) => {
 
     try {
       const response = await serverUser.post(userEndPoints.login, userData);
@@ -167,7 +168,7 @@ export const getAllMovies: AsyncThunk<IMovie[], { city: string, filter?: Partial
     console.log(filter);
     try {
       const response = await serverUser.get(userEndPoints.getAllMovies(city), {
-        params:{...filter}
+        params: { ...filter }
       });
       const { movies } = response.data?.data
       return await movies
@@ -253,7 +254,7 @@ export const getSingleShowDetails: AsyncThunk<IGetSingleShowDetails, { city: str
       })
       return await response.data
     } catch (error) {
-      return rejectWithValue(handleAxiosError)
+      return rejectWithValue(handleAxiosError(error))
     }
   }
 )
@@ -266,27 +267,33 @@ interface SeatBookingPayload {
 interface BookTicketsResponse extends ResponseData2 {
   data: {
     clientSecret: string
-    paymentIntentId:string
+    paymentIntentId: string
   }
 }
 
-export const bookTickets: AsyncThunk<BookTicketsResponse, { showId: string, payload: SeatBookingPayload }, {}> = createAsyncThunk(
+export const bookTickets: AsyncThunk<BookTicketsResponse, ITicketSummaryLocationState, {}> = createAsyncThunk(
   '/user/seatBooking',
-  async ({ showId, payload }, { rejectWithValue }) => {
+  async ({ showId, bookingDate, selectedSeats }, { rejectWithValue }) => {
     try {
-      const response = await serverUser.post(userEndPoints.bookTicket(showId), payload)
+
+
+      const response = await serverUser.post(userEndPoints.bookTicket(showId),
+        {
+          bookingDate,
+          reservedSeats: selectedSeats
+        }
+      )
       return await response.data
     } catch (error) {
       return rejectWithValue(handleAxiosError(error))
-
     }
   }
 )
 
-interface IGetUserTicketResponse extends ResponseData2{
-  data:{
-    maxPage:number,
-    data:IUserTicketData[]
+interface IGetUserTicketResponse extends ResponseData2 {
+  data: {
+    maxPage: number,
+    data: IUserTicketData[]
   }
 }
 
@@ -304,17 +311,17 @@ export const getUserTickets: AsyncThunk<IGetUserTicketResponse, { filter?: Ticke
     }
   )
 
-  export const cancelUserPayment: AsyncThunk<ResponseData2, { paymentIntentId: string,  }, {}> = createAsyncThunk(
-    '/user/seatBooking',
-    async ({ paymentIntentId }, { rejectWithValue }) => {
-      try {
-        const response = await serverUser.post(userEndPoints.cancelPayment(paymentIntentId) )
-        return await response.data
-      } catch (error) {
-        return rejectWithValue(handleAxiosError(error))
-  
-      }
+export const cancelUserPayment: AsyncThunk<ResponseData2, { paymentIntentId: string, }, {}> = createAsyncThunk(
+  '/user/cancelUserPayments',
+  async ({ paymentIntentId }, { rejectWithValue }) => {
+    try {
+      const response = await serverUser.post(userEndPoints.cancelPayment(paymentIntentId))
+      return await response.data
+    } catch (error) {
+      return rejectWithValue(handleAxiosError(error))
+
     }
-  )
+  }
+)
 
 

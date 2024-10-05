@@ -1,9 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { cancelUserPayment, getAllMovies, getAllShows, getSingleMovie, getTheatersByCity, getUserProfile, getUserTickets, googleSignUp, loginUser, logoutUser, signUpUser, updateUserProfile, } from "../actions/userAction";
+import { bookTickets, cancelUserPayment, getAllMovies, getAllShows, getSingleMovie, getTheatersByCity, getUserProfile, getUserTickets, googleSignUp, loginUser, logoutUser, signUpUser, updateUserProfile, } from "../actions/userAction";
 import { IInitialState } from "./IState";
 import { IInitialStateError, } from "../../interface/Interface";
 import { isErrorResponse, isResponseError } from "../../utils/customError";
 import { handleRejectedCase } from "./theatersReducer";
+import { HttpStatusCode } from "axios";
 
 
 const initialState: IInitialState = {
@@ -14,8 +15,8 @@ const initialState: IInitialState = {
   isGoogleAuth: false,
   city: undefined,
   movies: null,
-  cityTheaters: []
-
+  cityTheaters: [],
+  bookingInfo: null
 };
 
 const userSlice = createSlice({
@@ -41,6 +42,9 @@ const userSlice = createSlice({
     userClearTempMail(state: IInitialState) {
       state.tempMail = null
 
+    },
+    userResetBookingInfo(state: IInitialState) {
+      state.bookingInfo = null
     }
   },
   extraReducers: (builder) => {
@@ -93,12 +97,11 @@ const userSlice = createSlice({
       //logout
 
       .addCase(logoutUser.fulfilled, (state: IInitialState) => {
-
         state.error = null
         state.isAuthenticated = false;
         state.profile = null
-
       })
+
       .addCase(logoutUser.rejected, (state: IInitialState, action) => {
 
         if (isErrorResponse(action.payload)) {
@@ -127,7 +130,7 @@ const userSlice = createSlice({
         }
       })
 
-      //getuser profile
+      //ge tuser profile
       .addCase(getUserProfile.fulfilled, (state: IInitialState, action) => {
         state.profile = action.payload.data.user
       })
@@ -175,6 +178,20 @@ const userSlice = createSlice({
           handleRejectedCase(state, action.payload) : null
       })
 
+      //user ticket booking payment
+      .addCase(bookTickets.pending, (state: IInitialState, payload) => {
+
+        if (!state.isAuthenticated) {
+          state.bookingInfo = payload.meta.arg
+        }
+
+      })
+      
+      .addCase(bookTickets.rejected, (state: IInitialState, action) => {
+
+        isResponseError(action.payload) ?
+          handleRejectedCase(state, action.payload) : null
+      })
   },
 
 });
@@ -184,7 +201,9 @@ export const {
   userSetError,
   userSetIsAuthenticated,
   userSetCity,
-  userClearTempMail
+  userClearTempMail,
+  userResetBookingInfo
+
 } = userSlice.actions
 
 export default userSlice.reducer

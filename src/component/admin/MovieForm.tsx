@@ -1,21 +1,24 @@
 import React, { ChangeEvent, MouseEvent, RefObject, useCallback, useEffect, useRef, useState } from "react";
 import { Controller, SubmitHandler, useForm as useForms } from 'react-hook-form'
 
-import { Action, IMovie, ResponseStatus } from "../../interface/Interface";
+import { Action, IMovie, IStreamRentalPlan, ResponseStatus, Role } from "../../interface/Interface";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../../redux/store";
-import { addMovie, updateMovie } from "../../redux/actions/adminAction";
+import { addMovie, getStreamPlan, updateMovie } from "../../redux/actions/adminAction";
 import { isResponseError, UploadError } from "../../utils/customError";
 
 import { Genre, isCloudinaryUrl, Language, MovieFormat } from "../../utils/validator";
 import { movieSchema } from "../../utils/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IoCloudUploadOutline } from "react-icons/io5";
-import { convertFile, getIST, setDefaultDate } from "../../utils/format";
+import { convertFile } from "../../utils/format";
 import { MultiSelect } from "./MultiSelect";
 import ConfirmationModal from "../ConfirmationModal";
 import ImagePreview from "../image_preview/ImagePreview";
-
+import useErrorHandler from "../../hooks/useErrorHandler";
+import { HttpStatusCode } from "axios";
+import VideoPlayer from "./VideoPlayer";
+import VideoPreview from "./VideoPreview";
 
 export enum MovieType {
   theater = 'Theater',
@@ -32,17 +35,16 @@ interface MovieFormProps {
   action: string
 }
 
-export const MovieForm: React.FC<MovieFormProps> = (
-  {
-    movieType,
-    updateMovieData,
-    closeButtonRef,
-    selectedData,
-    setToast,
-    setModalToast,
-    closeModal,
-    action
-  }
+export const MovieForm: React.FC<MovieFormProps> = ({
+  movieType,
+  updateMovieData,
+  closeButtonRef,
+  selectedData,
+  setToast,
+  setModalToast,
+  closeModal,
+  action
+}
 ) => {
 
   selectedData = selectedData ?? {
@@ -55,9 +57,11 @@ export const MovieForm: React.FC<MovieFormProps> = (
     cover_photo: '',
     movie_poster: '',
   }
+  const handleApiError = useErrorHandler(Role.admin)
   const {
     register,
     handleSubmit,
+    trigger,
     clearErrors,
     reset,
     watch,
@@ -67,7 +71,7 @@ export const MovieForm: React.FC<MovieFormProps> = (
     formState: { errors }
   } = useForms<IMovie>(
     {
-      resolver: zodResolver(movieSchema),
+      resolver: zodResolver(movieSchema(movieType)),
       defaultValues: selectedData
     }
   )
@@ -76,6 +80,12 @@ export const MovieForm: React.FC<MovieFormProps> = (
   const [loading, setLoading] = useState<boolean>(false);
   const [coverPhoto, setCoverPhoto] = useState<string | null>(null);
   const [moviePoster, setMoviePoster] = useState<string | null>(null);
+  const [videoFile, setVideoFile] = useState<File | null>(null)
+
+  const removePreview = () => {
+    setVideoFile(null)
+    setValue('file', undefined)
+  }
   const coverPhotoRef = useRef<HTMLInputElement>(null)
   const moviePosterRef = useRef<HTMLInputElement>(null)
 
@@ -104,6 +114,33 @@ export const MovieForm: React.FC<MovieFormProps> = (
     },
     []
   );
+
+  const [plan, setPlan] = useState<IStreamRentalPlan[] | null>(null)
+
+  async function fetchStreamingPlan() {
+    setLoading(true)
+    try {
+      const response = await dispatch(getStreamPlan({ filter: { all: true } })).unwrap()
+      if (response.status === ResponseStatus.SUCCESS) {
+        setPlan(response.data.data)
+      }
+    } catch (error) {
+
+      if (isResponseError(error)) {
+        if (error.statusCode === HttpStatusCode.NotFound) {
+          setTimeout(() => { closeModal() }, 2000)
+          setModalToast(ResponseStatus.ERROR, `${error.data.message}, add a plan to continue`)
+
+        } else {
+          handleApiError(error)
+        }
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+
   const releaseDateRef = useRef<HTMLInputElement | null>(null)
   useEffect(() => {
     // const min = setDefaultDate(`${new Date()}`, 1)
@@ -116,6 +153,10 @@ export const MovieForm: React.FC<MovieFormProps> = (
     //   }
     // }
     // setValue('release_date', defaultDate)
+    if (movieType === MovieType.stream) {
+      fetchStreamingPlan();
+    }
+
     if (selectedData.format.length > 0) {
       setValue('format', selectedData.format);
     }
@@ -131,16 +172,19 @@ export const MovieForm: React.FC<MovieFormProps> = (
     if (selectedData.cover_photo) {
       setCoverPhoto(selectedData.cover_photo)
     }
-     if (selectedData.movie_poster) {
+    if (selectedData.movie_poster) {
       setMoviePoster(selectedData.movie_poster)
     }
 
-  }, []);
+  }, [movieType]);
 
   const [addFormData, setAddFormData] = useState<IMovie | null>(null);
   const [updateFormData, setUpdateFormData] = useState<IMovie | null>(null);
   const [imageType, setImageType] = useState<'cover_photo' | 'movie_poster' | null>(null)
+  const [confirmation, setConfirmation] = useState(false)
+  const closeConfirmationModal = () => setConfirmation(false)
   const handleFormSubmit: SubmitHandler<IMovie> = (data) => {
+
     setConfirmation(true)
     action === Action.ADD ?
       setAddFormData(data)
@@ -151,18 +195,28 @@ export const MovieForm: React.FC<MovieFormProps> = (
     addFormData ? onSubmit(addFormData) : null
 
   }
+
+
   const updateMovieSubmit = () => {
     updateFormData ? onSubmit(updateFormData) : null
   }
 
 
-  const openFile = (e: MouseEvent<HTMLButtonElement>, imageField: string) => {
+  const openFile = (e: MouseEvent<HTMLButtonElement>, fileFiled: 'movie_poster' | 'cover_photo' | 'file') => {
     e.preventDefault()
-    e.stopPropagation()
-
-    imageField === 'movie_poster' ?
-      moviePosterRef.current?.click()
-      : coverPhotoRef.current?.click();
+    switch (fileFiled) {
+      case 'cover_photo':
+        coverPhotoRef.current?.click()
+        break
+      case 'movie_poster':
+        moviePosterRef.current?.click()
+        break
+      case 'file':
+        movieFileRef.current?.click()
+        break
+      default:
+        console.log('invalid file name')
+    }
 
   }
 
@@ -187,10 +241,19 @@ export const MovieForm: React.FC<MovieFormProps> = (
     setImageType(null)
   }
 
+  const movieFileRef = useRef<HTMLInputElement>(null)
+  const handleVideoUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    setValue('file', file)
+    const isValid = await trigger('file')
+    if (isValid && file) {
+      setVideoFile(file)
+    }
+  }
+
   const handleImageUpload = (e: ChangeEvent<HTMLInputElement>, imageName: "cover_photo" | "movie_poster") => {
     e.preventDefault();
     const file = e.target.files?.[0] || null;
-    console.log(imageName)
     file ?
       convertFile(file)
         .then((result) => {
@@ -220,10 +283,10 @@ export const MovieForm: React.FC<MovieFormProps> = (
       clearErrors()
       let response
       if (action === Action.ADD) {
-        response = await dispatch(addMovie({ movieData, movieType: MovieType.theater })).unwrap();
+        response = await dispatch(addMovie({ movieData, movieType })).unwrap();
 
       } else if (action === Action.UPDATE && selectedData._id) {
-        response = await dispatch(updateMovie({ payload: movieData, movieType: MovieType.theater, movieId: selectedData._id })).unwrap()
+        response = await dispatch(updateMovie({ payload: movieData, movieType, movieId: selectedData._id })).unwrap()
       }
       if (response?.status === ResponseStatus.SUCCESS) {
         setToast(ResponseStatus.SUCCESS, response.message);
@@ -245,7 +308,7 @@ export const MovieForm: React.FC<MovieFormProps> = (
 
       //error during the submission
       else if (isResponseError(err)) {
-        if (err.statusCode === 413) {
+        if (err.statusCode === 413 || err.statusCode === HttpStatusCode.InternalServerError) {
           setModalToast(ResponseStatus.ERROR, err.data.message) /// need to set as a modal toast
         }
         setError(
@@ -253,18 +316,17 @@ export const MovieForm: React.FC<MovieFormProps> = (
           {
             message: err.data.message
           })
-
       }
 
     } finally {
       setLoading(false)
+      setConfirmation(false)
     }
 
 
   }
 
-  const [confirmation, setConfirmation] = useState(false)
-  const closeConfirmationModal = () => setConfirmation(false)
+
 
   return (
     <>
@@ -354,12 +416,24 @@ export const MovieForm: React.FC<MovieFormProps> = (
         {movieType === MovieType.stream && (
           <div className="relative col-span-2">
             <label className="label block mb-2">Choose plan</label>
-            <select name="plan" id="plan" className="select">
-              <option value="">Select plan</option>
-              <option value="basic">Basic</option>
-              <option value="standard">Standard</option>
-              <option value="premium">Premium</option>
-            </select>
+            <Controller
+              name="plan"
+              control={control}
+              render={({ field }) => (
+                <select id="plan" className="select" {...field}>
+                  <option value="">Select plan</option>
+                  {plan && plan.length > 0 && plan.map((item) => (
+                    <option value={item._id} key={item._id}>
+                      {item.planName}
+                    </option>
+                  ))}
+                </select>
+              )}
+            />
+            {errors.plan &&
+              <small className='text-red-600 capitalize absolute left-0 -bottom-5 font-mono '
+              >{errors.plan.message}</small>}
+
           </div>
         )}
 
@@ -414,10 +488,9 @@ export const MovieForm: React.FC<MovieFormProps> = (
         </div>
 
         {/* Movie Poster */}
-        <div className="relative col-span-2 my-5">
+        <div className="relative col-span-2 my-3">
           <label
-            className=" gap-3  bg-sky-300 p-2 mb-2 rounded-md "
-
+            className="bg-sky-300 p-2 mb-2 rounded-md"
           >
             Movie Poster
           </label>
@@ -435,7 +508,7 @@ export const MovieForm: React.FC<MovieFormProps> = (
             className="hidden"
           />
           {errors.movie_poster && (
-            <small className="text-red-600 absolute left-0 -bottom-6 font-mono">
+            <small className="text-red-600 absolute left-0 -bottom-7 font-mono">
               {errors.movie_poster.message}
             </small>
           )}
@@ -454,9 +527,9 @@ export const MovieForm: React.FC<MovieFormProps> = (
         </div>
 
         {/* Cover Photo */}
-        <div className="relative col-span-2 mb-3">
+        <div className="relative col-span-2 my-3">
           <label
-            className=" gap-3  bg-sky-300 p-2 mb-2 rounded-md "
+            className="  bg-sky-300 p-2 mb-2 rounded-md "
 
           >
             Cover Photo
@@ -474,7 +547,7 @@ export const MovieForm: React.FC<MovieFormProps> = (
           />
 
           {errors.cover_photo && (
-            <small className="text-red-600 absolute left-0 -bottom-6 font-mono">
+            <small className="text-red-600 absolute left-0 -bottom-7 font-mono">
               {errors.cover_photo.message}
             </small>
           )}
@@ -491,6 +564,53 @@ export const MovieForm: React.FC<MovieFormProps> = (
             />
           }
         </div>
+
+        {/* video file */}
+        {movieType === MovieType.stream && (
+          <div className="relative col-span-2 my-3">
+            <label className="gap-3 bg-sky-300 p-2 mb-2 rounded-md">
+              Movie File
+            </label>
+            <button type="button" className="ml-2" onClick={(e) => openFile(e, 'file')}>
+              <IoCloudUploadOutline size={20} />
+            </button>
+            <Controller
+              name="file"
+              control={control}
+              render={({ field }) => (
+                <input
+                  type="file"
+                  accept="video/mp4, video/mpeg, video/webm, video/x-matroska,video/mkv" 
+                  className="hidden"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files.length > 0) {
+                      handleVideoUpload(e)
+                    }
+                  }}
+                  ref={movieFileRef}
+                />
+              )}
+            />
+            {errors.file && (
+              <small className="text-red-600 absolute left-0 -bottom-7 font-mono">
+                {errors.file.message}
+              </small>
+            )}
+            {action === Action.UPDATE ?
+              (<VideoPlayer
+                role={Role.admin}
+
+              />) :
+              (
+                videoFile &&
+                <VideoPreview
+                  file={videoFile}
+                  removeFile={removePreview}
+                />
+              )
+            }
+          </div>
+        )}
 
         < div className="text-center">
           <button

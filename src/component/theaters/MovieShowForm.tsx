@@ -126,11 +126,9 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
     }
   }, [initialData.movieId, theaterMovies]);
 
-  const handleFormSubmit: SubmitHandler<IMovieShow> = (data) => {
-    // console.log(data)
+  const handleFormSubmit: SubmitHandler<IMovieShow> = (data) => { 
     setConfirmation(true)
-    setFormData(data)
-
+    setFormData(data) 
   }
 
   //when movie select need to set some field automatically. the duration and release date are not part of the form but need to show as read only

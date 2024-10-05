@@ -51,5 +51,6 @@ export interface AdminEndpoint extends IEndPoints {
   updateMovie: (movieType: MovieType, movieId: string) => string
   getMovie: (movieType: MovieType, pageNumber?: number) => string
   deleteMovie: (movieTpe: MovieType, movieId: string) => string
+  streamPlan: (planId?: string) => string
 
 }

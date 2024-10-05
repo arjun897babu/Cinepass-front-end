@@ -49,11 +49,12 @@ export const theatersEndPoints: TheaterEndpoint = {
 export const adminEndpoints: AdminEndpoint = {
   login: '/login',
   logout: '/logout',
-  getEntityData: (role, pageNumber) => `/${role}${pageNumber ? `?pageNumber=${pageNumber}` : ''}`,
+  getEntityData: (role, pageNumber) => `/entity/${role}${pageNumber ? `?pageNumber=${pageNumber}` : ''}`,
   updateApprovalStatus: (theaterOwnerId) => `/approval/${theaterOwnerId}`,
-  manageEntities: (entityId, role) => `/${role}/${entityId}`,
+  manageEntities: (entityId, role) => `/entity/${role}/${entityId}`,
   addMovie: (movieType) => `/movie/${movieType}`,
   getMovie: (movieType, pageNumber) => `/movie/${movieType}${pageNumber ? `?pageNumber=${pageNumber}` : ''}`,
   deleteMovie: (movieTpe, movieId) => `/movie/${movieTpe}/${movieId}`,
   updateMovie: (movieTpe, movieId) => `/movie/${movieTpe}/${movieId}`,
+  streamPlan: (planId) => `/stream-plan${planId?`/${planId}`:''}`
 }

@@ -5,12 +5,12 @@ import { ResponseStatus } from "../interface/Interface";
 
 interface ConfirmationModalProps {
   isOpen: boolean; // based on this sate the modal will up . passed through the parent
-  onClose: () => void; // this will close the modal by chaing the modalshowing state into false.
-  onConfirm: () => void;//this is to perfom the submission. if clickin on confirm it will call the call
-  message: string; // modal alert mesage
-  btnType: ResponseStatus // style pf the button colcor based on the status of form
+  onClose: () => void; // this will close the modal by changing the modal showing state into false.
+  onConfirm: () => void;//this is to perform the submission. if clicking on confirm it will call the call
+  message: string; // modal alert message
+  btnType: ResponseStatus // style pf the button color based on the status of form
 }
- 
+
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ isOpen, onClose, onConfirm, message, btnType }) => {
   const modalRef = useRef<HTMLDialogElement>(null);
   const modalClose = (e: MouseEvent<HTMLButtonElement>) => {
@@ -28,7 +28,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ isOpen, onClose, 
     e.preventDefault();
     modalRef.current?.close()
     onConfirm()
-  } 
+  }
 
   return (
 
@@ -41,9 +41,8 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ isOpen, onClose, 
 
             <button className="btn btn-active rounded-xs" onClick={modalClose}  >cancel</button>
             <button className={`btn ${btnType === ResponseStatus.ERROR ? 'btn-error' : 'btn-success'} rounded-xs`}
-              onClick={confirmAction} > 
-              {btnType === ResponseStatus.ERROR  ? <MdBlock /> : <FaCheckCircle />}
-
+              onClick={confirmAction} >
+              {btnType === ResponseStatus.ERROR ? <MdBlock /> : <FaCheckCircle />}
               Confirm</button>
 
           </div>

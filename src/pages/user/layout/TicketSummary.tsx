@@ -1,16 +1,14 @@
 
-import { useEffect, useState } from "react"
+import { lazy, useEffect, useState } from "react"
 import PurchaseDetailModal from "../../../component/user/PurchaseDetailModal"
 import PurchaseSummary from "../../../component/user/PurchaseSummary"
 import { IUserTicketData, PurchasedItem, ResponseStatus, Role } from "../../../interface/Interface"
-import { IPayment } from "../../../interface/user/IPayment"
 import { useDispatch } from "react-redux"
 import { AppDispatch } from "../../../redux/store"
 import { getUserTickets } from "../../../redux/actions/userAction"
-import { isErrorResponse, isResponseError } from "../../../utils/customError"
+import { isResponseError } from "../../../utils/customError"
 import useErrorHandler from "../../../hooks/useErrorHandler"
-import EmptyData from "../../../component/EmptyData"
-import { Loader } from "../../../component/Loader"
+const EmptyData = lazy(() => import("../../../component/EmptyData"))
 
 
 const TicketSummary = () => {

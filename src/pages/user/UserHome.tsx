@@ -6,8 +6,8 @@ import MovieCard from "../../component/user/MovieCard"
 import Accordion from "../../component/user/Accordion"
 import { useSelector } from "react-redux"
 import type { RootState } from "../../redux/store"
-
-import EmptyData from "../../component/EmptyData"
+ 
+const EmptyData = lazy(()=>import("../../component/EmptyData") )
 import LocationModal from "./LocationModal"
 import { MovieFilter } from "../../interface/Interface"
 import { isFilterEmpty } from "../../utils/validator"

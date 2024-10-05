@@ -28,7 +28,7 @@ export const UserLogin: React.FC = (): JSX.Element => {
 
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { error, isAuthenticated, city } = useSelector((state: RootState) => state.user)
+  const { error, isAuthenticated, city, bookingInfo } = useSelector((state: RootState) => state.user)
   const [toastMessage, setToastMessage] = useState<Toast | null>(null)
   const [loading, setLoading] = useState(false)
 
@@ -96,10 +96,10 @@ export const UserLogin: React.FC = (): JSX.Element => {
       setLoading(true)
       try {
 
-        await dispatch(loginUser(formData)).unwrap();
-        // if (result.status === ResponseStatus.SUCCESS) {
-        //   navigate(result.redirectURL, { replace: true })
-        // }
+        const response = await dispatch(loginUser(formData)).unwrap();
+        if (response.status === ResponseStatus.SUCCESS && bookingInfo) {
+          navigate('/payment', { replace: true })
+        }
       } catch (err) {
         if (isResponseError(err)) {
           if (err.statusCode === 403) {
@@ -218,7 +218,7 @@ export const UserLogin: React.FC = (): JSX.Element => {
 
 
             <button className={`bg-black rounded-md text-white   p-2`}>
-              {!loading?'Loading':<span className=" loading loading-xs m-0 p-0  "></span>} 
+              {!loading ? 'Loading' : <span className=" loading loading-xs m-0 p-0  "></span>}
             </button>
           </form>
 

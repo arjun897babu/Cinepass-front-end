@@ -1,7 +1,6 @@
 
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
 import { Role } from "../interface/Interface";
-import store from "../redux/store";
  
 const onResponse = (response: AxiosResponse): AxiosResponse => response
 

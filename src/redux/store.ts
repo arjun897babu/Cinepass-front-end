@@ -8,7 +8,7 @@ import { IInitialState } from './reducers/IState';
 
 const userTransform = createTransform(
 
-  (inboundState:any ) => { 
+  (inboundState:IInitialState ) => { 
     const { movies, cityTheaters, ...rest } = inboundState;
     return rest;
   },

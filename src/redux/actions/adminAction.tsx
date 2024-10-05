@@ -1,13 +1,12 @@
 import { AsyncThunk, createAsyncThunk } from "@reduxjs/toolkit";
-import { IMovie, LoginData, ResponseData, ResponseData2, Role } from "../../interface/Interface";
-import { AxiosError } from "axios";
+import { IMovie, IStreamPlanFilter, IStreamRentalPlan, LoginData, ResponseData, ResponseData2, Role } from "../../interface/Interface";
+import { AxiosError  } from "axios";
 import { serverAdmin } from "../../services";
 import { adminEndpoints } from "../../services/endpoints/endPoints";
 import { MovieType } from "../../component/admin/MovieForm";
 import { handleAxiosError } from "../../utils/customError";
 import { ITheaterOwnerEntity } from "../../interface/theater/ITheaterOwner";
-import { IUser } from "../../interface/user/IUserData";
-import { string } from "zod";
+import { IUser } from "../../interface/user/IUserData"; 
 
 export const loginAdmin: AsyncThunk<ResponseData, LoginData, {}> = createAsyncThunk(
   'admin/login',
@@ -93,7 +92,7 @@ export const updateTheaterApprovalForAdmin: AsyncThunk<ResponseData, { _id: stri
       if (error instanceof AxiosError) {
         return rejectWithValue(error.response?.data)
       }
-      return rejectWithValue('An unknown error occured')
+      return rejectWithValue('An unknown error occurred')
     }
 
   }
@@ -121,16 +120,22 @@ export const getMovie: AsyncThunk<IGetMovieResponse, { movieType: MovieType, pag
 
 );
 
-interface IMovieRespone extends ResponseData2 {
+interface IMovieResponse extends ResponseData2 {
   data: { movie: IMovie }
 }
 
-export const addMovie: AsyncThunk<IMovieRespone, { movieData: IMovie; movieType: MovieType }, {}> = createAsyncThunk(
-  'admin/addmovie',
+export const addMovie: AsyncThunk<IMovieResponse, { movieData: IMovie; movieType: MovieType }, {}> = createAsyncThunk(
+  'admin/addMovie',
   async ({ movieData, movieType }, { rejectWithValue }) => {
     try {
-      console.log('this is the moviedata', movieData)
-      const response = await serverAdmin.post(adminEndpoints.addMovie(movieType), movieData);
+
+
+      const response = await serverAdmin.post(adminEndpoints.addMovie(movieType), movieData,
+        {
+          headers: {
+            ...(movieType === MovieType.stream && { "Content-Type": 'multipart/form-data' })
+          }
+        });
 
       return await response.data
     } catch (error) {
@@ -138,11 +143,11 @@ export const addMovie: AsyncThunk<IMovieRespone, { movieData: IMovie; movieType:
     }
   }
 )
-export const updateMovie: AsyncThunk<IMovieRespone, { payload: IMovie, movieType: MovieType, movieId: string }, {}> = createAsyncThunk(
-  'admin/updatemovie',
+export const updateMovie: AsyncThunk<IMovieResponse, { payload: IMovie, movieType: MovieType, movieId: string }, {}> = createAsyncThunk(
+  'admin/updateMovie',
   async ({ payload, movieType, movieId }, { rejectWithValue }) => {
     try {
-      console.log('updatemovie admin create async thunk is called', payload)
+      console.log('update movie admin create async thunk is called', payload)
       const response = await serverAdmin.put(adminEndpoints.updateMovie(movieType, movieId), { payload });
       return await response.data
     } catch (error) {
@@ -179,3 +184,51 @@ export const manageMovie: AsyncThunk<IManageMovieResponse, { movieType: MovieTyp
   }
 )
 
+interface IAddStreamPlanResponse extends ResponseData2 {
+  data: IStreamRentalPlan
+}
+
+export const addStreamPlan: AsyncThunk<IAddStreamPlanResponse, Omit<IStreamRentalPlan, 'listed' | '_id'>, {}> = createAsyncThunk(
+  '/admin/addStreamPlan',
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await serverAdmin.post(adminEndpoints.streamPlan(), data)
+      return await response.data
+    } catch (error) {
+      return rejectWithValue(handleAxiosError(error))
+    }
+  }
+)
+export const editStreamPlan: AsyncThunk<IAddStreamPlanResponse, { planId: string, data: Omit<IStreamRentalPlan, 'listed' | '_id'> }, {}> = createAsyncThunk(
+  '/admin/editStreamPlan',
+  async ({ planId, data }, { rejectWithValue }) => {
+    try {
+      const response = await serverAdmin.put(adminEndpoints.streamPlan(planId), data)
+      return await response.data
+    } catch (error) {
+      return rejectWithValue(handleAxiosError(error))
+    }
+  }
+)
+
+
+interface IGetStreamPlanResponse extends ResponseData2 {
+  data: {
+    maxPage: number;
+    data: IStreamRentalPlan[]
+  }
+}
+
+export const getStreamPlan: AsyncThunk<IGetStreamPlanResponse, { filter?: Partial<IStreamPlanFilter | null> }, {}> = createAsyncThunk(
+  '/admin/getStreamPlan',
+  async ({ filter }, { rejectWithValue }) => {
+    try {
+
+      const response = await serverAdmin.get(adminEndpoints.streamPlan(), { params: { ...filter } })
+
+      return await response.data
+    } catch (error) {
+      return rejectWithValue(handleAxiosError(error))
+    }
+  }
+)

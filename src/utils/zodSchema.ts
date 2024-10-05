@@ -1,43 +1,89 @@
 import { string, z } from 'zod'
 import { MovieFormat, Language } from './validator';
-import { ITheaterScreen } from '../interface/Interface';
-import { name } from '@cloudinary/url-gen/actions/namedTransformation';
-import { IUser, UserSignUpData } from '../interface/user/IUserData';
+import { MovieType } from '../component/admin/MovieForm';
 
-export const movieSchema = z.object({
-  movie_name: z
-    .string()
-    .min(1, 'enter a movie name(1-150 characters)')
-    .max(150, 'enter a movie name(1-150 characters)')
-    .regex(/^[a-zA-Z0-9']+(?: [a-zA-Z0-9\-:(),.']+)*$/, 'invalid movie name'), // clear the doubt :  regex for first name 
-  release_date: z
-    .string()
-    .min(1, 'Release date is required')
-    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format (YYYY-MM-DD)'),
-  run_time: z
-    .string()
-    .transform((value) => Number(value))
-    .refine((value) => !isNaN(value), 'Invalid number')
-    .refine((value) => value >= 60 && value <= 300, 'Must be between 60 and 300 minutes'),
-  genres: z
-    .array(z.string())
-    .nonempty('choose one field'),
-  languages: z
-    .array(z.string())
-    .nonempty('choode one field'),
-  format: z
-    .array(z.string())
-    .nonempty('choose one field'),
-  cover_photo: z
-    .string()
-    .min(1, 'image is required'),
-  movie_poster: z
-    .string()
-    .min(1, 'image is required'),
-  plan: z
-    .string()
-    .optional(),
-});
+export const movieSchema = (movieType: MovieType) => {
+  const baseSchema = {
+    movie_name: z
+      .string()
+      .min(1, 'enter a movie name(1-150 characters)')
+      .max(150, 'enter a movie name(1-150 characters)')
+      .regex(/^[a-zA-Z0-9']+(?: [a-zA-Z0-9\-:(),.']+)*$/, 'invalid movie name'),
+    release_date: z
+      .string()
+      .min(1, 'Release date is required')
+      .regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format (YYYY-MM-DD)'),
+    run_time: z
+      .string()
+      .transform((value) => Number(value))
+      .refine((value) => !isNaN(value), 'Invalid number')
+      .refine((value) => value >= 60 && value <= 300, 'Must be between 60 and 300 minutes'),
+    genres: z
+      .array(z.string())
+      .nonempty('choose one field'),
+    languages: z
+      .array(z.string())
+      .nonempty('choode one field'),
+    format: z
+      .array(z.string())
+      .nonempty('choose one field'),
+    cover_photo: z
+      .string()
+      .min(1, 'image is required'),
+    movie_poster: z
+      .string()
+      .min(1, 'image is required'),
+
+  };
+
+  if (movieType === MovieType.stream) {
+    return z.object({
+      ...baseSchema,
+      plan: z
+        .string({
+          required_error: 'Choose a plan'
+        }),
+      file: z
+        .instanceof(File)
+
+        .refine((file) => {
+          const validTypes = ['video/mp4', 'video/mpeg', 'video/webm', 'video/mkv'];
+          const validExtensions = ['.mp4', '.mpeg', '.webm', '.mkv'];
+
+          const isValidType = validTypes.includes(file.type);
+          console.log(file.name)
+          const fileExtension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+          const isValidExtension = validExtensions.includes(fileExtension);
+
+          return isValidType || isValidExtension;
+        },
+          {
+            message: 'Invalid video format... '
+          }
+        )
+        .refine((file) => file.size <= 200 * 1024 * 1024,
+          {
+            message: 'File size must be less than 200MB',
+          }
+        )
+        .optional()
+        .refine((file) => file !== undefined, {
+          message: 'Please upload a movie video file.',
+        })
+
+    })
+  } else {
+
+    return z.object({
+      ...baseSchema,
+      plan: z.string().optional(),
+      file: z.instanceof(File).optional(),
+    })
+  }
+
+}
+
+
 export const movieShowSchema = z.object({
   movieId: z
     .string({
@@ -48,7 +94,7 @@ export const movieShowSchema = z.object({
   language: z
     .nativeEnum(Language, {
       errorMap: (issue, _ctx) => {
-        return { message: 'choose a langauge' }
+        return { message: 'choose a language' }
       }
     }),
   screenId: z
@@ -197,9 +243,9 @@ export const userProfileSchem = z.object({
     z.union([z.number(), z.null()]).refine((value) => value !== null, {
       message: 'Add a mobile number',
     })
-    .refine((value) => value !== null && /^\d{10}$/.test(value.toString()), {
-      message: 'Invalid mobile number',
-    })
+      .refine((value) => value !== null && /^\d{10}$/.test(value.toString()), {
+        message: 'Invalid mobile number',
+      })
   ),
 })
 
@@ -228,3 +274,33 @@ export const changePasswordSchema = z.object({
   })
 
 
+export const StreamPlanSchema = z.object({
+  planName: z
+    .string({
+      required_error: generateFiledRequired('plan name'),
+      invalid_type_error: "Invalid input type",
+    })
+    .min(4, { message: 'Please enter a valid plan name' }),
+
+  price: z
+    .number({
+      required_error: generateFiledRequired('price'),
+      invalid_type_error: "Price must be a number",
+      coerce: true
+    })
+    .positive({ message: "Price must be a positive number" }),
+
+  validity: z
+    .number({
+      required_error: generateFiledRequired('validity'),
+      invalid_type_error: "Validity must be a number",
+      coerce: true
+    })
+    .min(1, { message: "Validity must be at least 1 month" })
+    .max(12, { message: "Validity can be at most 12 months" })
+});
+
+
+function generateFiledRequired(filed: string) {
+  return `${filed} is required`
+}

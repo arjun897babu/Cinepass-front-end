@@ -1,4 +1,4 @@
-import { MouseEvent, useEffect, useState } from "react"
+import { lazy, MouseEvent, useEffect, useState } from "react"
 import { FaEdit } from "react-icons/fa"
 import { GiCancel } from "react-icons/gi"
 import { Action, IGetMovieShowResponse, ResponseStatus, Role } from "../../../interface/Interface"
@@ -12,8 +12,8 @@ import { IMovieShow } from "../../../interface/theater/IMovieShow"
 import Toast2, { Toast } from "../../../component/Toast2"
 
 import MovieShowForm from "../../../component/theaters/MovieShowForm"
-import useErrorHandler from "../../../hooks/useErrorHandler"
-import EmptyData from "../../../component/EmptyData"
+import useErrorHandler from "../../../hooks/useErrorHandler" 
+const EmptyData = lazy(()=>import("../../../component/EmptyData") )
 import ConfirmationModal from "../../../component/ConfirmationModal"
 
 
@@ -22,7 +22,7 @@ const TheaterShow: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const [loading, setLoading] = useState<boolean>(false);
-
+ 
   const [shows, setShows] = useState<IGetMovieShowResponse[] | []>([])//state for showing theater show details
 
   const [confirmation, setConfirmation] = useState<boolean>(false)//confirmation alert
@@ -92,9 +92,7 @@ const TheaterShow: React.FC = () => {
     e.preventDefault();
     setConfirmation(true)
     setDeleteShowId(showId)
-  }
-
-
+  } 
 
   const onSubmit = () => {
     if (deleteShowId) {
@@ -165,7 +163,7 @@ const TheaterShow: React.FC = () => {
         />
       }
 
-      <div className="flex justify-end bg">
+      <div className="flex justify-end ">
         <button
           onClick={setVisible}
           className="btn bg-sky-400 hover:bg-cyan-600"

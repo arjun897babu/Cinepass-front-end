@@ -4,6 +4,7 @@ import { createTheaterScreen, getAllShows, getScreen, getTheaterDetails, loginTh
 import { IInitialStateError, ResponseData } from "../../interface/Interface";
 import { IResponseError, isResponseError } from "../../utils/customError";
 import { LoggedOwner } from "../../interface/user/IUserData";
+import { HttpStatusCode } from "axios";
 
 
 
@@ -14,44 +15,44 @@ const initialState: IInitialState = {
   error: null,
   tempMail: null,
   isAuthenticated: false
-  
+
 }
 
 const theaterSlice = createSlice({
   name: 'theaters',
   initialState,
   reducers: {
-    theaterClearError(state:IInitialState) {
+    theaterClearError(state: IInitialState) {
       state.error = null
-      
+
     },
 
-    theaterSetError(state:IInitialState, action: PayloadAction<IInitialStateError>) {
+    theaterSetError(state: IInitialState, action: PayloadAction<IInitialStateError>) {
       state.error = action.payload
-      
+
     },
-    theaterSetIsAuthenticated(state:IInitialState) {
+    theaterSetIsAuthenticated(state: IInitialState) {
       state.isAuthenticated = !state.isAuthenticated
-      
+
     },
-    TheaterClearTempMail(state:IInitialState) {
+    TheaterClearTempMail(state: IInitialState) {
       state.tempMail = null
-      
+
     }
   },
   extraReducers: (builder) => {
     builder
       //signup
-      .addCase(signupTheaters.pending, (state:IInitialState) => {
+      .addCase(signupTheaters.pending, (state: IInitialState) => {
 
         state.error = null;
       })
-      .addCase(signupTheaters.fulfilled, (state:IInitialState, action: PayloadAction<ResponseData>) => {
+      .addCase(signupTheaters.fulfilled, (state: IInitialState, action: PayloadAction<ResponseData>) => {
         console.log(action.payload)
 
         state.tempMail = action.payload.data ? action.payload.data as { email: string } : null
       })
-      .addCase(signupTheaters.rejected, (state:IInitialState, action) => {
+      .addCase(signupTheaters.rejected, (state: IInitialState, action) => {
 
         if (isResponseError(action.payload)) {
           if (action.payload.statusCode === 401 && action.payload.data.error === 'otp') {
@@ -62,7 +63,7 @@ const theaterSlice = createSlice({
 
 
       //login
-      .addCase(loginTheaters.fulfilled, (state:IInitialState, action) => {
+      .addCase(loginTheaters.fulfilled, (state: IInitialState, action) => {
 
         state.error = null;
         state.isAuthenticated = true;
@@ -72,17 +73,17 @@ const theaterSlice = createSlice({
 
 
       //logout
-      .addCase(logoutTheaters.pending, (state:IInitialState) => {
+      .addCase(logoutTheaters.pending, (state: IInitialState) => {
 
         state.error = null
       })
-      .addCase(logoutTheaters.fulfilled, (state:IInitialState) => {
+      .addCase(logoutTheaters.fulfilled, (state: IInitialState) => {
 
         state.error = null;
         state.isAuthenticated = false
         state.profile = null
       })
-      .addCase(logoutTheaters.rejected, (state:IInitialState, action) => {
+      .addCase(logoutTheaters.rejected, (state: IInitialState, action) => {
 
         state.error = action.payload as IInitialStateError | null
       })
@@ -90,7 +91,7 @@ const theaterSlice = createSlice({
 
       //create theater screen
 
-      .addCase(createTheaterScreen.rejected, (state:IInitialState, action) => {
+      .addCase(createTheaterScreen.rejected, (state: IInitialState, action) => {
 
         isResponseError(action.payload) ?
           handleRejectedCase(state, action.payload) : null
@@ -98,26 +99,26 @@ const theaterSlice = createSlice({
       })
       //get theater screen  
 
-      .addCase(getScreen.rejected, (state:IInitialState, action) => {
+      .addCase(getScreen.rejected, (state: IInitialState, action) => {
 
         isResponseError(action.payload) ?
           handleRejectedCase(state, action.payload) : null
       })
       //get theater details
 
-      .addCase(getTheaterDetails.rejected, (state:IInitialState, action) => {
+      .addCase(getTheaterDetails.rejected, (state: IInitialState, action) => {
         isResponseError(action.payload) ?
           handleRejectedCase(state, action.payload) : null
       })
       //update theater details
 
-      .addCase(updateTheater.rejected, (state:IInitialState, action) => {
+      .addCase(updateTheater.rejected, (state: IInitialState, action) => {
         isResponseError(action.payload) ?
           handleRejectedCase(state, action.payload) : null
       })
 
       //get all shows
-      .addCase(getAllShows.rejected, (state:IInitialState, action) => {
+      .addCase(getAllShows.rejected, (state: IInitialState, action) => {
         isResponseError(action.payload) ?
           handleRejectedCase(state, action.payload) : null
       })
@@ -133,8 +134,17 @@ export default theaterSlice.reducer
 
 export function handleRejectedCase(state: IInitialState, payload: IResponseError) {
 
-  if (payload.statusCode === 403 || payload.statusCode === 401) {
+  if (
+    
+    payload.statusCode === HttpStatusCode.Forbidden
+    || payload.statusCode === HttpStatusCode.Unauthorized
+
+  ) {
+    console.log('ticket booking rejected of because user is ',payload.statusCode)
     state.isAuthenticated = false;
     state.profile = null
-  } 
+    if (payload.statusCode === HttpStatusCode.Forbidden) {
+      state.bookingInfo = null
+    }
+  }
 }

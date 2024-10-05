@@ -34,11 +34,11 @@ const menu = [
   //   logo: IoTicketSharp,
   //   link: '/admin/tickets'
   // },
-  // {
-  //   title: 'Stream',
-  //   logo: RiMovieLine,
-  //   link: '/admin/stream'
-  // },
+  {
+    title: 'Stream',
+    logo: RiMovieLine,
+    link: '/admin/stream'
+  },
   {
     title: 'Movies',
     logo: BiCameraMovie,

@@ -1,8 +1,8 @@
-import { memo } from "react";
+import { lazy, memo } from "react";
 import { getIST, getMovieSrc } from "../../utils/format";
 import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
-import EmptyData from "../EmptyData";
+import { RootState } from "../../redux/store"; 
+const EmptyData  = lazy(()=>import ("../EmptyData"))
 import { Link } from "react-router-dom";
 
 

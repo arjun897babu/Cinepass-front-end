@@ -80,10 +80,25 @@ const ScreenLayout: React.FC = () => {
 
 
   const bookSeat = async () => {
-    if (selectedSeats?.length && showId) {
-      console.log('proceed to booking')
-      navigate('/payment', { state: { showDetails, showId, selectedSeats, bookingDate: location.state.bookingDate } })
+    if (selectedSeats?.length && showId && showDetails) {
+      const { reserved, ...showWithoutReserved } = showDetails.show;
+      const { layout, ...screenWithoutLayout } = showDetails.screen;
 
+      const newShowDetails = {
+        ...showDetails,
+        show: showWithoutReserved,
+        screen: screenWithoutLayout
+      };
+
+      navigate('/payment',
+        {
+          state: {
+            selectedSeats,
+            bookingDate: location.state.bookingDate,
+            showDetails: newShowDetails
+          }
+        }
+      )
     }
   }
 

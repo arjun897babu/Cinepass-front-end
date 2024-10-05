@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IMovie } from "../../interface/Interface";
 
 interface MultiSelectProps {

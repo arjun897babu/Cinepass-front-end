@@ -59,9 +59,9 @@ const UserRoutes: React.FC = () => {
             }
             ></Route>
             <Route path='/payment' element={
-              // <ProtectedRoutes>
+              
                 <PaymentSummary />
-              // </ProtectedRoutes>
+         
             }
             ></Route>
           </Routes>

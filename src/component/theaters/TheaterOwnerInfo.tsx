@@ -145,8 +145,7 @@ const TheaterOwnerInfo: React.FC<TheaterInforProps> = ({ data, setTheaterDataRes
               disabled={true}
               className="input input-bordered "
               type="text" placeholder="adhaar number"
-              {...register('adhaar_number')}
-              
+              {...register('adhaar_number')} 
             />
             {errors.adhaar_number && <p className="text-red-500 text-xs absolute  -bottom-4 ">{errors.adhaar_number.message}</p>}
           </div>
