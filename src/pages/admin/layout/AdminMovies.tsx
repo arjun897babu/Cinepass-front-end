@@ -21,28 +21,28 @@ const AdminMovie: React.FC = () => {
 
   const dispatch = useDispatch<AppDispatch>()
   const [loading, setLoading] = useState(false)
-  const [theaterMovies, setTheaterMovies] = useState<IMovie[] | []>([]);
+  const [theaterMovies, setTheaterMovies] = useState<IMovie[]>([]);
   const [maxPage, setMaxPage] = useState<number>(1)
   const [currentPage, setCurrentPage] = useState<number>(1)
 
   const handleChangePage = (newPage: number) => setCurrentPage(newPage)
   const [selectedMovie, setSelectedMovie] = useState<IMovie | null>(null); // Modal shows selected movie's info for update
-  const setNewMovies = (movieData: IMovie) => {
-    setTheaterMovies((prevMovies) => {
-      const existingMovieIndex = prevMovies.findIndex(movie => movie._id === movieData._id);
+  // const setNewMovies = (movieData: IMovie) => {
+  //   setTheaterMovies((prevMovies) => {
+  //     const existingMovieIndex = prevMovies.findIndex(movie => movie._id === movieData._id);
 
-      if (existingMovieIndex >= 0) {
+  //     if (existingMovieIndex >= 0) {
 
-        const updatedMovies = [...prevMovies];
-        updatedMovies[existingMovieIndex] = movieData;
-        return updatedMovies;
-      } else {
+  //       const updatedMovies = [...prevMovies];
+  //       updatedMovies[existingMovieIndex] = movieData;
+  //       return updatedMovies;
+  //     } else {
 
-        return [...prevMovies, movieData];
-      }
-    });
+  //       return [...prevMovies, movieData];
+  //     }
+  //   });
 
-  };
+  // };
   //close modal for update form
   const closeModalView = () => setSelectedMovie(null)
 
@@ -102,7 +102,7 @@ const AdminMovie: React.FC = () => {
 
       const response = await dispatch(getMovie({ movieType: MovieType.theater, pageNumber: currentPage })).unwrap();
       if (response) {
-        setTheaterMovies(response.data.movies)
+        setTheaterMovies(response.data.movies) 
         setMaxPage(response.data.maxPage)
       } 
     } catch (error) {
@@ -148,7 +148,7 @@ const AdminMovie: React.FC = () => {
       {
         addMovieModal &&
         <MovieModal  // add movie form modal
-          updateMovieData={setNewMovies}
+
           closeModal={closeAddMovieModal}
           action="add"
           id="addMovie"
@@ -245,7 +245,6 @@ const AdminMovie: React.FC = () => {
         {
           selectedMovie &&
           <MovieModal  // update form modal
-            updateMovieData={setNewMovies}
             closeModal={closeModalView}
             setToast={setToast}
             action="update"

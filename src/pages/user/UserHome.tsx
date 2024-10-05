@@ -10,10 +10,9 @@ const EmptyData = lazy(() => import("../../component/EmptyData"))
 import LocationModal from "./LocationModal"
 import { MovieFilter } from "../../interface/Interface"
 import { isFilterEmpty } from "../../utils/validator"
-import Carousel2 from "../../component/user/Carousel2"
+const CarouselSlider = lazy(() => import("../../component/user/CarouselSlider"))
 import { MovieType } from "../../component/admin/MovieForm"
 import { Loader } from "../../component/Loader"
-import Carousel from "../../component/user/carousel"
 
 
 const UserHome: React.FC = () => {
@@ -25,7 +24,7 @@ const UserHome: React.FC = () => {
     setFilterItem(filterItem)
   }
 
-  const { movies } = useSelector((state: RootState) => state.user) 
+  const { movies } = useSelector((state: RootState) => state.user)
 
   useEffect(() => {
     if (movies !== undefined) {
@@ -52,8 +51,7 @@ const UserHome: React.FC = () => {
 
     <>
       <div className="p-2   bg-gray-200">
-        <Carousel2 movieType={MovieType.theater} />
-     
+        <CarouselSlider movieType={MovieType.theater} />
         <SearchWithFilters
           setFilter={setFilter}
         />

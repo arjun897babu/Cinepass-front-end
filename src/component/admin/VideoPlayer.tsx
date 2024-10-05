@@ -4,7 +4,7 @@ import { Role } from "../../interface/Interface"
 import { MdDelete } from "react-icons/md"
 
 
-const VideoPlayer: React.FC<{ role: Role, url?: string }> = ({ url = 'https://res.cloudinary.com/dqakjy0hk/video/upload/sp_auto/v1728090825/zz8f0aoplwwd2oeobqaz.m3u8' }) => {
+const VideoPlayer: React.FC<{ role: Role, url: string }> = ({ url  }) => {
 
   const deleteVideo = (e: MouseEvent<HTMLButtonElement>) => e.preventDefault()
   const videoRef = useRef<HTMLVideoElement | null>(null)

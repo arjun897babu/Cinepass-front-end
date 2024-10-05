@@ -78,7 +78,10 @@ export interface GoogleSignUp {
   client_id: string
 }
 
-
+export interface VideoFile {
+  secure_url: string;
+  public_id: string;
+}
 export interface ICast {
   image: string;
   name: string;
@@ -100,6 +103,25 @@ export interface IMovie {
   file?: File;
   plan?: string;
   slug?: string
+}
+
+export interface ITheaterMovieResponse {
+  _id: string,
+  movie_name: string;
+  languages: string[];
+  release_date: Date;
+  run_time: string;
+  genres: string[];
+  format: string[];
+  cover_photo: string;
+  listed: boolean;
+  movie_poster: string;
+  slug: string
+}
+
+export interface IStreamingMovieResponse extends ITheaterMovieResponse {
+  plan: string,
+  file: VideoFile
 }
 
 export interface ISeat {
@@ -167,8 +189,8 @@ export interface TicketFilter {
   status: BookingStatus
 }
 
-export interface IStreamRentalPlan{
-  _id:string
+export interface IStreamRentalPlan {
+  _id: string
   planName: string;
   price: number;
   validity: number; //representing the months
@@ -180,7 +202,7 @@ export interface IStreamPlanFilter {
   listed: boolean,
   search: string,
   sort: boolean;
-  all:boolean
+  all: boolean
 }
 
 export enum MovieFilterEnum {

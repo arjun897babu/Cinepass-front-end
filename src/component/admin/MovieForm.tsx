@@ -28,7 +28,7 @@ interface MovieFormProps {
   movieType: MovieType; // theater movie | streaming movie
   setToast: (alert: ResponseStatus, message: string) => void // cal back for setting toastmessage
   setModalToast: (alert: ResponseStatus, message: string) => void // cal back for setting toastmessage
-  updateMovieData: (movieData: IMovie) => void // updating the movieState after adding or updating
+  
   closeButtonRef: RefObject<HTMLDialogElement> // for closing the modal after successfull response
   selectedData?: IMovie // selected movie data
   closeModal: () => void // changing the modal view state in parent
@@ -37,7 +37,6 @@ interface MovieFormProps {
 
 export const MovieForm: React.FC<MovieFormProps> = ({
   movieType,
-  updateMovieData,
   closeButtonRef,
   selectedData,
   setToast,
@@ -290,7 +289,6 @@ export const MovieForm: React.FC<MovieFormProps> = ({
       }
       if (response?.status === ResponseStatus.SUCCESS) {
         setToast(ResponseStatus.SUCCESS, response.message);
-        updateMovieData(response.data.movie)
         closeButtonRef.current?.close()
         clearErrors()
         reset()
@@ -599,6 +597,7 @@ export const MovieForm: React.FC<MovieFormProps> = ({
             {action === Action.UPDATE ?
               (<VideoPlayer
                 role={Role.admin}
+                url=""
 
               />) :
               (

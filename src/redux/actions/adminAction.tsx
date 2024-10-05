@@ -1,12 +1,12 @@
 import { AsyncThunk, createAsyncThunk } from "@reduxjs/toolkit";
-import { IMovie, IStreamPlanFilter, IStreamRentalPlan, LoginData, ResponseData, ResponseData2, Role } from "../../interface/Interface";
-import { AxiosError  } from "axios";
+import { IMovie, IStreamPlanFilter, IStreamRentalPlan, ITheaterMovieResponse, LoginData, ResponseData, ResponseData2, Role } from "../../interface/Interface";
+import { AxiosError } from "axios";
 import { serverAdmin } from "../../services";
 import { adminEndpoints } from "../../services/endpoints/endPoints";
 import { MovieType } from "../../component/admin/MovieForm";
 import { handleAxiosError } from "../../utils/customError";
 import { ITheaterOwnerEntity } from "../../interface/theater/ITheaterOwner";
-import { IUser } from "../../interface/user/IUserData"; 
+import { IUser } from "../../interface/user/IUserData";
 
 export const loginAdmin: AsyncThunk<ResponseData, LoginData, {}> = createAsyncThunk(
   'admin/login',
@@ -100,14 +100,17 @@ export const updateTheaterApprovalForAdmin: AsyncThunk<ResponseData, { _id: stri
 
 export interface MovieResponse {
   maxPage: number,
-  movies: IMovie[] | []
+  movies: ITheaterMovieResponse[]
 }
 export interface IGetMovieResponse extends ResponseData2 {
   data: MovieResponse
 }
-
+export interface IStreamingMovieResponse {
+  maxPageNumber: number,
+  movies: IStreamingMovieResponse[]
+}
 export const getMovie: AsyncThunk<IGetMovieResponse, { movieType: MovieType, pageNumber?: number }, {}> = createAsyncThunk(
-  'admin/getMovie',
+  'admin/getStreamingMovieResponse',
   async ({ movieType, pageNumber }, { rejectWithValue }) => {
     try {
 
@@ -120,6 +123,19 @@ export const getMovie: AsyncThunk<IGetMovieResponse, { movieType: MovieType, pag
 
 );
 
+export const getStreamingMovies: AsyncThunk<IStreamingMovieResponse, { movieType: MovieType, pageNumber?: number }, {}> = createAsyncThunk(
+  'admin/getMovie',
+  async ({ movieType, pageNumber }, { rejectWithValue }) => {
+    try {
+
+      const response = await serverAdmin.get(adminEndpoints.getMovie(movieType, pageNumber), {});
+      return await response.data
+    } catch (error) {
+      return rejectWithValue(handleAxiosError(error))
+    }
+  }
+
+);
 interface IMovieResponse extends ResponseData2 {
   data: { movie: IMovie }
 }

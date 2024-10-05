@@ -8,8 +8,6 @@ interface MovieModalProp {
   id: string // id for modal
   action: string // update or add 
   setToast: (alert: ResponseStatus, message: string) => void; // call back  for setting toast message
-
-  updateMovieData: (movieData: IMovie) => void
   closeModal: () => void //call back for updating modal view state
   movieType: MovieType
   selectedData?: IMovie,// selected movie data | undefined for add movie
@@ -20,7 +18,6 @@ export const MovieModal: React.FC<MovieModalProp> = (
   {
     id,
     action,
-    updateMovieData,
     closeModal,
     setToast,
     movieType,
@@ -62,7 +59,7 @@ export const MovieModal: React.FC<MovieModalProp> = (
           <h3 className="text-2xl font-bold mb-4 text-center uppercase">{action} Movie</h3>
           <MovieForm
             movieType={movieType}
-            updateMovieData={updateMovieData}
+          
             closeButtonRef={modalRef}
             selectedData={selectedData}
             setToast={setToast}

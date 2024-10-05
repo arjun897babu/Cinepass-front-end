@@ -80,12 +80,12 @@ const MoviePage: React.FC = () => {
 
       {/* movie section  */}
       < section
-        className="relative hidden sm:w-full p-8 sm:flex    bg-cover bg-center bg-no-repeat min-h-[300px]  "
+        className="relative hidden sm:w-full p-8 sm:flex bg-cover bg-center  bg-no-repeat min-h-[300px]  "
         style={{
           backgroundImage: `url(${movieDetails.cover_photo})`,
         }}
       >
-        <div className="absolute inset-0 bg-black opacity-50"></div>
+        <div className="absolute inset-0 bg-black bg-opacity-70"></div>
         {/* movie card  */}
         <div className="flex   max-w-[1240px] mx-auto relative w-full bg-transparent border-0 text-base font-normal m-0 p-0 align-baseline">
           <div className="bg-transparent border-0 text-base font-normal m-0 p-0 align-baseline w-full h-auto max-w-[261px] max-h-[416px] overflow-hidden flex-shrink-0 flex justify-center items-center">

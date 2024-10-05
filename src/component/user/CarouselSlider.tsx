@@ -4,18 +4,19 @@ import Slider, { Settings } from "react-slick";
 import { MovieType } from "../admin/MovieForm";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+import { SliderArrow } from "./SliderArrow";
 
 type IData = {
   imageSrc: string,
   _id: string
 }
 
-interface ICarousel2Props {
+interface ICarouselSliderProps {
   movieType: MovieType,
   data?: IData[]
 }
 
-function Carousel2({ movieType, data }: ICarousel2Props) {
+function ICrouselSlider({ movieType, data }: ICarouselSliderProps) {
 
   const { movies } = useSelector((state: RootState) => state.user);
 
@@ -60,4 +61,4 @@ function Carousel2({ movieType, data }: ICarousel2Props) {
   );
 }
 
-export default Carousel2;
+export default ICrouselSlider;
