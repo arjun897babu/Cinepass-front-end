@@ -87,6 +87,11 @@ export interface ICast {
   name: string;
 }
 
+export interface MovieResponse {
+  maxPage: number,
+  movies: ITheaterMovieData[]
+}
+
 export interface IMovie {
   _id?: string;
   movie_name: string;
@@ -105,7 +110,7 @@ export interface IMovie {
   slug?: string
 }
 
-export interface ITheaterMovieResponse {
+export interface ITheaterMovieData {
   _id: string,
   movie_name: string;
   languages: string[];
@@ -119,9 +124,20 @@ export interface ITheaterMovieResponse {
   slug: string
 }
 
-export interface IStreamingMovieResponse extends ITheaterMovieResponse {
+export type IPlan = {
+  _id: string;
+  planName: string;
+  price: number;
+  validity: number;
+  listed: boolean;
+}
+
+
+export interface IStreamingMovieData extends ITheaterMovieData {
   plan: string,
-  file: VideoFile
+  streamingPlan: IPlan;
+  file: VideoFile;
+  isPurchased: boolean
 }
 
 export interface ISeat {
@@ -169,6 +185,10 @@ export interface ITicketSummaryLocationState {
   showId: string;
   selectedSeats: string[];
   bookingDate: string;
+}
+
+export interface IRentSummaryLocationState {
+  movieDetails: ITheaterMovieData
 }
 
 export enum Action {

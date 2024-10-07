@@ -4,8 +4,7 @@ import Slider, { Settings } from "react-slick";
 import { MovieType } from "../admin/MovieForm";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import { SliderArrow } from "./SliderArrow";
-
+ 
 type IData = {
   imageSrc: string,
   _id: string
@@ -38,7 +37,8 @@ function ICrouselSlider({ movieType, data }: ICarouselSliderProps) {
     speed: 700,
     arrows: false,
     autoplay: hasMultipleItems,
-    lazyLoad: 'ondemand',   
+    lazyLoad: 'ondemand',  
+    pauseOnHover: false, 
   };
 
   return (

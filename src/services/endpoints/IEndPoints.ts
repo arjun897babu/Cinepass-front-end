@@ -23,6 +23,8 @@ export interface UserEndpoint extends IEndPoints {
   bookTicket: (showId: string) => string
   getTicket: string
   cancelPayment: (paymentIntent: string) => string
+  getStreamingMovies:string
+  getSingleStreamingMovie:(movieId:string)=>string
 }
 export interface TheaterEndpoint extends IEndPoints {
   signup: string;

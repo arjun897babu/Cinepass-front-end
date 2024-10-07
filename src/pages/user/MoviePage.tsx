@@ -2,13 +2,15 @@ import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom"
 import type { AppDispatch, RootState } from "../../redux/store"
-import { IMovie, MovieFilter } from "../../interface/Interface"
-import { getSingleMovie } from "../../redux/actions/userAction"
+import { IMovie, IStreamingMovieData, ITheaterMovieData, MovieFilter, ResponseStatus } from "../../interface/Interface"
+import { getSingleMovie, getUserSingleStreamingMovies } from "../../redux/actions/userAction"
 import { Loader } from "../../component/Loader"
 import { convertTo12HourFormat, formatRunTime, getIST, toValidJSDate } from "../../utils/format"
 import { IoIosInformationCircle } from "react-icons/io"
 import { isResponseError } from "../../utils/customError"
 import ShowFilter from "../../component/ShowFilter"
+import MovieInfoDisplay from "../../component/user/MovieInfoDisplay"
+import { MovieType } from "../../component/admin/MovieForm"
 
 const MoviePage: React.FC = () => {
   const { movieId } = useParams();
@@ -18,15 +20,12 @@ const MoviePage: React.FC = () => {
   const { city } = useSelector((state: RootState) => state.user)
 
   const navigate = useNavigate()
-  const [movieDetails, setMovieDetails] = useState<IMovie | null>(null);
+  const [movieDetails, setMovieDetails] = useState<ITheaterMovieData | IStreamingMovieData | null>(null);
   const [theaterDetails, setTheaterDetails] = useState<any[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false)
   if (!city) {
     navigate('/', { replace: true })
   }
-
-
-
   async function fetchRunningMovie() {
     try {
       if (city && movieId) {
@@ -38,16 +37,24 @@ const MoviePage: React.FC = () => {
           filterItem.bookingDate = bookingDate
         }
         await new Promise(resolve => setTimeout(resolve, 1000));
-
-        const [response] = await dispatch(getSingleMovie({ city, movieId, filter: filterItem })).unwrap()
-        const { movie, theaters } = response
-        if (movie) {
-          setMovieDetails(movie)
-        }
-        if (theaters.length >= 1) {
-          setTheaterDetails(theaters)
+        let response
+        if (movieId.includes('STR')) {
+          response = await dispatch(getUserSingleStreamingMovies(movieId)).unwrap()
+          if (response.status === ResponseStatus.SUCCESS) {
+            setMovieDetails(response.data as IStreamingMovieData)
+          }
+        } else {
+          [response] = await dispatch(getSingleMovie({ city, movieId, filter: filterItem })).unwrap()
+          const { movie, theaters } = response
+          if (movie) {
+            setMovieDetails(movie)
+          }
+          if (theaters.length >= 1) {
+            setTheaterDetails(theaters)
+          }
         }
       }
+
     } catch (error) {
       if (isResponseError(error)) {
         if (error.statusCode === 403) {
@@ -79,37 +86,22 @@ const MoviePage: React.FC = () => {
     <>
 
       {/* movie section  */}
-      < section
-        className="relative hidden sm:w-full p-8 sm:flex bg-cover bg-center  bg-no-repeat min-h-[300px]  "
-        style={{
-          backgroundImage: `url(${movieDetails.cover_photo})`,
-        }}
-      >
-        <div className="absolute inset-0 bg-black bg-opacity-70"></div>
-        {/* movie card  */}
-        <div className="flex   max-w-[1240px] mx-auto relative w-full bg-transparent border-0 text-base font-normal m-0 p-0 align-baseline">
-          <div className="bg-transparent border-0 text-base font-normal m-0 p-0 align-baseline w-full h-auto max-w-[261px] max-h-[416px] overflow-hidden flex-shrink-0 flex justify-center items-center">
-            <img className="w-full h-full " src={movieDetails.movie_poster as string} alt="" />
-          </div>
-          <div className="p-8 w-4/5 " >
-            <h1 className="relative text-white capitalize font-bold text-3xl">{movieDetails.movie_name}</h1>
+      {
+        movieId?.includes('STR') ?
+          (
+            <MovieInfoDisplay
+              movieType={MovieType.stream}
+              movieDetails={movieDetails as IStreamingMovieData}
+            />
+          ) :
+          (
+            <MovieInfoDisplay
+              movieType={MovieType.theater}
+              movieDetails={movieDetails as ITheaterMovieData}
+            />
+          )
+      }
 
-            <div className="mt-4 flex gap-2">
-              <span className="badge rounded-sm  p-4 capitalize tracking-wider font-sans  font-medium ">{movieDetails.format.join(', ')}</span>
-              <span className="badge rounded-sm  p-4 capitalize tracking-wider font-sans  font-medium ">{movieDetails.languages.join(', ')}</span>
-            </div>
-            <div className="mt-4 gap-3 flex relative text-sm text-white">
-              <span className=" ">{formatRunTime(movieDetails.run_time)}</span>
-              <span className="rounded bg-white p-[1px]"></span>
-              <span className="capitalize tracking-wider ">{movieDetails.genres.join(',')}</span>
-              <span className="rounded bg-white p-[1px]"></span>
-              <span className=" ">{getIST(movieDetails.release_date as string)}</span>
-            </div>
-          </div>
-
-        </div>
-
-      </section >
 
       {
         theaterDetails &&

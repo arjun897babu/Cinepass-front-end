@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect, useState } from "react"
+import React, { lazy,  useEffect, useState } from "react"
 
 import { SearchWithFilters } from "../../component/user/footer/SearchWithFilters"
 const MovieCard = lazy(() => import("../../component/user/MovieCard"))

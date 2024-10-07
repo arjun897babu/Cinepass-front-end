@@ -20,7 +20,10 @@ export const userEndPoints: UserEndpoint = {
   userProfile: '/profile',
   bookTicket: (showId) => `/booking/${showId}`,
   getTicket: `tickets`,
-  cancelPayment: (paymentIntent) => `/payment/${paymentIntent}`
+  cancelPayment: (paymentIntent) => `/payment/${paymentIntent}`,
+  getStreamingMovies: `/stream`,
+  getSingleStreamingMovie: (movieId) => `/stream/${movieId}`
+
 };
 
 export const theatersEndPoints: TheaterEndpoint = {
@@ -56,5 +59,5 @@ export const adminEndpoints: AdminEndpoint = {
   getMovie: (movieType, pageNumber) => `/movie/${movieType}${pageNumber ? `?pageNumber=${pageNumber}` : ''}`,
   deleteMovie: (movieTpe, movieId) => `/movie/${movieTpe}/${movieId}`,
   updateMovie: (movieTpe, movieId) => `/movie/${movieTpe}/${movieId}`,
-  streamPlan: (planId) => `/stream-plan${planId?`/${planId}`:''}`
+  streamPlan: (planId) => `/stream-plan${planId ? `/${planId}` : ''}`
 }
