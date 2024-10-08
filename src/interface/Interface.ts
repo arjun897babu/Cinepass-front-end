@@ -89,7 +89,7 @@ export interface ICast {
 
 export interface MovieResponse {
   maxPage: number,
-  movies: ITheaterMovieData[]
+  movies: (ITheaterMovieData | IStreamingMovieData)[]
 }
 
 export interface IMovie {
@@ -177,14 +177,20 @@ export interface IGetSingleShow {
   screen: ITheaterScreenResponse
   show: Pick<IMovieShow, 'showTime' | 'endTime' | 'format' | 'language' | '_id' | 'cancelationDeadline' | 'reserved'>
 }
-export interface ITicketSummaryLocationState {
+export interface IPaymentSummaryLocationState {
+  bookingDate: string | Date; 
   showDetails: Omit<IGetSingleShow, 'show' | 'screen'> & {
     show: Omit<IGetSingleShow['show'], 'reserved'>; // Remove 'reserved'  
     screen: Omit<IGetSingleShow['screen'], 'layout'>; // Remove 'layout' field from 'screen'
   };
   showId: string;
   selectedSeats: string[];
-  bookingDate: string;
+
+}
+
+export interface IStreamRentLocationState {
+  streamingData: IStreamingMovieData;
+  bookingDate: Date
 }
 
 export interface IRentSummaryLocationState {

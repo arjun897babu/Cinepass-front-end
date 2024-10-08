@@ -135,7 +135,7 @@ export const getStreamingMovies: AsyncThunk<IStreamingMovieResponse, { movieType
 
 );
 interface IMovieResponse extends ResponseData2 {
-  data: { movie: IMovie }
+  data: { movie: ITheaterMovieData | IStreamingMovieData }
 }
 
 export const addMovie: AsyncThunk<IMovieResponse, { movieData: IMovie; movieType: MovieType }, {}> = createAsyncThunk(

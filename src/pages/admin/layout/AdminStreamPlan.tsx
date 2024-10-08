@@ -37,6 +37,7 @@ const AdminStreamPlan: React.FC = () => {
 
   const [plan, setPlan] = useState<IStreamRentalPlan[]>([]) // storing the streaming plan details
 
+
   //pagination
   const [maxPage, setMaxPage] = useState<number>(1)
   const [currentPage, setCurrentPage] = useState<number>(1)
@@ -51,6 +52,8 @@ const AdminStreamPlan: React.FC = () => {
     ))
     setCurrentPage(newPage)
   }
+
+
 
   const [addForm, setAddForm] = useState<boolean>(false)
   const [editForm, setEditForm] = useState<IStreamRentalPlan | null>(null)
@@ -128,6 +131,17 @@ const AdminStreamPlan: React.FC = () => {
 
   }
 
+  function updatePlanTable(action: Action) {
+    if (action === Action.ADD) {
+      if (currentPage !== 1) {
+        handleChangePage(1)
+      } else {
+        fetchStreamingPlan()
+      }
+    } else {
+      fetchStreamingPlan()
+    }
+  };
 
   if (loading) return <div className="flex justify-center"><Loader /></div>
 
@@ -156,6 +170,7 @@ const AdminStreamPlan: React.FC = () => {
           {
             addForm &&
             <StreamingPlanForm
+              updatePlanState={updatePlanTable}
               closeModal={closePlanForm}
               updateToast={updateToast}
             />
@@ -164,6 +179,7 @@ const AdminStreamPlan: React.FC = () => {
           {
             editForm &&
             <StreamingPlanForm
+              updatePlanState={updatePlanTable}
               closeModal={closePlanForm}
               updateToast={updateToast}
               _id={editForm._id}

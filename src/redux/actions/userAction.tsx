@@ -3,7 +3,7 @@ import { AsyncThunk, createAsyncThunk, isRejectedWithValue } from '@reduxjs/tool
 import { IUser, LoggedOwner, UserSignUpData } from '../../interface/user/IUserData'
 import { userEndPoints } from '../../services/endpoints/endPoints'
 import { AxiosError } from 'axios'
-import { BookingStatus, GoogleSignUp, IGetMovieShowResponse, IGetSingleShow, IMovie, IStreamingMovieData, ITicketSummaryLocationState, IUserTicketData, LoginData, MovieFilter, OTPVerification, ResponseData, ResponseData2, TicketFilter } from '../../interface/Interface'
+import { BookingStatus, GoogleSignUp, IGetMovieShowResponse, IGetSingleShow, IMovie, IStreamingMovieData, IPaymentSummaryLocationState, IUserTicketData, LoginData, MovieFilter, OTPVerification, ResponseData, ResponseData2, TicketFilter } from '../../interface/Interface'
 import { handleAxiosError } from '../../utils/customError'
 import { ITheaterOwnerEntity, TheaterOwnerProfile } from '../../interface/theater/ITheaterOwner'
 import { userResetBookingInfo } from '../reducers/userReducer'
@@ -268,14 +268,14 @@ interface SeatBookingPayload {
   reservedSeats: string[]
 }
 
-interface BookTicketsResponse extends ResponseData2 {
+interface IPaymentResponse extends ResponseData2 {
   data: {
     clientSecret: string
     paymentIntentId: string
   }
 }
 
-export const bookTickets: AsyncThunk<BookTicketsResponse, ITicketSummaryLocationState, {}> = createAsyncThunk(
+export const bookTickets: AsyncThunk<IPaymentResponse, IPaymentSummaryLocationState, {}> = createAsyncThunk(
   '/user/seatBooking',
   async ({ showId, bookingDate, selectedSeats }, { rejectWithValue }) => {
     try {
@@ -355,7 +355,7 @@ export const getUserSingleStreamingMovies: AsyncThunk<IGetSingleStreamingMovieRe
   '/user/getUserSingleStreamingMovies',
   async (movieId, { rejectWithValue }) => {
     try {
-      const response = await serverUser.get(userEndPoints.getSingleStreamingMovie(movieId))
+      const response = await serverUser.get(userEndPoints.streamingMovie(movieId))
       return await response.data
     } catch (error) {
       return rejectWithValue(handleAxiosError(error))
@@ -363,4 +363,17 @@ export const getUserSingleStreamingMovies: AsyncThunk<IGetSingleStreamingMovieRe
   }
 )
 
+
+export const userPurchaseStream: AsyncThunk < IPaymentResponse, string, {} >= createAsyncThunk(
+  '/user/userPurchaseStream',
+  async (movieId, { rejectWithValue }) => {
+    try {
+      const response = await serverUser.post(userEndPoints.streamingMovie(movieId)) //using same url 
+      return await response.data
+    } catch (error) {
+      return rejectWithValue(handleAxiosError(error))
+    }
+  }
+
+)
 

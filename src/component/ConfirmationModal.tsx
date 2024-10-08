@@ -44,7 +44,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ isOpen, onClose, 
                 <>
                   <h1 className="font-bold tracking-wider text-lg">Rent</h1>
                   <hr />
-                  <p className="my-2 font-normal text-sm">You can Rent this movie for  {plan?.validity} months with {plan?.planName} plan </p>
+                  <p className="my-2 font-normal text-sm">You can Rent this movie for  {plan?.validity} month with <span className="">{plan?.planName} </span> plan </p>
                   <div className="flex gap-3 text-sm">
                     <span className="font-bold">Price</span>
                     <span className="font-bold" >₹{plan?.price}</span>

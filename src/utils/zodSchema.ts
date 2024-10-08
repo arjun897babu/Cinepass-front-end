@@ -33,7 +33,6 @@ export const movieSchema = (movieType: MovieType) => {
     movie_poster: z
       .string()
       .min(1, 'image is required'),
-
   };
 
   if (movieType === MovieType.stream) {

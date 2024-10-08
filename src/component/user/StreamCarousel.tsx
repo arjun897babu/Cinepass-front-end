@@ -9,12 +9,11 @@ const StreamCarousel: React.FC<{ movieDetails: IStreamingMovieData[] }> = ({ mov
   const hasMultipleItems =movieDetails.length > 1;
   const settings: Settings = {
     pauseOnHover: false,
-    dots: hasMultipleItems,
+    dots: false,
+    arrows:false,
     infinite: hasMultipleItems, 
     autoplay: hasMultipleItems,
-    speed: 2000,
-    autoplaySpeed: 2000,
-    cssEase: "linear"
+    speed: 2000,  
   }
   return (
     <>

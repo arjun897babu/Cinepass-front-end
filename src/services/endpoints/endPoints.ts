@@ -22,8 +22,8 @@ export const userEndPoints: UserEndpoint = {
   getTicket: `tickets`,
   cancelPayment: (paymentIntent) => `/payment/${paymentIntent}`,
   getStreamingMovies: `/stream`,
-  getSingleStreamingMovie: (movieId) => `/stream/${movieId}`
-
+  streamingMovie: (movieId) => `/stream/${movieId}`
+ 
 };
 
 export const theatersEndPoints: TheaterEndpoint = {

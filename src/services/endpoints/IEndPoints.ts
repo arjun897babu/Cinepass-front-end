@@ -24,7 +24,7 @@ export interface UserEndpoint extends IEndPoints {
   getTicket: string
   cancelPayment: (paymentIntent: string) => string
   getStreamingMovies:string
-  getSingleStreamingMovie:(movieId:string)=>string
+  streamingMovie:(movieId:string)=>string
 }
 export interface TheaterEndpoint extends IEndPoints {
   signup: string;

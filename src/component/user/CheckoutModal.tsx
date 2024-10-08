@@ -11,9 +11,9 @@ import { formatTime } from "../../utils/format"
 import { useTimer } from "../../hooks/useTimer"
 interface CheckoutModalPops {
   closeModal: () => void,
-  theaterDetail: Partial<ITheaterOwnerEntity>,
   amount: number
   paymentIntentId: string
+  theaterDetail?: Partial<ITheaterOwnerEntity>,
 }
 
 
@@ -97,10 +97,10 @@ const CheckoutModal: React.FC<CheckoutModalPops> = ({ closeModal, theaterDetail,
                   alt="cinepass logo" />
               </div>
             </div>
-            <div>
+            {theaterDetail && <div>
               <div className="font-bold">{theaterDetail.theater_name}</div>
               <div className="text-sm opacity-50">{theaterDetail.city}</div>
-            </div>
+            </div>}
           </div>
           <button disabled={isLoading || !isPaymentElementReady} onClick={closeLayoutModal} className="btn btn-sm btn-circle btn-white absolute right-2 top-2">✕</button>
           <div className=" p-4">

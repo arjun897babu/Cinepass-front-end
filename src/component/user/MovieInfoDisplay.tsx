@@ -19,7 +19,7 @@ const MovieInfoDisplay: React.FC<{ movieType: MovieType, movieDetails: ITheaterM
   }
 
   const onPurchaseConfirm = () => {
-    navigate('/payment', { replace: true, state: {} })
+    navigate('/payment', { replace: true, state: {bookingDate:new Date(),streamingData:movieDetails} })
   }
 
 

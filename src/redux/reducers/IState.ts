@@ -1,4 +1,4 @@
-import { IInitialStateError, IMovie, ITicketSummaryLocationState } from "../../interface/Interface";
+import { IInitialStateError, IMovie, IPaymentSummaryLocationState } from "../../interface/Interface";
 import { ITheaterOwnerEntity } from "../../interface/theater/ITheaterOwner";
 import { LoggedOwner } from "../../interface/user/IUserData";
 
@@ -13,7 +13,7 @@ export interface IInitialState {
   city?: undefined | string
   movies?: IMovie[] | null
   cityTheaters?: Partial<ITheaterOwnerEntity>[]
-  bookingInfo?: ITicketSummaryLocationState | null
+  bookingInfo?: IPaymentSummaryLocationState | null
 }
 
 

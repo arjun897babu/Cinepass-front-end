@@ -1,5 +1,5 @@
 import { MouseEvent, useEffect, useRef, useState } from "react";
-import { IMovie, ResponseStatus } from "../../interface/Interface";
+import { Action, IMovie, IStreamingMovieData, ITheaterMovieData, ResponseStatus } from "../../interface/Interface";
 import MovieForm, { MovieType } from "./MovieForm";
 import Toast2 from "../Toast2";
 import { ToastMessage } from "../../pages/admin/layout/AdminUsers";
@@ -10,7 +10,8 @@ interface MovieModalProp {
   setToast: (alert: ResponseStatus, message: string) => void; // call back  for setting toast message
   closeModal: () => void //call back for updating modal view state
   movieType: MovieType
-  selectedData?: IMovie,// selected movie data | undefined for add movie
+  updateMovieTable: (action: Action) => void;
+  selectedData?:  ITheaterMovieData | IStreamingMovieData,// selected movie data | undefined for add movie
 }
 
 //modal for adding and updating movie
@@ -21,7 +22,8 @@ export const MovieModal: React.FC<MovieModalProp> = (
     closeModal,
     setToast,
     movieType,
-    selectedData
+    selectedData,
+    updateMovieTable
   }) => {
 
   const modalRef = useRef<HTMLDialogElement>(null);
@@ -59,7 +61,7 @@ export const MovieModal: React.FC<MovieModalProp> = (
           <h3 className="text-2xl font-bold mb-4 text-center uppercase">{action} Movie</h3>
           <MovieForm
             movieType={movieType}
-          
+            updateMovieTable={updateMovieTable}
             closeButtonRef={modalRef}
             selectedData={selectedData}
             setToast={setToast}

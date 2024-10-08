@@ -2,7 +2,7 @@ import React, { MouseEvent, useEffect, useState } from "react"
 import { FaEdit } from "react-icons/fa"
 import { GiCancel } from "react-icons/gi"
 import { MovieType } from "../../../component/admin/MovieForm"
-import { IMovie, ResponseStatus, Role } from "../../../interface/Interface"
+import { Action, IMovie, ITheaterMovieData, ResponseStatus, Role } from "../../../interface/Interface"
 import { useDispatch } from "react-redux"
 import type { AppDispatch } from "../../../redux/store"
 import { getMovie, manageMovie } from "../../../redux/actions/adminAction"
@@ -21,12 +21,12 @@ const AdminMovie: React.FC = () => {
 
   const dispatch = useDispatch<AppDispatch>()
   const [loading, setLoading] = useState(false)
-  const [theaterMovies, setTheaterMovies] = useState<IMovie[]>([]);
+  const [theaterMovies, setTheaterMovies] = useState<ITheaterMovieData[]>([]);
   const [maxPage, setMaxPage] = useState<number>(1)
   const [currentPage, setCurrentPage] = useState<number>(1)
 
   const handleChangePage = (newPage: number) => setCurrentPage(newPage)
-  const [selectedMovie, setSelectedMovie] = useState<IMovie | null>(null); // Modal shows selected movie's info for update
+  const [selectedMovie, setSelectedMovie] = useState<ITheaterMovieData | null>(null); // Modal shows selected movie's info for update
   // const setNewMovies = (movieData: IMovie) => {
   //   setTheaterMovies((prevMovies) => {
   //     const existingMovieIndex = prevMovies.findIndex(movie => movie._id === movieData._id);
@@ -43,6 +43,25 @@ const AdminMovie: React.FC = () => {
   //   });
 
   // };
+
+  function updateMovieTable(action: Action) {
+    switch (action) {
+      case Action.ADD:
+        if (currentPage !== 1) {
+          handleChangePage(1)
+        } else {
+          fetchMovieData()
+        }
+        break;
+      case Action.UPDATE:
+        fetchMovieData()
+        break
+      case Action.DELETE:
+        fetchMovieData()
+        break
+    }
+  };
+
   //close modal for update form
   const closeModalView = () => setSelectedMovie(null)
 
@@ -69,21 +88,21 @@ const AdminMovie: React.FC = () => {
   }
 
   const deleteMovie = async () => {
-     if (deleteMovieId) {
+    if (deleteMovieId) {
       try {
         const response = await dispatch(manageMovie({ movieType: MovieType.theater, movieId: deleteMovieId })).unwrap()
         if (response.status === ResponseStatus.SUCCESS) {
           const { movie } = response.data;
-
-          setTheaterMovies((prev) =>
-            prev.map((item) =>
-              item._id === movie._id
-                ? { ...item, status: movie.status }
-                : item
-
-            )
-          );
           setToastMessage({ alert: response.status, message: response.message })
+          updateMovieTable(Action.DELETE)
+          // setTheaterMovies((prev) =>
+          //   prev.map((item) =>
+          //     item._id === movie._id
+          //       ? { ...item, status: movie.status }
+          //       : item
+
+          //   )
+          // );
         }
       } catch (error) {
 
@@ -102,9 +121,9 @@ const AdminMovie: React.FC = () => {
 
       const response = await dispatch(getMovie({ movieType: MovieType.theater, pageNumber: currentPage })).unwrap();
       if (response) {
-        setTheaterMovies(response.data.movies) 
+        setTheaterMovies(response.data.movies)
         setMaxPage(response.data.maxPage)
-      } 
+      }
     } catch (error) {
       handleApiError(error)
     } finally {
@@ -148,7 +167,7 @@ const AdminMovie: React.FC = () => {
       {
         addMovieModal &&
         <MovieModal  // add movie form modal
-
+          updateMovieTable={updateMovieTable}
           closeModal={closeAddMovieModal}
           action="add"
           id="addMovie"
@@ -215,7 +234,7 @@ const AdminMovie: React.FC = () => {
                             </div>
                           </td>
                           <td>
-                            <span className="badge font-bold rounded-none ">{getIST(movie.release_date as string)}</span>
+                            <span className="badge font-bold rounded-none ">{getIST(movie.release_date.toString())}</span>
                           </td>
                           <td className="flex justify-center items-center gap-3">
 
@@ -245,6 +264,7 @@ const AdminMovie: React.FC = () => {
         {
           selectedMovie &&
           <MovieModal  // update form modal
+            updateMovieTable={updateMovieTable}
             closeModal={closeModalView}
             setToast={setToast}
             action="update"

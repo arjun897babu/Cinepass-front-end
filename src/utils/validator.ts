@@ -1,4 +1,5 @@
-import { MovieFilter, MovieStatus } from "../interface/Interface"
+import { ITicketInfoProps } from "../component/user/TicketInfo"
+import { IPaymentSummaryLocationState, IStreamRentLocationState, MovieFilter, MovieStatus } from "../interface/Interface"
 import { extractHourAndMin } from "./format"
 
 export enum MovieFormat {
@@ -103,7 +104,8 @@ const validateEnumField = (
     case 'language':
       isValid = Object.values(Language).includes(value as Language);
       break;
-    case 'format' || 'aminety':
+    case 'format':
+    case 'amenity':
       isValid = Object.values(MovieFormat).includes(value as MovieFormat);
       break;
     default:
@@ -207,12 +209,12 @@ const validateMovieName = (movieName: string): ReturnObject =>
 const isCloudinaryUrl = (url: string) => url.includes('cloudinary.com')
 
 function checkMovieStatus(showTime: string, endTime: string, releaseDate: string): MovieStatus {
- 
+
   const currentDate = new Date();
-   if (currentDate < new Date(releaseDate)) {
-     return MovieStatus.UPCOMING;
+  if (currentDate < new Date(releaseDate)) {
+    return MovieStatus.UPCOMING;
   }
- 
+
   const [startHour, startMin] = extractHourAndMin(showTime);
   const [endHour, endMin] = extractHourAndMin(endTime);
 
@@ -225,7 +227,7 @@ function checkMovieStatus(showTime: string, endTime: string, releaseDate: string
     console.log('running show')
     return MovieStatus.RUNNING;
   }
-   
+
   return MovieStatus.COMPLETED;
 }
 const isFilterEmpty = (filter: Partial<MovieFilter> | null): boolean => {
@@ -233,8 +235,24 @@ const isFilterEmpty = (filter: Partial<MovieFilter> | null): boolean => {
   return Object.values(filter).every(value => value === null || value === undefined);
 };
 
+type LocationState = IPaymentSummaryLocationState | IStreamRentLocationState | ITicketInfoProps | null
+
+function isIPaymentSummaryLocationState(data: LocationState): data is IPaymentSummaryLocationState {
+  return (data as IPaymentSummaryLocationState).showDetails !== undefined;
+}
+
+function isIStreamRentLocationState(data: LocationState): data is IStreamRentLocationState {
+  return (data as IStreamRentLocationState).streamingData !== undefined;
+}
+
+function isITicketSummaryProps(data: LocationState): data is ITicketInfoProps {
+  return (data as ITicketInfoProps).show !== undefined;
+}
 
 export {
+  isITicketSummaryProps,
+  isIPaymentSummaryLocationState,
+  isIStreamRentLocationState,
   isFilterEmpty,
   checkMovieStatus,
   isCloudinaryUrl,

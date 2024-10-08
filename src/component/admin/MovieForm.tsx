@@ -1,7 +1,7 @@
 import React, { ChangeEvent, MouseEvent, RefObject, useCallback, useEffect, useRef, useState } from "react";
 import { Controller, SubmitHandler, useForm as useForms } from 'react-hook-form'
 
-import { Action, IMovie, IStreamRentalPlan, ResponseStatus, Role } from "../../interface/Interface";
+import { Action, IMovie, IStreamingMovieData, IStreamRentalPlan, ITheaterMovieData, ResponseStatus, Role } from "../../interface/Interface";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../../redux/store";
 import { addMovie, getStreamPlan, updateMovie } from "../../redux/actions/adminAction";
@@ -11,7 +11,7 @@ import { Genre, isCloudinaryUrl, Language, MovieFormat } from "../../utils/valid
 import { movieSchema } from "../../utils/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IoCloudUploadOutline } from "react-icons/io5";
-import { convertFile } from "../../utils/format";
+import { convertFile, setDefaultDate } from "../../utils/format";
 import { MultiSelect } from "./MultiSelect";
 import ConfirmationModal from "../ConfirmationModal";
 import ImagePreview from "../image_preview/ImagePreview";
@@ -26,13 +26,13 @@ export enum MovieType {
 }
 interface MovieFormProps {
   movieType: MovieType; // theater movie | streaming movie
-  setToast: (alert: ResponseStatus, message: string) => void // cal back for setting toastmessage
-  setModalToast: (alert: ResponseStatus, message: string) => void // cal back for setting toastmessage
-  
-  closeButtonRef: RefObject<HTMLDialogElement> // for closing the modal after successfull response
-  selectedData?: IMovie // selected movie data
+  setToast: (alert: ResponseStatus, message: string) => void // cal back for setting toast message
+  setModalToast: (alert: ResponseStatus, message: string) => void // cal back for setting toast message
+  closeButtonRef: RefObject<HTMLDialogElement> // for closing the modal after successful response
+  selectedData?: IMovie | ITheaterMovieData | IStreamingMovieData // selected movie data
   closeModal: () => void // changing the modal view state in parent
   action: string
+  updateMovieTable: (action: Action) => void;
 }
 
 export const MovieForm: React.FC<MovieFormProps> = ({
@@ -42,7 +42,8 @@ export const MovieForm: React.FC<MovieFormProps> = ({
   setToast,
   setModalToast,
   closeModal,
-  action
+  action,
+  updateMovieTable
 }
 ) => {
 
@@ -142,16 +143,16 @@ export const MovieForm: React.FC<MovieFormProps> = ({
 
   const releaseDateRef = useRef<HTMLInputElement | null>(null)
   useEffect(() => {
-    // const min = setDefaultDate(`${new Date()}`, 1)
-    // const defaultDate = setDefaultDate(`${selectedData.release_date}`, action === Action.UPDATE ? 0 : 1)
-    // if (releaseDateRef.current) {
-    //   releaseDateRef.current.min = min
-    //   releaseDateRef.current.value = defaultDate
-    //   if (action === Action.UPDATE && new Date(selectedData.release_date) <= new Date()) {
-    //     releaseDateRef.current.max = defaultDate
-    //   }
-    // }
-    // setValue('release_date', defaultDate)
+    const min = setDefaultDate(`${new Date()}`, 1)
+    const defaultDate = setDefaultDate(`${selectedData.release_date}`, action === Action.UPDATE ? 0 : 1)
+    if (releaseDateRef.current) {
+      releaseDateRef.current.min = min
+      releaseDateRef.current.value = defaultDate
+      // if (action === Action.UPDATE && new Date(selectedData.release_date) <= new Date()) {
+      //   releaseDateRef.current.max = defaultDate
+      // }
+    }
+    setValue('release_date', defaultDate)
     if (movieType === MovieType.stream) {
       fetchStreamingPlan();
     }
@@ -276,16 +277,17 @@ export const MovieForm: React.FC<MovieFormProps> = ({
   }
 
   const onSubmit = async (movieData: IMovie) => {
-    console.log('form submission stated', movieData)
     try {
       setLoading(true)
       clearErrors()
       let response
       if (action === Action.ADD) {
         response = await dispatch(addMovie({ movieData, movieType })).unwrap();
+        updateMovieTable(Action.ADD)
 
       } else if (action === Action.UPDATE && selectedData._id) {
         response = await dispatch(updateMovie({ payload: movieData, movieType, movieId: selectedData._id })).unwrap()
+        updateMovieTable(Action.UPDATE)
       }
       if (response?.status === ResponseStatus.SUCCESS) {
         setToast(ResponseStatus.SUCCESS, response.message);
@@ -575,10 +577,10 @@ export const MovieForm: React.FC<MovieFormProps> = ({
             <Controller
               name="file"
               control={control}
-              render={( ) => (
+              render={() => (
                 <input
                   type="file"
-                  accept="video/mp4, video/mpeg, video/webm, video/x-matroska,video/mkv" 
+                  accept="video/mp4, video/mpeg, video/webm, video/x-matroska,video/mkv"
                   className="hidden"
                   onChange={(e) => {
                     if (e.target.files && e.target.files.length > 0) {
@@ -597,7 +599,7 @@ export const MovieForm: React.FC<MovieFormProps> = ({
             {action === Action.UPDATE ?
               (<VideoPlayer
                 role={Role.admin}
-                url=""
+                url='https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8'
 
               />) :
               (

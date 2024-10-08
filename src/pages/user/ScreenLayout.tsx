@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { FaArrowLeft } from "react-icons/fa"
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom"
 import useErrorHandler from "../../hooks/useErrorHandler"
-import { IGetSingleShow, ResponseStatus, Role } from "../../interface/Interface"
+import { IGetSingleShow, PurchasedItem, ResponseStatus, Role } from "../../interface/Interface"
 import { Toast } from "../../component/Toast2"
 import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "../../redux/store"
@@ -95,7 +95,8 @@ const ScreenLayout: React.FC = () => {
           state: {
             selectedSeats,
             bookingDate: location.state.bookingDate,
-            showDetails: newShowDetails
+            showDetails: newShowDetails,
+            purchasedItem: PurchasedItem.TICKET
           }
         }
       )

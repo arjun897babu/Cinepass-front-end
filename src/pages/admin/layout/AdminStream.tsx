@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { ToastMessage } from "./AdminUsers"
 import Toast2 from "../../../component/Toast2"
 import ConfirmationModal from "../../../component/ConfirmationModal"
-import { Action, IMovie, ResponseStatus, Role } from "../../../interface/Interface"
+import { Action, IMovie, IStreamingMovieData, ResponseStatus, Role } from "../../../interface/Interface"
 import AddButton from "../../../component/AddButton"
 import { MovieModal } from "../../../component/admin/MovieFromModal"
 import Pagination from "../../../component/Pagination"
@@ -22,7 +22,7 @@ const AdminStream: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false)
   const [actionLoading, setActionLoading] = useState<boolean>(false)
 
-  const [data, setData] = useState<IMovie[]>([])
+  const [data, setData] = useState<IStreamingMovieData[]>([])
   const setNewMovies = () => { } // for adding  new movies to the state
 
   //Toast message 
@@ -37,7 +37,7 @@ const AdminStream: React.FC = () => {
     try {
       const response = await dispatch(getMovie({ movieType: MovieType.stream })).unwrap()
       if (response.status === ResponseStatus.SUCCESS) {
-        setData(response.data.movies)
+        setData(response.data.movies as IStreamingMovieData[])
       }
     } catch (error) {
       handleApiError(error)
@@ -70,7 +70,7 @@ const AdminStream: React.FC = () => {
   }
 
   //Edit movie form
-  const [editMovie, setEditMovie] = useState<IMovie | null>(null)
+  const [editMovie, setEditMovie] = useState<IStreamingMovieData | null>(null)
 
 
   //close form modal
@@ -87,6 +87,23 @@ const AdminStream: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const handleChangePage = (newPage: number) => setCurrentPage(newPage)
 
+  function updateMovieTable(action: Action  ) {
+    switch (action) {
+      case Action.ADD:
+        if (currentPage !== 1) {
+          setCurrentPage(1)
+        } else {
+          fetchStreamingMovies()
+        }
+        break;
+      case Action.UPDATE:
+        fetchStreamingMovies()
+        break
+      case Action.DELETE:
+        fetchStreamingMovies()
+        break
+    }
+  };
 
   const selectedMovie = (movieId: string, action: Action) => {
     if (action === Action.DELETE) {
@@ -117,6 +134,9 @@ const AdminStream: React.FC = () => {
         />
       }
       {
+        
+      }
+      {
         confirmation &&
         <ConfirmationModal
           btnType={ResponseStatus.ERROR}
@@ -130,7 +150,7 @@ const AdminStream: React.FC = () => {
       {
         addMovie &&
         <MovieModal  // add movie form modal
-          updateMovieData={setNewMovies}
+          updateMovieTable={updateMovieTable}
           closeModal={closeForm}
           action="add"
           id="addMovie"
@@ -142,8 +162,9 @@ const AdminStream: React.FC = () => {
       {
         editMovie &&
         <MovieModal  // update form modal
-          updateMovieData={setNewMovies}
-          closeModal={closeForm}
+
+          updateMovieTable={updateMovieTable }
+           closeModal={closeForm}
           setToast={setToast}
           action="update"
           id="updateMovie"

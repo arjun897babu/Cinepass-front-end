@@ -1,14 +1,13 @@
 import React, { MouseEvent } from "react";
-import { Action, IMovie } from "../../interface/Interface";
+import { Action, IMovie, IStreamingMovieData, ITheaterMovieData } from "../../interface/Interface";
 import { MovieType } from "./MovieForm";
 import { formatRunTime, getIST, getMovieSrc, getSerialNumber } from "../../utils/format";
-import { GiCancel } from "react-icons/gi";
-import { FaEdit } from "react-icons/fa";
+ import { FaEdit } from "react-icons/fa";
 import EmptyData from "../EmptyData";
 
 interface IMovieTableProps {
   loading: boolean;
-  data: IMovie[]
+  data: (ITheaterMovieData | IStreamingMovieData)[]
   selectedMovie: (movieId: string, action: Action) => void
   currentPage: number
   movieType: MovieType
@@ -78,7 +77,7 @@ const MovieTable: React.FC<IMovieTableProps> = ({ data, loading, selectedMovie, 
                           </div>
                         </td>
                         <td>
-                          <span className="badge font-bold rounded-none ">{getIST(movie.release_date as string)}</span>
+                          <span className="badge font-bold rounded-none ">{getIST(movie.release_date.toString())}</span>
                         </td>
                         <td className="flex justify-center items-center gap-3">
 

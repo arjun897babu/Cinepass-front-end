@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { ResponseStatus, Role } from "../../interface/Interface"
+import { Action, ResponseStatus, Role } from "../../interface/Interface"
 import { SubmitHandler, useForm as useForms } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { StreamPlanSchema } from "../../utils/zodSchema"
@@ -17,7 +17,7 @@ interface IStreamingPlanFormProps {
   defaultData?: z.infer<typeof StreamPlanSchema>;
   _id?: string
   updateToast: (toast: Toast) => void,
-  updatePlanState?: () => void
+  updatePlanState: (action: Action) => void
 }
 
 const StreamingPlanForm: React.FC<IStreamingPlanFormProps> = ({
@@ -55,8 +55,10 @@ const StreamingPlanForm: React.FC<IStreamingPlanFormProps> = ({
         let response
         if (_id && defaultData) {
           response = await dispatch(editStreamPlan({ planId: _id, data: formData })).unwrap()
+          updatePlanState(Action.UPDATE)
         } else {
           response = await dispatch(addStreamPlan(formData)).unwrap()
+          updatePlanState(Action.ADD)
         }
 
         if (response.status === ResponseStatus.SUCCESS) {

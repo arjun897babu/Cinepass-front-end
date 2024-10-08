@@ -42,8 +42,6 @@ export function extractHourAndMin(time: string) {
 export function convertTo12HourFormat(time: string) {
 
   const [hour, minute] = extractHourAndMin(time);
-
-
   const period = hour >= 12 ? 'PM' : 'AM';
 
   const hour12 = hour % 12 || 12;
