@@ -53,7 +53,7 @@ const StreamHomePage = () => {
             running.length > 0 &&
             <div className="p-2 space-y-5  ">
               <h1 className="capitalize font-bold text-2xl ml-2">new on stream</h1>
-
+              
               <MovieCarousel movieDetails={running} />
 
             </div>}

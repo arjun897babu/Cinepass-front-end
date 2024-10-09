@@ -1,10 +1,10 @@
 import React, { MouseEvent, useEffect, useRef } from "react"
-import Hls, {   Events } from "hls.js"
+import Hls, { Events } from "hls.js"
 import { Role } from "../../interface/Interface"
 import { MdDelete } from "react-icons/md"
 
 
-const VideoPlayer: React.FC<{ role: Role, url: string }> = ({ url  }) => {
+const VideoPlayer: React.FC<{ role: Role, url: string, removeHlsUrl?: () => void }> = ({ role, url, removeHlsUrl }) => {
 
   const deleteVideo = (e: MouseEvent<HTMLButtonElement>) => e.preventDefault()
   const videoRef = useRef<HTMLVideoElement | null>(null)
@@ -16,7 +16,9 @@ const VideoPlayer: React.FC<{ role: Role, url: string }> = ({ url  }) => {
       hls.loadSource(url)
       hls.attachMedia(video)
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        // video.play()
+        if (role === Role.users) {
+          video.play()
+        }
       })
 
       hls.on(Events.ERROR, (events, data) => {
@@ -24,7 +26,17 @@ const VideoPlayer: React.FC<{ role: Role, url: string }> = ({ url  }) => {
         console.log(data)
       })
 
+      video.addEventListener('ended', () => {
+        if (hls && removeHlsUrl) {
+          removeHlsUrl();
+          hls.destroy();
+        }
+      });
+
       return () => {
+        if (removeHlsUrl) {
+          removeHlsUrl()
+        }
         hls.destroy()
       }
     } else if (video) {
@@ -37,15 +49,15 @@ const VideoPlayer: React.FC<{ role: Role, url: string }> = ({ url  }) => {
   return (
     <>
 
-      <div className="p-2 m-3 relative w-full ">
-        <video ref={videoRef} controls >
+      <div className={` ${role !== Role.users && "p-2 m-3 "} relative w-full `}>
+        <video className="w-full" ref={videoRef} controls >
         </video>
-        <button
+        {role === Role.admin && <button
           className="absolute rounded-full bg-white  z-20 top-3 right-3  hover:bg-red-400"
           onClick={deleteVideo}
         >
           <MdDelete className="text-black" size={22} />
-        </button>
+        </button>}
       </div>
 
     </>

@@ -364,11 +364,30 @@ export const getUserSingleStreamingMovies: AsyncThunk<IGetSingleStreamingMovieRe
 )
 
 
-export const userPurchaseStream: AsyncThunk < IPaymentResponse, string, {} >= createAsyncThunk(
+export const userPurchaseStream: AsyncThunk<IPaymentResponse, string, {}> = createAsyncThunk(
   '/user/userPurchaseStream',
   async (movieId, { rejectWithValue }) => {
     try {
       const response = await serverUser.post(userEndPoints.streamingMovie(movieId)) //using same url 
+      return await response.data
+    } catch (error) {
+      return rejectWithValue(handleAxiosError(error))
+    }
+  }
+
+)
+
+interface IGetHlsUrlResponse extends ResponseData2 {
+  data: {
+    hlsURL: string
+  }
+}
+
+export const userGetHlsUrl: AsyncThunk<IGetHlsUrlResponse, { publicId: string, movieId: string }, {}> = createAsyncThunk(
+  '/user/userPurchaseStream',
+  async ({ publicId, movieId }, { rejectWithValue }) => {
+    try {
+      const response = await serverUser.get(userEndPoints.getHlsUrl(movieId,publicId))  
       return await response.data
     } catch (error) {
       return rejectWithValue(handleAxiosError(error))

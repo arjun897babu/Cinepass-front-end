@@ -1,15 +1,22 @@
 import { memo, useState } from "react"
-import { IStreamingMovieData, ITheaterMovieData, ResponseStatus } from "../../interface/Interface"
+import { IStreamingMovieData, ITheaterMovieData, ResponseStatus, Role } from "../../interface/Interface"
 import { formatRunTime, getIST } from "../../utils/format"
 import { MovieType } from "../admin/MovieForm"
 import { FaRegPlayCircle } from "react-icons/fa"
 import ConfirmationModal from "../ConfirmationModal"
 import { useNavigate } from "react-router-dom"
+import { useDispatch } from "react-redux"
+import { AppDispatch } from "../../redux/store"
+import { userGetHlsUrl } from "../../redux/actions/userAction"
+import VideoPlayer from "../admin/VideoPlayer"
 
 const MovieInfoDisplay: React.FC<{ movieType: MovieType, movieDetails: ITheaterMovieData | IStreamingMovieData }> = ({ movieType, movieDetails }) => {
 
+  const dispatch = useDispatch<AppDispatch>()
   const [confirmation, setConfirmation] = useState(false)
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+  const [hlsURL, setHlsURL] = useState<string | null>(null)
 
   const makePurchase = () => {
     if (!movieDetails) {
@@ -19,14 +26,33 @@ const MovieInfoDisplay: React.FC<{ movieType: MovieType, movieDetails: ITheaterM
   }
 
   const onPurchaseConfirm = () => {
-    navigate('/payment', { replace: true, state: {bookingDate:new Date(),streamingData:movieDetails} })
+    navigate('/payment', { replace: true, state: { bookingDate: new Date(), streamingData: movieDetails } })
   }
 
 
 
   const getStreamingUrl = async () => {
+    try {
+      if ('file' in movieDetails) { 
+        setLoading(true)
 
+        const response = await dispatch(userGetHlsUrl({ movieId: movieDetails._id, publicId: movieDetails.file.public_id })).unwrap() 
+        if (response.status === ResponseStatus.SUCCESS) {
+          setHlsURL(response.data.hlsURL)
+        }
+      }
+
+    } catch (error) {
+
+      console.log(error)
+
+
+    } finally {
+
+      setLoading(false)
+    }
   }
+
 
 
   return (
@@ -47,7 +73,7 @@ const MovieInfoDisplay: React.FC<{ movieType: MovieType, movieDetails: ITheaterM
 
       {/* movie section  */}
       <section
-        className="relative   p-4 sm:p-8 flex bg-no-repeat  bg-cover"
+        className={`${hlsURL ? 'hidden' : 'relative   p-4 sm:p-8 flex bg-no-repeat  bg-cover'}`}
         style={{
           backgroundImage: `url(${movieDetails.cover_photo})`,
         }}
@@ -106,7 +132,11 @@ const MovieInfoDisplay: React.FC<{ movieType: MovieType, movieDetails: ITheaterM
                 <button
                   onClick={!movieDetails.isPurchased ? makePurchase : getStreamingUrl}
                   className="btn btn-wide bg-pink-600 border-0 hover:bg-pink-700"
-                >{movieDetails.isPurchased ? <FaRegPlayCircle className="text-white" size={30} /> : `Rent ₹${movieDetails.streamingPlan.price}`}
+                >{
+                    movieDetails.isPurchased ?
+                      loading ? <div className="loading loading-xs"></div> : <FaRegPlayCircle className="text-white" size={30} />
+                      : `Rent ₹${movieDetails.streamingPlan.price}`
+                  }
                 </button>
               </div>
             }
@@ -116,6 +146,10 @@ const MovieInfoDisplay: React.FC<{ movieType: MovieType, movieDetails: ITheaterM
 
 
       {/*  */}
+
+      {
+        hlsURL && <VideoPlayer role={Role.users} url={hlsURL} removeHlsUrl={() => setHlsURL(null)} />
+      }
     </>
   )
 }
