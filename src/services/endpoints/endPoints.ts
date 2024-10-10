@@ -60,5 +60,6 @@ export const adminEndpoints: AdminEndpoint = {
   getMovie: (movieType, pageNumber) => `/movie/${movieType}${pageNumber ? `?pageNumber=${pageNumber}` : ''}`,
   deleteMovie: (movieTpe, movieId) => `/movie/${movieTpe}/${movieId}`,
   updateMovie: (movieTpe, movieId) => `/movie/${movieTpe}/${movieId}`,
-  streamPlan: (planId) => `/stream-plan${planId ? `/${planId}` : ''}`
+  streamPlan: (planId) => `/stream-plan${planId ? `/${planId}` : ''}`,
+  adminGetEntityStat: `/dashboard/statics`
 }

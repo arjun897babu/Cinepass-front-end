@@ -178,7 +178,7 @@ export interface IGetSingleShow {
   show: Pick<IMovieShow, 'showTime' | 'endTime' | 'format' | 'language' | '_id' | 'cancelationDeadline' | 'reserved'>
 }
 export interface IPaymentSummaryLocationState {
-  bookingDate: string | Date; 
+  bookingDate: string | Date;
   showDetails: Omit<IGetSingleShow, 'show' | 'screen'> & {
     show: Omit<IGetSingleShow['show'], 'reserved'>; // Remove 'reserved'  
     screen: Omit<IGetSingleShow['screen'], 'layout'>; // Remove 'layout' field from 'screen'
@@ -266,4 +266,32 @@ export interface IUserTicketData {
 
 export interface ITheaterTicketData extends IUserTicketData {
   userInfo: Pick<IUser, '_id' | 'name' | 'email' | 'mobile_number' | 'profile_picture'>
+}
+
+export type IGetUserCount = {
+  verified: number;
+  active: number;
+  blocked: number;
+  nonVerified: number;
+}
+export type IGetTheaterOwnersCount = IGetUserCount & {
+  approved: number
+  rejected: number
+  pending: number
+}
+
+export enum UserDoughnutChartLabel {
+  VERIFIED = 'Verified',
+  ACTIVE = 'Active',
+  BLOCKED = 'Blocked',
+  NON_VERIFIED = 'Non-Verified',
+}
+export enum TheaterDoughnutChartLabel {
+  VERIFIED = 'Verified',
+  ACTIVE = 'Active',
+  BLOCKED = 'Blocked',
+  NON_VERIFIED = 'Non-Verified',
+  APPROVED = 'Approved',
+  PENDING = 'Pending',
+  REJECTED = 'Rejected',
 }

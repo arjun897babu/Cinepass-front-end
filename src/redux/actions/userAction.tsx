@@ -1,12 +1,11 @@
 import { serverUser } from '../../services'
-import { AsyncThunk, createAsyncThunk, isRejectedWithValue } from '@reduxjs/toolkit'
+import { AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit'
 import { IUser, LoggedOwner, UserSignUpData } from '../../interface/user/IUserData'
 import { userEndPoints } from '../../services/endpoints/endPoints'
 import { AxiosError } from 'axios'
-import { BookingStatus, GoogleSignUp, IGetMovieShowResponse, IGetSingleShow, IMovie, IStreamingMovieData, IPaymentSummaryLocationState, IUserTicketData, LoginData, MovieFilter, OTPVerification, ResponseData, ResponseData2, TicketFilter } from '../../interface/Interface'
+import {  GoogleSignUp,  IGetSingleShow, IMovie, IStreamingMovieData, IPaymentSummaryLocationState, IUserTicketData, LoginData, MovieFilter, OTPVerification, ResponseData, ResponseData2, TicketFilter } from '../../interface/Interface'
 import { handleAxiosError } from '../../utils/customError'
-import { ITheaterOwnerEntity, TheaterOwnerProfile } from '../../interface/theater/ITheaterOwner'
-import { userResetBookingInfo } from '../reducers/userReducer'
+import {  TheaterOwnerProfile } from '../../interface/theater/ITheaterOwner'
 
 export const signUpUser: AsyncThunk<ResponseData, UserSignUpData, {}> = createAsyncThunk(
   'user/signup',

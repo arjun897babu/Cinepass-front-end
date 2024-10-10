@@ -1,16 +1,26 @@
 import React, { memo } from "react"
+import { FiUsers } from "react-icons/fi";
+import { GiTheater } from "react-icons/gi";
 interface DashBoardCardProps {
-  header: string;
-  data: string
+  header: 'user' | 'theaters' | 'screen' | 'shows Running' | 'Tickets' | 'profit';
+  data: number
 }
 export const DashBoardCard: React.FC<DashBoardCardProps> = memo(({ data, header }) => {
   return (
-    <>
-      <div className="rounded-lg w-80 text-center bg-slate-800 text-white h-36 flex flex-col justify-center items-center gap-2 shadow-lg p-4">
-        <h1 className="text-2xl font-semibold text-neutral-300">{header}</h1>
-        <span className="text-2xl font-extrabold text-neutral-50">{data}</span>
+
+    <div className="stats shadow bg-cyan-400">
+      <div className="stat">
+        <div className="stat-figure text-black">
+          {
+            header === 'user' ?
+              <FiUsers size={30} />
+              : <GiTheater size={30} />
+          }
+        </div>
+        <div className="stat-title">Total {header}</div>
+        <div className="stat-value">{data}</div>
       </div>
-    </>
+    </div>
   )
 })
 

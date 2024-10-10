@@ -6,7 +6,7 @@ export const Loader: React.FC = (): JSX.Element => {
     <div className="fixed top-0 left-0 w-full h-full bg-white flex justify-center items-center z-40">
       <InfinitySpin 
         width="200"
-        color="#4fa94d" 
+        color="#04afc9" 
       />
     </div>
   );

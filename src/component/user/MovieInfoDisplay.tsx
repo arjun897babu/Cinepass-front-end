@@ -33,10 +33,16 @@ const MovieInfoDisplay: React.FC<{ movieType: MovieType, movieDetails: ITheaterM
 
   const getStreamingUrl = async () => {
     try {
-      if ('file' in movieDetails) { 
+      if ('file' in movieDetails) {
         setLoading(true)
 
-        const response = await dispatch(userGetHlsUrl({ movieId: movieDetails._id, publicId: movieDetails.file.public_id })).unwrap() 
+        const response = await dispatch(userGetHlsUrl(
+          {
+            movieId: movieDetails._id,
+            publicId: movieDetails.file.public_id
+          }
+        )).unwrap()
+        
         if (response.status === ResponseStatus.SUCCESS) {
           setHlsURL(response.data.hlsURL)
         }

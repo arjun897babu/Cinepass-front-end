@@ -1,5 +1,5 @@
 import { AsyncThunk, createAsyncThunk } from "@reduxjs/toolkit";
-import { IMovie, IStreamingMovieData, IStreamPlanFilter, IStreamRentalPlan, ITheaterMovieData, LoginData, MovieResponse, ResponseData, ResponseData2, Role } from "../../interface/Interface";
+import { IGetTheaterOwnersCount, IGetUserCount, IMovie, IStreamingMovieData, IStreamPlanFilter, IStreamRentalPlan, ITheaterMovieData, LoginData, MovieResponse, ResponseData, ResponseData2, Role } from "../../interface/Interface";
 import { AxiosError } from "axios";
 import { serverAdmin } from "../../services";
 import { adminEndpoints } from "../../services/endpoints/endPoints";
@@ -240,6 +240,25 @@ export const getStreamPlan: AsyncThunk<IGetStreamPlanResponse, { filter?: Partia
 
       const response = await serverAdmin.get(adminEndpoints.streamPlan(), { params: { ...filter } })
 
+      return await response.data
+    } catch (error) {
+      return rejectWithValue(handleAxiosError(error))
+    }
+  }
+)
+
+interface IAdminGetEntityStatResponse extends ResponseData2 {
+  data: {
+    userStat: IGetUserCount,
+    theaterStat: IGetTheaterOwnersCount,
+  }
+}
+
+export const adminGetEntityStat: AsyncThunk<IAdminGetEntityStatResponse, void, {}> = createAsyncThunk(
+  '/admin/adminGetEntityStat',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await serverAdmin.get(adminEndpoints.adminGetEntityStat)
       return await response.data
     } catch (error) {
       return rejectWithValue(handleAxiosError(error))

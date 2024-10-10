@@ -23,7 +23,7 @@ export const movieSchema = (movieType: MovieType) => {
       .nonempty('choose one field'),
     languages: z
       .array(z.string())
-      .nonempty('choode one field'),
+      .nonempty('choose one field'),
     format: z
       .array(z.string())
       .nonempty('choose one field'),

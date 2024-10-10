@@ -1,5 +1,5 @@
 import { ITicketInfoProps } from "../component/user/TicketInfo"
-import { IPaymentSummaryLocationState, IStreamRentLocationState, MovieFilter, MovieStatus } from "../interface/Interface"
+import { IGetTheaterOwnersCount, IGetUserCount, IPaymentSummaryLocationState, IStreamRentLocationState, MovieFilter, MovieStatus } from "../interface/Interface"
 import { extractHourAndMin } from "./format"
 
 export enum MovieFormat {
@@ -68,29 +68,9 @@ const errorMessage = (field: string): string => `${field} is required`
 const isEmpty = (value: string): boolean => value.trim() === ''
 const validMessage = (field: string): string => `${field} is valid`
 
-//validating array of value for genre,lanague,movieformat
-// const validateMultiEnumField = (
-//   field: string,
-//   values: string[]
-// ): ReturnObject => {
-//   let validationResult: ReturnObject;
+ 
 
-//   for (const value of values) {
-//     validationResult = validateEnumField(field, value);
-
-//     if (!validationResult.isValid) {
-//       return validationResult;
-//     }
-//   }
-
-//   return {
-//     message: validMessage(field),
-//     isValid: true
-//   };
-
-// }
-
-//validating  single enum filed value for genre,lanague,movieformat
+//validating  single enum filed value for genre,language,movie format
 const validateEnumField = (
   field: string,
   value: string
@@ -249,7 +229,13 @@ function isITicketSummaryProps(data: LocationState): data is ITicketInfoProps {
   return (data as ITicketInfoProps).show !== undefined;
 }
 
+function isITheaterStat(data: IGetTheaterOwnersCount | IGetUserCount): data is IGetTheaterOwnersCount {
+  return 'approved' in data && 'rejected' in data && 'pending' in data;
+}
+
+
 export {
+  isITheaterStat,
   isITicketSummaryProps,
   isIPaymentSummaryLocationState,
   isIStreamRentLocationState,
