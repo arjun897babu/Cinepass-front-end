@@ -23,16 +23,16 @@ const AccordionAllOpen: React.FC<AccordionProps> = ({ accordionData, filterMovie
   return (
     <>
 
-      <div className="collapse bg-white collapse-arrow w-full ">
-        <input type="radio" name="my-accordion-2" defaultChecked />
-        <div className="collapse-title text-md rounded font-medium capitalize">
+      <div className="collapse bg-white collapse-arrow w-full  ">
+        <input type="radio" className="" name="my-accordion-2" defaultChecked />
+        <div className="collapse-title sm:text-md rounded sm:font-medium capitalize">
           {accordionData?.filterItem}
         </div>
-        <div className="collapse-content">
+        <div className="collapse-content ">
           <div
             onClick={() => resetFilterItem(accordionData?.filterItem)}
             className={
-              `cursor-pointer badge p-3 text-xs  tracking-wide m-0.5 capitalize 
+              `cursor-pointer badge am:p-3 text-xs  tracking-wide m-0.5 capitalize 
             ${filterItem && filterItem[accordionData.filterItem] === null || !filterItem ?
                 'bg-sky-400'
                 : 'bg-sky-200'}`

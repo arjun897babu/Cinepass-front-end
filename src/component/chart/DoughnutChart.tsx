@@ -1,59 +1,39 @@
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip } from 'chart.js';
-import { IGetTheaterOwnersCount, IGetUserCount, TheaterDoughnutChartLabel, UserDoughnutChartLabel } from '../../interface/Interface';
+import { IGetScreenCount, IGetShowCountByScreen, IGetTheaterOwnersCount, IGetTicketCount, IGetUserCount } from '../../interface/Interface';
 import React, { useEffect } from 'react';
-import { isITheaterStat } from '../../utils/validator';
+import { isArray } from 'chart.js/helpers';
 
 type IDoughnutChartProps = {
-  chartData: IGetUserCount | IGetTheaterOwnersCount
+  label: 'user' | 'theaters' | 'screen' | 'shows' | 'tickets' | 'profit';
+  chartData: IGetUserCount | IGetTheaterOwnersCount | IGetTicketCount | IGetScreenCount | IGetShowCountByScreen[]
 }
 
-const DoughnutChart: React.FC<IDoughnutChartProps> = ({ chartData }) => {
+const DoughnutChart: React.FC<IDoughnutChartProps> = ({ label, chartData }) => {
   ChartJS.register(ArcElement, Tooltip)
 
-  const isTheaterStat = isITheaterStat(chartData)
-  type ChartLabel = TheaterDoughnutChartLabel | UserDoughnutChartLabel;
   const data = {
-    labels: isTheaterStat
-      ? Object.values(TheaterDoughnutChartLabel) as ChartLabel[]
-      : Object.values(UserDoughnutChartLabel) as ChartLabel[],
+    labels: isArray(chartData) ? chartData.map((show) => show.screenName) : Object.keys(chartData),
     datasets: [
       {
-        label: isTheaterStat ? 'Theater' : 'User',
-        data: isTheaterStat
-          ? [
-            chartData.verified,
-            chartData.active,
-            chartData.blocked,
-            chartData.nonVerified,
-            chartData.approved,
-            chartData.pending,
-            chartData.rejected,
-          ]
-          : [
-            chartData.verified,
-            chartData.active,
-            chartData.blocked,
-            chartData.nonVerified,
-          ],
+        data: isArray(chartData) ? chartData.map((show) => show.showCount) : Object.values(chartData),
         backgroundColor: [
           'rgba(75, 192, 192, 0.7)',
           'rgba(54, 162, 235, 0.7)',
           'rgba(255, 99, 132, 0.7)',
           'rgba(255, 206, 86, 0.7)',
-          ...(isTheaterStat ? ['rgba(153, 102, 255, 0.7)',
-            'rgba(255, 159, 64, 0.7)',
-            'rgba(201, 203, 207, 0.7)',] : [])
-
+          'rgba(153, 102, 255, 0.7)',
+          'rgba(255, 159, 64, 0.7)',
+          'rgba(201, 203, 207, 0.7)',
         ],
         borderColor: [
           'rgba(75, 192, 192, 1)',
           'rgba(54, 162, 235, 1)',
           'rgba(255, 99, 132, 1)',
           'rgba(255, 206, 86, 1)',
-          ...(isTheaterStat ? ['rgba(153, 102, 255,1)',
-            'rgba(255, 159, 64,1)',
-            'rgba(201, 203, 207,1)',] : [])
+          'rgba(153, 102, 255,1)',
+          'rgba(255, 159, 64,1)',
+          'rgba(201, 203, 207,1)',
 
         ],
         borderWidth: 1,
@@ -68,8 +48,8 @@ const DoughnutChart: React.FC<IDoughnutChartProps> = ({ chartData }) => {
   }, [])
 
   return (
-    <div className='p-2 w-1/6 m-1 text-center'>
-      <h1 className='capitalize  font-bold underline m-1'>{isTheaterStat ? 'Theater' : 'User'}</h1>
+    <div className='p-2 w-full  sm:w-1/6 m-1 text-center'>
+      <h1 className='capitalize  font-bold underline m-1'>{label}</h1>
       <Doughnut data={data} options={{ responsive: true }} />
     </div>
   )

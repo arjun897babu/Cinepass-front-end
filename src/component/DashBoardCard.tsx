@@ -2,7 +2,7 @@ import React, { memo } from "react"
 import { FiUsers } from "react-icons/fi";
 import { GiTheater } from "react-icons/gi";
 interface DashBoardCardProps {
-  header: 'user' | 'theaters' | 'screen' | 'shows Running' | 'Tickets' | 'profit';
+  header: 'user' | 'theaters' | 'screen' | 'shows' | 'Tickets' | 'profit';
   data: number
 }
 export const DashBoardCard: React.FC<DashBoardCardProps> = memo(({ data, header }) => {

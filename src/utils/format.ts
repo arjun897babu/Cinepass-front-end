@@ -1,6 +1,4 @@
-import { date } from "zod";
 import { UploadError } from "./customError";
-import { TiMediaFastForward } from "react-icons/ti";
 import { MovieStatus } from "../interface/Interface";
 
 const dateTypeGuard = (date: string | Date) => typeof date === 'string' ? new Date(date) : date
@@ -13,6 +11,7 @@ export function formatTime(time: number): string {
 
   return `${min}:${formattedSec}`;
 }
+
 export function getIST(time: string): string {
 
   const date = new Date(time);
@@ -124,6 +123,9 @@ export function getMonthName(date: Date | string = new Date()): string {
 export function getDate(date: Date | string) {
   date = dateTypeGuard(date)
   return date.toLocaleDateString('en-IN', { day: '2-digit' })
+}
+export function getYear(date: string) {
+  return new Date(date).toLocaleDateString('en-IN', { year: 'numeric' })
 }
 
 export function toValidJSDate(date: string): Date {

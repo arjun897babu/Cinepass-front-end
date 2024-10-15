@@ -1,5 +1,5 @@
 import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from "react";
-import { Action, IMovie, ResponseStatus, Role } from "../../interface/Interface";
+import { Action, IMovie, ITheaterMovieData, ResponseStatus, Role } from "../../interface/Interface";
 import { Controller, SubmitHandler, useForm as useForms } from "react-hook-form";
 import { ITheaterScreenResponse } from "../../interface/theater/ITheaterScreen";
 import { useDispatch } from "react-redux";
@@ -52,7 +52,7 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
   const modalRef = useRef<HTMLDialogElement>(null) // to control over modal
   const closeModalBtnRef = useRef<HTMLButtonElement>(null);//for closing the modal
 
-  const [theaterMovies, setTheaterMovies] = useState<IMovie[] | []>([])//store available theaer movies
+  const [theaterMovies, setTheaterMovies] = useState<ITheaterMovieData[] | []>([])//store available theaer movies
 
   const [screens, setScreens] = useState<ITheaterScreenResponse[] | []>([])//store available screens based on the movie format
   const [selectedMovie, setSelectedMovie] = useState<IMovie | null>(null)
@@ -145,16 +145,15 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
 
     if (selectedMovie) {
       setSelectedMovie(selectedMovie)
-      setReleaseDate(getIST(selectedMovie.release_date as string));
+      setReleaseDate(getIST(selectedMovie.release_date.toString() ));
       setDuration(selectedMovie.run_time);
       setFormat([selectedMovie.format.join(',')]);
       const min = new Date().toISOString().split('T')[0]
-      const max = setDefaultDate(selectedMovie?.release_date as string, -1);
 
       if (openingDateRef.current) {
-        // openingDateRef.current.min = min
+        openingDateRef.current.min = min
         // openingDateRef.current.max = max
-        // openingDateRef.current.value = setDefaultDate(initialData?.openingDate as string, 0) ?? min
+        openingDateRef.current.value = setDefaultDate(initialData?.openingDate as string, 0) ?? min
         // setValue('openingDate', min)
       }
     }

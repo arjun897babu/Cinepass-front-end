@@ -12,6 +12,7 @@ function MovieCarousel({ movieDetails }: { movieDetails: IStreamingMovieData[] }
     infinite: false,
     speed: 500,
     slidesToShow,
+    arrows: movieDetails.length > slidesToShow ? true : false,
     slidesToScroll: 1,
     responsive: [
       {
@@ -44,15 +45,20 @@ function MovieCarousel({ movieDetails }: { movieDetails: IStreamingMovieData[] }
   return (
     <div className="slider-container relative">
       <Slider {...settings}>
+
         {
-          movieDetails.map((movie) => (<Link key={movie.slug} to={`/movie/${movie.slug}`}><div className="p-2">
-          <img
-            className=" rounded-md object-scale-down"
-            src={movie.movie_poster}
-            alt={movie.movie_name} />
-        </div> </Link>))
+          movieDetails.map((movie) => (<Link key={movie.slug} to={`/movie/${movie.slug}`}>
+            <div className="p-2 sm:w-[210px] sm:h-[315px] object-scale-down ">
+              <img
+                className="rounded-lg  object-contain "
+                src={movie.movie_poster}
+                alt={movie.movie_name} />
+            </div>
+          </Link>))
         }
-    </Slider>
+ 
+      </Slider>
+
     </div >
   )
 }

@@ -2,6 +2,7 @@ import React, { memo, useEffect } from "react"
 import { ITheaterOwnerEntity } from "../../interface/theater/ITheaterOwner";
 import { IMovie } from "../../interface/Interface";
 import { Link, useLocation } from "react-router-dom";
+import { getIST } from "../../utils/format";
 
 interface MoviesTheatersDropdownPorps {
   item: 'movies' | 'theaters'
@@ -11,7 +12,7 @@ interface MoviesTheatersDropdownPorps {
 
 const MoviesTheatersDropdown: React.FC<MoviesTheatersDropdownPorps> = ({ item, moviesOrTheater, city }) => {
   const location = useLocation()
- 
+
   useEffect(() => {
     const dropdown = document.querySelector('.dropdown');
     if (dropdown) {
@@ -36,9 +37,12 @@ const MoviesTheatersDropdown: React.FC<MoviesTheatersDropdownPorps> = ({ item, m
               moviesOrTheater.map((data) => {
                 if (item === 'movies') {
                   const movie = data as IMovie;
+                  const releaseDate = new Date(movie.release_date);
+                  const currentDate = new Date();
+                  const bookingDate = getIST(currentDate <= releaseDate ? releaseDate.toString() : currentDate.toString());
                   return (
                     <li key={movie._id || movie.slug}>
-                      <Link to={`/movie/${movie.slug}`} className="">
+                      <Link to={`/movie/${movie.slug}?bookingDate=${bookingDate}`} className="">
                         <div className="flex items-center gap-3 border-b-2 pb-1">
                           <div className="avatar">
                             <div className="mask h-10 w-10">

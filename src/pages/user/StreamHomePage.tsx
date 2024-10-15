@@ -59,7 +59,7 @@ const StreamHomePage = () => {
             </div>}
           {upcoming.length > 0 && <div className=" p-2 space-y-5  ">
             <h1 className="capitalize font-bold text-2xl ml-2">upcoming release</h1>
-            <MovieCarousel movieDetails={upcoming} />
+            <MovieCarousel  movieDetails={upcoming} />
           </div>}
         </div>
       </div>

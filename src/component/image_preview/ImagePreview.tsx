@@ -1,7 +1,7 @@
-import React, { useState,  MouseEvent,  useEffect } from "react";
- import { MdDelete } from "react-icons/md";
+import React, { useState, MouseEvent, useEffect } from "react";
+import { MdDelete } from "react-icons/md";
 import { CropBackdrop } from "./CropBackDrop";
- 
+
 const ErrorAlert: React.FC = () => {
   return (
     <div role="alert" className="alert alert-error absolute rounded-none max-w-44 p-1 top-5 right-1">
@@ -23,20 +23,21 @@ const ErrorAlert: React.FC = () => {
   );
 };
 interface ImagePreviewProp {
+  imageType:  "movie_poster" | "cover_photo" |'profile'
   defaultImg: string
   preview: boolean
-  removeSelectedImage: () => void
-  updateSelectedImage: (ur: string) => void
+  removeSelectedImage: (type: "movie_poster" | "cover_photo"|"profile" ) => void
+  updateSelectedImage: (ur: string,type: "movie_poster" | "cover_photo"|"profile" ) => void
   aspectInit?: number;
   isCloudinaryImg?: boolean
 }
-const ImagePreview: React.FC<ImagePreviewProp> = ({ defaultImg, preview, removeSelectedImage, updateSelectedImage, aspectInit, isCloudinaryImg }) => {
+const ImagePreview: React.FC<ImagePreviewProp> = ({ imageType,defaultImg, preview, removeSelectedImage, updateSelectedImage, aspectInit, isCloudinaryImg }) => {
   const [images, setImages] = useState<string | null>(null);//store the dataURL 
   const [selected, setSelected] = useState<string | null>(null);//for showing the cropper ui
-   
+
   const removePreview = (e: MouseEvent<HTMLButtonElement>) => {
     setImages(null)
-    removeSelectedImage()
+    removeSelectedImage(imageType)
   };
 
   const onCancel = () => {
@@ -46,7 +47,7 @@ const ImagePreview: React.FC<ImagePreviewProp> = ({ defaultImg, preview, removeS
   useEffect(() => {
     if (!isCloudinaryImg) {
       setSelected(defaultImg)
-    }else{
+    } else {
       setImages(defaultImg)
     }
   }, [])
@@ -56,7 +57,7 @@ const ImagePreview: React.FC<ImagePreviewProp> = ({ defaultImg, preview, removeS
       setImages(croppedImageUrl);
     }
 
-    updateSelectedImage(croppedImageUrl)
+    updateSelectedImage(croppedImageUrl,imageType)
 
     setSelected(null)
   };

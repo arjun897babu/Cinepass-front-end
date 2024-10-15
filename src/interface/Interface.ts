@@ -3,6 +3,21 @@ import { ITheaterScreenResponse } from "./theater/ITheaterScreen";
 import { IMovieShow } from "./theater/IMovieShow";
 import { IPayment } from "./user/IPayment";
 import { IUser } from "./user/IUserData";
+export type IGetScreenCount = {
+  total: number;
+  available: number;
+  'under-maintenance': number
+}
+
+export type IGetTicketCount = {
+  total: number,
+  canceled: number
+}
+
+export type IGetShowCountByScreen = {
+  screenName: string,
+  showCount: number
+}
 
 export enum PaymentStatus {
   PENDING = 'pending',
@@ -17,6 +32,12 @@ export enum BookingStatus {
 export enum PurchasedItem {
   TICKET = 'ticket',
   RENTAL = 'rental'
+}
+
+export enum Period {
+  WEEK = 'week',
+  MONTH = 'month',
+  YEAR = 'year',
 }
 
 export enum Role {
@@ -114,7 +135,7 @@ export interface ITheaterMovieData {
   _id: string,
   movie_name: string;
   languages: string[];
-  release_date: Date;
+  release_date: string;
   run_time: string;
   genres: string[];
   format: string[];
@@ -223,6 +244,30 @@ export interface IStreamRentalPlan {
   listed: true
 }
 
+export interface RevenueFilter {
+  period: Period;
+  movieId?: string;
+  screenId?: string;
+}
+export type IList = {
+  label: string,
+  id: string
+}
+
+export type RevenueData = {
+  [key: string]: number
+}
+
+export type RevenueDetails = {
+  name: string;
+  id: string;
+  data: RevenueData
+}
+
+export interface IRevenueResponse {
+  list: IList[]
+  revenue: RevenueDetails
+}
 export interface IStreamPlanFilter {
   pageNumber: number,
   listed: boolean,
@@ -280,18 +325,18 @@ export type IGetTheaterOwnersCount = IGetUserCount & {
   pending: number
 }
 
-export enum UserDoughnutChartLabel {
-  VERIFIED = 'Verified',
-  ACTIVE = 'Active',
-  BLOCKED = 'Blocked',
-  NON_VERIFIED = 'Non-Verified',
-}
-export enum TheaterDoughnutChartLabel {
-  VERIFIED = 'Verified',
-  ACTIVE = 'Active',
-  BLOCKED = 'Blocked',
-  NON_VERIFIED = 'Non-Verified',
-  APPROVED = 'Approved',
-  PENDING = 'Pending',
-  REJECTED = 'Rejected',
-}
+// export enum UserDoughnutChartLabel {
+//   VERIFIED = 'Verified',
+//   ACTIVE = 'Active',
+//   BLOCKED = 'Blocked',
+//   NON_VERIFIED = 'Non-Verified',
+// }
+// export enum TheaterDoughnutChartLabel {
+//   VERIFIED = 'Verified',
+//   ACTIVE = 'Active',
+//   BLOCKED = 'Blocked',
+//   NON_VERIFIED = 'Non-Verified',
+//   APPROVED = 'Approved',
+//   PENDING = 'Pending',
+//   REJECTED = 'Rejected',
+// }

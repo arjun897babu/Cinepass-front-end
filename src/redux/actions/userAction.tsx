@@ -383,7 +383,7 @@ interface IGetHlsUrlResponse extends ResponseData2 {
 }
 
 export const userGetHlsUrl: AsyncThunk<IGetHlsUrlResponse, { publicId: string, movieId: string }, {}> = createAsyncThunk(
-  '/user/userPurchaseStream',
+  '/user/userGetHlsUrl',
   async ({ publicId, movieId }, { rejectWithValue }) => {
     try {
       const response = await serverUser.get(userEndPoints.getHlsUrl(movieId,publicId))  

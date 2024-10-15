@@ -15,6 +15,7 @@ import { HttpStatusCode } from "axios";
 import { ToastMessage } from "../admin/layout/AdminUsers";
 import Toast2 from "../../component/Toast2";
 import { isIPaymentSummaryLocationState, isIStreamRentLocationState } from "../../utils/validator";
+import { userResetBookingInfo } from "../../redux/reducers/userReducer";
 
 
 const { VITE_TEST_PUBLISHABLE_API_KEY } = import.meta.env
@@ -31,11 +32,9 @@ const PaymentSummary = () => {
 
 
 
-  const { city, bookingInfo } = useSelector((state: RootState) => state.user)
-  let data: IPaymentSummaryLocationState | IStreamRentLocationState | null = location?.state ?? bookingInfo
-
-
-  console.log(location.state)
+  const { city, bookingInfo, isAuthenticated } = useSelector((state: RootState) => state.user)
+  let data: IPaymentSummaryLocationState | IStreamRentLocationState | null = location?.state ?? bookingInfo 
+  
   useEffect(() => {
     if (!data && city) {
       navigate(`/home/${city}`, { replace: true });
@@ -43,6 +42,13 @@ const PaymentSummary = () => {
 
   }, [data]);
 
+  useEffect(() => {
+    return () => {
+      if (isAuthenticated && bookingInfo) {
+        dispatch(userResetBookingInfo())
+      }
+    }
+  }, [])
 
   const [checkoutModal, setCheckOutModal] = useState(false)
   const openCheckOutModal = async () => {
@@ -51,7 +57,7 @@ const PaymentSummary = () => {
       setLoading(true)
 
       let response;
-      
+
       if (data && isIPaymentSummaryLocationState(data) && data.showDetails?.show._id) {
         response = await dispatch(bookTickets({
           showId: data.showDetails.show._id,

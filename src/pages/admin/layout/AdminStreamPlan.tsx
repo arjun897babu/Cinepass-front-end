@@ -230,9 +230,9 @@ const AdminStreamPlan: React.FC = () => {
                       <button onClick={(e) => updatePlan(e, plan._id)} className="btn bg-transparent hover:bg-transparent border-none hover: join-item text-black">
                         <FaEdit />
                       </button>
-                      <button onClick={(e) => deleteButtonClicked(e, plan._id)} className="btn bg-transparent hover:bg-transparent border-none hover: join-item text-red-600">
+                      {/* <button onClick={(e) => deleteButtonClicked(e, plan._id)} className="btn bg-transparent hover:bg-transparent border-none hover: join-item text-red-600">
                         <GiCancel />
-                      </button>
+                      </button> */}
                     </td>
                   </tr>
                 ))}

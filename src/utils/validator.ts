@@ -1,6 +1,6 @@
 import { ITicketInfoProps } from "../component/user/TicketInfo"
 import { IGetTheaterOwnersCount, IGetUserCount, IPaymentSummaryLocationState, IStreamRentLocationState, MovieFilter, MovieStatus } from "../interface/Interface"
-import { extractHourAndMin } from "./format"
+import { extractHourAndMin } from "./format" 
 
 export enum MovieFormat {
   TWO_D = "2D",
@@ -68,7 +68,7 @@ const errorMessage = (field: string): string => `${field} is required`
 const isEmpty = (value: string): boolean => value.trim() === ''
 const validMessage = (field: string): string => `${field} is valid`
 
- 
+
 
 //validating  single enum filed value for genre,language,movie format
 const validateEnumField = (
@@ -233,8 +233,13 @@ function isITheaterStat(data: IGetTheaterOwnersCount | IGetUserCount): data is I
   return 'approved' in data && 'rejected' in data && 'pending' in data;
 }
 
+function isReleased(releaseDate: string): boolean {
+  return new Date() >= new Date(releaseDate);
+}
+
 
 export {
+  isReleased,
   isITheaterStat,
   isITicketSummaryProps,
   isIPaymentSummaryLocationState,

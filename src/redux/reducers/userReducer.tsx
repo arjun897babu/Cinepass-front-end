@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { bookTickets, cancelUserPayment, getAllMovies, getAllShows, getSingleMovie, getTheatersByCity, getUserProfile, getUserTickets, googleSignUp, loginUser, logoutUser, signUpUser, updateUserProfile, } from "../actions/userAction";
+import { bookTickets, cancelUserPayment, getAllMovies, getAllShows, getSingleMovie, getTheatersByCity, getUserProfile, getUserTickets, googleSignUp, loginUser, logoutUser, signUpUser, updateUserProfile, userGetHlsUrl, userPurchaseStream, } from "../actions/userAction";
 import { IInitialState } from "./IState";
 import { IInitialStateError, } from "../../interface/Interface";
 import { isErrorResponse, isResponseError } from "../../utils/customError";
@@ -44,6 +44,7 @@ const userSlice = createSlice({
 
     },
     userResetBookingInfo(state: IInitialState) {
+      console.log('calling');
       state.bookingInfo = null
     }
   },
@@ -186,9 +187,19 @@ const userSlice = createSlice({
         }
 
       })
-      
       .addCase(bookTickets.rejected, (state: IInitialState, action) => {
 
+        isResponseError(action.payload) ?
+          handleRejectedCase(state, action.payload) : null
+      })
+
+      //purchase user stream
+      .addCase(userPurchaseStream.rejected, (state: IInitialState, action) => {
+        isResponseError(action.payload) ?
+          handleRejectedCase(state, action.payload) : null
+      })
+
+      .addCase(userGetHlsUrl.rejected, (state: IInitialState, action) => {
         isResponseError(action.payload) ?
           handleRejectedCase(state, action.payload) : null
       })

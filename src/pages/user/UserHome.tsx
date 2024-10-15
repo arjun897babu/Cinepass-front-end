@@ -55,9 +55,9 @@ const UserHome: React.FC = () => {
         <SearchWithFilters
           setFilter={setFilter}
         />
-        <div className="mx-auto gap-1 flex p-2 bg-gray-200">
+        <div className="mx-auto gap-1 sm:flex p-2 bg-gray-200">
           {/* Accordion  */}
-          <div className="hidden mt-4 sm:block rounded-lg bg-white h-1/2 flex-shrink-0 w-full sm:w-1/4   p-2">
+          <div className="sm:mt-4  rounded-lg  bg-white h-1/2 flex-shrink-0 w-full  sm:w-2/5 lg:w-1/4 ">
             <Accordion
               setFilter={setFilter}
             />

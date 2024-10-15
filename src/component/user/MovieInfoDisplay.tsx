@@ -1,6 +1,6 @@
 import { memo, useState } from "react"
 import { IStreamingMovieData, ITheaterMovieData, ResponseStatus, Role } from "../../interface/Interface"
-import { formatRunTime, getIST } from "../../utils/format"
+import { formatRunTime, getDate, getIST, getMonthName, getYear } from "../../utils/format"
 import { MovieType } from "../admin/MovieForm"
 import { FaRegPlayCircle } from "react-icons/fa"
 import ConfirmationModal from "../ConfirmationModal"
@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux"
 import { AppDispatch } from "../../redux/store"
 import { userGetHlsUrl } from "../../redux/actions/userAction"
 import VideoPlayer from "../admin/VideoPlayer"
+import { isReleased } from "../../utils/validator"
 
 const MovieInfoDisplay: React.FC<{ movieType: MovieType, movieDetails: ITheaterMovieData | IStreamingMovieData }> = ({ movieType, movieDetails }) => {
 
@@ -42,7 +43,7 @@ const MovieInfoDisplay: React.FC<{ movieType: MovieType, movieDetails: ITheaterM
             publicId: movieDetails.file.public_id
           }
         )).unwrap()
-        
+
         if (response.status === ResponseStatus.SUCCESS) {
           setHlsURL(response.data.hlsURL)
         }
@@ -104,9 +105,10 @@ const MovieInfoDisplay: React.FC<{ movieType: MovieType, movieDetails: ITheaterM
 
           <div className="p-4 sm:p-8 w-full sm:w-4/5 flex flex-col justify-center gap-2">
             {
+
               movieType === MovieType.stream &&
               <div className="badge capitalize m-0 p-3 badge-xs font-bold gap-2  badge-neutral">
-                streaming now <FaRegPlayCircle size={10} />
+                {isReleased(movieDetails.release_date) ? <>streaming now <FaRegPlayCircle size={10} /></> : <>stream from  {getDate(movieDetails.release_date)} {getMonthName(movieDetails.release_date)} {getYear(movieDetails.release_date)}  </>}
               </div>
             }
             <h1 className="text-white capitalize font-bold text-2xl sm:text-3xl">{movieDetails.movie_name}</h1>
@@ -138,11 +140,20 @@ const MovieInfoDisplay: React.FC<{ movieType: MovieType, movieDetails: ITheaterM
                 <button
                   onClick={!movieDetails.isPurchased ? makePurchase : getStreamingUrl}
                   className="btn btn-wide bg-pink-600 border-0 hover:bg-pink-700"
-                >{
+                >
+                  
+                  {
                     movieDetails.isPurchased ?
-                      loading ? <div className="loading loading-xs"></div> : <FaRegPlayCircle className="text-white" size={30} />
-                      : `Rent ₹${movieDetails.streamingPlan.price}`
+                      (
+                        loading ?
+                          (<div className="loading loading-xs"></div>)
+                          : (<FaRegPlayCircle className="text-white" size={30} />)
+                      )
+                      : isReleased(movieDetails.release_date) ?
+                        (`Rent ₹${movieDetails.streamingPlan.price}`)
+                        : ('')
                   }
+
                 </button>
               </div>
             }

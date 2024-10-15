@@ -220,25 +220,26 @@ export const MovieForm: React.FC<MovieFormProps> = ({
 
   }
 
-  const updateSelectedImage = (url: string) => {
-    if (imageType === 'movie_poster') {
-      console.log('movie poster cropped')
+  const updateSelectedImage = (url: string, type: "movie_poster" | "cover_photo"|"profile" ) => {
+    if (type === 'movie_poster') {
       setMoviePoster(url)
     } else {
-      console.log('cover photo cropped')
+      
       setCoverPhoto(url)
     }
     setValue(imageType as keyof IMovie, url)
-    setImageType(null)
+
   }
 
-  const removeSelectedImage = () => {
-    if (imageType === 'movie_poster') {
+  const removeSelectedImage = (type: "movie_poster" | "cover_photo"|"profile" ) => {
+    if (type === 'movie_poster') {
+      console.log('movie poster removed')
       setMoviePoster(null)
     } else {
+      console.log('cover poster removed')
       setCoverPhoto(null)
     }
-    setImageType(null)
+
   }
 
   const movieFileRef = useRef<HTMLInputElement>(null)
@@ -515,6 +516,7 @@ export const MovieForm: React.FC<MovieFormProps> = ({
           {
             moviePoster &&
             <ImagePreview
+              imageType='movie_poster'
               defaultImg={selectedData.movie_poster !== '' ? selectedData.movie_poster : moviePoster}
               preview={true}
               removeSelectedImage={removeSelectedImage}
@@ -555,6 +557,7 @@ export const MovieForm: React.FC<MovieFormProps> = ({
           {
             coverPhoto &&
             <ImagePreview
+              imageType="cover_photo"
               defaultImg={selectedData.cover_photo !== '' ? selectedData.cover_photo : coverPhoto}
               preview={true}
               removeSelectedImage={removeSelectedImage}

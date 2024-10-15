@@ -36,6 +36,7 @@ const UserNavBar: React.FC = (): JSX.Element => {
     try {
       e.preventDefault();
       await dispatch(logoutUser());
+      navigate('/login')
     } catch (error) {
       console.log(error)
     }

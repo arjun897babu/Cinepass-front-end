@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IInitialState } from "./IState";
-import { createTheaterScreen, getAllShows, getScreen, getTheaterDetails, loginTheaters, logoutTheaters, signupTheaters, updateTheater, } from "../actions/theaterAction";
+import { createTheaterScreen, getAllShows, getScreen, getTheaterDetails, loginTheaters, logoutTheaters, signupTheaters, theaterGetCountStat, theaterRevenueByScreen, updateTheater, } from "../actions/theaterAction";
 import { IInitialStateError, ResponseData } from "../../interface/Interface";
 import { IResponseError, isResponseError } from "../../utils/customError";
 import { LoggedOwner } from "../../interface/user/IUserData";
@@ -69,12 +69,15 @@ const theaterSlice = createSlice({
         state.isAuthenticated = true;
         state.profile = action.payload.data ? action.payload.data as unknown as LoggedOwner : null
       })
+      .addCase(loginTheaters.rejected, (state: IInitialState) => {
+        state.profile = null
+        state.isAuthenticated = false
+      })
 
 
 
       //logout
       .addCase(logoutTheaters.pending, (state: IInitialState) => {
-
         state.error = null
       })
       .addCase(logoutTheaters.fulfilled, (state: IInitialState) => {
@@ -123,6 +126,16 @@ const theaterSlice = createSlice({
           handleRejectedCase(state, action.payload) : null
       })
 
+      //get theater count status data
+      .addCase(theaterGetCountStat.rejected, (state: IInitialState, action) => {
+        isResponseError(action.payload) ?
+          handleRejectedCase(state, action.payload) : null
+      })
+      .addCase(theaterRevenueByScreen.rejected, (state: IInitialState, action) => {
+        isResponseError(action.payload) ?
+          handleRejectedCase(state, action.payload) : null
+      })
+
   }
 })
 export const {
@@ -135,12 +148,11 @@ export default theaterSlice.reducer
 export function handleRejectedCase(state: IInitialState, payload: IResponseError) {
 
   if (
-    
+
     payload.statusCode === HttpStatusCode.Forbidden
     || payload.statusCode === HttpStatusCode.Unauthorized
 
   ) {
-    console.log('ticket booking rejected of because user is ',payload.statusCode)
     state.isAuthenticated = false;
     state.profile = null
     if (payload.statusCode === HttpStatusCode.Forbidden) {

@@ -44,7 +44,10 @@ export interface TheaterEndpoint extends IEndPoints {
   getMovieShows: string
   updateMovieShow: (showId: string) => string
   deleteMovieShow: (showId: string) => string
-  getTicketBookings: string
+  getTicketBookings: string;
+  theaterGeCountStat:string;
+  theaterRevenueByScreen:string;
+
 }
 export interface AdminEndpoint extends IEndPoints {
   getEntityData: (role: string, pageNumber?: number) => string
@@ -56,5 +59,6 @@ export interface AdminEndpoint extends IEndPoints {
   deleteMovie: (movieTpe: MovieType, movieId: string) => string
   streamPlan: (planId?: string) => string;
   adminGetEntityStat: string
+  adminStreamRevenue: string
 
 }

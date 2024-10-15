@@ -17,7 +17,7 @@ const StreamCarousel: React.FC<{ movieDetails: IStreamingMovieData[] }> = ({ mov
   }
   return (
     <>
-      <div className="slider-container">
+      <div className="slider-container  ">
         <Slider {...settings}
         >
           {

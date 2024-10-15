@@ -79,7 +79,7 @@ const Bookings = () => {
                 <>
 
                   <tr key={item.TicketInfo._id}>
-                    <td>{getSerialNumber(currentPage, index,1 )}</td>
+                    <td>{getSerialNumber(currentPage, index,3 )}</td>
                     <td>
                       <div className="flex items-center gap-1">
                         <div className="avatar">

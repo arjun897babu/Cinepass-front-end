@@ -2,7 +2,7 @@ import { CredentialResponse, GoogleLogin } from "@react-oauth/google"
 import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "../../redux/store"
 import { googleSignUp } from "../../redux/actions/userAction"
-import { isErrorResponse, isResponseError } from "../../utils/customError"
+import {isResponseError } from "../../utils/customError"
 import { Toast } from "../Toast2"
 import { ResponseStatus } from "../../interface/Interface"
 
