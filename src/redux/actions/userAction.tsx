@@ -47,7 +47,7 @@ interface userLoginResponse extends ResponseData2 {
 }
 export const loginUser: AsyncThunk<userLoginResponse, LoginData, {}> = createAsyncThunk(
   'users/login',
-  async (userData: LoginData, { dispatch, getState, rejectWithValue }) => {
+  async (userData: LoginData, {rejectWithValue }) => {
 
     try {
       const response = await serverUser.post(userEndPoints.login, userData);
@@ -262,10 +262,10 @@ export const getSingleShowDetails: AsyncThunk<IGetSingleShowDetails, { city: str
   }
 )
 
-interface SeatBookingPayload {
-  bookingDate: string
-  reservedSeats: string[]
-}
+// interface SeatBookingPayload {
+//   bookingDate: string
+//   reservedSeats: string[]
+// }
 
 interface IPaymentResponse extends ResponseData2 {
   data: {

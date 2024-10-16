@@ -21,7 +21,7 @@ const UserNavBar: React.FC = (): JSX.Element => {
   const dispatch = useDispatch<AppDispatch>()
   const user = useSelector((state: RootState) => state.user)
   const handleApiError = useErrorHandler(Role.users)
-  const [loading, setLoading] = useState<boolean>(false)
+  // const [loading, setLoading] = useState<boolean>(false)
   const [movies, setMovies] = useState<IMovie[] | []>([])
   const [theaters, setTheaters] = useState<Partial<ITheaterOwnerEntity>[] | []>([])
 
@@ -55,7 +55,7 @@ const UserNavBar: React.FC = (): JSX.Element => {
   //for fetching theater movies 
   const fetchData = async () => {
     try {
-      setLoading(true);
+      // setLoading(true);
       if (city) {
         const [moviesResponse, theatersResponse] = await Promise.all([
           dispatch(getAllMovies({ city })).unwrap(),
@@ -75,7 +75,7 @@ const UserNavBar: React.FC = (): JSX.Element => {
         navigate('/login', { replace: true, state: { blocked: true } });
       }
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 

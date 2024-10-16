@@ -1,27 +1,27 @@
-import React, { useState, MouseEvent, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { MdDelete } from "react-icons/md";
 import { CropBackdrop } from "./CropBackDrop";
 
-const ErrorAlert: React.FC = () => {
-  return (
-    <div role="alert" className="alert alert-error absolute rounded-none max-w-44 p-1 top-5 right-1">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-6 w-6 shrink-0 stroke-current"
-        fill="none"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-        />
-      </svg>
-      <span>Please Try Again</span>
-    </div>
-  );
-};
+// const ErrorAlert: React.FC = () => {
+//   return (
+//     <div role="alert" className="alert alert-error absolute rounded-none max-w-44 p-1 top-5 right-1">
+//       <svg
+//         xmlns="http://www.w3.org/2000/svg"
+//         className="h-6 w-6 shrink-0 stroke-current"
+//         fill="none"
+//         viewBox="0 0 24 24"
+//       >
+//         <path
+//           strokeLinecap="round"
+//           strokeLinejoin="round"
+//           strokeWidth="2"
+//           d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+//         />
+//       </svg>
+//       <span>Please Try Again</span>
+//     </div>
+//   );
+// };
 interface ImagePreviewProp {
   imageType:  "movie_poster" | "cover_photo" |'profile'
   defaultImg: string
@@ -35,7 +35,7 @@ const ImagePreview: React.FC<ImagePreviewProp> = ({ imageType,defaultImg, previe
   const [images, setImages] = useState<string | null>(null);//store the dataURL 
   const [selected, setSelected] = useState<string | null>(null);//for showing the cropper ui
 
-  const removePreview = (e: MouseEvent<HTMLButtonElement>) => {
+  const removePreview = () => {
     setImages(null)
     removeSelectedImage(imageType)
   };
@@ -79,7 +79,7 @@ const ImagePreview: React.FC<ImagePreviewProp> = ({ imageType,defaultImg, previe
               <>
                 <button
                   className="absolute rounded-full bg-white bottom-[-1%] right-[-1%] glass  z-20 "
-                  onClick={(e) => removePreview(e)}
+                  onClick={() => removePreview()}
                 >
                   <MdDelete className="text-black" size={22} />
                 </button>

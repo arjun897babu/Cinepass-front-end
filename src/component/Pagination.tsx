@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React from 'react';
 
 interface PaginationProps {
   currentPage: number;

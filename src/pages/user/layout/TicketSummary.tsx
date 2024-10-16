@@ -7,13 +7,12 @@ import { useDispatch } from "react-redux"
 import { AppDispatch } from "../../../redux/store"
 import { getUserTickets } from "../../../redux/actions/userAction"
 import { isResponseError } from "../../../utils/customError"
-import useErrorHandler from "../../../hooks/useErrorHandler"
-const EmptyData = lazy(() => import("../../../component/EmptyData"))
+ const EmptyData = lazy(() => import("../../../component/EmptyData"))
 
 
 const TicketSummary = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const handleApiError = useErrorHandler(Role.users)
+  // const handleApiError = useErrorHandler(Role.users)
   const [loading, setLoading] = useState(false)
 
   const [ticketData, setTicketData] = useState<IUserTicketData[] | null>(null)

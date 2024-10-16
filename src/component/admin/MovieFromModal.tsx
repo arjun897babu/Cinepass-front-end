@@ -1,5 +1,5 @@
 import { MouseEvent, useEffect, useRef, useState } from "react";
-import { Action, IMovie, IStreamingMovieData, ITheaterMovieData, ResponseStatus } from "../../interface/Interface";
+import { Action, IStreamingMovieData, ITheaterMovieData, ResponseStatus } from "../../interface/Interface";
 import MovieForm, { MovieType } from "./MovieForm";
 import Toast2 from "../Toast2";
 import { ToastMessage } from "../../pages/admin/layout/AdminUsers";

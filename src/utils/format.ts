@@ -85,7 +85,7 @@ export function convertFile(file: File): Promise<string> {
         : reject(new UploadError('uploading Failed'));
     };
 
-    reader.onerror = (error) => {
+    reader.onerror = () => {
       reject(new UploadError('uploading Failed'));
     };
 

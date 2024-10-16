@@ -1,5 +1,5 @@
-import { memo, MouseEvent, useState } from "react"
-import { BookingStatus, IGetSingleShow, IMovie, ITickets, PurchasedItem } from "../../interface/Interface"
+import { memo, MouseEvent } from "react"
+import { BookingStatus, IGetSingleShow, ITickets, PurchasedItem } from "../../interface/Interface"
 import { IPayment } from "../../interface/user/IPayment"
 import { convertTo12HourFormat, getDate, getDayName, getMonthName } from "../../utils/format";
 
@@ -19,7 +19,7 @@ interface IPurchaseSummary {
 
 
 const PurchaseSummary: React.FC<IPurchaseSummary> = ({ purchasedItem, data, setSelected }) => {
-  console.log(data.showInfo.cancelationDeadline)
+  console.log(data.showInfo.cancelationDeadline,purchasedItem)
   const viewSelected = (e: MouseEvent<HTMLButtonElement>, paymentIntentId: string) => {
     e.preventDefault();
     setSelected(paymentIntentId)

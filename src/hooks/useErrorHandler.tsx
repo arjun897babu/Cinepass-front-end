@@ -1,6 +1,6 @@
 // useErrorHandler.ts
 import { useNavigate } from 'react-router-dom';
-import { IResponseError, isResponseError } from '../utils/customError';
+import {  isResponseError } from '../utils/customError';
 import { ResponseStatus, Role } from '../interface/Interface';
 import { Toast } from '../component/Toast2';
 

@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux"
 import { AppDispatch } from "../../../redux/store"
 import { adminGetEntityStat, getAdminStreamRevenue } from "../../../redux/actions/adminAction"
 import BarChart from "../../../component/chart/BarChart"
+import { Loader } from "../../../component/Loader"
 
 const AdminHome: React.FC = (): JSX.Element => {
 
@@ -76,7 +77,7 @@ const AdminHome: React.FC = (): JSX.Element => {
   useEffect(() => {
     fetchStreamData()
   }, [revenueFilter])
-
+  if(loading) return <div className=""><Loader/></div>
   return (
     <div className="user-theater">
       <div className="stats gap-2">

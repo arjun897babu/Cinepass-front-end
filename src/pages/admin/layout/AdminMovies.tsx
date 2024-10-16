@@ -2,7 +2,7 @@ import React, { MouseEvent, useEffect, useState } from "react"
 import { FaEdit } from "react-icons/fa"
 import { GiCancel } from "react-icons/gi"
 import { MovieType } from "../../../component/admin/MovieForm"
-import { Action, IMovie, ITheaterMovieData, ResponseStatus, Role } from "../../../interface/Interface"
+import { Action, ITheaterMovieData, ResponseStatus, Role } from "../../../interface/Interface"
 import { useDispatch } from "react-redux"
 import type { AppDispatch } from "../../../redux/store"
 import { getMovie, manageMovie } from "../../../redux/actions/adminAction"
@@ -92,17 +92,8 @@ const AdminMovie: React.FC = () => {
       try {
         const response = await dispatch(manageMovie({ movieType: MovieType.theater, movieId: deleteMovieId })).unwrap()
         if (response.status === ResponseStatus.SUCCESS) {
-          const { movie } = response.data;
-          setToastMessage({ alert: response.status, message: response.message })
+           setToastMessage({ alert: response.status, message: response.message })
           updateMovieTable(Action.DELETE)
-          // setTheaterMovies((prev) =>
-          //   prev.map((item) =>
-          //     item._id === movie._id
-          //       ? { ...item, status: movie.status }
-          //       : item
-
-          //   )
-          // );
         }
       } catch (error) {
 

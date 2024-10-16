@@ -1,6 +1,5 @@
-import React, { MouseEvent, useEffect, useState } from "react"
-import { TheaterProps } from "./TheaterUpdateForm"
-import { ITheaterOwnerEntity, TheaterOwnerProfile } from "../../interface/theater/ITheaterOwner"
+import React, { MouseEvent,   useState } from "react"
+ import { ITheaterOwnerEntity, TheaterOwnerProfile } from "../../interface/theater/ITheaterOwner"
 import { Toast } from "../Toast2";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,13 +12,14 @@ import { updateTheater } from "../../redux/actions/theaterAction";
 import { isResponseError } from "../../utils/customError";
 import { FaRegEdit } from "react-icons/fa";
 import { GiCancel } from "react-icons/gi";
+import { Loader } from "../Loader";
 interface TheaterInforProps {
   data: TheaterOwnerProfile;
   setTheaterDataResponse: (updatedData: ITheaterOwnerEntity) => void;
   setToast: (toastData: Toast) => void
 }
 const TheaterOwnerInfo: React.FC<TheaterInforProps> = ({ data, setTheaterDataResponse, setToast }) => {
-   
+
   const [formData, setFormData] = useState<TheaterOwnerProfile | null>(null)
   const [confirmation, setConfirmation] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false);
@@ -86,8 +86,8 @@ const TheaterOwnerInfo: React.FC<TheaterInforProps> = ({ data, setTheaterDataRes
           )
           setProfileEdit(false)
         }
-        
-        
+
+
       }
     } finally {
       setConfirmation(false);
@@ -95,7 +95,7 @@ const TheaterOwnerInfo: React.FC<TheaterInforProps> = ({ data, setTheaterDataRes
     }
   }
 
-  
+
   const update = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     if (profileEdit) {
@@ -104,6 +104,7 @@ const TheaterOwnerInfo: React.FC<TheaterInforProps> = ({ data, setTheaterDataRes
     setProfileEdit((prev) => !prev);
   }
 
+  if (loading) return <div className=""><Loader /></div>
 
   return (
     <>
@@ -125,7 +126,7 @@ const TheaterOwnerInfo: React.FC<TheaterInforProps> = ({ data, setTheaterDataRes
             : (<button className="absolute right-2 top-2 " onClick={update}> <GiCancel /> </button>)
         }
         <form className="card-body " onSubmit={handleSubmit(handleConfirmation)}>
-        <div className="form-control relative">
+          <div className="form-control relative">
             <label className="label">
               <span className="label-text">email</span>
             </label>
@@ -145,7 +146,7 @@ const TheaterOwnerInfo: React.FC<TheaterInforProps> = ({ data, setTheaterDataRes
               disabled={true}
               className="input input-bordered "
               type="text" placeholder="adhaar number"
-              {...register('adhaar_number')} 
+              {...register('adhaar_number')}
             />
             {errors.adhaar_number && <p className="text-red-500 text-xs absolute  -bottom-4 ">{errors.adhaar_number.message}</p>}
           </div>
@@ -161,7 +162,7 @@ const TheaterOwnerInfo: React.FC<TheaterInforProps> = ({ data, setTheaterDataRes
               {...register('name')}
             />
             {errors.name && <p className="text-red-500 text-xs absolute  -bottom-4 ">{errors.name.message}</p>}
-          </div> 
+          </div>
           < div className="form-control relative">
             <label className="label">
               <span className="label-text">mobile number</span>

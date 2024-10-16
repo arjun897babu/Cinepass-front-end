@@ -5,11 +5,11 @@ import { useFormSubmit } from "../../hooks/UseFormSubmitt";
 import { useDispatch, useSelector, } from "react-redux";
 import { AppDispatch, RootState, } from "../../redux/store";
 import { verifyUser } from "../../redux/actions/userAction";
-import { ResponseData, ResponseStatus, Role } from "../../interface/Interface";
+import {  ResponseStatus, Role } from "../../interface/Interface";
 import { useNavigate } from "react-router-dom";
  
 import { formatTime } from "../../utils/format";
-import { isErrorResponse, isResponseError } from "../../utils/customError";
+import {  isResponseError } from "../../utils/customError";
 
 import { useTimer } from "../../hooks/useTimer";
 import ResendOTP from "../../component/ResendOTP";

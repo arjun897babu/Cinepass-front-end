@@ -2,8 +2,8 @@ import React, { MouseEvent, useEffect, useRef, useState } from "react";
 import type { AppDispatch } from "../../redux/store";
 import { useDispatch } from "react-redux";
 import { getAllCities } from "../../redux/actions/userAction";
-import { Link, useNavigate } from "react-router-dom";
-import { userSetCity } from "../../redux/reducers/userReducer";
+ import { userSetCity } from "../../redux/reducers/userReducer";
+import { Loader } from "../../component/Loader";
 interface LocationModalProps {
   onClose?: () => void
 }
@@ -13,17 +13,16 @@ const LocationModal: React.FC<LocationModalProps> = ({ onClose }) => {
   const [cities, setCities] = useState<string[] | []>([]);
   const dispatch = useDispatch<AppDispatch>()
   const modalRef = useRef<HTMLDialogElement>(null)
-  const navigate = useNavigate()
   const fetchCities = async () => {
     try {
-      setLoading((prev) => !prev);
+      setLoading(true);
       const response = await dispatch(getAllCities()).unwrap()
       setCities(response)
     } catch (error) {
       console.log(error)
     }
     finally {
-      setLoading((prev) => !prev)
+      setLoading(false)
     }
   }
 
@@ -52,6 +51,8 @@ const LocationModal: React.FC<LocationModalProps> = ({ onClose }) => {
   if (cities.length === 0) {
     return <></>
   }
+
+  if (loading) return <div className=""><Loader /></div>
 
   return (
     <>

@@ -15,26 +15,25 @@ import { ColumnNumbers, SeatRow } from "../../component/theaters/SeatLayoutModal
 const ScreenLayout: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams();
-
+ 
   const { city } = useSelector((state: RootState) => state.user)
 
   const location = useLocation()
 
-  const [toastmessage, setToastMessage] = useState<Toast | null>(null)
+  // const [toastmessage, setToastMessage] = useState<Toast | null>(null)
   const [loading, setLoading] = useState(false)
-  const setToast = (toast: Toast) => setToastMessage(
-    {
-      alert: toast.alert,
-      message: toast.message
-    }
-  )
+  // const setToast = (toast: Toast) => setToastMessage(
+  //   {
+  //     alert: toast.alert,
+  //     message: toast.message
+  //   }
+  // )
 
   const [showDetails, setShowDetails] = useState<IGetSingleShow | null>(null)
   const [selectedSeats, setSelectedSeats] = useState<string[]>([])
 
   const { showId } = useParams()
-  const handleApiError = useErrorHandler(Role.users, setToast)
+  const handleApiError = useErrorHandler(Role.users)
   async function getSingleShow() {
     setLoading(true)
     try {

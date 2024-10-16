@@ -3,7 +3,7 @@ import { AxiosError } from "axios";
 import { serverTheater } from "../../services";
 import { theatersEndPoints } from "../../services/endpoints/endPoints";
 import { TheaterSignUpData } from "../../interface/theater/ITheatersData";
-import { IGetMovieShowResponse, IGetScreenCount, IGetShowCountByScreen, IGetTicketCount, IRevenueResponse, ITheaterTicketData, LoginData, OTPVerification, Period, ResponseData, ResponseData2, RevenueFilter, TicketFilter } from "../../interface/Interface";
+import { IGetMovieShowResponse, IGetScreenCount, IGetShowCountByScreen, IGetTicketCount, IRevenueResponse, ITheaterTicketData, LoginData, OTPVerification, ResponseData, ResponseData2, RevenueFilter, TicketFilter } from "../../interface/Interface";
 
 import { ITheaterScreen, ITheaterScreenResponse } from "../../interface/theater/ITheaterScreen";
 import { MovieType } from "../../component/admin/MovieForm";
@@ -359,11 +359,11 @@ export interface IRevenueResponseData extends ResponseData2 {
   data: IRevenueResponse
 }
 
-export const theaterRevenueByScreen: AsyncThunk<IRevenueResponseData, { screenId?: string, filter: RevenueFilter }, {}> = createAsyncThunk(
+export const theaterRevenueByScreen: AsyncThunk<IRevenueResponseData,   RevenueFilter , {}> = createAsyncThunk(
   '/theater/theaterRevenueByScreen',
-  async ({ filter, screenId }, { rejectWithValue }) => {
+  async (filter, { rejectWithValue }) => {
     try {
-      const response = await serverTheater.get(theatersEndPoints.theaterRevenueByScreen, { params: { screenId, ...filter } })
+      const response = await serverTheater.get(theatersEndPoints.theaterRevenueByScreen, { params: { ...filter } })
       return response.data
     } catch (error) {
       return rejectWithValue(handleAxiosError(error))

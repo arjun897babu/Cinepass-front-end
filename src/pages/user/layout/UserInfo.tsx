@@ -7,8 +7,7 @@ import { ResponseStatus, Role } from "../../../interface/Interface";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { userProfileSchem } from "../../../utils/zodSchema";
-import { late, z } from "zod";
-import { useNavigate } from "react-router-dom";
+import {  z } from "zod"; 
 import { isResponseError, UploadError } from "../../../utils/customError";
 import useErrorHandler from "../../../hooks/useErrorHandler";
 import ConfirmationModal from "../../../component/ConfirmationModal";
@@ -16,14 +15,12 @@ import { updateUserProfile } from "../../../redux/actions/userAction";
 import { MdEdit } from "react-icons/md";
 import ImagePreview from "../../../component/image_preview/ImagePreview";
 import { convertFile } from "../../../utils/format";
-import { isCloudinaryUrl } from "../../../utils/validator";
-
+ 
 const UserInfo: React.FC = () => {
 
   const user = useSelector((state: RootState) => state.user);
 
-  const navigate = useNavigate()
-  const dispatch = useDispatch<AppDispatch>()
+   const dispatch = useDispatch<AppDispatch>()
   const [profilePic, setProfilePic] = useState<{ profile_picture: string } | null>(null)
   const updateSelectedImage = (url: string) => {
     setProfileData({ profile_picture: url })
@@ -61,8 +58,7 @@ const UserInfo: React.FC = () => {
     handleSubmit,
     register,
     setError,
-    watch,
-    setValue,
+   
     formState: { errors },
 
   } = useForm({
@@ -154,6 +150,7 @@ const UserInfo: React.FC = () => {
 
       {profilePic &&
         <ImagePreview
+          imageType={"profile"}
           defaultImg={profilePic.profile_picture}
           updateSelectedImage={updateSelectedImage}
           preview={false}

@@ -13,14 +13,11 @@ import BarChart from "../../../component/chart/BarChart";
 const TheaterHome = () => {
   const handleApiError = useErrorHandler(Role.theaters)
   const dispatch = useDispatch<AppDispatch>()
-  const { isAuthenticated } = useSelector((state: RootState) => state.theaters)
-  const navigate = useNavigate()
-
+  
 
   const [screenStat, setScreenStat] = useState<IGetScreenCount | null>(null)
   const [showStat, setShowStat] = useState<IGetShowCountByScreen[]>([])
-  const [screenId, setScreenId] = useState<string>()
-  const [ticketStat, setTicketStat] = useState<IGetTicketCount | null>(null)
+   const [ticketStat, setTicketStat] = useState<IGetTicketCount | null>(null)
   const [screenRevenue, setScreenRevenue] = useState<IRevenueResponse | null>(null)
 
   const [revenueFilter, setRevenueFilter] = useState<RevenueFilter>({ period: Period.WEEK })
@@ -50,7 +47,7 @@ const TheaterHome = () => {
 
   async function fetchRevenueByScreen() {
     try {
-      const response = await dispatch(theaterRevenueByScreen({ filter: revenueFilter, screenId: screenId ?? undefined })).unwrap()
+      const response = await dispatch(theaterRevenueByScreen(revenueFilter)).unwrap()
       
       if (response.status === ResponseStatus.SUCCESS) {
         setScreenRevenue(response.data)

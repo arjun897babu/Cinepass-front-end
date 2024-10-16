@@ -9,9 +9,7 @@ const TheaterDetails = () => {
   const { theaterId } = useParams()
  
   const { city } = useSelector((state: RootState) => state.user);
-  const dispatch = useDispatch<AppDispatch>()
-  const [shows, setShows] = useState()
-  const [movies, setMovies] = useState()
+  const dispatch = useDispatch<AppDispatch>() 
   
   const fetchMoviesandShows = async () => {
   

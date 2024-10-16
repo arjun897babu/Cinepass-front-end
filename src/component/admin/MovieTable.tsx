@@ -1,5 +1,5 @@
 import React, { MouseEvent } from "react";
-import { Action, IMovie, IStreamingMovieData, ITheaterMovieData } from "../../interface/Interface";
+import { Action, IStreamingMovieData, ITheaterMovieData } from "../../interface/Interface";
 import { MovieType } from "./MovieForm";
 import { formatRunTime, getIST, getMovieSrc, getSerialNumber } from "../../utils/format";
  import { FaEdit } from "react-icons/fa";
@@ -14,7 +14,7 @@ interface IMovieTableProps {
 }
 
 const MovieTable: React.FC<IMovieTableProps> = ({ data, loading, selectedMovie, currentPage, movieType }) => {
-
+  console.log(movieType)
   const updateStreamingMovie = (e: MouseEvent<HTMLButtonElement>, _id: string | undefined) => {
     e.preventDefault()
     if (!_id) {
@@ -23,13 +23,13 @@ const MovieTable: React.FC<IMovieTableProps> = ({ data, loading, selectedMovie, 
     selectedMovie(_id, Action.UPDATE)
   }
 
-  const deleteButtonClicked = (e: MouseEvent<HTMLButtonElement>, _id: string | undefined) => {
-    e.preventDefault()
-    if (!_id) {
-      return
-    }
-    selectedMovie(_id, Action.DELETE)
-  }
+  // const deleteButtonClicked = (e: MouseEvent<HTMLButtonElement>, _id: string | undefined) => {
+  //   e.preventDefault()
+  //   if (!_id) {
+  //     return
+  //   }
+  //   selectedMovie(_id, Action.DELETE)
+  // }
 
   if (loading) return <div className="loading loading-md"></div> // loading icon
 

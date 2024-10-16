@@ -10,9 +10,9 @@ import { isErrorResponse } from "../../../utils/customError";
 import ConfirmationModal from "../../../component/ConfirmationModal";
 import Toast2 from "../../../component/Toast2";
 
-import { Loader } from "../../../component/Loader";
-import Pagination from "../../../component/Pagination";
+ import Pagination from "../../../component/Pagination";
 import { getSerialNumber } from "../../../utils/format";
+import { Loader } from "../../../component/Loader";
 
 export type ToastMessage = {
   alert: ResponseStatus,
@@ -35,11 +35,11 @@ const AdminUsers: React.FC = (): JSX.Element => {
 
   const [users, setUsers] = useState<Partial<IUser>[] | []>([]);
   const fetchUsers = async () => {
-
+    setLoading(true)
     try {
       const response = await dispatch(getEntityDataForAdmin({ role: Role.users, pageNumber: currentPage })).unwrap();
       if (response.status === ResponseStatus.SUCCESS && response.data[Role.users]) {
-
+        
         setUsers(response.data.users?.data)
         setMaxPage(response.data.users?.maxPage);
       }
@@ -48,7 +48,8 @@ const AdminUsers: React.FC = (): JSX.Element => {
         console.error(error);
       }
     } finally {
-
+      
+      setLoading(false)
     }
   }
 
@@ -66,7 +67,6 @@ const AdminUsers: React.FC = (): JSX.Element => {
   }
 
   const handleBlock = async () => {
-
 
     if (selectedUser) {
       try {
@@ -102,7 +102,7 @@ const AdminUsers: React.FC = (): JSX.Element => {
   }
 
  
-
+  if(loading) return <div className=""><Loader/></div>
 
   return (
     <>

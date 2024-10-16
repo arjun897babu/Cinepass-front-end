@@ -1,13 +1,12 @@
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom"
+import { Link, useNavigate, useSearchParams } from "react-router-dom"
 import { RootState } from "../../redux/store";
 
 
 const PaymentSuccess = () => {
   const { city } = useSelector((state: RootState) => state.user)
-  const location = useLocation();
-  const navigate = useNavigate();
+   const navigate = useNavigate();
   const [searchParams] = useSearchParams()
   // const [paymentStatus, setPaymentStatus] = useState<'processing' | 'succeeded' | 'failed' | null>(null);
   // const [loading, setLoading] = useState(true);

@@ -92,7 +92,7 @@ export const movieShowSchema = z.object({
 
   language: z
     .nativeEnum(Language, {
-      errorMap: (issue, _ctx) => {
+      errorMap: (_, _ctx) => {
         return { message: 'choose a language' }
       }
     }),
@@ -108,7 +108,7 @@ export const movieShowSchema = z.object({
     .nonempty('set a show time'),
   format: z
     .nativeEnum(MovieFormat, {
-      errorMap: (issue, _ctx) => {
+      errorMap: (_, _ctx) => {
         return { message: 'choose a format' }
       }
     }),
@@ -214,7 +214,7 @@ export const theaterScreenSchema = z.object({
     }),
   amenity: z
     .nativeEnum(MovieFormat, {
-      errorMap: (issue, _ctx) => {
+      errorMap: (_, _ctx) => {
         return { message: 'choose a format' }
       }
     }),

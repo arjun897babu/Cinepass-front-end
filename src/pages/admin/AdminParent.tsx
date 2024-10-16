@@ -2,7 +2,6 @@ import React from 'react'
 import logo from '/cinepass logo.png'
 import { FaHome } from "react-icons/fa";
 import { GiTheater } from "react-icons/gi";
-import { IoTicketSharp } from "react-icons/io5";
 import { BiCameraMovie, } from "react-icons/bi";
 import { CiStreamOn } from "react-icons/ci";
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'

@@ -1,11 +1,9 @@
 
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
-import { Role } from "../interface/Interface";
- 
+  
 const onResponse = (response: AxiosResponse): AxiosResponse => response
 
-const onResponseError = (error: AxiosError, role: Role): Promise<AxiosError> => {
-  console.log('reaching')
+const onResponseError = (error: AxiosError): Promise<AxiosError> => {
 
   if (error.response?.status === 403) {
 
@@ -47,11 +45,11 @@ export const serverTheater = axios.create({
   baseURL: API_URL_THEATERS
 })
 
-setupInterceptorsTo(serverTheater, Role.theaters)
-setupInterceptorsTo(serverUser, Role.users)
+setupInterceptorsTo(serverTheater)
+setupInterceptorsTo(serverUser)
 
 
-function setupInterceptorsTo(axiosInstance: AxiosInstance, role: Role): AxiosInstance {
-  axiosInstance.interceptors.response.use(onResponse, (error: AxiosError) => onResponseError(error, role));
+function setupInterceptorsTo(axiosInstance: AxiosInstance): AxiosInstance {
+  axiosInstance.interceptors.response.use(onResponse, (error: AxiosError) => onResponseError(error));
   return axiosInstance;
 }

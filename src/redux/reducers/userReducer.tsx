@@ -4,8 +4,7 @@ import { IInitialState } from "./IState";
 import { IInitialStateError, } from "../../interface/Interface";
 import { isErrorResponse, isResponseError } from "../../utils/customError";
 import { handleRejectedCase } from "./theatersReducer";
-import { HttpStatusCode } from "axios";
-
+ 
 
 const initialState: IInitialState = {
   profile: null,

@@ -9,6 +9,7 @@ import { cancelUserPayment } from "../../redux/actions/userAction"
 import { ResponseStatus } from "../../interface/Interface"
 import { formatTime } from "../../utils/format"
 import { useTimer } from "../../hooks/useTimer"
+import { isResponseError } from "../../utils/customError"
 interface CheckoutModalPops {
   closeModal: () => void,
   amount: number
@@ -18,6 +19,7 @@ interface CheckoutModalPops {
 
 
 const CheckoutModal: React.FC<CheckoutModalPops> = ({ closeModal, theaterDetail, amount, paymentIntentId }) => {
+  console.log(closeModal)
   const { startTimer, timeRemaining, isActive } = useTimer(60)
   const [isPaymentElementReady, setIsPaymentElementReady] = useState(false);
   const dispatch = useDispatch<AppDispatch>()
@@ -45,7 +47,9 @@ const CheckoutModal: React.FC<CheckoutModalPops> = ({ closeModal, theaterDetail,
 
 
     } catch (error) {
-
+      if (isResponseError(error)) {
+        console.log(setMessage(''))
+      }
     } finally {
       setIsLoading(false);
     }

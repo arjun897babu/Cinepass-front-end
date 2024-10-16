@@ -41,6 +41,7 @@ export const CropBackdrop: React.FC<CropBackdropProps> = (
   };
 
   const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
+    console.log(croppedArea)
     setCroppedArea(croppedAreaPixels);
   };
 

@@ -8,10 +8,11 @@ import { ITheaterOwnerEntity } from "../../../interface/theater/ITheaterOwner"
 import Toast2, { Toast } from "../../../component/Toast2"
 import TheaterInfo from "../../../component/theaters/TheaterInfo"
 import TheaterOwnerInfo from "../../../component/theaters/TheaterOwnerInfo"
- 
-import { ResponseStatus,   } from "../../../interface/Interface"
-import {   isResponseError } from "../../../utils/customError"
+
+import { ResponseStatus, } from "../../../interface/Interface"
+import { isResponseError } from "../../../utils/customError"
 import { useNavigate } from "react-router-dom"
+import { Loader } from "../../../component/Loader"
 
 const TheaterDetail: React.FC = () => {
   const navigate = useNavigate()
@@ -65,6 +66,8 @@ const TheaterDetail: React.FC = () => {
   useEffect(() => {
     fetchTheaterDetails()
   }, [])
+
+  if (loading) return <div className=""><Loader /></div>
   return (
     <>
 

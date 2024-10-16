@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { ToastMessage } from "./AdminUsers"
 import Toast2 from "../../../component/Toast2"
 import ConfirmationModal from "../../../component/ConfirmationModal"
-import { Action, IMovie, IStreamingMovieData, ResponseStatus, Role } from "../../../interface/Interface"
+import { Action, IStreamingMovieData, ResponseStatus, Role } from "../../../interface/Interface"
 import AddButton from "../../../component/AddButton"
 import { MovieModal } from "../../../component/admin/MovieFromModal"
 import Pagination from "../../../component/Pagination"
@@ -23,8 +23,7 @@ const AdminStream: React.FC = () => {
   const [actionLoading, setActionLoading] = useState<boolean>(false)
 
   const [data, setData] = useState<IStreamingMovieData[]>([])
-  const setNewMovies = () => { } // for adding  new movies to the state
-
+ 
   //Toast message 
   const [toastMessage, setToastMessage] = useState<ToastMessage | null>(null)
   const clearToast = () => setToastMessage(null)
@@ -38,6 +37,7 @@ const AdminStream: React.FC = () => {
       const response = await dispatch(getMovie({ movieType: MovieType.stream })).unwrap()
       if (response.status === ResponseStatus.SUCCESS) {
         setData(response.data.movies as IStreamingMovieData[])
+        setMaxPage(response.data.maxPage)
       }
     } catch (error) {
       handleApiError(error)
@@ -48,13 +48,13 @@ const AdminStream: React.FC = () => {
 
   //api call for deleting movies
   async function deleteMovie() {
-    setLoading(true)
+    setActionLoading(true)
     try {
 
     } catch (error) {
 
     } finally {
-      setLoading(false)
+      setActionLoading(false)
 
     }
   }

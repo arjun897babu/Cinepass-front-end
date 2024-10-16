@@ -109,7 +109,7 @@ const MoviePage: React.FC = () => {
 
           <ShowFilter
             maxAllocatedDate={Math.max(...theaterDetails.map((item) => item.maxAllocatedDays as number))}
-            bookingDate={movieDetails.release_date as Date}
+            bookingDate={new Date(movieDetails.release_date)}
           />
           {theaterDetails.map((theater) => {
             return <>

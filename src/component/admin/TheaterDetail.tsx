@@ -29,13 +29,7 @@ export const TheaterDetails: React.FC<TheaterDetailsProps> = ({ owner }) => {
     }
   }
 
-  const setCity = async (e: FormEvent) => {
-    try {
-
-    } catch (error) {
-
-    }
-  }
+ 
 
 
   return (

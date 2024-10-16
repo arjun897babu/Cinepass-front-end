@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { ResponseStatus, Role } from "../interface/Interface";
+import { ResponseStatus } from "../interface/Interface";
 import { FaCheckCircle } from "react-icons/fa";
 import { MdError } from "react-icons/md";
 
