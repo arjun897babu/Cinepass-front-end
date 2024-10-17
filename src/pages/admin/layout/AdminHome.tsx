@@ -42,7 +42,7 @@ const AdminHome: React.FC = (): JSX.Element => {
 
   async function fetchEntityData() {
     try {
-      setLoading(true)
+    
       const response = await dispatch(adminGetEntityStat()).unwrap()
 
       if (response.status === ResponseStatus.SUCCESS) {
@@ -51,13 +51,11 @@ const AdminHome: React.FC = (): JSX.Element => {
       }
     } catch (error) {
       handleApiError(error)
-    } finally {
-      setLoading(true)
-    }
+    }  
   }
   async function fetchStreamData() {
     try {
-      setLoading(true)
+      
       const response = await dispatch(getAdminStreamRevenue(revenueFilter)).unwrap()
 
       if (response.status === ResponseStatus.SUCCESS) {
@@ -65,9 +63,7 @@ const AdminHome: React.FC = (): JSX.Element => {
       }
     } catch (error) {
       handleApiError(error)
-    } finally {
-      setLoading(true)
-    }
+    } 
   }
 
 

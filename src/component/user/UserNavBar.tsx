@@ -12,6 +12,7 @@ import useErrorHandler from '../../hooks/useErrorHandler'
 import { isResponseError } from '../../utils/customError'
 import { ITheaterOwnerEntity } from '../../interface/theater/ITheaterOwner'
 import MoviesTheatersDropdown from './MoviesTheatersDropdown'
+import { HttpStatusCode } from 'axios'
 
 
 
@@ -71,8 +72,11 @@ const UserNavBar: React.FC = (): JSX.Element => {
         navigate('/', { replace: true });
       }
     } catch (error) {
-      if (isResponseError(error) && error.statusCode === 403) {
-        navigate('/login', { replace: true, state: { blocked: true } });
+      
+      if (isResponseError(error)) {
+        if (error.statusCode === HttpStatusCode.Forbidden) {
+          navigate('/login', { replace: true, state: { blocked: true } });
+        } 
       }
     } finally {
       // setLoading(false);

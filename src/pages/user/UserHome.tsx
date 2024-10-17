@@ -1,18 +1,24 @@
-import React, { lazy,  useEffect, useState } from "react"
+import React,
+{
+  lazy,
+  useEffect,
+  useState
+} from "react"
+
+const EmptyData = lazy(() => import("../../component/EmptyData"))
+const MovieCard = lazy(() => import("../../component/user/MovieCard"))
+const CarouselSlider = lazy(() => import("../../component/user/CarouselSlider"))
+
 
 import { SearchWithFilters } from "../../component/user/footer/SearchWithFilters"
-const MovieCard = lazy(() => import("../../component/user/MovieCard"))
 import Accordion from "../../component/user/Accordion"
 import { useSelector } from "react-redux"
 import type { RootState } from "../../redux/store"
-
-const EmptyData = lazy(() => import("../../component/EmptyData"))
-import LocationModal from "./LocationModal"
 import { MovieFilter } from "../../interface/Interface"
 import { isFilterEmpty } from "../../utils/validator"
-const CarouselSlider = lazy(() => import("../../component/user/CarouselSlider"))
 import { MovieType } from "../../component/admin/MovieForm"
 import { Loader } from "../../component/Loader"
+import LocationModal from "./LocationModal"
 
 
 const UserHome: React.FC = () => {
@@ -25,9 +31,10 @@ const UserHome: React.FC = () => {
   }
 
   const { movies } = useSelector((state: RootState) => state.user)
+  console.log(movies)
 
   useEffect(() => {
-    if (movies !== undefined) {
+    if (movies || movies === null) {
       setLoading(false);
     }
   }, [movies]);

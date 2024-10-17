@@ -61,11 +61,18 @@ export const SearchWithFilters: React.FC<{ setFilter: (filterItem: Partial<Movie
 
   return (
     <>
-      <div className='w-full   p-2 bg-white hidden sm:flex justify-between items-center relative group'>
+      <div className='w-full object-scale-down  p-2 bg-white  flex  justify-between  items-center relative  group'>
 
-        <div className="w-72 h-9 p-1 bg-blue-100 flex justify-evenly rounded-md">
-          <button onClick={handleNowShowingClick} className={`${nowShowing && 'bg-white'} w-full h-full p-1  capitalize text-sm text-slate-800`}>now showing</button>
-          <button onClick={handleUpcomingClick} className={`w-full h-full p-1 ${!nowShowing && 'bg-white'}   rounded-sm capitalize text-sm text-slate-800`}>Upcoming</button>
+        <div className="sm:w-72 p-1 bg-blue-100 flex justify-evenly  rounded-md">
+          <button
+            onClick={handleNowShowingClick}
+            className={`${nowShowing && 'bg-white'} sm:w-full z p-1 text-xs  capitalize sm:text-sm text-slate-800`}
+          > now showing
+          </button>
+          <button
+            onClick={handleUpcomingClick}
+            className={`z p-1 ${!nowShowing && 'bg-white'} sm:w-full   rounded-sm text-xs  capitalize sm:text-sm text-slate-800`}>Upcoming
+          </button>
         </div>
 
         <div className="relative hidden">
@@ -73,9 +80,9 @@ export const SearchWithFilters: React.FC<{ setFilter: (filterItem: Partial<Movie
           <input type="search" placeholder="search movie, theater..." className="pl-10 pr-4 w-full h-9 placeholder-gray-400 text-gray-900 focus:outline-none" />
         </div>
 
-        <div className="relative flex items-center p-1 w-40 border-2">
+        <div className="relative flex items-center p-1 border-2">
           <IoLocation />
-          <button onClick={showModal} className="b-2   w-full h-full">{city}</button>
+          <button onClick={showModal} className="b-2  w-full h-full">{city}</button>
           {locationModal && < LocationModal onClose={onClose} />}
           <IoIosArrowDropdown />
         </div>

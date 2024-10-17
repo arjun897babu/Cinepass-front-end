@@ -1,7 +1,14 @@
 
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
-  
-const onResponse = (response: AxiosResponse): AxiosResponse => response
+
+const onResponse = (response: AxiosResponse): AxiosResponse => {
+  return response
+}
+
+// const onResponse = async (response: AxiosResponse): Promise<AxiosResponse> => {
+//   await delay(1000)
+//   return response
+// }
 
 const onResponseError = (error: AxiosError): Promise<AxiosError> => {
 
@@ -11,7 +18,7 @@ const onResponseError = (error: AxiosError): Promise<AxiosError> => {
 
   }
   return Promise.reject(error);
-} 
+}
 
 const {
 
@@ -34,7 +41,8 @@ export const serverInstance = axios.create({
 
 export const serverUser = axios.create({
   withCredentials: true,
-  baseURL: API_URL_USERS
+  baseURL: API_URL_USERS,
+  timeout: 10000
 })
 export const serverAdmin = axios.create({
   withCredentials: true,
@@ -53,3 +61,5 @@ function setupInterceptorsTo(axiosInstance: AxiosInstance): AxiosInstance {
   axiosInstance.interceptors.response.use(onResponse, (error: AxiosError) => onResponseError(error));
   return axiosInstance;
 }
+
+// function delay(ms: number) { return new Promise(resolve => setTimeout(resolve, ms)) } 

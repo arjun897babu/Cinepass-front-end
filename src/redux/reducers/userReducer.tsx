@@ -4,7 +4,8 @@ import { IInitialState } from "./IState";
 import { IInitialStateError, } from "../../interface/Interface";
 import { isErrorResponse, isResponseError } from "../../utils/customError";
 import { handleRejectedCase } from "./theatersReducer";
- 
+import { HttpStatusCode } from "axios";
+
 
 const initialState: IInitialState = {
   profile: null,
@@ -153,8 +154,14 @@ const userSlice = createSlice({
         state.movies = action.payload.length ? action.payload : null
       })
       .addCase(getAllMovies.rejected, (state: IInitialState, action) => {
-        isResponseError(action.payload) ?
-          handleRejectedCase(state, action.payload) : null
+        if (isResponseError(action.payload)) {
+          if (action.payload.statusCode === HttpStatusCode.NotFound) {
+            state.movies = undefined
+            state.cityTheaters = undefined
+          } else {
+            handleRejectedCase(state, action.payload)
+          }
+        }
       })
 
       //get theater by city
@@ -162,8 +169,14 @@ const userSlice = createSlice({
         state.cityTheaters = action.payload.data.theater
       })
       .addCase(getTheatersByCity.rejected, (state: IInitialState, action) => {
-        isResponseError(action.payload) ?
-          handleRejectedCase(state, action.payload) : null
+        if (isResponseError(action.payload)) {
+          if (action.payload.statusCode === HttpStatusCode.NotFound) {
+            state.movies = undefined
+            state.cityTheaters = undefined
+          } else {
+            handleRejectedCase(state, action.payload)
+          }
+        }
       })
 
       //get  user ticket data

@@ -1,8 +1,8 @@
 import { lazy, memo } from "react";
 import { getIST, getMovieSrc } from "../../utils/format";
 import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store"; 
-const EmptyData  = lazy(()=>import ("../EmptyData"))
+import { RootState } from "../../redux/store";
+const EmptyData = lazy(() => import("../EmptyData"))
 import { Link } from "react-router-dom";
 
 
@@ -11,9 +11,10 @@ const MovieCard: React.FC = () => {
 
   const { movies } = useSelector((state: RootState) => state.user)
 
+ 
   if (!movies) {
     return (
-     
+
       <div >
         <EmptyData />
       </div>
@@ -32,7 +33,12 @@ const MovieCard: React.FC = () => {
             to={`/movie/${movie.slug}?bookingDate=${bookingDate}`}>
             <div key={movie.slug} className=" ">
               <div className="rounded-lg bg-white shadow-lg">
-                <img src={getMovieSrc(movie.movie_poster) ?? 'https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small/no-image-available-icon-vector.jpg'} alt="movie poster" className="rounded-t-lg h-full w-full object-contain" />
+                <img
+                  src={getMovieSrc(movie.movie_poster) ?? 'https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small/no-image-available-icon-vector.jpg'}
+                  alt={`${movie.movie_name} poster`}
+                  className="rounded-t-lg h-full w-full object-contain"
+                  loading="lazy" 
+                />
                 <div className="p-4 relative">
                   <h2 className="mb-0.5 text-xs lg:text-lg capitalize font-semibold overflow-hidden truncate text-ellipsis">{movie.movie_name}</h2>
                   <h2 className="mb-0.5 text-sm font-normal capitalize"> {movie.languages.join(',')}</h2>
