@@ -4,7 +4,6 @@ import { Loader } from "../../../component/Loader"
 import { Action, IStreamPlanFilter, IStreamRentalPlan, ResponseStatus, Role } from "../../../interface/Interface"
 import { getSerialNumber } from "../../../utils/format"
 import { FaEdit } from "react-icons/fa"
-import { GiCancel } from "react-icons/gi"
 import StreamingPlanForm from "../../../component/admin/StreamingPlanForm"
 import Toast2, { Toast } from "../../../component/Toast2"
 import Pagination from "../../../component/Pagination"
@@ -122,14 +121,14 @@ const AdminStreamPlan: React.FC = () => {
     }
   }
   //for deleting a specific streaming plan
-  const deleteButtonClicked = (e: MouseEvent, planId: string | undefined) => {
-    if (!planId || !plan) {
-      console.log('no plan id is found')
-      return
-    }
-    //call delete plan api call
-
-  }
+  // const deleteButtonClicked = (e: MouseEvent, planId: string | undefined) => {
+  // e.preventDefault()
+  //   if (!planId || !plan) {
+  //     console.log('no plan id is found')
+  //     return
+  //   }
+ 
+  // }
 
   function updatePlanTable(action: Action) {
     if (action === Action.ADD) {

@@ -51,6 +51,7 @@ export const loginUser: AsyncThunk<userLoginResponse, LoginData, {}> = createAsy
 
     try {
       const response = await serverUser.post(userEndPoints.login, userData);
+      console.log(response.data)
       return await response.data
     } catch (error) {
       return rejectWithValue(handleAxiosError(error))

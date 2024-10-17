@@ -35,12 +35,11 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
   }, action, closeModal, id, setToast }) => {
 
   const {
-    clearErrors,
     control,
     setError,
     setValue,
     register,
-    reset, handleSubmit,
+    handleSubmit,
     formState: { errors }
   } = useForms({
     resolver: zodResolver(movieShowSchema),
@@ -60,7 +59,7 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
   const [releaseDate, setReleaseDate] = useState('');
   const [duration, setDuration] = useState('');
   const [format, setFormat] = useState<string[]>([]);
-
+  console.log(format)
   const [confirmation, setConfirmation] = useState(false)
   const closeConfirmationModal = () => setConfirmation(false)
 
@@ -126,9 +125,9 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
     }
   }, [initialData.movieId, theaterMovies]);
 
-  const handleFormSubmit: SubmitHandler<IMovieShow> = (data) => { 
+  const handleFormSubmit: SubmitHandler<IMovieShow> = (data) => {
     setConfirmation(true)
-    setFormData(data) 
+    setFormData(data)
   }
 
   //when movie select need to set some field automatically. the duration and release date are not part of the form but need to show as read only
@@ -145,7 +144,7 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
 
     if (selectedMovie) {
       setSelectedMovie(selectedMovie)
-      setReleaseDate(getIST(selectedMovie.release_date.toString() ));
+      setReleaseDate(getIST(selectedMovie.release_date.toString()));
       setDuration(selectedMovie.run_time);
       setFormat([selectedMovie.format.join(',')]);
       const min = new Date().toISOString().split('T')[0]
@@ -207,7 +206,7 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
 
     } catch (error) {
       console.log(error)
-     
+
 
       if (isResponseError(error)) {
         if (error.statusCode === 400) {
@@ -217,11 +216,11 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
               message: error.data.message
             }
           )
-        }else{
+        } else {
           handleApiError(error);
         }
       }
-    }finally{
+    } finally {
       setConfirmation(false)
     }
   }

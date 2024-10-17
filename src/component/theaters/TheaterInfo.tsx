@@ -89,6 +89,7 @@ const TheaterInfo: React.FC<TheaterProps> = ({ selectedData, setTheaterDataRespo
 
       {profilePic &&
         <ImagePreview
+          imageType="profile"
           defaultImg={profilePic.image}
           updateSelectedImage={updateSelectedImage}
           preview={false}

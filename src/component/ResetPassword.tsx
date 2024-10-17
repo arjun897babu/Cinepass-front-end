@@ -12,8 +12,8 @@ import { useFormSubmit } from "../hooks/UseFormSubmitt";
 import { resetPassword } from "../redux/actions/userAction";
 import { resetPasswordTheaters } from "../redux/actions/theaterAction";
 import Toast2, { Toast } from "./Toast2";
-import { userClearError } from '../redux/reducers/userReducer'
-import { theaterClearError } from '../redux/reducers/theatersReducer'
+// import { userClearError } from '../redux/reducers/userReducer'
+// import { theaterClearError } from '../redux/reducers/theatersReducer'
 import { PasswordInput } from "./PasswordInput";
 import { isResponseError } from "../utils/customError";
 
@@ -38,11 +38,11 @@ const ResetPassWord: React.FC<{ role: Role }> = ({ role }) => {
     }
   });
   const { formData, handleChange, inputError, setInputError } = useForm({ password: '', confirm_password: '' }, role)
-  const clearErrorAction = (Role.theaters === role) ? theaterClearError : userClearError;
+  // const clearErrorAction = (Role.theaters === role) ? theaterClearError : userClearError;
 
-  const dipatchClearError = () => {
-    dispatch(clearErrorAction());
-  }
+  // const dipatchClearError = () => {
+  //   dispatch(clearErrorAction());
+  // }
 
   const clearToast = () => setToastMessage(null)
   const { handleSubmit } = useFormSubmit(formData, setInputError)

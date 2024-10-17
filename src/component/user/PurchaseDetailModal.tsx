@@ -1,5 +1,4 @@
 import React, { MouseEvent, useEffect, useRef, useState } from "react"
-import { IPayment } from "../../interface/user/IPayment"
 import { BookingStatus, IUserTicketData, MovieStatus, Role } from "../../interface/Interface"
 import TicketInfo from "./TicketInfo"
 import { checkMovieStatus } from "../../utils/validator"

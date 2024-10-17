@@ -5,7 +5,7 @@ import { useFormSubmit } from "../../hooks/UseFormSubmitt";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../redux/store";
 
-import { ResponseData, ResponseStatus, Role } from "../../interface/Interface";
+import {  ResponseStatus, Role } from "../../interface/Interface";
 import { useNavigate } from "react-router-dom";
  
 
@@ -13,7 +13,7 @@ import { verifyOTPTheaters } from "../../redux/actions/theaterAction";
 import { formatTime } from "../../utils/format";
 import ResendOTP from "../../component/ResendOTP";
 import { useTimer } from "../../hooks/useTimer";
-import { isErrorResponse, isResponseError } from "../../utils/customError";
+import {  isResponseError } from "../../utils/customError";
 import { theaterClearError, TheaterClearTempMail } from "../../redux/reducers/theatersReducer";
 import Toast2, { Toast } from "../../component/Toast2";
 

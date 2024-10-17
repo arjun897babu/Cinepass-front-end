@@ -6,7 +6,7 @@ import type { AppDispatch } from "../../../redux/store"
 import { Action, ResponseStatus, Role } from "../../../interface/Interface"
 
 import { deleteTheaterScreen, getScreen } from "../../../redux/actions/theaterAction"
-import { ISeat, ITheaterScreen, ITheaterScreenResponse } from "../../../interface/theater/ITheaterScreen"
+import {  ITheaterScreen, ITheaterScreenResponse } from "../../../interface/theater/ITheaterScreen"
 import { isResponseError } from "../../../utils/customError"
 import Toast2, { Toast } from "../../../component/Toast2"
 import ConfirmationModal from "../../../component/ConfirmationModal"

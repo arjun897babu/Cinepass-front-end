@@ -1,6 +1,7 @@
 import { GeocoderAutocomplete } from "@geoapify/geocoder-autocomplete";
-import React, { useRef, useState, useEffect, memo } from "react";
+import React, { useRef, useEffect, memo } from "react";
 import "@geoapify/geocoder-autocomplete/styles/minimal.css";
+const { VITE_GEOAPIFY_API_KEY } = import.meta.env
 
 
 interface AutocompleteProps {
@@ -11,14 +12,14 @@ interface AutocompleteProps {
 }
 
  const Autocomplete: React.FC<AutocompleteProps> = ({ changeCity, value, update }) => {
-                  
+                    console.log(update)
   const divRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     if (divRef.current) {
   
       const autocomplete = new GeocoderAutocomplete(
         divRef.current,
-        '15e7d5a4da01482e9ca2fb15c627732e',
+        VITE_GEOAPIFY_API_KEY,
         {
           placeholder: "Enter a city",
           type: 'city',

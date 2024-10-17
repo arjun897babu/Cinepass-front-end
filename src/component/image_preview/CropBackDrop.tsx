@@ -26,6 +26,7 @@ export const CropBackdrop: React.FC<CropBackdropProps> = (
   const [zoom, setZoom] = useState<number>(zoomInit);
   const [crop, setCrop] = useState<{ x: number; y: number }>(cropInit);
   const [aspect, setAspect] = useState<number>(aspectInit);
+  console.log(setAspect)
   const [croppedArea, setCroppedArea] = useState<Area | null>(null);
 
   const onCropChange = (crop: { x: number, y: number }) => {

@@ -1,4 +1,4 @@
-import { FormEvent, MouseEvent } from "react";
+import {  MouseEvent } from "react";
 import { ITheaterOwnerEntity } from "../../interface/theater/ITheaterOwner";
 import { ApprovalStatus, Status } from "../../interface/Interface";
 import { RiRadioButtonLine } from "react-icons/ri";

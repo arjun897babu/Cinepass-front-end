@@ -1,5 +1,5 @@
 
-import React, { FormEvent, useCallback, useEffect } from 'react';
+import React, { FormEvent, useEffect } from 'react';
 import '../../index.css';
 import { Link, useNavigate } from 'react-router-dom'
 import backGroundImage from '/movie_projector.jpg'

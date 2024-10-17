@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { useLocation, useParams } from "react-router-dom"
 import { AppDispatch, RootState } from "../../redux/store"
 import { getAllShows } from "../../redux/actions/userAction"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 
 const TheaterDetails = () => {
   const location = useLocation()

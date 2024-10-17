@@ -1,4 +1,4 @@
-import { Dispatch, FormEvent, MouseEvent, SetStateAction, useRef, useState } from "react";
+import { MouseEvent, useRef, useState } from "react";
 
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../../redux/store";
@@ -36,7 +36,6 @@ const TheaterUpdateForm: React.FC<TheaterProps> = ({ selectedData, setTheaterDat
     handleSubmit,
     clearErrors,
     reset,
-    watch,
     setValue,
     setError,
     formState: { errors }

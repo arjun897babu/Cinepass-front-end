@@ -14,6 +14,7 @@ import { ITheaterOwnerEntity } from "../../../interface/theater/ITheaterOwner";
 
 import Pagination from "../../../component/Pagination";
 import { getSerialNumber } from "../../../utils/format";
+import { Loader } from "../../../component/Loader";
 
 const AdminTheaters: React.FC = (): JSX.Element => {
   const [theaters, setTheaters] = useState<Partial<ITheaterOwnerEntity>[] | []>([]);
@@ -30,6 +31,7 @@ const AdminTheaters: React.FC = (): JSX.Element => {
 
   const handleChangePage = (newPage: number) => setCurrentPage(newPage)
   const [loading, setLoading] = useState(false)
+  console.log(loading)
   const fetchTheaters = async () => {
     setLoading(true)
     try {
@@ -138,6 +140,8 @@ const AdminTheaters: React.FC = (): JSX.Element => {
     }
 
   }
+
+  if(loading) return <div className=""><Loader/></div>
 
   return (
     <>

@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { DashBoardCard } from "../../../component/DashBoardCard"
-
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "../../../redux/store";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "../../../redux/store";
 import useErrorHandler from "../../../hooks/useErrorHandler";
 import { IGetScreenCount, IGetShowCountByScreen, IGetTicketCount, IRevenueResponse, Period, ResponseStatus, RevenueFilter, Role } from "../../../interface/Interface";
 import { theaterGetCountStat, theaterRevenueByScreen } from "../../../redux/actions/theaterAction";
