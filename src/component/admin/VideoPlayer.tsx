@@ -1,5 +1,5 @@
 import React, { MouseEvent, useEffect, useRef } from "react"
-import Hls, { Events } from "hls.js"
+import Hls from "hls.js"
 import { Role } from "../../interface/Interface"
 import { MdDelete } from "react-icons/md"
 
@@ -21,10 +21,10 @@ const VideoPlayer: React.FC<{ role: Role, url: string, removeHlsUrl?: () => void
         }
       })
 
-      hls.on(Events.ERROR, (events, data) => {
-        console.log(events)
-        console.log(data)
-      })
+      // hls.on(Events.ERROR, (events, data) => {
+      //   console.log(events)
+      //   console.log(data)
+      // })
 
       video.addEventListener('ended', () => {
         if (hls && removeHlsUrl) {

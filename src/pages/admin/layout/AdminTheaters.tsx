@@ -131,7 +131,7 @@ const AdminTheaters: React.FC = (): JSX.Element => {
       }
     } catch (error) {
       if (isErrorResponse(error)) {
-        console.log(error)
+        setToastMessage({ alert: ResponseStatus.SUCCESS, message: error.message })
       }
     } finally {
       setSelectedTheater(null)

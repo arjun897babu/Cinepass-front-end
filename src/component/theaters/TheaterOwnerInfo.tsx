@@ -41,7 +41,6 @@ const TheaterOwnerInfo: React.FC<TheaterInforProps> = ({ data, setTheaterDataRes
     }
   )
   const handleConfirmation: SubmitHandler<TheaterOwnerProfile> = (data) => {
-    // console.log('called')
     setFormData(data);
     setConfirmation(true)
   }
@@ -50,11 +49,9 @@ const TheaterOwnerInfo: React.FC<TheaterInforProps> = ({ data, setTheaterDataRes
 
     try {
       setLoading(true);
-      // console.log('submission started')
-      // console.log(formData)
       const response = await dispatch(updateTheater(formData)).unwrap();
       const { theater } = response.data
-      // console.log(theater)
+     
       if (response.status === ResponseStatus.SUCCESS) {
         clearErrors();
 

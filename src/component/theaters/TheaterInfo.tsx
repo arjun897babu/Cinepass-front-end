@@ -1,6 +1,6 @@
 import { MdEdit } from "react-icons/md"
 import TheaterUpdateForm, { TheaterProps } from "./TheaterUpdateForm"
-import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from "react"
+import { ChangeEvent, lazy, MouseEvent, useEffect, useRef, useState } from "react"
 import { convertFile } from "../../utils/format"
 import { UploadError } from "../../utils/customError"
 import { ResponseStatus, Role } from "../../interface/Interface"
@@ -8,7 +8,8 @@ import { useDispatch } from "react-redux"
 import { AppDispatch } from "../../redux/store"
 import useErrorHandler from "../../hooks/useErrorHandler"
 import { updateTheater } from "../../redux/actions/theaterAction"
-import ImagePreview from "../image_preview/ImagePreview"
+const ImagePreview = lazy(() => import("../image_preview/ImagePreview"));
+
 
 const TheaterInfo: React.FC<TheaterProps> = ({ selectedData, setTheaterDataResponse, setToast }) => {
 

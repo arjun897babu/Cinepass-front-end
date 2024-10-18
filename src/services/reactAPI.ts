@@ -14,8 +14,6 @@ const onResponseError = (error: AxiosError): Promise<AxiosError> => {
 
   if (error.response?.status === 403) {
 
-    console.log('Access denied. You do not have permission.')
-
   }
   return Promise.reject(error);
 }

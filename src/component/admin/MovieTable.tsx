@@ -1,9 +1,9 @@
-import React, { MouseEvent } from "react";
+import React, { lazy, MouseEvent } from "react";
 import { Action, IStreamingMovieData, ITheaterMovieData } from "../../interface/Interface";
 import { MovieType } from "./MovieForm";
 import { formatRunTime, getIST, getMovieSrc, getSerialNumber } from "../../utils/format";
- import { FaEdit } from "react-icons/fa";
-import EmptyData from "../EmptyData";
+import { FaEdit } from "react-icons/fa";
+const EmptyData = lazy(() => import('../EmptyData'))
 
 interface IMovieTableProps {
   loading: boolean;
@@ -14,7 +14,7 @@ interface IMovieTableProps {
 }
 
 const MovieTable: React.FC<IMovieTableProps> = ({ data, loading, selectedMovie, currentPage, movieType }) => {
-  console.log(movieType)
+ 
   const updateStreamingMovie = (e: MouseEvent<HTMLButtonElement>, _id: string | undefined) => {
     e.preventDefault()
     if (!_id) {

@@ -18,7 +18,7 @@ interface ToastProps {
 }
 
 const Toast2: React.FC<ToastProps> = ({ alert, message, clearToast, modalToast }) => {
-  console.log(message)
+   
   useEffect(() => {
 
     const timeout = setTimeout(() => {

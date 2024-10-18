@@ -37,7 +37,12 @@ const GoogleSignUp: React.FC<{ handleToastMessage: (toast: Toast) => void }> = (
   }
 
   const handleLoginError = () => {
-    console.log('Login Failed');
+    handleToastMessage(
+      {
+        alert: ResponseStatus.ERROR,
+        message: 'something went wrong'
+      }
+    )
   }
 
   return (

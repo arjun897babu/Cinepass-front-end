@@ -1,4 +1,4 @@
-import { MouseEvent, useRef, useState } from "react";
+import { lazy, MouseEvent, useRef, useState } from "react";
 
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../../redux/store";
@@ -13,7 +13,8 @@ import { isResponseError } from "../../utils/customError";
 import ConfirmationModal from "../ConfirmationModal";
 import { FaRegEdit } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import  Autocomplete  from "../Autocomplete";
+const Autocomplete = lazy(() => import ('../Autocomplete'));
+
 
 export interface TheaterProps {
   selectedData: TheaterProfile;
@@ -79,7 +80,6 @@ const TheaterUpdateForm: React.FC<TheaterProps> = ({ selectedData, setTheaterDat
 
       if (isResponseError(error)) {
         if (error.statusCode == 400) {
-          console.log(error)
           setError(
             error.data.error as keyof TheaterProfile,
             {

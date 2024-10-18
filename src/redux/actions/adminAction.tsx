@@ -58,8 +58,7 @@ export const getEntityDataForAdmin: AsyncThunk<IGetEntityDataForAdmin, { role: R
   async ({ role, pageNumber }, { rejectWithValue }) => {
     try {
       const response = await serverAdmin.get(adminEndpoints.getEntityData(role, pageNumber), {});
-      console.log(response.data)
-      return await response.data
+       return await response.data
     } catch (error) {
       if (error instanceof AxiosError) {
         return rejectWithValue(error.response?.data)
@@ -162,8 +161,7 @@ export const updateMovie: AsyncThunk<IMovieResponse, { payload: IMovie, movieTyp
   'admin/updateMovie',
   async ({ payload, movieType, movieId }, { rejectWithValue }) => {
     try {
-      console.log('update movie admin create async thunk is called', payload)
-      const response = await serverAdmin.put(adminEndpoints.updateMovie(movieType, movieId), { payload });
+       const response = await serverAdmin.put(adminEndpoints.updateMovie(movieType, movieId), { payload });
       return await response.data
     } catch (error) {
       return rejectWithValue(handleAxiosError(error))

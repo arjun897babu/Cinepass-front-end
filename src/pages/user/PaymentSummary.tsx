@@ -67,7 +67,7 @@ const PaymentSummary = () => {
         })).unwrap();
       }
       else if (data && isIStreamRentLocationState(data)) {
-        console.log('is streaming purchase')
+
         response = await dispatch(userPurchaseStream(data.streamingData.slug)).unwrap();
       }
 

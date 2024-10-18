@@ -12,8 +12,7 @@ export const TheaterDetails: React.FC<TheaterDetailsProps> = ({ owner }) => {
 
   const showModal = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    e.stopPropagation();
-    console.log(owner)
+    e.stopPropagation(); 
     const modal = document.getElementById(owner._id!) as HTMLDialogElement
     if (modal) {
       modal.showModal()

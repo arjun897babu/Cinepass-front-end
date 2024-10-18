@@ -61,7 +61,7 @@ export const AdminParent: React.FC = (): JSX.Element => {
       await dispatch(logoutAdmin());
       navigate('/admin/login')
     } catch (error) {
-      console.log(error)
+      (error)
     }
 
   }

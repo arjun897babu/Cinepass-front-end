@@ -11,8 +11,8 @@ interface AutocompleteProps {
   update?: boolean
 }
 
- const Autocomplete: React.FC<AutocompleteProps> = ({ changeCity, value, update }) => {
-                    console.log(update)
+ const Autocomplete: React.FC<AutocompleteProps> = ({ changeCity, value }) => {
+                    
   const divRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     if (divRef.current) {
@@ -37,9 +37,10 @@ interface AutocompleteProps {
       });
   
     
-      autocomplete.on('input', (input) => {
-        console.log('input:', input);
-      });
+      // autocomplete.on('input', (input) => {
+      
+      // });
+      
       if (divRef.current && value) {
         divRef.current!.querySelector('input')!.value = value;
   

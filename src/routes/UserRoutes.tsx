@@ -1,25 +1,27 @@
 import React, { lazy, Suspense } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
-const UserHome = lazy(() => import('../pages/user/UserHome'))
 import { UserSignUp } from "../pages/user/UserSignUp";
-import { UserLogin } from "../pages/user/UserLogin";
-const UserOTPVerification = lazy(() => import('../pages/user/UserOTPVerification'));
-import UserNavBar from "../component/user/UserNavBar";
-import UserFooter from "../component/user/footer/UserFooter";
 import { Loader } from "../component/Loader";
-import { ProtectedRoutes } from "../component/user/ProtectedRoutes";
-import { UserProfile } from "../pages/user/userProfile";
 import { ErroPage } from "../pages/ErrorPage";
+import { UserLogin } from "../pages/user/UserLogin";
 import { UserForgotPassword } from "../pages/user/UserForgotPassword";
 import { ResetPassWordUser } from "../pages/user/ResetPassWordUser";
+import UserOTPVerification from "../pages/user/UserOTPVerification";
+import UserNavBar from "../component/user/UserNavBar";
+import UserFooter from "../component/user/footer/UserFooter";
 import UserInitPage from "../pages/user/UserInitPage";
-import UserInfo from "../pages/user/layout/UserInfo";
-import TheaterDetails from "../pages/user/TheaterDetails";
-import ScreenLayout from "../pages/user/ScreenLayout";
-import PaymentSuccess from "../pages/user/PaymentSuccess";
-import PaymentSummary from "../pages/user/PaymentSummary";
-import TicketSummary from "../pages/user/layout/TicketSummary";
+
+import { ProtectedRoutes } from "../component/user/ProtectedRoutes";
+import { UserProfile } from "../pages/user/userProfile";
+
+const UserInfo = lazy(() => import("../pages/user/layout/UserInfo"));
+const TheaterDetails = lazy(() => import("../pages/user/TheaterDetails"));
+const ScreenLayout = lazy(() => import("../pages/user/ScreenLayout"));
+const PaymentSuccess = lazy(() => import("../pages/user/PaymentSuccess"));
+const PaymentSummary = lazy(() => import("../pages/user/PaymentSummary"));
+const TicketSummary = lazy(() => import("../pages/user/layout/TicketSummary"));
 const MoviePage = lazy(() => import("../pages/user/MoviePage"));
+const UserHome = lazy(() => import('../pages/user/UserHome'))
 const StreamHomePage = lazy(() => import('../pages/user/StreamHomePage'))
 
 const UserRoutes: React.FC = () => {

@@ -74,8 +74,7 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
   const fetchScreen = async (selectedFormat: string) => {
     try {
       const response = await dispatch(getScreen(selectedFormat)).unwrap();
-      if (response) {
-        console.log(response)
+      if (response) { 
         setScreens(response)
       }
     } catch (error) {
@@ -181,10 +180,7 @@ const MovieShowForm: React.FC<ShowModalProps> = ({ initialData =
 
 
     try {
-      if (formData) {
-        console.log(formData)
-
-        console.log(action)
+      if (formData) { 
         let response
         if (action === Action.ADD) {
           response = await dispatch(addMovieShows(formData)).unwrap()

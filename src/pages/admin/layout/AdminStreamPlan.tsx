@@ -109,8 +109,7 @@ const AdminStreamPlan: React.FC = () => {
       modalRef.current.showModal()
     }
     e.preventDefault()
-    if (!planId || !plan) {
-      console.log('no plan id is found')
+    if (!planId || !plan) { 
       return
     }
 

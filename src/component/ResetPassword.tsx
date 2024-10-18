@@ -79,9 +79,9 @@ const ResetPassWord: React.FC<{ role: Role }> = ({ role }) => {
         }
       }
     } catch (error) {
-      console.log(error)
+      
       if (isResponseError(error)) {
-        console.log(error)
+      
         if (error.statusCode === 403) {
           navigate(role === Role.theaters ? '/theaters/login' : '/login',
             {

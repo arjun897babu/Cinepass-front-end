@@ -204,7 +204,7 @@ function checkMovieStatus(showTime: string, endTime: string, releaseDate: string
   todayEndTime.setHours(endHour, endMin, 0, 0);
 
   if (currentDate >= todayShowTime && currentDate <= todayEndTime) {
-    console.log('running show')
+ 
     return MovieStatus.RUNNING;
   }
 

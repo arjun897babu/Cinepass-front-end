@@ -76,11 +76,9 @@ export const forgotPasswordTheaters: AsyncThunk<ResponseData, Record<string, str
   async (formData, { rejectWithValue }) => {
     try {
       const response = await serverTheater.post(theatersEndPoints.forgotPassword, formData);
-      console.log(response)
+  
       return await response.data
-    } catch (error) {
-
-      console.log(error)
+    } catch (error) { 
       return rejectWithValue(handleAxiosError(error))
     }
   }
@@ -174,11 +172,10 @@ interface TheaterScreenResponse extends ResponseData2 {
 export const createTheaterScreen: AsyncThunk<TheaterScreenResponse, ITheaterScreen, {}> = createAsyncThunk(
   'theaters/add-screen',
   async (theaterScreenData: ITheaterScreen, { rejectWithValue }) => {
-    console.log('create theater screen is called');
+  
     try {
       const response = await serverTheater.post(theatersEndPoints.createScreen, theaterScreenData);
-      console.log(response)
-      return await response.data
+       return await response.data
     } catch (error) {
       return rejectWithValue(handleAxiosError(error))
     }
@@ -193,8 +190,7 @@ interface IDeleteScreenResponse extends ResponseData2 {
 export const deleteTheaterScreen: AsyncThunk<IDeleteScreenResponse, string, {}> = createAsyncThunk(
   '/theaters/deleteScreen',
   async (screenId, { rejectWithValue }) => {
-    console.log('delete screen ayscnthunk is being callled')
-    try {
+     try {
       const response = await serverTheater.patch(theatersEndPoints.deleteScreen(screenId), {})
       return response.data
     } catch (error) {
@@ -206,9 +202,7 @@ export const deleteTheaterScreen: AsyncThunk<IDeleteScreenResponse, string, {}> 
 export const updateTheaterScreen: AsyncThunk<TheaterScreenResponse, { screenId: string, payload: ITheaterScreen }, {}> = createAsyncThunk(
   '/theaters/updateScreen',
   async ({ screenId, payload }, { rejectWithValue }) => {
-    console.log('update screen ayscnthunk is being callled');
-    console.log(payload)
-    try {
+     try {
       const response = await serverTheater.put(theatersEndPoints.updateScreen(screenId), { payload })
       return response.data
     } catch (error) {
@@ -226,13 +220,10 @@ export const getMovie: AsyncThunk<IGetMovieResponse, MovieType, {}> = createAsyn
   'theaters/getMovie',
   async (movieType: MovieType, { rejectWithValue }) => {
     try {
-      console.log('calleed')
-      const response = await serverTheater.get(theatersEndPoints.getMovie(movieType), {});
-      console.log(response)
-      return await response.data
+       const response = await serverTheater.get(theatersEndPoints.getMovie(movieType), {});
+       return await response.data
     } catch (error) {
-      console.log(error)
-      return rejectWithValue(handleAxiosError(error))
+       return rejectWithValue(handleAxiosError(error))
     }
   }
 
@@ -245,8 +236,7 @@ export const getAllShows: AsyncThunk<IGetMovieShowResponse[], void, {}> = create
   '/theaters/getAllShows',
   async (_, { rejectWithValue }) => {
     try {
-      console.log('getshow asyncthunk is called')
-      const response = await serverTheater.get(theatersEndPoints.getMovieShows, {});
+       const response = await serverTheater.get(theatersEndPoints.getMovieShows, {});
       const { shows } = response.data?.data
       return await shows
     } catch (error) {
@@ -264,13 +254,10 @@ export const addMovieShows: AsyncThunk<addMovieShowResponse, IMovieShow, {}> = c
   'theaters/addMovieShows',
   async (formData, { rejectWithValue }) => {
     try {
-      console.log('add movieshow async thunk is called')
-      const response = await serverTheater.post(theatersEndPoints.addMovieShows, formData);
-      console.log(response)
-      return await response.data
+        const response = await serverTheater.post(theatersEndPoints.addMovieShows, formData);
+       return await response.data
     } catch (error) {
-      console.log(error)
-      return rejectWithValue(handleAxiosError(error))
+       return rejectWithValue(handleAxiosError(error))
     }
   }
 
@@ -279,14 +266,11 @@ export const addMovieShows: AsyncThunk<addMovieShowResponse, IMovieShow, {}> = c
 export const updateMovieShow: AsyncThunk<ResponseData2, { payload: IMovieShow, showId: string }, {}> = createAsyncThunk(
   '/theaters/updateShows',
   async ({ payload, showId }, { rejectWithValue }) => {
-    console.log('update show asyncthunk is called')
     try {
 
-      const respones = await serverTheater.put(theatersEndPoints.updateMovieShow(showId), { payload })
-      console.log(respones)
-      return respones.data
+      const response = await serverTheater.put(theatersEndPoints.updateMovieShow(showId), { payload })
+      return response.data
     } catch (error) {
-      console.log(error)
       return rejectWithValue(handleAxiosError(error))
     }
   }
@@ -295,12 +279,10 @@ export const updateMovieShow: AsyncThunk<ResponseData2, { payload: IMovieShow, s
 export const deleteMovieShow: AsyncThunk<ResponseData2, string, {}> = createAsyncThunk(
   '/theaters/deleteShows',
   async (showId, { rejectWithValue }) => {
-    console.log('delete show asyncthunk is called')
     try {
       const response = await serverTheater.patch(theatersEndPoints.deleteMovieShow(showId), {})
       return response.data
     } catch (error) {
-      console.log(error)
       return rejectWithValue(handleAxiosError(error))
     }
   }

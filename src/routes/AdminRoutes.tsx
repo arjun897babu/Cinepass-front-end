@@ -1,14 +1,15 @@
 import React, { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
-import { AdminLogin, AdminParent } from '../pages/admin'
-import { AdminProtectedRoutes } from "../component/admin/adminProtectedRoutes";
 import { ErroPage } from "../pages/ErrorPage";
-const AdminTheaters = lazy(() => import('../pages/admin/layout/AdminTheaters'))
-import AdminHome from "../pages/admin/layout/AdminHome";
 import { Loader } from "../component/Loader";
-import AdminMovie from "../pages/admin/layout/AdminMovies";
-import AdminStream from "../pages/admin/layout/AdminStream";
 
+import { AdminProtectedRoutes } from "../component/admin/adminProtectedRoutes";
+import { AdminLogin, AdminParent } from '../pages/admin'
+
+const AdminStream = lazy(() => import("../pages/admin/layout/AdminStream"))
+const AdminMovie = lazy(() => import("../pages/admin/layout/AdminMovies"))
+const AdminTheaters = lazy(() => import('../pages/admin/layout/AdminTheaters'))
+const AdminHome = lazy(() => import("../pages/admin/layout/AdminHome"))
 const AdminStreamPlan = lazy(() => import("../pages/admin/layout/AdminStreamPlan"))
 const AdminUsers = lazy(() => import('../pages/admin/layout/AdminUsers'))
 

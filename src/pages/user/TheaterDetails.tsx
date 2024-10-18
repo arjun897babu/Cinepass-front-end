@@ -15,9 +15,8 @@ const TheaterDetails = () => {
   
     try {
       if (city && theaterId) {
-        const response = await dispatch(getAllShows({ city, theaterId })).unwrap()
-        console.log(response) 
-      }
+         await dispatch(getAllShows({ city, theaterId })).unwrap()
+       }
     } catch (error) {
       console.log(error)
     }

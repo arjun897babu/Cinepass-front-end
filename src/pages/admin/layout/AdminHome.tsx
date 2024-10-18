@@ -1,13 +1,21 @@
 import { lazy, useEffect, useState } from "react"
-const DoughnutChart = lazy(() => import('../../../component/chart/DoughnutChart'))
 import { DashBoardCard } from "../../../component/DashBoardCard"
-import useErrorHandler from "../../../hooks/useErrorHandler"
-import { IGetTheaterOwnersCount, IGetUserCount, IRevenueResponse, Period, ResponseStatus, RevenueFilter, Role } from "../../../interface/Interface"
 import { useDispatch } from "react-redux"
 import { AppDispatch } from "../../../redux/store"
-import { adminGetEntityStat, getAdminStreamRevenue } from "../../../redux/actions/adminAction"
-import BarChart from "../../../component/chart/BarChart"
 import { Loader } from "../../../component/Loader"
+import useErrorHandler from "../../../hooks/useErrorHandler"
+import { adminGetEntityStat, getAdminStreamRevenue } from "../../../redux/actions/adminAction"
+import {
+  IGetTheaterOwnersCount,
+  IGetUserCount,
+  IRevenueResponse,
+  Period,
+  ResponseStatus,
+  RevenueFilter,
+  Role
+} from "../../../interface/Interface"
+const DoughnutChart = lazy(() => import('../../../component/chart/DoughnutChart'))
+const BarChart = lazy(() => import("../../../component/chart/BarChart"))
 
 const AdminHome: React.FC = (): JSX.Element => {
 
@@ -32,7 +40,7 @@ const AdminHome: React.FC = (): JSX.Element => {
   async function fetchData() {
     try {
       setLoading(true)
-      Promise.all([fetchEntityData(),fetchStreamData()]) 
+      Promise.all([fetchEntityData(), fetchStreamData()])
     } catch (error) {
       handleApiError(error)
     } finally {
@@ -42,7 +50,7 @@ const AdminHome: React.FC = (): JSX.Element => {
 
   async function fetchEntityData() {
     try {
-    
+
       const response = await dispatch(adminGetEntityStat()).unwrap()
 
       if (response.status === ResponseStatus.SUCCESS) {
@@ -51,11 +59,11 @@ const AdminHome: React.FC = (): JSX.Element => {
       }
     } catch (error) {
       handleApiError(error)
-    }  
+    }
   }
   async function fetchStreamData() {
     try {
-      
+
       const response = await dispatch(getAdminStreamRevenue(revenueFilter)).unwrap()
 
       if (response.status === ResponseStatus.SUCCESS) {
@@ -63,7 +71,7 @@ const AdminHome: React.FC = (): JSX.Element => {
       }
     } catch (error) {
       handleApiError(error)
-    } 
+    }
   }
 
 
@@ -73,7 +81,7 @@ const AdminHome: React.FC = (): JSX.Element => {
   useEffect(() => {
     fetchStreamData()
   }, [revenueFilter])
-  if(loading) return <div className=""><Loader/></div>
+  if (loading) return <div className=""><Loader /></div>
   return (
     <div className="user-theater">
       <div className="stats gap-2">

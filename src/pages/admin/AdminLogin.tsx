@@ -39,7 +39,7 @@ export const AdminLogin: React.FC = (): JSX.Element => {
 
       if (isValid) {
         const response = await dispatch(loginAdmin(formData)).unwrap()
-        console.log(response)
+    
         if (response.status == ResponseStatus.SUCCESS) {
           navigate(response.redirectURL)
         }

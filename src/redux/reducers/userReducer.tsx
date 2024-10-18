@@ -44,7 +44,6 @@ const userSlice = createSlice({
 
     },
     userResetBookingInfo(state: IInitialState) {
-      console.log('calling');
       state.bookingInfo = null
     }
   },
@@ -76,7 +75,7 @@ const userSlice = createSlice({
       })
       .addCase(loginUser.rejected, (state: IInitialState, action) => {
         if (isResponseError(action.payload)) {
-          if (action.payload.statusCode === 401 && action.payload.data.error === 'otp') {
+          if (action.payload.statusCode === HttpStatusCode.Unauthorized && action.payload.data.error === 'otp') {
             state.tempMail = action.payload.data ? action.payload.data.tempMail as { email: string } : null
           }
         }
@@ -114,7 +113,7 @@ const userSlice = createSlice({
       .addCase(getAllShows.rejected, (state: IInitialState, action) => {
 
         if (isResponseError(action.payload)) {
-          if (action.payload.statusCode === 403 || action.payload.statusCode === 401) {
+          if (action.payload.statusCode === HttpStatusCode.Forbidden || action.payload.statusCode === HttpStatusCode.Unauthorized) {
             state.isAuthenticated = false
           }
         }
@@ -124,8 +123,7 @@ const userSlice = createSlice({
       .addCase(getSingleMovie.rejected, (state: IInitialState, action) => {
 
         if (isResponseError(action.payload)) {
-          console.log(action.payload)
-          if (action.payload.statusCode === 403 || action.payload.statusCode === 401) {
+          if (action.payload.statusCode === HttpStatusCode.Forbidden || action.payload.statusCode === HttpStatusCode.Unauthorized) {
             state.isAuthenticated = false
           }
         }

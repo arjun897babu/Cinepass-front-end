@@ -1,21 +1,21 @@
 import React, { lazy, Suspense, } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
-import { TheaterForgotPassword, TheatersLogin, TheatersParent, TheatersSignUp } from '../pages/theaters'
-import { TheaterOTPVerification } from "../pages/theaters/theaterOTPVerifiy";
- 
 import { Loader } from "../component/Loader";
-import { TheaterProtectedRoutes } from "../component/theaters/theaterProtectedRoutes";
 import { ErroPage } from "../pages/ErrorPage";
- 
+
+import { TheaterOTPVerification } from "../pages/theaters/theaterOTPVerifiy";
+import { TheaterForgotPassword, TheatersLogin, TheatersParent, TheatersSignUp } from '../pages/theaters'
+import { TheaterProtectedRoutes } from "../component/theaters/theaterProtectedRoutes";
 import { TheaterResetPassWord } from "../pages/theaters/TheaterResetPassword";
-import Bookings from "../pages/theaters/Layout/Bookings";
+
+const Bookings = lazy(() => import("../pages/theaters/Layout/Bookings"));
 const TheaterShow = lazy(() => import("../pages/theaters/Layout/TheaterShow"));
 const TheaterScreen = lazy(() => import("../pages/theaters/Layout/TheaterScreen"));
 const TheaterDetail = lazy(() => import('../pages/theaters/Layout/TheaterDetail'))
 const TheaterHome = lazy(() => import('../pages/theaters/Layout/TheaterHome'))
 
 const TheatersRoutes: React.FC = () => {
-  
+
 
 
   return (

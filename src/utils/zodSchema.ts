@@ -50,7 +50,7 @@ export const movieSchema = (movieType: MovieType) => {
           const validExtensions = ['.mp4', '.mpeg', '.webm', '.mkv'];
 
           const isValidType = validTypes.includes(file.type);
-          console.log(file.name)
+      
           const fileExtension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
           const isValidExtension = validExtensions.includes(fileExtension);
 

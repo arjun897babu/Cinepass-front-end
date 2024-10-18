@@ -1,16 +1,23 @@
-import { useEffect, useState } from "react"
+import { lazy, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom"
-import type { AppDispatch, RootState } from "../../redux/store"
-import { IStreamingMovieData, ITheaterMovieData, MovieFilter, ResponseStatus } from "../../interface/Interface"
-import { getSingleMovie, getUserSingleStreamingMovies } from "../../redux/actions/userAction"
 import { Loader } from "../../component/Loader"
-import { convertTo12HourFormat,   toValidJSDate } from "../../utils/format"
+import type { AppDispatch, RootState } from "../../redux/store"
+import { getSingleMovie, getUserSingleStreamingMovies } from "../../redux/actions/userAction"
+import { convertTo12HourFormat, toValidJSDate } from "../../utils/format"
 import { IoIosInformationCircle } from "react-icons/io"
 import { isResponseError } from "../../utils/customError"
-import ShowFilter from "../../component/ShowFilter"
-import MovieInfoDisplay from "../../component/user/MovieInfoDisplay"
-import { MovieType } from "../../component/admin/MovieForm"
+import  { MovieType } from "../../component/admin/MovieForm"
+import {
+  IStreamingMovieData,
+  ITheaterMovieData,
+  MovieFilter,
+  ResponseStatus
+} from "../../interface/Interface"
+
+const ShowFilter = lazy(() => import("../../component/ShowFilter"));
+const MovieInfoDisplay = lazy(() => import("../../component/user/MovieInfoDisplay"));
+
 
 const MoviePage: React.FC = () => {
   const { movieId } = useParams();

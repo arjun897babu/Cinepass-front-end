@@ -31,7 +31,6 @@ const UserHome: React.FC = () => {
   }
 
   const { movies } = useSelector((state: RootState) => state.user)
-  console.log(movies)
 
   useEffect(() => {
     if (movies || movies === null) {

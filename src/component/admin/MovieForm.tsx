@@ -1,4 +1,4 @@
-import React, { ChangeEvent, MouseEvent, RefObject, useCallback, useEffect, useRef, useState } from "react";
+import React, { ChangeEvent, lazy, MouseEvent, RefObject, useCallback, useEffect, useRef, useState } from "react";
 import { Controller, SubmitHandler, useForm as useForms } from 'react-hook-form'
 
 import { Action, IMovie, IStreamingMovieData, IStreamRentalPlan, ITheaterMovieData, ResponseStatus, Role } from "../../interface/Interface";
@@ -14,11 +14,11 @@ import { IoCloudUploadOutline } from "react-icons/io5";
 import { convertFile, setDefaultDate } from "../../utils/format";
 import { MultiSelect } from "./MultiSelect";
 import ConfirmationModal from "../ConfirmationModal";
-import ImagePreview from "../image_preview/ImagePreview";
 import useErrorHandler from "../../hooks/useErrorHandler";
 import { HttpStatusCode } from "axios";
-import VideoPlayer from "./VideoPlayer";
-import VideoPreview from "./VideoPreview";
+const ImagePreview = lazy(() => import("../image_preview/ImagePreview"));
+const VideoPlayer = lazy(() => import("./VideoPlayer"));
+const VideoPreview = lazy(() => import("./VideoPreview"));
 
 export enum MovieType {
   theater = 'Theater',
@@ -90,7 +90,7 @@ export const MovieForm: React.FC<MovieFormProps> = ({
   const moviePosterRef = useRef<HTMLInputElement>(null)
 
   // const handleAddValue = (field: keyof IMovie, value: string) => {
-  //   console.log('callling')
+  //   console.log('calling')
   //   const currentValues = watch(field) as string[];
   //   console.log(currentValues)
   //   const updatedArray = currentValues.includes(value)
@@ -232,11 +232,9 @@ export const MovieForm: React.FC<MovieFormProps> = ({
   }
 
   const removeSelectedImage = (type: "movie_poster" | "cover_photo"|"profile" ) => {
-    if (type === 'movie_poster') {
-      console.log('movie poster removed')
+    if (type === 'movie_poster') { 
       setMoviePoster(null)
-    } else {
-      console.log('cover poster removed')
+    } else { 
       setCoverPhoto(null)
     }
 
@@ -260,10 +258,10 @@ export const MovieForm: React.FC<MovieFormProps> = ({
         .then((result) => {
 
           if (imageName === 'movie_poster') {
-            console.log('movie poster successfully done')
+          
             setMoviePoster(result)
           } else {
-            console.log('cover photo successfully done')
+            
             setCoverPhoto(result)
           }
           setImageType(imageName)

@@ -1,25 +1,38 @@
-import { useEffect, useState } from "react";
+import { lazy, useEffect, useState } from "react";
 import { DashBoardCard } from "../../../component/DashBoardCard"
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../../../redux/store";
 import useErrorHandler from "../../../hooks/useErrorHandler";
-import { IGetScreenCount, IGetShowCountByScreen, IGetTicketCount, IRevenueResponse, Period, ResponseStatus, RevenueFilter, Role } from "../../../interface/Interface";
-import { theaterGetCountStat, theaterRevenueByScreen } from "../../../redux/actions/theaterAction";
-import DoughnutChart from "../../../component/chart/DoughnutChart";
-import BarChart from "../../../component/chart/BarChart";
+import {
+  IGetScreenCount,
+  IGetShowCountByScreen,
+  IGetTicketCount,
+  IRevenueResponse,
+  Period,
+  ResponseStatus,
+  RevenueFilter,
+  Role
+} from "../../../interface/Interface";
+import {
+  theaterGetCountStat,
+  theaterRevenueByScreen
+} from "../../../redux/actions/theaterAction";
+const BarChart = lazy(() => import("../../../component/chart/BarChart"))
+const DoughnutChart = lazy(() => import("../../../component/chart/DoughnutChart"))
+
 
 const TheaterHome = () => {
   const handleApiError = useErrorHandler(Role.theaters)
   const dispatch = useDispatch<AppDispatch>()
-  
+
 
   const [screenStat, setScreenStat] = useState<IGetScreenCount | null>(null)
   const [showStat, setShowStat] = useState<IGetShowCountByScreen[]>([])
-   const [ticketStat, setTicketStat] = useState<IGetTicketCount | null>(null)
+  const [ticketStat, setTicketStat] = useState<IGetTicketCount | null>(null)
   const [screenRevenue, setScreenRevenue] = useState<IRevenueResponse | null>(null)
 
   const [revenueFilter, setRevenueFilter] = useState<RevenueFilter>({ period: Period.WEEK })
-  const changeScreenRevenueFilter = (key: keyof RevenueFilter, value: Period|string) => {
+  const changeScreenRevenueFilter = (key: keyof RevenueFilter, value: Period | string) => {
     setRevenueFilter((prev) => ({
       ...prev,
       [key]: value,
@@ -46,7 +59,7 @@ const TheaterHome = () => {
   async function fetchRevenueByScreen() {
     try {
       const response = await dispatch(theaterRevenueByScreen(revenueFilter)).unwrap()
-      
+
       if (response.status === ResponseStatus.SUCCESS) {
         setScreenRevenue(response.data)
       }

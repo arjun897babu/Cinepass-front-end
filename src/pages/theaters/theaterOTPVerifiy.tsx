@@ -71,12 +71,12 @@ export const TheaterOTPVerification: React.FC = (): JSX.Element => {
         }
       }
     } catch (err) {
-      console.log(err)
+
       if (isResponseError(err)) {
         if (err.statusCode === 403) {
           navigate('/theaters/login', { replace: true, state: { blocked: true } });
         } else if (err.statusCode === 400) {
-          console.log(err.data)
+   
           setInputError({ [err.data.error]: err.data.message })
         } else {
           setTimeout(() => {

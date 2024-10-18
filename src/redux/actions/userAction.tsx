@@ -10,14 +10,11 @@ import {  TheaterOwnerProfile } from '../../interface/theater/ITheaterOwner'
 export const signUpUser: AsyncThunk<ResponseData, UserSignUpData, {}> = createAsyncThunk(
   'user/signup',
   async (userData: UserSignUpData, { rejectWithValue }) => {
-    console.log('reaching the signup async thunk')
     try {
       const response = await serverUser.post(userEndPoints.signup, userData);
-      console.log('response from thunk middle ware', response);
       return await response.data
     } catch (error) {
       if (error instanceof AxiosError) {
-        console.log(error.response?.data)
         return rejectWithValue(error.response?.data);
       }
       return rejectWithValue('An unknown error occurred');
@@ -51,7 +48,6 @@ export const loginUser: AsyncThunk<userLoginResponse, LoginData, {}> = createAsy
 
     try {
       const response = await serverUser.post(userEndPoints.login, userData);
-      console.log(response.data)
       return await response.data
     } catch (error) {
       return rejectWithValue(handleAxiosError(error))
@@ -139,11 +135,9 @@ export const googleSignUp: AsyncThunk<GoogleAuthResponse, GoogleSignUp, {}> = cr
   async (data, { rejectWithValue }) => {
     try {
       const response = await serverUser.post(userEndPoints.googleSignUp, data);
-      console.log(response)
-      return await response.data
+       return await response.data
     } catch (error) {
-      console.log(error)
-      return rejectWithValue(handleAxiosError(error))
+       return rejectWithValue(handleAxiosError(error))
     }
   }
 );
@@ -152,7 +146,6 @@ export const getAllShows: AsyncThunk<any[], { city: string, theaterId: string },
   '/user/getAllShows',
   async ({ city, theaterId }, { rejectWithValue }) => {
     try {
-      console.log('get all shows for single theater is called')
       const response = await serverUser.get(userEndPoints.getMovieShows(city, theaterId), {});
       const { shows } = response.data?.data
       return await shows
@@ -165,7 +158,6 @@ export const getAllShows: AsyncThunk<any[], { city: string, theaterId: string },
 export const getAllMovies: AsyncThunk<IMovie[], { city: string, filter?: Partial<MovieFilter> }, {}> = createAsyncThunk(
   '/user/getAllMovies',
   async ({ city, filter }, { rejectWithValue }) => {
-    console.log(filter);
     try {
       const response = await serverUser.get(userEndPoints.getAllMovies(city), {
         params: { ...filter }
@@ -186,7 +178,6 @@ export const getSingleMovie: AsyncThunk<any[], { city: string, movieId: string, 
   async ({ city, movieId, filter }, { rejectWithValue }) => {
     try {
       const response = await serverUser.get(userEndPoints.getSingleMovie(city, movieId), { params: filter });
-      console.log(response.data.data)
       const { movies } = response.data?.data
       return await movies
     } catch (error) {
@@ -203,7 +194,6 @@ interface IGetTheaterByCityResponse extends ResponseData2 {
 export const getTheatersByCity: AsyncThunk<IGetTheaterByCityResponse, string, {}> = createAsyncThunk(
   '/user/theater',
   async (city, { rejectWithValue }) => {
-    console.log('gettheater by city asynthunk is called')
     try {
       const response = await serverUser.get(userEndPoints.getTheater(city), {})
       return await response.data
@@ -248,7 +238,6 @@ interface IGetSingleShowDetails extends ResponseData2 {
 export const getSingleShowDetails: AsyncThunk<IGetSingleShowDetails, { city: string, showId: string, filter: Partial<MovieFilter> }, {}> = createAsyncThunk(
   '/user/getSingleShowDetails',
   async ({ city, showId, filter }, { rejectWithValue }) => {
-    console.log('get single show details asyncthunk is being called')
     try {
       const response = await serverUser.get(userEndPoints.getSingleShow(city), {
         params: {

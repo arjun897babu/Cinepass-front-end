@@ -21,8 +21,7 @@ const TicketSummary = () => {
   const viewSelected = (paymentId: string) => {
     if (ticketData) {
       const selected = ticketData.find((item) => item.paymentInfo.paymentIntentId === paymentId)
-      console.log(selected);
-      selected ?
+       selected ?
         setSelected(selected)
         : null
     }
@@ -32,8 +31,7 @@ const TicketSummary = () => {
     setLoading(true)
     try {
       const response = await dispatch(getUserTickets({})).unwrap()
-      console.log(response.data.data)
-      if (response.status === ResponseStatus.SUCCESS) {
+       if (response.status === ResponseStatus.SUCCESS) {
         setTicketData(response.data.data)
       }
 

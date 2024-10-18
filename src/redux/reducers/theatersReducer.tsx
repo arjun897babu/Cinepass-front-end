@@ -6,10 +6,6 @@ import { IResponseError, isResponseError } from "../../utils/customError";
 import { LoggedOwner } from "../../interface/user/IUserData";
 import { HttpStatusCode } from "axios";
 
-
-
-
-
 const initialState: IInitialState = {
   profile: null,
   error: null,
@@ -48,14 +44,13 @@ const theaterSlice = createSlice({
         state.error = null;
       })
       .addCase(signupTheaters.fulfilled, (state: IInitialState, action: PayloadAction<ResponseData>) => {
-        console.log(action.payload)
-
+ 
         state.tempMail = action.payload.data ? action.payload.data as { email: string } : null
       })
       .addCase(signupTheaters.rejected, (state: IInitialState, action) => {
 
         if (isResponseError(action.payload)) {
-          if (action.payload.statusCode === 401 && action.payload.data.error === 'otp') {
+          if (action.payload.statusCode === HttpStatusCode.Unauthorized && action.payload.data.error === 'otp') {
             state.tempMail = action.payload.data ? action.payload.data.tempMail as { email: string } : null
           }
         }

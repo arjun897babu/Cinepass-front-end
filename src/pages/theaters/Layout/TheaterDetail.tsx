@@ -59,7 +59,7 @@ const TheaterDetail: React.FC = () => {
         { ...prev, ...updatedData } :
         prev
     );
-    console.log('data updated')
+
 
   };
 

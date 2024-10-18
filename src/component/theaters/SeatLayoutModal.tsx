@@ -13,8 +13,7 @@ interface ISeatRowProps {
 }
 
 export const SeatRow: React.FC<ISeatRowProps> = ({ rowNumber, seats, reserved, handleSeatClick, role, selectedSeat }) => {
-
-console.log(reserved)
+ 
 
   return (
     <div key={rowNumber} className="relative flex items-center ">
@@ -26,10 +25,7 @@ console.log(reserved)
         const isBooked = reserved?.some((reservation) => reservation.reservedSeats.includes(seat.name));
         // const isBooked = [ 'A1', 'B2', 'C4' ].includes(seat.name);
         const isSelected = selectedSeat?.includes(seat.name)
-
-        if (isSelected) {
-          console.log(selectedSeat)
-        }
+       
         return (
           <div className={`${role === Role.users && seat.available ? 'tooltip' : role !== Role.users ? 'tooltip' : ''}`} data-tip={seat.name}>
             <div

@@ -1,5 +1,5 @@
 
-import React, { FormEvent, useEffect } from 'react';
+import React, { FormEvent, lazy, useEffect } from 'react';
 import '../../index.css';
 import { Link, useNavigate } from 'react-router-dom'
 import backGroundImage from '/movie_projector.jpg'
@@ -10,10 +10,10 @@ import { useFormSubmit } from '../../hooks/UseFormSubmitt';
 import { signupTheaters } from '../../redux/actions/theaterAction';
 import { ResponseStatus, Role } from '../../interface/Interface';
 import { isErrorResponse } from '../../utils/customError';
- 
-import {theaterClearError } from '../../redux/reducers/theatersReducer';
+
+import { theaterClearError } from '../../redux/reducers/theatersReducer';
 import { PasswordInput } from '../../component/PasswordInput';
-import Autocomplete from '../../component/Autocomplete';
+const Autocomplete = lazy(() => import ('../../component/Autocomplete'));
 
 
 
@@ -24,7 +24,7 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
 
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate()
-  const { error, isAuthenticated } = useSelector((state:RootState)=>state.theaters)
+  const { error, isAuthenticated } = useSelector((state: RootState) => state.theaters)
 
 
   useEffect(() => {
@@ -62,7 +62,6 @@ export const TheatersSignUp: React.FC = (): JSX.Element => {
 
   const onSubmit = async (e: FormEvent) => {
     const isValid = handleSubmit(e)
-    console.log(formData.city)
     try {
       if (isValid) {
 

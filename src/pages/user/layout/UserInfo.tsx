@@ -1,4 +1,4 @@
-import React, { ChangeEvent, MouseEvent, useEffect, useRef, useState } from "react"
+import React, { ChangeEvent, lazy, MouseEvent, useEffect, useRef, useState } from "react"
 import type { AppDispatch, RootState } from "../../../redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import Toast2, { Toast } from "../../../component/Toast2";
@@ -7,20 +7,22 @@ import { ResponseStatus, Role } from "../../../interface/Interface";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { userProfileSchem } from "../../../utils/zodSchema";
-import {  z } from "zod"; 
+import { z } from "zod";
 import { isResponseError, UploadError } from "../../../utils/customError";
 import useErrorHandler from "../../../hooks/useErrorHandler";
 import ConfirmationModal from "../../../component/ConfirmationModal";
 import { updateUserProfile } from "../../../redux/actions/userAction";
 import { MdEdit } from "react-icons/md";
-import ImagePreview from "../../../component/image_preview/ImagePreview";
+
+const ImagePreview = lazy(() => import("../../../component/image_preview/ImagePreview"));
+
 import { convertFile } from "../../../utils/format";
- 
+
 const UserInfo: React.FC = () => {
 
   const user = useSelector((state: RootState) => state.user);
 
-   const dispatch = useDispatch<AppDispatch>()
+  const dispatch = useDispatch<AppDispatch>()
   const [profilePic, setProfilePic] = useState<{ profile_picture: string } | null>(null)
   const updateSelectedImage = (url: string) => {
     setProfileData({ profile_picture: url })
@@ -58,7 +60,7 @@ const UserInfo: React.FC = () => {
     handleSubmit,
     register,
     setError,
-   
+
     formState: { errors },
 
   } = useForm({
