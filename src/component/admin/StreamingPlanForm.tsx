@@ -11,13 +11,14 @@ import { addStreamPlan, editStreamPlan } from "../../redux/actions/adminAction"
 import { isResponseError } from "../../utils/customError"
 import { Toast } from "../Toast2"
 import useErrorHandler from "../../hooks/useErrorHandler"
+import { generateConfirmationMessage } from "../../utils/format"
 
 interface IStreamingPlanFormProps {
   closeModal: () => void
-  defaultData?: z.infer<typeof StreamPlanSchema>;
-  _id?: string
   updateToast: (toast: Toast) => void,
   updatePlanState: (action: Action) => void
+  defaultData?: z.infer<typeof StreamPlanSchema>;
+  _id?: string
 }
 
 const StreamingPlanForm: React.FC<IStreamingPlanFormProps> = ({
@@ -93,7 +94,7 @@ const StreamingPlanForm: React.FC<IStreamingPlanFormProps> = ({
         confirmation &&
         <ConfirmationModal
           isOpen={confirmation}
-          message="Are you sure"
+          message={generateConfirmationMessage('plan', _id ? Action.UPDATE : Action.ADD)}
           onClose={onClose}
           btnType={ResponseStatus.SUCCESS}
           onConfirm={onSubmit}

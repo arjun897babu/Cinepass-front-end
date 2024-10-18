@@ -1,9 +1,9 @@
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider, { Settings } from "react-slick";
-import { MovieType } from "../admin/MovieForm";
-import { useSelector } from "react-redux";
+ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+import { MovieType } from "../../interface/Interface";
  
 type IData = {
   imageSrc: string,

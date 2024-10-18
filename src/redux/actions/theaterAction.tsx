@@ -3,11 +3,10 @@ import { AxiosError } from "axios";
 import { serverTheater } from "../../services";
 import { theatersEndPoints } from "../../services/endpoints/endPoints";
 import { TheaterSignUpData } from "../../interface/theater/ITheatersData";
-import { IGetMovieShowResponse, IGetScreenCount, IGetShowCountByScreen, IGetTicketCount, IRevenueResponse, ITheaterTicketData, LoginData, OTPVerification, ResponseData, ResponseData2, RevenueFilter, TicketFilter } from "../../interface/Interface";
+import { IGetMovieShowResponse, IGetScreenCount, IGetShowCountByScreen, IGetTicketCount, IRevenueResponse, ITheaterTicketData, LoginData, MovieType, OTPVerification, ResponseData, ResponseData2, RevenueFilter, TicketFilter } from "../../interface/Interface";
 
 import { ITheaterScreen, ITheaterScreenResponse } from "../../interface/theater/ITheaterScreen";
-import { MovieType } from "../../component/admin/MovieForm";
-import { IMovieShow } from "../../interface/theater/IMovieShow";
+ import { IMovieShow } from "../../interface/theater/IMovieShow";
 import { handleAxiosError } from "../../utils/customError";
 import { ITheaterOwnerEntity, TheaterOwnerProfile, TheaterProfile } from "../../interface/theater/ITheaterOwner";
 import { IGetMovieResponse } from "./adminAction";

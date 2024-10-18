@@ -1,6 +1,6 @@
 import { string, z } from 'zod'
 import { MovieFormat, Language } from './validator';
-import { MovieType } from '../component/admin/MovieForm';
+import { MovieType } from '../interface/Interface';
 
 export const movieSchema = (movieType: MovieType) => {
   const baseSchema = {
@@ -50,7 +50,7 @@ export const movieSchema = (movieType: MovieType) => {
           const validExtensions = ['.mp4', '.mpeg', '.webm', '.mkv'];
 
           const isValidType = validTypes.includes(file.type);
-      
+
           const fileExtension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
           const isValidExtension = validExtensions.includes(fileExtension);
 
@@ -279,7 +279,14 @@ export const StreamPlanSchema = z.object({
       required_error: generateFiledRequired('plan name'),
       invalid_type_error: "Invalid input type",
     })
-    .min(4, { message: 'Please enter a valid plan name' }),
+    .min(4, { message: 'Please enter a valid plan name' })
+    .max(15, { message: 'Plan name length exceeded' })
+    .refine((val) => val.trim().length > 0, {
+      message: "Plan name cannot be empty",
+    })
+    .refine((val) => !/^\d+$/.test(val.trim()), {
+      message: 'Enter a valid plan name'
+    }),
 
   price: z
     .number({

@@ -1,5 +1,6 @@
-import { MovieType } from "../../component/admin/MovieForm";
+import { MovieType } from "../../interface/Interface";
 
+ 
 export interface IEndPoints {
   login: string;
   logout: string;

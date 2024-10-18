@@ -1,8 +1,15 @@
 import { MouseEvent, useEffect, useRef, useState } from "react";
-import { Action, IStreamingMovieData, ITheaterMovieData, ResponseStatus } from "../../interface/Interface";
-import MovieForm, { MovieType } from "./MovieForm";
+import MovieForm from "./MovieForm";
 import Toast2 from "../Toast2";
 import { ToastMessage } from "../../pages/admin/layout/AdminUsers";
+import {
+  Action,
+  IMovie,
+  IStreamingMovieData,
+  ITheaterMovieData,
+  MovieType,
+  ResponseStatus
+} from "../../interface/Interface";
 
 interface MovieModalProp {
   id: string // id for modal
@@ -11,7 +18,7 @@ interface MovieModalProp {
   closeModal: () => void //call back for updating modal view state
   movieType: MovieType
   updateMovieTable: (action: Action) => void;
-  selectedData?:  ITheaterMovieData | IStreamingMovieData,// selected movie data | undefined for add movie
+  selectedData?: IMovie | ITheaterMovieData | IStreamingMovieData,// selected movie data | undefined for add movie
 }
 
 //modal for adding and updating movie

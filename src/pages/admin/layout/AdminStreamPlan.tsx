@@ -1,16 +1,24 @@
 import React, { lazy, MouseEvent, useEffect, useRef, useState } from "react"
 import AddButton from "../../../component/AddButton"
 import { Loader } from "../../../component/Loader"
-import { Action, IStreamPlanFilter, IStreamRentalPlan, ResponseStatus, Role } from "../../../interface/Interface"
-import { getSerialNumber } from "../../../utils/format"
+import { generateConfirmationMessage, getSerialNumber } from "../../../utils/format"
 import { FaEdit } from "react-icons/fa"
 import StreamingPlanForm from "../../../component/admin/StreamingPlanForm"
 import Toast2, { Toast } from "../../../component/Toast2"
 import Pagination from "../../../component/Pagination"
 import { useDispatch } from "react-redux"
 import { AppDispatch } from "../../../redux/store"
-import { getStreamPlan } from "../../../redux/actions/adminAction"
+import { deleteStreamPlan, getStreamPlan } from "../../../redux/actions/adminAction"
 import useErrorHandler from "../../../hooks/useErrorHandler"
+import {
+  Action,
+  IStreamPlanFilter,
+  IStreamRentalPlan,
+  ResponseStatus,
+  Role
+} from "../../../interface/Interface"
+import { GiCancel } from "react-icons/gi"
+import ConfirmationModal from "../../../component/ConfirmationModal"
 
 const EmptyData = lazy(() => import("../../../component/EmptyData"))
 
@@ -109,7 +117,7 @@ const AdminStreamPlan: React.FC = () => {
       modalRef.current.showModal()
     }
     e.preventDefault()
-    if (!planId || !plan) { 
+    if (!planId || !plan) {
       return
     }
 
@@ -119,15 +127,46 @@ const AdminStreamPlan: React.FC = () => {
       setEditForm(selectedPlan)
     }
   }
-  //for deleting a specific streaming plan
-  // const deleteButtonClicked = (e: MouseEvent, planId: string | undefined) => {
-  // e.preventDefault()
-  //   if (!planId || !plan) {
-  //     console.log('no plan id is found')
-  //     return
-  //   }
- 
-  // }
+
+
+  // for deleting a specific streaming plan
+  const [deletePlan, setDeletePlan] = useState<string | null>(null)
+  const [confirmation, setConfirmation] = useState(false)
+  const closeConfirmation = () => {
+    setConfirmation(false)
+    setDeletePlan(null)
+  }
+  async function deleteSelectedPlan() {
+    try {
+      if (!deletePlan) {
+        return
+      }
+      const response = await dispatch(deleteStreamPlan(deletePlan)).unwrap()
+      if (response.status === ResponseStatus.SUCCESS) {
+        setToast({
+          alert: ResponseStatus.SUCCESS,
+          message: response.message
+        })
+
+        updatePlanTable(Action.DELETE)
+      }
+    } catch (error) {
+      handleApiError(error)
+    } finally {
+      setConfirmation(false)
+    }
+  }
+
+
+
+  const deleteButtonClicked = (e: MouseEvent, planId: string | undefined) => {
+    e.preventDefault()
+    if (!planId || !plan) {
+      return
+    }
+    setDeletePlan(planId)
+    setConfirmation(true)
+  }
 
   function updatePlanTable(action: Action) {
     if (action === Action.ADD) {
@@ -158,6 +197,16 @@ const AdminStreamPlan: React.FC = () => {
           alert={toast.alert}
           clearToast={() => setToast(null)}
           message={toast.message}
+        />
+      }
+      {
+        confirmation &&
+        <ConfirmationModal
+          btnType={ResponseStatus.ERROR}
+          isOpen={confirmation}
+          message={generateConfirmationMessage('plan',Action.DELETE)}
+          onClose={closeConfirmation}
+          onConfirm={deleteSelectedPlan}
         />
       }
 
@@ -228,9 +277,9 @@ const AdminStreamPlan: React.FC = () => {
                       <button onClick={(e) => updatePlan(e, plan._id)} className="btn bg-transparent hover:bg-transparent border-none hover: join-item text-black">
                         <FaEdit />
                       </button>
-                      {/* <button onClick={(e) => deleteButtonClicked(e, plan._id)} className="btn bg-transparent hover:bg-transparent border-none hover: join-item text-red-600">
+                      <button onClick={(e) => deleteButtonClicked(e, plan._id)} className="btn bg-transparent hover:bg-transparent border-none hover: join-item text-red-600">
                         <GiCancel />
-                      </button> */}
+                      </button>
                     </td>
                   </tr>
                 ))}

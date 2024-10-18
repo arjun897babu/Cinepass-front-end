@@ -1,12 +1,11 @@
 import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from "react";
-import { Action, IMovie, ITheaterMovieData, ResponseStatus, Role } from "../../interface/Interface";
+import { Action, IMovie, ITheaterMovieData, MovieType, ResponseStatus, Role } from "../../interface/Interface";
 import { Controller, SubmitHandler, useForm as useForms } from "react-hook-form";
 import { ITheaterScreenResponse } from "../../interface/theater/ITheaterScreen";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../../redux/store";
 import { addMovieShows, getMovie, getScreen, updateMovieShow } from "../../redux/actions/theaterAction";
-import { MovieType } from "../admin/MovieForm";
-import { calculateEndTime, getIST, getMovieTime, setDefaultDate } from "../../utils/format";
+ import { calculateEndTime, getIST, getMovieTime, setDefaultDate } from "../../utils/format";
 import { IMovieShow } from "../../interface/theater/IMovieShow";
 import { Toast } from "../Toast2";
 import { zodResolver } from "@hookform/resolvers/zod";

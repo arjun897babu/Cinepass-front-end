@@ -1,5 +1,5 @@
 import { UploadError } from "./customError";
-import { MovieStatus } from "../interface/Interface";
+import { Action, MovieStatus } from "../interface/Interface";
 
 const dateTypeGuard = (date: string | Date) => typeof date === 'string' ? new Date(date) : date
 
@@ -146,4 +146,8 @@ export function getMovieTextStatus(status: MovieStatus): string {
     default:
       return "Stay tuned!!!!!!"
   }
+}
+
+export function generateConfirmationMessage(item: string, action: Action) {
+  return `Are you sure you want to  ${action} this ${item}?`
 }

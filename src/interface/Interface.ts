@@ -59,8 +59,11 @@ export interface ResponseData {
   status: ResponseStatus;
   message: string;
   error?: IInitialStateError | null,
+  // data?: {
+  //   [key: string]: string | number | boolean | object | any[];
+  // },
   data?: {
-    [key: string]: string | number | boolean | object | any[];
+    [key: string]:any;
   },
   redirectURL: string
 }
@@ -324,7 +327,10 @@ export type IGetTheaterOwnersCount = IGetUserCount & {
   rejected: number
   pending: number
 }
-
+export enum MovieType {
+  theater = 'Theater',
+  stream = 'Stream'
+}
 // export enum UserDoughnutChartLabel {
 //   VERIFIED = 'Verified',
 //   ACTIVE = 'Active',

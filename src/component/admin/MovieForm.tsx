@@ -1,13 +1,7 @@
 import React, { ChangeEvent, lazy, MouseEvent, RefObject, useCallback, useEffect, useRef, useState } from "react";
-import { Controller, SubmitHandler, useForm as useForms } from 'react-hook-form'
-
-import { Action, IMovie, IStreamingMovieData, IStreamRentalPlan, ITheaterMovieData, ResponseStatus, Role } from "../../interface/Interface";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../../redux/store";
-import { addMovie, getStreamPlan, updateMovie } from "../../redux/actions/adminAction";
 import { isResponseError, UploadError } from "../../utils/customError";
-
-import { Genre, isCloudinaryUrl, Language, MovieFormat } from "../../utils/validator";
 import { movieSchema } from "../../utils/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IoCloudUploadOutline } from "react-icons/io5";
@@ -16,14 +10,42 @@ import { MultiSelect } from "./MultiSelect";
 import ConfirmationModal from "../ConfirmationModal";
 import useErrorHandler from "../../hooks/useErrorHandler";
 import { HttpStatusCode } from "axios";
+
+import {
+  Controller,
+  SubmitHandler,
+  useForm as useForms
+} from 'react-hook-form'
+
+import {
+  Genre,
+  isCloudinaryUrl,
+  Language,
+  MovieFormat
+} from "../../utils/validator";
+
+import {
+  addMovie,
+  getStreamPlan,
+  updateMovie
+} from "../../redux/actions/adminAction";
+
+import {
+  Action,
+  IMovie,
+  IStreamingMovieData,
+  IStreamRentalPlan,
+  ITheaterMovieData,
+  MovieType,
+  ResponseStatus,
+  Role
+} from "../../interface/Interface";
+
 const ImagePreview = lazy(() => import("../image_preview/ImagePreview"));
 const VideoPlayer = lazy(() => import("./VideoPlayer"));
 const VideoPreview = lazy(() => import("./VideoPreview"));
 
-export enum MovieType {
-  theater = 'Theater',
-  stream = 'Stream'
-}
+
 interface MovieFormProps {
   movieType: MovieType; // theater movie | streaming movie
   setToast: (alert: ResponseStatus, message: string) => void // cal back for setting toast message
@@ -220,21 +242,21 @@ export const MovieForm: React.FC<MovieFormProps> = ({
 
   }
 
-  const updateSelectedImage = (url: string, type: "movie_poster" | "cover_photo"|"profile" ) => {
+  const updateSelectedImage = (url: string, type: "movie_poster" | "cover_photo" | "profile") => {
     if (type === 'movie_poster') {
       setMoviePoster(url)
     } else {
-      
+
       setCoverPhoto(url)
     }
     setValue(imageType as keyof IMovie, url)
 
   }
 
-  const removeSelectedImage = (type: "movie_poster" | "cover_photo"|"profile" ) => {
-    if (type === 'movie_poster') { 
+  const removeSelectedImage = (type: "movie_poster" | "cover_photo" | "profile") => {
+    if (type === 'movie_poster') {
       setMoviePoster(null)
-    } else { 
+    } else {
       setCoverPhoto(null)
     }
 
@@ -258,10 +280,10 @@ export const MovieForm: React.FC<MovieFormProps> = ({
         .then((result) => {
 
           if (imageName === 'movie_poster') {
-          
+
             setMoviePoster(result)
           } else {
-            
+
             setCoverPhoto(result)
           }
           setImageType(imageName)

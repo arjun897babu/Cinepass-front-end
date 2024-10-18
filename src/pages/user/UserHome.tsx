@@ -14,10 +14,9 @@ import { SearchWithFilters } from "../../component/user/footer/SearchWithFilters
 import Accordion from "../../component/user/Accordion"
 import { useSelector } from "react-redux"
 import type { RootState } from "../../redux/store"
-import { MovieFilter } from "../../interface/Interface"
+import { MovieFilter, MovieType } from "../../interface/Interface"
 import { isFilterEmpty } from "../../utils/validator"
-import { MovieType } from "../../component/admin/MovieForm"
-import { Loader } from "../../component/Loader"
+ import { Loader } from "../../component/Loader"
 import LocationModal from "./LocationModal"
 
 

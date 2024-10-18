@@ -1,9 +1,8 @@
 import { AsyncThunk, createAsyncThunk } from "@reduxjs/toolkit";
-import { IGetTheaterOwnersCount, IGetUserCount, IMovie, IStreamingMovieData, IStreamPlanFilter, IStreamRentalPlan, ITheaterMovieData, LoginData, MovieResponse, ResponseData, ResponseData2, RevenueFilter, Role } from "../../interface/Interface";
+import { IGetTheaterOwnersCount, IGetUserCount, IMovie, IStreamingMovieData, IStreamPlanFilter, IStreamRentalPlan, ITheaterMovieData, LoginData, MovieResponse, MovieType, ResponseData, ResponseData2, RevenueFilter, Role } from "../../interface/Interface";
 import { AxiosError } from "axios";
 import { serverAdmin } from "../../services";
 import { adminEndpoints } from "../../services/endpoints/endPoints";
-import { MovieType } from "../../component/admin/MovieForm";
 import { handleAxiosError } from "../../utils/customError";
 import { ITheaterOwnerEntity } from "../../interface/theater/ITheaterOwner";
 import { IUser } from "../../interface/user/IUserData";
@@ -58,7 +57,7 @@ export const getEntityDataForAdmin: AsyncThunk<IGetEntityDataForAdmin, { role: R
   async ({ role, pageNumber }, { rejectWithValue }) => {
     try {
       const response = await serverAdmin.get(adminEndpoints.getEntityData(role, pageNumber), {});
-       return await response.data
+      return await response.data
     } catch (error) {
       if (error instanceof AxiosError) {
         return rejectWithValue(error.response?.data)
@@ -161,7 +160,7 @@ export const updateMovie: AsyncThunk<IMovieResponse, { payload: IMovie, movieTyp
   'admin/updateMovie',
   async ({ payload, movieType, movieId }, { rejectWithValue }) => {
     try {
-       const response = await serverAdmin.put(adminEndpoints.updateMovie(movieType, movieId), { payload });
+      const response = await serverAdmin.put(adminEndpoints.updateMovie(movieType, movieId), { payload });
       return await response.data
     } catch (error) {
       return rejectWithValue(handleAxiosError(error))
@@ -197,8 +196,19 @@ export const manageMovie: AsyncThunk<IManageMovieResponse, { movieType: MovieTyp
   }
 )
 
+/********************************************************************
+*                            Steam Plan                             *
+*********************************************************************/
+
 interface IAddStreamPlanResponse extends ResponseData2 {
   data: IStreamRentalPlan
+}
+
+interface IGetStreamPlanResponse extends ResponseData2 {
+  data: {
+    maxPage: number;
+    data: IStreamRentalPlan[]
+  }
 }
 
 export const addStreamPlan: AsyncThunk<IAddStreamPlanResponse, Omit<IStreamRentalPlan, 'listed' | '_id'>, {}> = createAsyncThunk(
@@ -223,15 +233,6 @@ export const editStreamPlan: AsyncThunk<IAddStreamPlanResponse, { planId: string
     }
   }
 )
-
-
-interface IGetStreamPlanResponse extends ResponseData2 {
-  data: {
-    maxPage: number;
-    data: IStreamRentalPlan[]
-  }
-}
-
 export const getStreamPlan: AsyncThunk<IGetStreamPlanResponse, { filter?: Partial<IStreamPlanFilter | null> }, {}> = createAsyncThunk(
   '/admin/getStreamPlan',
   async ({ filter }, { rejectWithValue }) => {
@@ -245,6 +246,22 @@ export const getStreamPlan: AsyncThunk<IGetStreamPlanResponse, { filter?: Partia
     }
   }
 )
+export const deleteStreamPlan: AsyncThunk<ResponseData2, string, {}> = createAsyncThunk(
+  '/admin/deleteStreamPlan',
+  async (planId, { rejectWithValue }) => {
+    try {
+
+      const response = await serverAdmin.patch(adminEndpoints.streamPlan(planId))
+      return await response.data
+    } catch (error) {
+      return rejectWithValue(handleAxiosError(error))
+    }
+  }
+)
+
+
+
+
 
 interface IAdminGetEntityStatResponse extends ResponseData2 {
   data: {

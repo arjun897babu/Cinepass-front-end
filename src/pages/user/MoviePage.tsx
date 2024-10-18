@@ -7,11 +7,11 @@ import { getSingleMovie, getUserSingleStreamingMovies } from "../../redux/action
 import { convertTo12HourFormat, toValidJSDate } from "../../utils/format"
 import { IoIosInformationCircle } from "react-icons/io"
 import { isResponseError } from "../../utils/customError"
-import  { MovieType } from "../../component/admin/MovieForm"
-import {
+ import {
   IStreamingMovieData,
   ITheaterMovieData,
   MovieFilter,
+  MovieType,
   ResponseStatus
 } from "../../interface/Interface"
 

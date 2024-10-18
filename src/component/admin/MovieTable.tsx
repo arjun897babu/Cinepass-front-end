@@ -1,7 +1,6 @@
 import React, { lazy, MouseEvent } from "react";
-import { Action, IStreamingMovieData, ITheaterMovieData } from "../../interface/Interface";
-import { MovieType } from "./MovieForm";
-import { formatRunTime, getIST, getMovieSrc, getSerialNumber } from "../../utils/format";
+import { Action, IStreamingMovieData, ITheaterMovieData, MovieType } from "../../interface/Interface";
+ import { formatRunTime, getIST, getMovieSrc, getSerialNumber } from "../../utils/format";
 import { FaEdit } from "react-icons/fa";
 const EmptyData = lazy(() => import('../EmptyData'))
 

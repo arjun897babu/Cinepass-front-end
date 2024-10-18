@@ -1,12 +1,11 @@
 import React, { MouseEvent, useEffect, useState } from "react"
 import { FaEdit } from "react-icons/fa"
 import { GiCancel } from "react-icons/gi"
-import { MovieType } from "../../../component/admin/MovieForm"
-import { Action, ITheaterMovieData, ResponseStatus, Role } from "../../../interface/Interface"
+ import { Action, ITheaterMovieData, MovieType, ResponseStatus, Role } from "../../../interface/Interface"
 import { useDispatch } from "react-redux"
 import type { AppDispatch } from "../../../redux/store"
 import { getMovie, manageMovie } from "../../../redux/actions/adminAction"
-import { formatRunTime, getIST, getMovieSrc, getSerialNumber } from "../../../utils/format"
+import { formatRunTime, generateConfirmationMessage, getIST, getMovieSrc, getSerialNumber } from "../../../utils/format"
 import { Loader } from "../../../component/Loader"
 import { ToastMessage } from "./AdminUsers"
 import Toast2 from "../../../component/Toast2"
@@ -171,7 +170,7 @@ const AdminMovie: React.FC = () => {
         confirmation &&
         <ConfirmationModal
           btnType={ResponseStatus.ERROR}
-          message="Are you sure you want to delete this movie?"
+          message={generateConfirmationMessage('movie',Action.DELETE)}
           isOpen={confirmation}
           onClose={closeConfirmationModal}
           onConfirm={deleteMovie}
