@@ -1,10 +1,9 @@
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider, { Settings } from "react-slick";
-import { IStreamingMovieData } from "../../interface/Interface";
+import { IStreamingMovieData, MovieType } from "../../interface/Interface";
 import MovieInfoDisplay from "./MovieInfoDisplay";
-import { MovieType } from "../admin/MovieForm";
-
+ 
 const StreamCarousel: React.FC<{ movieDetails: IStreamingMovieData[] }> = ({ movieDetails }) => {
   const hasMultipleItems =movieDetails.length > 1;
   const settings: Settings = {
