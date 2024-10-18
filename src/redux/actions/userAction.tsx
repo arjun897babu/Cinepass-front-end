@@ -366,7 +366,7 @@ export const userPurchaseStream: AsyncThunk<IPaymentResponse, string, {}> = crea
 
 )
 
-interface IGetHlsUrlResponse extends ResponseData2 {
+export interface IGetHlsUrlResponse extends ResponseData2 {
   data: {
     hlsURL: string
   }

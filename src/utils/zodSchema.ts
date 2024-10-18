@@ -1,14 +1,14 @@
 import { string, z } from 'zod'
 import { MovieFormat, Language } from './validator';
-import { MovieType } from '../interface/Interface';
+import { Action, MovieType } from '../interface/Interface';
 
-export const movieSchema = (movieType: MovieType) => {
+export const movieSchema = (movieType: MovieType, action: Action) => {
   const baseSchema = {
     movie_name: z
       .string()
-      .min(1, 'enter a movie name(1-150 characters)')
-      .max(150, 'enter a movie name(1-150 characters)')
-      .regex(/^[a-zA-Z0-9']+(?: [a-zA-Z0-9\-:(),.']+)*$/, 'invalid movie name'),
+      .min(1, 'Enter a movie name (1-150 characters)')
+      .max(150, 'Enter a movie name (1-150 characters)')
+      .regex(/^[a-zA-Z0-9']+(?: [a-zA-Z0-9\-:(),.']+)*$/, 'Invalid movie name'),
     release_date: z
       .string()
       .min(1, 'Release date is required')
@@ -20,67 +20,73 @@ export const movieSchema = (movieType: MovieType) => {
       .refine((value) => value >= 60 && value <= 300, 'Must be between 60 and 300 minutes'),
     genres: z
       .array(z.string())
-      .nonempty('choose one field'),
+      .nonempty('Choose at least one genre'),
     languages: z
       .array(z.string())
-      .nonempty('choose one field'),
+      .nonempty('Choose at least one language'),
     format: z
       .array(z.string())
-      .nonempty('choose one field'),
+      .nonempty('Choose at least one format'),
     cover_photo: z
       .string()
-      .min(1, 'image is required'),
+      .min(1, 'Cover photo is required'),
     movie_poster: z
       .string()
-      .min(1, 'image is required'),
+      .min(1, 'Movie poster is required'),
   };
 
+
+  const fileSchema = z
+    .instanceof(File)
+    .refine((file) => {
+      const validTypes = ['video/mp4', 'video/mpeg', 'video/webm', 'video/mkv'];
+      const fileExtension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+      const validExtensions = ['.mp4', '.mpeg', '.webm', '.mkv'];
+
+      return validTypes.includes(file.type) || validExtensions.includes(fileExtension);
+    }, {
+      message: 'Invalid video format. Allowed formats are .mp4, .mpeg, .webm, .mkv',
+    })
+    .refine((file) => file.size <= 200 * 1024 * 1024, {
+      message: 'File size must be less than 200MB',
+    });
+
+  const videoFileSchema = z.object({
+    secure_url: z.string(),
+    public_id: z.string(),
+  });
+
   if (movieType === MovieType.stream) {
-    return z.object({
-      ...baseSchema,
-      plan: z
-        .string({
-          required_error: 'Choose a plan'
+    if (action === Action.ADD) {
+      return z.object({
+        ...baseSchema,
+        plan: z.string({
+          required_error: 'Choose a plan',
         }),
-      file: z
-        .instanceof(File)
-
-        .refine((file) => {
-          const validTypes = ['video/mp4', 'video/mpeg', 'video/webm', 'video/mkv'];
-          const validExtensions = ['.mp4', '.mpeg', '.webm', '.mkv'];
-
-          const isValidType = validTypes.includes(file.type);
-
-          const fileExtension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
-          const isValidExtension = validExtensions.includes(fileExtension);
-
-          return isValidType || isValidExtension;
-        },
-          {
-            message: 'Invalid video format... '
-          }
-        )
-        .refine((file) => file.size <= 200 * 1024 * 1024,
-          {
-            message: 'File size must be less than 200MB',
-          }
-        )
-        .optional()
-        .refine((file) => file !== undefined, {
+        file: fileSchema.refine((file) => file !== undefined, {
           message: 'Please upload a movie video file.',
-        })
-
-    })
-  } else {
-
-    return z.object({
-      ...baseSchema,
-      plan: z.string().optional(),
-      file: z.instanceof(File).optional(),
-    })
+        }),
+      });
+    } else if (action === Action.UPDATE) {
+      return z.object({
+        ...baseSchema,
+        plan: z.string().optional(),
+        file: z.union([
+          fileSchema.optional(),
+          videoFileSchema.optional(),
+        ]),
+      });
+    }
   }
 
-}
+  // For non-streaming movies or theater releases
+  return z.object({
+    ...baseSchema,
+    plan: z.string().optional(),
+    file: z.instanceof(File).optional(), // Optional file, not required in non-stream movies
+  });
+};
+
 
 
 export const movieShowSchema = z.object({

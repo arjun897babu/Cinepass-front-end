@@ -102,10 +102,6 @@ export interface GoogleSignUp {
   client_id: string
 }
 
-export interface VideoFile {
-  secure_url: string;
-  public_id: string;
-}
 export interface ICast {
   image: string;
   name: string;
@@ -115,7 +111,17 @@ export interface MovieResponse {
   maxPage: number,
   movies: (ITheaterMovieData | IStreamingMovieData)[]
 }
-
+export type IPlan = {
+  _id: string;
+  planName: string;
+  price: number;
+  validity: number;
+  listed: boolean;
+}
+export interface VideoFile {
+  secure_url: string;
+  public_id: string;
+}
 export interface IMovie {
   _id?: string;
   movie_name: string;
@@ -148,13 +154,7 @@ export interface ITheaterMovieData {
   slug: string
 }
 
-export type IPlan = {
-  _id: string;
-  planName: string;
-  price: number;
-  validity: number;
-  listed: boolean;
-}
+
 
 
 export interface IStreamingMovieData extends ITheaterMovieData {

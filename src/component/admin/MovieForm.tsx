@@ -20,12 +20,14 @@ import {
 import {
   Genre,
   isCloudinaryUrl,
+  isIStreamingMovieData,
   Language,
   MovieFormat
 } from "../../utils/validator";
 
 import {
   addMovie,
+  adminGetHlsUrl,
   getStreamPlan,
   updateMovie
 } from "../../redux/actions/adminAction";
@@ -53,7 +55,7 @@ interface MovieFormProps {
   closeButtonRef: RefObject<HTMLDialogElement> // for closing the modal after successful response
   selectedData?: IMovie | ITheaterMovieData | IStreamingMovieData // selected movie data
   closeModal: () => void // changing the modal view state in parent
-  action: string
+  action: Action
   updateMovieTable: (action: Action) => void;
 }
 
@@ -93,16 +95,27 @@ export const MovieForm: React.FC<MovieFormProps> = ({
     formState: { errors }
   } = useForms<IMovie>(
     {
-      resolver: zodResolver(movieSchema(movieType)),
+      resolver: zodResolver(movieSchema(movieType, action)),
       defaultValues: selectedData
     }
   )
   const dispatch = useDispatch<AppDispatch>()
 
+  function deleteDefaultFile() {
+    if (selectedData && isIStreamingMovieData(selectedData)) {
+      clearErrors('file')
+      setHlsURL(null)
+      setPublicId(selectedData.file.public_id)
+      setValue('file', undefined)
+    }
+  }
+
   const [loading, setLoading] = useState<boolean>(false);
+  const [publicId, setPublicId] = useState<string | undefined>(undefined)
   const [coverPhoto, setCoverPhoto] = useState<string | null>(null);
   const [moviePoster, setMoviePoster] = useState<string | null>(null);
-  const [videoFile, setVideoFile] = useState<File | null>(null)
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [hlsURL, setHlsURL] = useState<string | null>(null)
 
   const removePreview = () => {
     setVideoFile(null)
@@ -162,13 +175,35 @@ export const MovieForm: React.FC<MovieFormProps> = ({
     }
   }
 
+  async function getHlsUrl() {
+    try {
+
+      if (selectedData && isIStreamingMovieData(selectedData)) {
+        const response = await dispatch(adminGetHlsUrl(selectedData.file.public_id)).unwrap()
+        if (response.status === ResponseStatus.SUCCESS) {
+          setHlsURL(response.data.hlsURL)
+        }
+      } else {
+        return
+      }
+    } catch (error) {
+      handleApiError(error)
+    }
+  }
+
 
   const releaseDateRef = useRef<HTMLInputElement | null>(null)
   useEffect(() => {
     const min = setDefaultDate(`${new Date()}`, 1)
     const defaultDate = setDefaultDate(`${selectedData.release_date}`, action === Action.UPDATE ? 0 : 1)
+
+    if (action === Action.UPDATE && movieType === MovieType.stream) {
+
+      getHlsUrl()
+    }
     if (releaseDateRef.current) {
-      releaseDateRef.current.min = min
+
+      releaseDateRef.current.min = action === Action.ADD ? min : ''
       releaseDateRef.current.value = defaultDate
       // if (action === Action.UPDATE && new Date(selectedData.release_date) <= new Date()) {
       //   releaseDateRef.current.max = defaultDate
@@ -234,7 +269,12 @@ export const MovieForm: React.FC<MovieFormProps> = ({
         moviePosterRef.current?.click()
         break
       case 'file':
-        movieFileRef.current?.click()
+
+        if (watch('file') && !(watch('file') instanceof File)) {
+          setError('file', { message: 'Please remove the existing file' })
+        } else {
+          movieFileRef.current?.click()
+        }
         break
       default:
         console.log('invalid file name')
@@ -307,8 +347,11 @@ export const MovieForm: React.FC<MovieFormProps> = ({
         updateMovieTable(Action.ADD)
 
       } else if (action === Action.UPDATE && selectedData._id) {
-        response = await dispatch(updateMovie({ payload: movieData, movieType, movieId: selectedData._id })).unwrap()
-        updateMovieTable(Action.UPDATE)
+        response = await dispatch(updateMovie({ payload: movieData, movieType, movieId: selectedData._id, publicId })).unwrap()
+        if (response.status === ResponseStatus.SUCCESS) {
+          updateMovieTable(Action.UPDATE)
+          setPublicId(undefined)
+        }
       }
       if (response?.status === ResponseStatus.SUCCESS) {
         setToast(ResponseStatus.SUCCESS, response.message);
@@ -619,11 +662,11 @@ export const MovieForm: React.FC<MovieFormProps> = ({
                 {errors.file.message}
               </small>
             )}
-            {action === Action.UPDATE ?
+            {hlsURL && watch('file') ?
               (<VideoPlayer
                 role={Role.admin}
-                url='https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8'
-
+                url={hlsURL}
+                deleteDefaultFile={deleteDefaultFile}
               />) :
               (
                 videoFile &&

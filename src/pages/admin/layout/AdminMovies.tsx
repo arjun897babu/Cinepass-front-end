@@ -159,7 +159,7 @@ const AdminMovie: React.FC = () => {
         <MovieModal  // add movie form modal
           updateMovieTable={updateMovieTable}
           closeModal={closeAddMovieModal}
-          action="add"
+          action={Action.ADD}
           id="addMovie"
           setToast={setToast}
           movieType={MovieType.theater}
@@ -257,7 +257,7 @@ const AdminMovie: React.FC = () => {
             updateMovieTable={updateMovieTable}
             closeModal={closeModalView}
             setToast={setToast}
-            action="update"
+            action={Action.UPDATE}
             id="updateMovie"
             movieType={MovieType.theater}
             selectedData={selectedMovie}

@@ -13,7 +13,7 @@ import {
 
 interface MovieModalProp {
   id: string // id for modal
-  action: string // update or add 
+  action: Action // update or add 
   setToast: (alert: ResponseStatus, message: string) => void; // call back  for setting toast message
   closeModal: () => void //call back for updating modal view state
   movieType: MovieType

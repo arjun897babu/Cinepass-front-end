@@ -152,7 +152,7 @@ const AdminStream: React.FC = () => {
         <MovieModal  // add movie form modal
           updateMovieTable={updateMovieTable}
           closeModal={closeForm}
-          action="add"
+          action={Action.ADD}
           id="addMovie"
           setToast={setToast}
           movieType={MovieType.stream}
@@ -166,7 +166,7 @@ const AdminStream: React.FC = () => {
           updateMovieTable={updateMovieTable}
           closeModal={closeForm}
           setToast={setToast}
-          action="update"
+          action={Action.UPDATE}
           id="updateMovie"
           selectedData={editMovie}
           movieType={MovieType.stream}

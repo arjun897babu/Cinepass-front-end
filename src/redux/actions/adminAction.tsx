@@ -7,6 +7,7 @@ import { handleAxiosError } from "../../utils/customError";
 import { ITheaterOwnerEntity } from "../../interface/theater/ITheaterOwner";
 import { IUser } from "../../interface/user/IUserData";
 import { IRevenueResponseData } from "./theaterAction";
+import { IGetHlsUrlResponse } from "./userAction";
 
 export const loginAdmin: AsyncThunk<ResponseData, LoginData, {}> = createAsyncThunk(
   'admin/login',
@@ -156,11 +157,16 @@ export const addMovie: AsyncThunk<IMovieResponse, { movieData: IMovie; movieType
     }
   }
 )
-export const updateMovie: AsyncThunk<IMovieResponse, { payload: IMovie, movieType: MovieType, movieId: string }, {}> = createAsyncThunk(
+export const updateMovie: AsyncThunk<IMovieResponse, { payload: IMovie, movieType: MovieType, movieId: string, publicId?: string }, {}> = createAsyncThunk(
   'admin/updateMovie',
-  async ({ payload, movieType, movieId }, { rejectWithValue }) => {
+  async ({ payload, movieType, movieId, publicId }, { rejectWithValue }) => {
     try {
-      const response = await serverAdmin.put(adminEndpoints.updateMovie(movieType, movieId), { payload });
+      const response = await serverAdmin.put(adminEndpoints.updateMovie(movieType, movieId), payload, {
+        headers: {
+          ...(movieType === MovieType.stream && (payload.file instanceof File) && { "Content-Type": 'multipart/form-data' })
+        },
+        params: { publicId }
+      });
       return await response.data
     } catch (error) {
       return rejectWithValue(handleAxiosError(error))
@@ -259,6 +265,20 @@ export const deleteStreamPlan: AsyncThunk<ResponseData2, string, {}> = createAsy
   }
 )
 
+export const adminGetHlsUrl: AsyncThunk<IGetHlsUrlResponse, string, {}> = createAsyncThunk(
+  '/admin/adminGetHlsUrl',
+  async (publicId, { rejectWithValue }) => {
+    console.log('functino called');
+    try {
+      const response = await serverAdmin.get(adminEndpoints.adminGetStreamingUrl(publicId))
+      console.log(response)
+      return await response.data
+    } catch (error) {
+      return rejectWithValue(handleAxiosError(error))
+    }
+  }
+
+)
 
 
 

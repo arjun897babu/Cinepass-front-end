@@ -1,6 +1,6 @@
 import { ITicketInfoProps } from "../component/user/TicketInfo"
-import { IGetTheaterOwnersCount, IGetUserCount, IPaymentSummaryLocationState, IStreamRentLocationState, MovieFilter, MovieStatus } from "../interface/Interface"
-import { extractHourAndMin } from "./format" 
+import { IGetTheaterOwnersCount, IGetUserCount, IMovie, IPaymentSummaryLocationState, IStreamingMovieData, IStreamRentLocationState, ITheaterMovieData, MovieFilter, MovieStatus } from "../interface/Interface"
+import { extractHourAndMin } from "./format"
 
 export enum MovieFormat {
   TWO_D = "2D",
@@ -204,7 +204,7 @@ function checkMovieStatus(showTime: string, endTime: string, releaseDate: string
   todayEndTime.setHours(endHour, endMin, 0, 0);
 
   if (currentDate >= todayShowTime && currentDate <= todayEndTime) {
- 
+
     return MovieStatus.RUNNING;
   }
 
@@ -237,8 +237,20 @@ function isReleased(releaseDate: string): boolean {
   return new Date() >= new Date(releaseDate);
 }
 
+function isIStreamingMovieData(data: IMovie | IStreamingMovieData | ITheaterMovieData): data is IStreamingMovieData {
+
+  return (
+    'file' in data &&
+    typeof data.file === 'object' &&
+    data.file !== null &&  !(data.file instanceof File)  &&
+    typeof data.file.secure_url === 'string' &&
+    typeof data.file.public_id === 'string'
+  );
+}
+
 
 export {
+  isIStreamingMovieData,
   isReleased,
   isITheaterStat,
   isITicketSummaryProps,

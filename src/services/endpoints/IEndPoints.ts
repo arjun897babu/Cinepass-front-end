@@ -61,5 +61,6 @@ export interface AdminEndpoint extends IEndPoints {
   streamPlan: (planId?: string) => string;
   adminGetEntityStat: string
   adminStreamRevenue: string
+  adminGetStreamingUrl: (publicId: string) => string
 
 }

@@ -48,8 +48,8 @@ export const theatersEndPoints: TheaterEndpoint = {
   updateMovieShow: (showId) => `/shows/${showId}`,
   deleteMovieShow: (showId) => `/shows/${showId}`,
   getTicketBookings: `/tickets`,
-  theaterGeCountStat:`/dashboard/stat`,
-  theaterRevenueByScreen:`/dashboard/revenue/screen`
+  theaterGeCountStat: `/dashboard/stat`,
+  theaterRevenueByScreen: `/dashboard/revenue/screen`
 
 };
 
@@ -65,5 +65,6 @@ export const adminEndpoints: AdminEndpoint = {
   updateMovie: (movieTpe, movieId) => `/movie/${movieTpe}/${movieId}`,
   streamPlan: (planId) => `/stream-plan${planId ? `/${planId}` : ''}`,
   adminGetEntityStat: `/dashboard/statics`,
-  adminStreamRevenue:`/dashboard/stream`
+  adminStreamRevenue: `/dashboard/stream`,
+  adminGetStreamingUrl: (publicId: string) => `/stream/${publicId}`
 }

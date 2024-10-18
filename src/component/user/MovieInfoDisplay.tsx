@@ -1,7 +1,7 @@
 import { memo, useState } from "react"
 import { IStreamingMovieData, ITheaterMovieData, MovieType, ResponseStatus, Role } from "../../interface/Interface"
 import { formatRunTime, getDate, getIST, getMonthName, getYear } from "../../utils/format"
- import { FaRegPlayCircle } from "react-icons/fa"
+import { FaRegPlayCircle } from "react-icons/fa"
 import ConfirmationModal from "../ConfirmationModal"
 import { useNavigate } from "react-router-dom"
 import { useDispatch } from "react-redux"
@@ -132,7 +132,7 @@ const MovieInfoDisplay: React.FC<{ movieType: MovieType, movieDetails: ITheaterM
             </div>
             {/* for streaming movie */}
             {
-              movieType === MovieType.stream && 'streamingPlan' in movieDetails && location.pathname.includes('/movie')
+              isReleased(movieDetails.release_date) && movieType === MovieType.stream && 'streamingPlan' in movieDetails && location.pathname.includes('/movie')
               &&
 
               <div className="mt-4 text-sm" >
@@ -140,7 +140,7 @@ const MovieInfoDisplay: React.FC<{ movieType: MovieType, movieDetails: ITheaterM
                   onClick={!movieDetails.isPurchased ? makePurchase : getStreamingUrl}
                   className="btn btn-wide bg-pink-600 border-0 hover:bg-pink-700"
                 >
-                  
+
                   {
                     movieDetails.isPurchased ?
                       (
@@ -148,9 +148,9 @@ const MovieInfoDisplay: React.FC<{ movieType: MovieType, movieDetails: ITheaterM
                           (<div className="loading loading-xs"></div>)
                           : (<FaRegPlayCircle className="text-white" size={30} />)
                       )
-                      : isReleased(movieDetails.release_date) ?
-                        (`Rent ₹${movieDetails.streamingPlan.price}`)
-                        : ('')
+                      :
+                      (`Rent ₹${movieDetails.streamingPlan.price}`)
+
                   }
 
                 </button>

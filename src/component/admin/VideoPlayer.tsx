@@ -4,9 +4,17 @@ import { Role } from "../../interface/Interface"
 import { MdDelete } from "react-icons/md"
 
 
-const VideoPlayer: React.FC<{ role: Role, url: string, removeHlsUrl?: () => void }> = ({ role, url, removeHlsUrl }) => {
+const VideoPlayer: React.FC<{ role: Role, url: string, removeHlsUrl?: () => void, deleteDefaultFile?: () => void }> = ({ role, url, removeHlsUrl, deleteDefaultFile }) => {
 
-  const deleteVideo = (e: MouseEvent<HTMLButtonElement>) => e.preventDefault()
+  const deleteVideo = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    if (!deleteDefaultFile) {
+      return
+    }
+
+    deleteDefaultFile()
+
+  }
   const videoRef = useRef<HTMLVideoElement | null>(null)
   useEffect(() => {
     const video = videoRef.current
