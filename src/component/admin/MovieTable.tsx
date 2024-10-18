@@ -14,7 +14,7 @@ interface IMovieTableProps {
 }
 
 const MovieTable: React.FC<IMovieTableProps> = ({ data, loading, selectedMovie, currentPage, movieType }) => {
- 
+  console.log(movieType)
   const updateStreamingMovie = (e: MouseEvent<HTMLButtonElement>, _id: string | undefined) => {
     e.preventDefault()
     if (!_id) {
