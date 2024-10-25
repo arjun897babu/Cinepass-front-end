@@ -20,16 +20,17 @@ const UserOTPVerification: React.FC = (): JSX.Element => {
 
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate();
-
+  
   const { error, tempMail } = useSelector((state:RootState)=>state.user)
-
+  
+  const { timeRemaining, isActive, resetTimer ,startTimer} = useTimer(120);
 
   useEffect(() => {
 
     if (!tempMail) {
       navigate('/login')
     }
-
+    startTimer()
     dispatch(userClearError())
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
 
@@ -49,7 +50,6 @@ const UserOTPVerification: React.FC = (): JSX.Element => {
   }, Role.users);
 
 
-  const { timeRemaining, isActive, resetTimer } = useTimer(5);
   const [toastMessage, setToastMessage] = useState<Toast | null>(null)
   const clearToast = () => setToastMessage(null)
   const setToast = (toast: Toast) => setToastMessage({ alert: toast.alert, message: toast.message })
@@ -146,9 +146,9 @@ const UserOTPVerification: React.FC = (): JSX.Element => {
               <button className="bg-black rounded-md  text-white py-2  " disabled={timeRemaining === 0} >
                 Verify OTP
               </button>
-              <div className="mt-2 text-white text-sm text-center">
+              {isActive&&<div className="mt-2 text-white text-sm text-center">
                 Time remaining: {formatTime(timeRemaining)}
-              </div>
+              </div>}
 
 
             </form>
