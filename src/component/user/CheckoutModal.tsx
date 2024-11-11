@@ -10,6 +10,9 @@ import { ResponseStatus } from "../../interface/Interface"
 import { formatTime } from "../../utils/format"
 import { useTimer } from "../../hooks/useTimer"
 import { isResponseError } from "../../utils/customError"
+const {
+  VITE_DOMAIN
+} = import.meta.env
 interface CheckoutModalPops {
   closeModal: () => void,
   amount: number
@@ -40,8 +43,7 @@ const CheckoutModal: React.FC<CheckoutModalPops> = ({ closeModal, theaterDetail,
       const { } = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          return_url: "http://localhost:3000/paymentsuccess",
-
+          return_url: `${VITE_DOMAIN}/paymentsuccess`,
         },
       });
 
