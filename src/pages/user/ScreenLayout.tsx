@@ -10,23 +10,24 @@ import screen_layout_icon from '/screen_icon.svg'
 import { Loader } from "../../component/Loader"
 import { convertTo12HourFormat, getDate, getDayName, getMonthName, getSeatName } from "../../utils/format"
 import { ColumnNumbers, SeatRow } from "../../component/theaters/SeatLayoutModal"
+import Toast2, { Toast } from "../../component/Toast2"
 
 const ScreenLayout: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
- 
+
   const { city } = useSelector((state: RootState) => state.user)
 
   const location = useLocation()
 
-  // const [toastmessage, setToastMessage] = useState<Toast | null>(null)
+  const [toastmessage, setToastMessage] = useState<Toast | null>(null)
   const [loading, setLoading] = useState(false)
-  // const setToast = (toast: Toast) => setToastMessage(
-  //   {
-  //     alert: toast.alert,
-  //     message: toast.message
-  //   }
-  // )
+  const setToast = (toast: Toast) => setToastMessage(
+    {
+      alert: toast.alert,
+      message: toast.message
+    }
+  )
 
   const [showDetails, setShowDetails] = useState<IGetSingleShow | null>(null)
   const [selectedSeats, setSelectedSeats] = useState<string[]>([])
@@ -67,11 +68,24 @@ const ScreenLayout: React.FC = () => {
 
 
   const handleSeatSelection = (rowIndex: number, colIndex: number) => {
+    const maxSeat = 10
+    const reservedSeats = showDetails?.show.reserved?.length??0
+    let seatsLeft = showDetails?.screen.seating_capacity!-reservedSeats
+
     const seatName = getSeatName(rowIndex, colIndex);
     setSelectedSeats((prevSelectedSeats) => {
-      if (prevSelectedSeats.includes(seatName)) {
+       if (prevSelectedSeats.includes(seatName)) {
+        seatsLeft++
         return prevSelectedSeats.filter((seat) => seat !== seatName);
       }
+      if(prevSelectedSeats.length>=maxSeat){
+        setToast({
+          alert:ResponseStatus.ERROR,
+          message:'Limit exceeded! Only 10 tickets allowed for a user'
+        })
+        return prevSelectedSeats
+      }
+      seatsLeft--
       return [...prevSelectedSeats, seatName];
     });
   }
@@ -118,6 +132,14 @@ const ScreenLayout: React.FC = () => {
           onConfirm={onBookingConfirm}
         />
       } */}
+      {
+        toastmessage &&
+        <Toast2
+          alert={toastmessage.alert}
+          message={toastmessage.message}
+          clearToast={() => setToastMessage(null)}
+        />
+      }
       <div className="bg-white h-screen flex flex-col ">
         {/* theater and show details */}
         <div className=" space-y-2 sm:flex p-2 items-center justify-between gap-3">

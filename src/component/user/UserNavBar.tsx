@@ -6,12 +6,11 @@ import { GiHamburgerMenu } from "react-icons/gi"
 import { RxCross1 } from "react-icons/rx";
 import { useDispatch, useSelector } from 'react-redux'
 import type { AppDispatch, RootState } from '../../redux/store'
-import { getAllMovies, getTheatersByCity, getUserProfile, logoutUser } from '../../redux/actions/userAction'
-import { IMovie, ResponseStatus, Role } from '../../interface/Interface'
+import { getAllMovies, getUserProfile, logoutUser } from '../../redux/actions/userAction'
+import { IMovie, Role } from '../../interface/Interface'
 import useErrorHandler from '../../hooks/useErrorHandler'
 import { isResponseError } from '../../utils/customError'
-import { ITheaterOwnerEntity } from '../../interface/theater/ITheaterOwner'
-import MoviesTheatersDropdown from './MoviesTheatersDropdown'
+ import MoviesTheatersDropdown from './MoviesTheatersDropdown'
 import { HttpStatusCode } from 'axios'
 
 
@@ -24,8 +23,7 @@ const UserNavBar: React.FC = (): JSX.Element => {
   const handleApiError = useErrorHandler(Role.users)
   // const [loading, setLoading] = useState<boolean>(false)
   const [movies, setMovies] = useState<IMovie[] | []>([])
-  const [theaters, setTheaters] = useState<Partial<ITheaterOwnerEntity>[] | []>([])
-
+ 
   const navigate = useNavigate()
   // Handler for toggle
   const handleToggle = () => {
@@ -58,16 +56,11 @@ const UserNavBar: React.FC = (): JSX.Element => {
     try {
       // setLoading(true);
       if (city) {
-        const [moviesResponse, theatersResponse] = await Promise.all([
-          dispatch(getAllMovies({ city })).unwrap(),
-          dispatch(getTheatersByCity(city)).unwrap(),
-        ]);
+        const moviesResponse =  await dispatch(getAllMovies({ city })).unwrap()
         if (moviesResponse) {
           setMovies(moviesResponse);
         }
-        if (theatersResponse.status === ResponseStatus.SUCCESS) {
-          setTheaters(theatersResponse.data.theater);
-        }
+        
       } else {
         navigate('/', { replace: true });
       }
@@ -132,11 +125,6 @@ const UserNavBar: React.FC = (): JSX.Element => {
             city={`${city}`}
             item='movies'
             moviesOrTheater={movies}
-          />
-          <MoviesTheatersDropdown
-            city={`${city}`}
-            item='theaters'
-            moviesOrTheater={theaters}
           />
           <Link className='hover:bg-blue-100 uppercase p-3 font-semibold ' to={'/streams'}>streams</Link>
         </div>

@@ -155,7 +155,8 @@ export function checkInputValue(name: string, value: string, value2?: string): R
     case 'column':
       validationResponse = validateCol(value);
       break
-    case 'aminety' || 'language':
+    case 'aminety' :
+    case 'language':
       validationResponse = validateEnumValue(name, value);
       break
     case 'movie_name':

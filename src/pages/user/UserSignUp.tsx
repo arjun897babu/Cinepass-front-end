@@ -12,6 +12,7 @@ import { userClearError } from '../../redux/reducers/userReducer';
  
 import { ResponseStatus, Role } from '../../interface/Interface';
 import { PasswordInput } from '../../component/PasswordInput';
+import {  isResponseError } from '../../utils/customError';
 
 export const UserSignUp: React.FC = (): JSX.Element => {
 
@@ -48,7 +49,14 @@ export const UserSignUp: React.FC = (): JSX.Element => {
           navigate(response.redirectURL, {})
         }
       } catch (err) {
-        console.log(err)
+        if(isResponseError(err)){
+          // if(err.statusCode)
+          setInputError((prevErrors) => ({
+            ...prevErrors,
+            [err.data.error]: err.data.message,
+          }));           
+          
+        }
       }
     }
   }

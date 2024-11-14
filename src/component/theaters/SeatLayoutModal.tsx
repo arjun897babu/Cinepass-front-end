@@ -2,6 +2,7 @@ import { MouseEvent, useEffect, useRef } from "react";
 import { ISeat } from "../../interface/theater/ITheaterScreen";
 import { IReservedSeats } from "../../interface/theater/IMovieShow";
 import { Role } from "../../interface/Interface";
+import { getSeatName } from "../../utils/format";
 
 interface ISeatRowProps {
   rowNumber: number;
@@ -21,10 +22,9 @@ export const SeatRow: React.FC<ISeatRowProps> = ({ rowNumber, seats, reserved, h
         {String.fromCharCode(64 + rowNumber)}
       </div>
       {seats.map((seat, index) => {
-
+        
         const isBooked = reserved?.some((reservation) => reservation.reservedSeats.includes(seat.name));
-        // const isBooked = [ 'A1', 'B2', 'C4' ].includes(seat.name);
-        const isSelected = selectedSeat?.includes(seat.name)
+         const isSelected = selectedSeat?.includes(seat.name)
        
         return (
           <div className={`${role === Role.users && seat.available ? 'tooltip' : role !== Role.users ? 'tooltip' : ''}`} data-tip={seat.name}>
