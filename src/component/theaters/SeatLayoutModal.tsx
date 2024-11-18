@@ -2,7 +2,6 @@ import { MouseEvent, useEffect, useRef } from "react";
 import { ISeat } from "../../interface/theater/ITheaterScreen";
 import { IReservedSeats } from "../../interface/theater/IMovieShow";
 import { Role } from "../../interface/Interface";
-import { getSeatName } from "../../utils/format";
 
 interface ISeatRowProps {
   rowNumber: number;
@@ -17,7 +16,7 @@ export const SeatRow: React.FC<ISeatRowProps> = ({ rowNumber, seats, reserved, h
  
 
   return (
-    <div key={rowNumber} className="relative flex items-center ">
+    <div key={`${rowNumber+1}`} className="relative flex items-center ">
       <div className="absolute -left-7 font-light text-xs text-black flex items-center justify-center">
         {String.fromCharCode(64 + rowNumber)}
       </div>
