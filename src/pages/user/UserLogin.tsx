@@ -218,7 +218,7 @@ export const UserLogin: React.FC = (): JSX.Element => {
 
 
             <button className={`bg-black rounded-md text-white   p-2`} disabled={loading}>
-              {!loading ? 'Loading' : <span className=" loading loading-xs m-0 p-0  "></span>}
+              {!loading ? 'Login' : <span className=" loading loading-xs m-0 p-0  "></span>}
             </button>
           </form>
 

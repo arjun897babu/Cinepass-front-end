@@ -25,13 +25,6 @@ export const UserProfile: React.FC = (): JSX.Element => {
               Your bookings
             </button>
           </Link>
-          <Link to="/profile/stream">
-            <button
-              className={`btn capitalize text-sm  ${location.pathname === "/profile/stream" ? "bg-sky-300 hover:bg-sky-200" : "hover:bg-sky-200"}`}
-            >
-              Stream
-            </button>
-          </Link>
         </div>
       </div>
 
