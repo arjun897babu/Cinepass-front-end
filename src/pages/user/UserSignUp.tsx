@@ -1,5 +1,5 @@
 
-import React, { FormEvent, useEffect } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import '../../index.css';
 import { Link, useNavigate } from 'react-router-dom'
 import backGroundImage from '/Iconic Movie Posters Collage.webp';
@@ -36,13 +36,13 @@ export const UserSignUp: React.FC = (): JSX.Element => {
   }, Role.users)
 
   const { handleSubmit } = useFormSubmit(formData, setInputError);
-
+  const [loading,setLoading] = useState(false)
   const onSubmit = async (event: FormEvent) => {
     const isValid = handleSubmit(event);
 
 
     if (isValid) {
-
+      setLoading(true)
       try {
         const response = await dispatch(signUpUser(formData)).unwrap();
          if (response.status === ResponseStatus.SUCCESS) {
@@ -57,6 +57,8 @@ export const UserSignUp: React.FC = (): JSX.Element => {
           }));           
           
         }
+      }finally{
+        setLoading(false)
       }
     }
   }
@@ -146,8 +148,8 @@ export const UserSignUp: React.FC = (): JSX.Element => {
               inputError={inputError.confirm_password ? inputError.confirm_password : undefined}
             />
 
-            <button type='submit' className="bg-black  mt-4 rounded-md text-white py-2">
-              Register
+            <button type='submit' className="bg-black  mt-4 rounded-md text-white py-2" >
+              {!loading?'Register':<span className=" loading loading-xs m-0 p-0  "></span>}
             </button>
 
           </form>
