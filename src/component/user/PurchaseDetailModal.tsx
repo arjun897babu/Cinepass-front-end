@@ -75,7 +75,7 @@ const PurchaseDetailModal: React.FC<{ role: Role, data: IUserTicketData, closeMo
           >
             ✕
           </button>
-          <div className="p-2 red flex flex-col items-center justify-center">
+          <div className=" flex flex-col items-center justify-center">
             {/* ticket information */}
             <TicketInfo
               bookingDate={data.TicketInfo.bookingDate.toString()}
@@ -88,13 +88,13 @@ const PurchaseDetailModal: React.FC<{ role: Role, data: IUserTicketData, closeMo
             />
             <div className="divider divider-neutral opacity-25 "> </div>
             {/* payment charges information */}
-            <div className="">
+            < >
               <PaymentInfo
                 screenInfo={data.screenInfo}
                 ticketInfo={data.TicketInfo}
                 paymentInfo={data.paymentInfo}
               />
-            </div>
+             </>
           </div>
         </div>
 

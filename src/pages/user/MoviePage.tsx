@@ -7,7 +7,7 @@ import { getSingleMovie, getUserSingleStreamingMovies } from "../../redux/action
 import { convertTo12HourFormat, toValidJSDate } from "../../utils/format"
 import { IoIosInformationCircle } from "react-icons/io"
 import { isResponseError } from "../../utils/customError"
- import {
+import {
   IStreamingMovieData,
   ITheaterMovieData,
   MovieFilter,
@@ -30,6 +30,7 @@ const MoviePage: React.FC = () => {
   const [movieDetails, setMovieDetails] = useState<ITheaterMovieData | IStreamingMovieData | null>(null);
   const [theaterDetails, setTheaterDetails] = useState<any[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false)
+
   if (!city) {
     navigate('/', { replace: true })
   }
@@ -119,20 +120,22 @@ const MoviePage: React.FC = () => {
             bookingDate={new Date(movieDetails.release_date)}
           />
           {theaterDetails.map((theater) => {
-            return <>
-              <div className="w-full block sm:flex gap-8 lg:gap-12 p-4 md:p-6 lg:p-9 rounded-lg  bg-base-100 ">
-                {/* Theater Name */}
-                <div className="text-left mb-4 w-1/3 flex-shrink-0">
-                  <span className="text-xs lg:text-base font-bold flex items-center gap-2">
-                    {theater.theater.theater_name}
-                    <IoIosInformationCircle className="mr-3 text-xs lg:text-base text-gray-100 " />
-                  </span>
-                </div>
-                {/* Movie Show */}
-                {theater.shows.map((show: any) => {
-                  return <>
+            return <div key={theater.theater.theater_name} className="w-full block sm:flex gap-8 lg:gap-12 p-4 md:p-6 lg:p-9 rounded-lg  bg-base-100 ">
+              {/* Theater Name */}
+              <div className="text-left mb-4 w-1/3 flex-shrink-0">
+                <span className="text-xs lg:text-base font-bold flex items-center gap-2">
+                  {theater.theater.theater_name}
+                  <IoIosInformationCircle className="mr-3 text-xs lg:text-base text-gray-100 " />
+                </span>
+              </div>
+              {/* Movie Show */}
+              {theater.shows.map((show: any) => {
+                return (
+
+                  <div
+                    key={show.showDetails.slug} >
                     <Link
-                      key={show.showDetails.showId}
+
                       to={`/movie/layout/${show.showDetails.slug}`}
                       state={{ show, bookingDate: filterDate }}
                     >
@@ -143,12 +146,13 @@ const MoviePage: React.FC = () => {
                         </button>
                       </div>
                     </Link >
+                  </div>
+                )
 
-                  </>
-                })}
+              })}
 
-              </div >
-            </>
+            </div >
+
           })}
 
         </>

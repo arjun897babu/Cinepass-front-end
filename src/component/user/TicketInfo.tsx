@@ -1,7 +1,8 @@
-import { memo } from "react";
+import React, { memo } from "react";
 import { IGetSingleShow, IPaymentSummaryLocationState, IStreamRentLocationState } from "../../interface/Interface"
-import { convertTo12HourFormat, getDate, getDayName,   getMonthName  } from "../../utils/format";
-import {   isITicketSummaryProps } from "../../utils/validator";
+import { convertTo12HourFormat, getDate, getDayName, getMonthName } from "../../utils/format";
+import { isITicketSummaryProps } from "../../utils/validator";
+const TicketQRCode = React.lazy(()=>import('./QR-code'))
 
 
 
@@ -11,7 +12,7 @@ export interface ITicketInfoProps extends
   bookingDate: string | Date;
   selectedSeats: string[]
   bookingCode?: string
-} 
+}
 
 const TicketInfo: React.FC<ITicketInfoProps | IStreamRentLocationState> = (
 
@@ -20,6 +21,9 @@ const TicketInfo: React.FC<ITicketInfoProps | IStreamRentLocationState> = (
 ) => {
   const ticketData = isITicketSummaryProps(props);
 
+  const seats = ticketData && props.selectedSeats
+  const bookingCode = ticketData && props.bookingCode
+
   const bookingDate = ticketData
     ? props.bookingDate
     : props.bookingDate;
@@ -27,8 +31,15 @@ const TicketInfo: React.FC<ITicketInfoProps | IStreamRentLocationState> = (
   return (
     <div className="ticket-summary  p-2 m-2 ">
       <div className="bg-base-100  rounded-md">
-        <div className="hero-content gap-10 justify-start">
-          <div className="w-48  ">
+        <div className="hero-content gap-6 justify-start relative">
+          {
+            ticketData &&bookingCode&&seats&&
+              <div className="absolute bottom-8 left-8 xs:top-8 xs:right-8 xs:bottom-auto xs:left-auto">
+                <TicketQRCode bookingCode={bookingCode } seats={seats } />
+              </div>
+          }
+
+          <div className="w-28 relative -top-12 xs:w-44 xs:static ">
             <img
               src={ticketData ?
                 props.movie.movie_poster
@@ -56,9 +67,9 @@ const TicketInfo: React.FC<ITicketInfoProps | IStreamRentLocationState> = (
             }
 
 
-            <div className={`grid grid-cols-3 gap-3 justify-between items-center mt-3`}>
+            <div className={`sm:grid grid-cols-3 gap-2 justify-between items-center mt-3`}>
               <div className="col-span-2">
-                <h2 className={`${ticketData ? 'font-extrabold tracking-wide text-lg' : 'text-sm font-bold'}`}>
+                <h2 className={`${ticketData ? 'font-extrabold tracking-wide sm:text-lg' : 'text-sm font-bold'} `}>
                   {ticketData ?
                     (`  ${getDayName(bookingDate)}, `
                       + `${getDate(bookingDate)} `
@@ -79,7 +90,7 @@ const TicketInfo: React.FC<ITicketInfoProps | IStreamRentLocationState> = (
                   }
                 </h2>}
               </div>
-              <div className="btn btn-active cursor-none flex flex-col capitalize ">
+              <div className="btn cursor-default flex flex-col capitalize  ">
                 {ticketData ?
                   (<>
                     <span>{props.selectedSeats.length}</span>

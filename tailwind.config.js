@@ -15,6 +15,9 @@ export default {
         9: '9',
         1: '1',
       },
+      screens: {
+        'xs': { min: '520px' },
+      },
     }, 
   },
   plugins: [require("daisyui")],

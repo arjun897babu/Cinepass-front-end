@@ -12,7 +12,7 @@ const PaymentInfo: React.FC<IPaymentInfoProps> = ({ screenInfo, ticketInfo, paym
  
   return (
     <>
-      <div className="p-4 bg-white rounded-lg shadow-md w-[300px]">
+      <div className="p-4 bg-white rounded-lg shadow-md w-[300px] mb-1">
 
         <h2 className="font-bold tracking-wide mb-4">Payment Summary</h2>
         {/* Total Amount Paid */}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { FaArrowLeft } from "react-icons/fa"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 import useErrorHandler from "../../hooks/useErrorHandler"
@@ -13,6 +13,8 @@ import { ColumnNumbers, SeatRow } from "../../component/theaters/SeatLayoutModal
 import Toast2, { Toast } from "../../component/Toast2"
 
 const ScreenLayout: React.FC = () => {
+  const screeenLayoutRef = useRef<HTMLDivElement>(null)
+
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
 
@@ -21,7 +23,30 @@ const ScreenLayout: React.FC = () => {
   const location = useLocation()
 
   const [toastmessage, setToastMessage] = useState<Toast | null>(null)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+
+
+
+  const [isOverFlowing, setIsOverFlowing] = useState(false)
+  const [forceRender, setForceRender] = useState(0)
+  useEffect(() => {
+    function checkOverflow() {
+       if (screeenLayoutRef.current) {
+         const element = screeenLayoutRef.current;
+        const isWide = element.scrollWidth > element.clientWidth;
+        setIsOverFlowing(isWide);
+      } 
+    }
+
+    if (!screeenLayoutRef.current) {
+      setForceRender((prev) => prev + 1);
+    } else {
+      checkOverflow();
+    }
+
+  }, [forceRender])
+
+
   const setToast = (toast: Toast) => setToastMessage(
     {
       alert: toast.alert,
@@ -66,22 +91,21 @@ const ScreenLayout: React.FC = () => {
 
 
 
-
   const handleSeatSelection = (rowIndex: number, colIndex: number) => {
     const maxSeat = 10
-    const reservedSeats = showDetails?.show.reserved?.length??0
-    let seatsLeft = showDetails?.screen.seating_capacity!-reservedSeats
+    const reservedSeats = showDetails?.show.reserved?.length ?? 0
+    let seatsLeft = showDetails?.screen.seating_capacity! - reservedSeats
 
     const seatName = getSeatName(rowIndex, colIndex);
     setSelectedSeats((prevSelectedSeats) => {
-       if (prevSelectedSeats.includes(seatName)) {
+      if (prevSelectedSeats.includes(seatName)) {
         seatsLeft++
         return prevSelectedSeats.filter((seat) => seat !== seatName);
       }
-      if(prevSelectedSeats.length>=maxSeat){
+      if (prevSelectedSeats.length >= maxSeat) {
         setToast({
-          alert:ResponseStatus.ERROR,
-          message:'Limit exceeded! Only 10 tickets allowed for a user'
+          alert: ResponseStatus.ERROR,
+          message: 'Limit exceeded! Only 10 tickets allowed for a user'
         })
         return prevSelectedSeats
       }
@@ -161,9 +185,11 @@ const ScreenLayout: React.FC = () => {
         <div className="divider mt-0 pt-0"></div>
 
         {/* seat layout */}
-        <div className="flex-grow overflow-y-auto ">
-          <div className="flex justify-center">
-            <div className="p-3 min-w-max mt-8   ">
+        {<div
+          ref={screeenLayoutRef}
+          className="flex-grow overflow-y-auto">
+          <div className={`flex  ${!isOverFlowing ? 'justify-center' : 'justify-start'} `} >
+            <div className="p-3 min-w-max mt-8">
               {showDetails.screen.layout.map((row, rowIndex) => (
                 <SeatRow
                   rowNumber={rowIndex + 1}
@@ -182,19 +208,19 @@ const ScreenLayout: React.FC = () => {
             </div>
           </div>
 
-        </div>
+        </div>}
         <div className="flex justify-center p-2">
           <img src={screen_layout_icon} alt="screen_icon" />
         </div>
 
         {/* ticket details */}
         {
-          selectedSeats.length &&
+          selectedSeats.length > 0 &&
           <div className="flex justify-evenly gap-3 p-2 border-y">
             <div className="join join-vertical  space-y-2 ">
               <span className="join-item font-bold font-sans">₹{showDetails.screen.chargePerSeat * selectedSeats.length}</span>
               <p className="join join-item gap-2">
-                <p className="join-item capitalize">tickets</p>
+                <span className="join-item capitalize">tickets</span>
                 <span>:</span>
                 <span className="join-item ">{selectedSeats.length}*{showDetails.screen.chargePerSeat}</span>
               </p>

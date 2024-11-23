@@ -4,7 +4,7 @@ import { IReservedSeats } from "../../interface/theater/IMovieShow";
 import { Role } from "../../interface/Interface";
 
 interface ISeatRowProps {
-  rowNumber: number;
+  rowNumber: number; 
   seats: ISeat[];
   reserved?: IReservedSeats[];
   handleSeatClick?: (index: number) => void;
@@ -16,19 +16,20 @@ export const SeatRow: React.FC<ISeatRowProps> = ({ rowNumber, seats, reserved, h
  
 
   return (
-    <div key={`${rowNumber+1}`} className="relative flex items-center ">
-      <div className="absolute -left-7 font-light text-xs text-black flex items-center justify-center">
-        {String.fromCharCode(64 + rowNumber)}
-      </div>
-      {seats.map((seat, index) => {
+    <div className="relative flex items-center ">
+      <div className="font-light text-xs text-black flex items-center justify-center w-9 p-3">
+        {String.fromCharCode(64+ rowNumber)}
+      </div> 
+      {seats.map((seat, index) => { 
         
         const isBooked = reserved?.some((reservation) => reservation.reservedSeats.includes(seat.name));
          const isSelected = selectedSeat?.includes(seat.name)
        
         return (
-          <div className={`${role === Role.users && seat.available ? 'tooltip' : role !== Role.users ? 'tooltip' : ''}`} data-tip={seat.name}>
-            <div
-              key={seat.name}
+          <div
+          key={seat.name}
+          className={`${role === Role.users && seat.available ? 'tooltip' : role !== Role.users ? 'tooltip' : ''}`} data-tip={seat.name}>
+            <div              
               onClick={() => handleSeatClick?.(index)}
               className={`seat border rounded-md  w-7 h-7 m-0.5  
               ${seat.available ? (isBooked ? "bg-gray-400 pointer-events-none " : isSelected ? "bg-sky-400" : "bg-white border-sky-300") : "border-white"}
@@ -49,14 +50,14 @@ export const ColumnNumbers: React.FC<{ columnCount: number }> = ({ columnCount }
   const columns = Array.from({ length: columnCount }, (_, col) => (
     <div
       key={`column-${col + 1}`}
-      className="w-7 h-7 m-0.5 flex   justify-center font-light text-xs text-black"
+      className="w-7 h-7 m-0.5  font-light text-xs text-black"
     >
       {col + 1}
     </div>
   ));
 
   return (
-    <div className="relative -bottom-2 flex   items-center mb-1">
+    <div className="relative -bottom-2 flex  left-12  items-center mb-1">
       {columns}
     </div>
   );
