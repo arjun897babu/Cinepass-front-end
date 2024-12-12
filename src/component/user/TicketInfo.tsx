@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 import { IGetSingleShow, IPaymentSummaryLocationState, IStreamRentLocationState } from "../../interface/Interface"
-import { convertTo12HourFormat, getDate, getDayName, getMonthName } from "../../utils/format";
+import { convertTo12HourFormat, generateSeatingorder, getDate, getDayName, getMonthName } from "../../utils/format";
 import { isITicketSummaryProps } from "../../utils/validator";
 const TicketQRCode = React.lazy(()=>import('./QR-code'))
 
@@ -85,8 +85,8 @@ const TicketInfo: React.FC<ITicketInfoProps | IStreamRentLocationState> = (
                 </h2>
                 {ticketData && <h2 className="font-bold tracking-wide text-gray-400">
                   {
-                    `${props.screen.screen_name}, `
-                    + `${props.selectedSeats.join(' ')}`
+                    `${props.screen.screen_name} `
+                    + `${generateSeatingorder(props.selectedSeats)}`
                   }
                 </h2>}
               </div>
