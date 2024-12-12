@@ -1,4 +1,3 @@
-import { } from 'react-icons'
 import React, { memo, MouseEvent, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import logo from '/cinepass logo.png'
@@ -16,7 +15,6 @@ import { HttpStatusCode } from 'axios'
 
 const UserNavBar: React.FC = (): JSX.Element => {
   const { city } = useSelector((state: RootState) => state.user)
-  const [toggle, setToggle] = useState(true); // State for hamburger menu toggle
   const dispatch = useDispatch<AppDispatch>()
   const user = useSelector((state: RootState) => state.user)
   const handleApiError = useErrorHandler(Role.users)
@@ -24,10 +22,7 @@ const UserNavBar: React.FC = (): JSX.Element => {
   const [movies, setMovies] = useState<IMovie[] | []>([])
 
   const navigate = useNavigate()
-  // Handler for toggle
-  const handleToggle = () => {
-    setToggle((prevToggle) => !prevToggle);
-  }
+
 
   // Handle logout
   const logoutHandle = async (e: MouseEvent) => {
