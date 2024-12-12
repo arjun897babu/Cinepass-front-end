@@ -75,6 +75,10 @@ body {
   .auth-section {
     display: block !important;
   }
+  #profile-navbar{
+    display: none !important;
+  }
+
 
 }
 
