@@ -3,7 +3,6 @@ import React, { memo, MouseEvent, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import logo from '/cinepass logo.png'
 import { GiHamburgerMenu } from "react-icons/gi"
-import { RxCross1 } from "react-icons/rx";
 import { useDispatch, useSelector } from 'react-redux'
 import type { AppDispatch, RootState } from '../../redux/store'
 import { getAllMovies, getUserProfile, logoutUser } from '../../redux/actions/userAction'
