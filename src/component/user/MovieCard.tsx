@@ -1,6 +1,6 @@
 import { lazy, memo } from "react";
 import { getIST, getMovieSrc } from "../../utils/format";
-import { useSelector } from "react-redux";
+import { shallowEqual, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 const EmptyData = lazy(() => import("../EmptyData"))
 import { Link } from "react-router-dom";
@@ -9,12 +9,11 @@ import { Link } from "react-router-dom";
 
 const MovieCard: React.FC = () => {
 
-  const { movies } = useSelector((state: RootState) => state.user)
+  const { movies } = useSelector((state: RootState) =>({movies:state.user.movies}), shallowEqual)
 
  
   if (!movies) {
     return (
-
       <div >
         <EmptyData />
       </div>

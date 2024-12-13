@@ -9,7 +9,7 @@ import { ResetPassWordUser } from "../pages/user/ResetPassWordUser";
 import UserOTPVerification from "../pages/user/UserOTPVerification";
 import UserNavBar from "../component/user/UserNavBar";
 import UserFooter from "../component/user/footer/UserFooter";
-import UserInitPage from "../pages/user/UserInitPage";
+const UserInitPage = lazy(() => import("../pages/user/UserInitPage"));
 
 import { ProtectedRoutes } from "../component/user/ProtectedRoutes";
 import { UserProfile } from "../pages/user/userProfile";

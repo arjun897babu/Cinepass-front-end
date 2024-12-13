@@ -8,6 +8,7 @@ interface LocationModalProps {
   onClose?: () => void
 }
 const LocationModal: React.FC<LocationModalProps> = ({ onClose }) => {
+  console.log('renderin')
   const navigate = useNavigate()
   const { movies, city } = useSelector((state: RootState) => state.user)
   const [loading, setLoading] = useState<boolean>(false);
@@ -16,6 +17,7 @@ const LocationModal: React.FC<LocationModalProps> = ({ onClose }) => {
   const modalRef = useRef<HTMLDialogElement>(null)
 
   const fetchCities = async () => {
+    console.log('calling city api')
     try {
       setLoading(true);
       const response = await dispatch(getAllCities()).unwrap()

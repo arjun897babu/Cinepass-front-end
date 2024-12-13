@@ -1,12 +1,13 @@
 import React, { useEffect } from "react"
 import LocationModal from "./LocationModal";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { shallowEqual, useSelector } from "react-redux";
 import type { RootState, } from "../../redux/store";
 
 const UserInitPage: React.FC = () => {
-  const { city } = useSelector((state: RootState) => state.user)
- 
+  console.log('rendering userinit')
+  const { city } = useSelector((state: RootState) => ({ city: state.user.city }), shallowEqual);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -14,15 +15,12 @@ const UserInitPage: React.FC = () => {
       navigate(`/home/${city}`);
     }
   }, [city]);
- 
+
   return (
-    <>
-      <div className="h-screen">
-        <LocationModal />
-      </div >
+    <div className="h-screen">
+      {!city && <LocationModal />}
+    </div>
+  );
+};
 
-    </>
-  )
-}
-
-export default UserInitPage
+export default UserInitPage;

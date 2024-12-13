@@ -1,8 +1,8 @@
-import React, { memo, MouseEvent, useEffect, useState } from 'react'
+import React, { memo, useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import logo from '/cinepass logo.png'
 import { GiHamburgerMenu } from "react-icons/gi"
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector, shallowEqual } from 'react-redux'
 import type { AppDispatch, RootState } from '../../redux/store'
 import { getAllMovies, getUserProfile, logoutUser } from '../../redux/actions/userAction'
 import { IMovie, Role } from '../../interface/Interface'
@@ -10,24 +10,29 @@ import useErrorHandler from '../../hooks/useErrorHandler'
 import { isResponseError } from '../../utils/customError'
 import MoviesTheatersDropdown from './MoviesTheatersDropdown'
 import { HttpStatusCode } from 'axios'
-
+import { ProfileMenu } from './ProfileMenu'
+import { Loader } from '../Loader'
 
 
 const UserNavBar: React.FC = (): JSX.Element => {
-  const { city } = useSelector((state: RootState) => state.user)
+  const { city, isAuthenticated, profile } = useSelector((state: RootState) => ({
+    city: state.user.city,
+    isAuthenticated: state.user.isAuthenticated,
+    profile: state.user.profile
+  }), shallowEqual);
+
   const dispatch = useDispatch<AppDispatch>()
-  const user = useSelector((state: RootState) => state.user)
   const handleApiError = useErrorHandler(Role.users)
   // const [loading, setLoading] = useState<boolean>(false)
   const [movies, setMovies] = useState<IMovie[] | []>([])
+  const [loading, setLoading] = useState<boolean>(true); // Loading state
+
 
   const navigate = useNavigate()
 
-
   // Handle logout
-  const logoutHandle = async (e: MouseEvent) => {
+  const logoutHandle = async () => {
     try {
-      e.preventDefault();
       await dispatch(logoutUser());
       navigate('/login')
     } catch (error) {
@@ -48,9 +53,8 @@ const UserNavBar: React.FC = (): JSX.Element => {
   //for fetching theater movies 
   const fetchData = async () => {
     try {
-      // setLoading(true);
       if (city) {
-        const moviesResponse = await dispatch(getAllMovies({ city })).unwrap()
+        const moviesResponse = await dispatch(getAllMovies({ city: city })).unwrap()
         if (moviesResponse) {
           setMovies(moviesResponse);
         }
@@ -66,35 +70,33 @@ const UserNavBar: React.FC = (): JSX.Element => {
         }
       }
     } finally {
-      // setLoading(false);
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     if (!city) {
-      navigate('/')
-      return
+      navigate('/');
+    } else {
+      fetchData();
     }
-    fetchData()
   }, [city]);
 
   useEffect(() => {
-    if (user.isAuthenticated) {
-      fetchProfile()
+    if (isAuthenticated) {
+      fetchProfile();
     }
-  }, [user.isAuthenticated])
+  }, [isAuthenticated]);
 
-  useEffect(() => {
+  const memoizedMovies = useMemo(() => movies, [movies]);
 
-  }, [user.profile])
-
+  if (loading) return <Loader />
 
   return (
     <>
       <nav className='relative p-4 flex justify-between items-center bg-white'>
-        <button className='space-y-2 md:hidden absolute left-4 top-8 z-10 '   >
-
-
+        {/* mobile hamburger icon */}
+        <button className='space-y-2 md:hidden absolute left-4 top-8 z-10 '>
           <div className="drawer">
             <input id="my-drawer" type="checkbox" className="drawer-toggle" />
 
@@ -109,13 +111,13 @@ const UserNavBar: React.FC = (): JSX.Element => {
               <ul className="menu bg-base-300 text-base-content min-h-full w-80 p-4">
                 <div className="mt-14">
                   <li>
-                    <Link className='uppercase p-3 font-semibold  ' to={`/home/${user.city}`}>Home <span></span></Link>
+                    <Link className='uppercase p-3 font-semibold  ' to={`/home/${city}`}>Home <span></span></Link>
                   </li>
                   <li>
                     <Link className='uppercase p-3 font-semibold ' to={'/streams'}>streams</Link>
                   </li>
                   <li id='profile-navbar' >
-                    {!user.isAuthenticated ?
+                    {!isAuthenticated ?
                       <Link to={'/login'}>
                         <div className="px-6 py-3 text-white  rounded-md bg-black max-md:px-5">
                           Log In
@@ -124,33 +126,8 @@ const UserNavBar: React.FC = (): JSX.Element => {
                       :
 
                       (
-                        <div className="dropdown dropdown-hover  dropdown-bottom dropdown-end ">
-                          <div tabIndex={0} className="cursor-pointer">
-                            <div className='avatar '>
-                              <div className='w-16 rounded-full '>
-                                <img
-                                  src={user.profile?.profile_picture ?? 'https://t4.ftcdn.net/jpg/03/40/12/49/240_F_340124934_bz3pQTLrdFpH92ekknuaTHy8JuXgG7fi.jpg'}
-                                  alt="user avatar"
-                                />
-                              </div>
-                              <h3 className="text-black mt-2   capitalize font-bold px-4 py-2">{user.profile?.name ?? 'Arjun'}</h3>
-                            </div>
-                          </div>
-
-                          <div tabIndex={0} className="dropdown-content menu   bg-base-300 rounded-box z-[1] w-52 p-2 shadow">
-                            <hr className="my-1" />
-                            <ul className="list-none">
-                              <Link to={'/profile'}>
-                                <li className="dropdownItem ">
-                                  <span className="text-black cursor-pointer">Profile</span>
-                                </li>
-                              </Link>
-                              <li className="dropdownItem  ">
-                                <span className="text-black cursor-pointer" onClick={logoutHandle}>Logout</span>
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
+                        profile &&
+                        <ProfileMenu logoutHanlde={logoutHandle} profile={profile} screen='sm' />
                       )
                     }
                   </li>
@@ -158,29 +135,27 @@ const UserNavBar: React.FC = (): JSX.Element => {
               </ul>
             </div>
           </div>
-
-
         </button>
-        <Link to={`/home/${user.city}`}>
+        {/* cinepass log */}
+        <Link to={`/home/${city}`}>
           <div className="gap-3 flex items-center  ml-12 md:ml-0 ">
             <img src={logo} alt="Cine pass Logo" className='object-cover max-w-20 max-h-20' />
             <span className='dancing-script text-2xl text-center align-middle '>Cinepass</span>
           </div>
         </Link>
-
+        {/* navigation links */}
         <div className="nav_menu hidden  md:gap-2 lg:gap-5 md:flex   ">
-          <Link className='hover:bg-blue-100 uppercase p-3 font-semibold  ' to={`/home/${user.city}`}>Home <span></span></Link>
+          <Link className='hover:bg-blue-100 uppercase p-3 font-semibold  ' to={`/home/${city}`}>Home <span></span></Link>
           <MoviesTheatersDropdown
             city={`${city}`}
             item='movies'
-            moviesOrTheater={movies}
+            moviesOrTheater={memoizedMovies}
           />
           <Link className='hover:bg-blue-100 uppercase p-3 font-semibold ' to={'/streams'}>streams</Link>
         </div>
-
+        {/* user profile icon in large screen */}
         <div className="auth-section hidden pl-6 text-base font-bold leading-6 text-center">
-
-          {!user.isAuthenticated ?
+          {!isAuthenticated ?
             <Link to={'/login'}>
               <div className="px-6 py-3 text-white  rounded-md bg-black max-md:px-5">
                 Log In
@@ -189,33 +164,10 @@ const UserNavBar: React.FC = (): JSX.Element => {
             :
 
             (
-              <div className="dropdown dropdown-hover  dropdown-bottom dropdown-end ">
-                <div tabIndex={0} className="cursor-pointer">
-                  <div className='avatar '>
-                    <div className='w-16 rounded-full '>
-                      <img
-                        src={user.profile?.profile_picture ?? 'https://t4.ftcdn.net/jpg/03/40/12/49/240_F_340124934_bz3pQTLrdFpH92ekknuaTHy8JuXgG7fi.jpg'}
-                        alt="user avatar"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div tabIndex={0} className="dropdown-content menu   bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
-                  <h3 className="text-black capitalize px-4 py-2">{user.profile?.name ?? 'Arjun'}</h3>
-                  <hr className="my-1" />
-                  <ul className="list-none">
-                    <Link to={'/profile'}>
-                      <li className="dropdownItem ">
-                        <span className="text-black cursor-pointer">Profile</span>
-                      </li>
-                    </Link>
-                    <li className="dropdownItem  ">
-                      <span className="text-black cursor-pointer" onClick={logoutHandle}>Logout</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
+              (
+                profile &&
+                <ProfileMenu logoutHanlde={logoutHandle} profile={profile} screen='large' />
+              )
             )
           }
 

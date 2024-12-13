@@ -7,7 +7,8 @@ import { Provider } from 'react-redux'
 import store, { persist } from './redux/store.ts'
 import { PersistGate } from 'redux-persist/integration/react'
 import { GoogleOAuthProvider } from '@react-oauth/google'
- const { VITE_GOOGLE_CLIENT_ID } = import.meta.env
+// import React from 'react'
+const { VITE_GOOGLE_CLIENT_ID } = import.meta.env
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
@@ -17,10 +18,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <Provider store={store}>
         <PersistGate loading={null} persistor={persist} />
         {/* <React.StrictMode> */}
-          <App />
+        <App />
         {/* </React.StrictMode> */}
       </Provider>
     </GoogleOAuthProvider>
   </BrowserRouter>
 )
- 

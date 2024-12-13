@@ -1,7 +1,6 @@
 import React,
 {
   lazy,
-  useEffect,
   useState
 } from "react"
 
@@ -12,45 +11,37 @@ const CarouselSlider = lazy(() => import("../../component/user/CarouselSlider"))
 
 import { SearchWithFilters } from "../../component/user/footer/SearchWithFilters"
 import Accordion from "../../component/user/Accordion"
-import { useSelector } from "react-redux"
+import { shallowEqual, useSelector } from "react-redux"
 import type { RootState } from "../../redux/store"
 import { MovieFilter, MovieType } from "../../interface/Interface"
 import { isFilterEmpty } from "../../utils/validator"
- import { Loader } from "../../component/Loader"
 import LocationModal from "./LocationModal"
 
 
 const UserHome: React.FC = () => {
-
   const [filterItem, setFilterItem] = useState<Partial<MovieFilter> | null>(null)
-  const [loading, setLoading] = useState(true);
 
   const setFilter = (filterItem: Partial<MovieFilter> | null) => {
     setFilterItem(filterItem)
   }
 
-  const { movies } = useSelector((state: RootState) => state.user)
+  const { movies, city } = useSelector((state: RootState) => ({ movies: state.user.movies, city: state.user.city }), shallowEqual)
 
-  useEffect(() => {
-    if (movies || movies === null) {
-      setLoading(false);
-    }
-  }, [movies]);
-
-  if (loading) {
-    return (
-      <Loader />
-    );
-  }
-
-  if (!movies && isFilterEmpty(filterItem)) {
+  if (movies===undefined && isFilterEmpty(filterItem)) {
     return (
       <div className="flex justify-center items-centre">
-        <LocationModal />
-        <EmptyData />
+        {
+          !city &&
+          <LocationModal />
+        }
+        {
+          movies !== undefined &&
+          <EmptyData />
+        }
       </div>
     )
   };
+
 
   return (
 
@@ -74,9 +65,6 @@ const UserHome: React.FC = () => {
         </div>
       </div>
     </>
-
-
-
   )
 }
 

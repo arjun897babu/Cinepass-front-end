@@ -2,7 +2,6 @@ import { lazy, useEffect, useState } from "react"
 import { DashBoardCard } from "../../../component/DashBoardCard"
 import { useDispatch } from "react-redux"
 import { AppDispatch } from "../../../redux/store"
-import { Loader } from "../../../component/Loader"
 import useErrorHandler from "../../../hooks/useErrorHandler"
 import { adminGetEntityStat, getAdminStreamRevenue } from "../../../redux/actions/adminAction"
 import {
@@ -23,30 +22,22 @@ const AdminHome: React.FC = (): JSX.Element => {
   const dispatch = useDispatch<AppDispatch>()
   const [streamRevenue, setStreamRevenue] = useState<IRevenueResponse | null>(null)
   const [revenueFilter, setRevenueFilter] = useState<RevenueFilter>({ period: Period.WEEK })
+ 
   const changeStreamRevenueFilter = (key: keyof RevenueFilter, value: Period | string) => {
-    setRevenueFilter((prevFilter) => (
-      {
-        ...prevFilter,
-        [key]: value
+    setRevenueFilter((prevFilter) => {
+       if (prevFilter[key] === value) {
+        return prevFilter;
       }
-    ))
+      return {
+        ...prevFilter,
+        [key]: value,
+      };
+    });
   }
 
-  const [loading, setLoading] = useState(false)
 
   const [userStat, setUserStat] = useState<IGetUserCount | null>(null)
   const [theaterStat, setTheaterStat] = useState<IGetTheaterOwnersCount | null>(null)
-
-  async function fetchData() {
-    try {
-      setLoading(true)
-      Promise.all([fetchEntityData(), fetchStreamData()])
-    } catch (error) {
-      handleApiError(error)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   async function fetchEntityData() {
     try {
@@ -61,9 +52,9 @@ const AdminHome: React.FC = (): JSX.Element => {
       handleApiError(error)
     }
   }
+
   async function fetchStreamData() {
     try {
-
       const response = await dispatch(getAdminStreamRevenue(revenueFilter)).unwrap()
 
       if (response.status === ResponseStatus.SUCCESS) {
@@ -76,12 +67,13 @@ const AdminHome: React.FC = (): JSX.Element => {
 
 
   useEffect(() => {
-    fetchData()
-  }, [])
+    fetchEntityData()
+  }, []);
+
   useEffect(() => {
     fetchStreamData()
   }, [revenueFilter])
-  if (loading) return <div className=""><Loader /></div>
+
   return (
     <div className="user-theater">
       <div className="stats gap-2">
@@ -99,7 +91,7 @@ const AdminHome: React.FC = (): JSX.Element => {
         }
       </div>
       {streamRevenue && <div className="p-1">
-        <BarChart revenue="stream" changeFilter={changeStreamRevenueFilter} data={streamRevenue} />
+        <BarChart revenue="stream" changeFilter={changeStreamRevenueFilter} data={streamRevenue} period={revenueFilter.period} />
       </div>}
     </div>
   )

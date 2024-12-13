@@ -2,8 +2,8 @@ import { Bar } from 'react-chartjs-2'
 import { Chart as ChartJS, BarElement, Tooltip, BarController, CategoryScale, LinearScale } from 'chart.js'
 import React, { useEffect, useState } from 'react'
 import { IList, IRevenueResponse, Period, RevenueFilter } from '../../interface/Interface'
-const BarChart: React.FC<{ revenue: 'screen' | 'stream', data: IRevenueResponse, changeFilter: (key: keyof RevenueFilter, value: Period | string) => void }> = ({ data, revenue, changeFilter }) => {
-  ChartJS.register(BarElement, Tooltip, BarController, CategoryScale, LinearScale)
+ChartJS.register(BarElement, Tooltip, BarController, CategoryScale, LinearScale)
+const BarChart: React.FC<{ revenue: 'screen' | 'stream', data: IRevenueResponse, changeFilter: (key: keyof RevenueFilter, value: Period | string) => void,period:string }> = ({ data, revenue, changeFilter,period }) => {
   const [id, setId] = useState<string>()
 
   const ChartData = {
@@ -61,7 +61,7 @@ const BarChart: React.FC<{ revenue: 'screen' | 'stream', data: IRevenueResponse,
           <select
             onChange={handlePeriodChange}
             className='select capitalize font-bold   select-info '   >
-            <option value="week" selected>week</option>
+            <option value="week" defaultValue={period}>week</option>
             <option value="month">month</option>
             <option value="year">year</option>
           </select>

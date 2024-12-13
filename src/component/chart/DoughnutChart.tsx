@@ -9,8 +9,8 @@ type IDoughnutChartProps = {
   chartData: IGetUserCount | IGetTheaterOwnersCount | IGetTicketCount | IGetScreenCount | IGetShowCountByScreen[]
 }
 
+ChartJS.register(ArcElement, Tooltip)
 const DoughnutChart: React.FC<IDoughnutChartProps> = ({ label, chartData }) => {
-  ChartJS.register(ArcElement, Tooltip)
 
   const data = {
     labels: isArray(chartData) ? chartData.map((show) => show.screenName) : Object.keys(chartData),

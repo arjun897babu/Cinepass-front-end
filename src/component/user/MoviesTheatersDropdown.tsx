@@ -1,4 +1,4 @@
-import React, {  useEffect } from "react"
+import React, {  memo, useEffect } from "react"
 import { ITheaterOwnerEntity } from "../../interface/theater/ITheaterOwner";
 import { IMovie } from "../../interface/Interface";
 import { Link, useLocation } from "react-router-dom";
@@ -87,4 +87,4 @@ const MoviesTheatersDropdown: React.FC<MoviesTheatersDropdownPorps> = ({ item, m
 }
 
 
-export default MoviesTheatersDropdown
+export default memo(MoviesTheatersDropdown)
