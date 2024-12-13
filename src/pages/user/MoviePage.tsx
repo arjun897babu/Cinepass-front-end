@@ -30,7 +30,7 @@ const MoviePage: React.FC = () => {
   const [movieDetails, setMovieDetails] = useState<ITheaterMovieData | IStreamingMovieData | null>(null);
   const [theaterDetails, setTheaterDetails] = useState<any[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false)
-
+  const [maxAllocatedDays, setMaxAllocatedDays] = useState(3)
   if (!city) {
     navigate('/', { replace: true })
   }
@@ -53,13 +53,14 @@ const MoviePage: React.FC = () => {
           }
         } else {
           [response] = await dispatch(getSingleMovie({ city, movieId, filter: filterItem })).unwrap()
-          const { movie, theaters } = response
+          const { movie, theaters, maxAllocatedDays } = response
           if (movie) {
             setMovieDetails(movie)
           }
           if (theaters.length >= 1) {
             setTheaterDetails(theaters)
           }
+          setMaxAllocatedDays(maxAllocatedDays)
         }
       }
 
@@ -110,15 +111,15 @@ const MoviePage: React.FC = () => {
           )
       }
 
+      <ShowFilter
+        maxAllocatedDate={maxAllocatedDays }
+        bookingDate={new Date(movieDetails.release_date)}
+      />
 
       {
         theaterDetails &&
         <>
-
-          <ShowFilter
-            maxAllocatedDate={Math.max(...theaterDetails.map((item) => item.maxAllocatedDays as number))}
-            bookingDate={new Date(movieDetails.release_date)}
-          />
+        
           {theaterDetails.map((theater) => {
             return <div key={theater.theater.theater_name} className="w-full block sm:flex gap-8 lg:gap-12 p-4 md:p-6 lg:p-9 rounded-lg  bg-base-100 ">
               {/* Theater Name */}

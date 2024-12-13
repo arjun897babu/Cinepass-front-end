@@ -113,11 +113,18 @@ export const UserLogin: React.FC = (): JSX.Element => {
               message: err.data.message
             })
           } else if (err.statusCode === 400 || err.statusCode === 404) {
-            setInputError(
-              {
-                [err.data.error]: err.data.message
-              }
-            )
+            if (err.data.error === 'google') {
+              setToastMessage({
+                alert: ResponseStatus.ERROR,
+                message: err.data.message
+              })
+            } else {
+              setInputError(
+                {
+                  [err.data.error]: err.data.message
+                }
+              )
+            }
           }
           else if (err.statusCode === 401 && err.data.error !== 'googleAuth') {
             navigate('/otp-verification')

@@ -111,7 +111,7 @@ const TheaterHome = () => {
           }
         </div>
         {screenRevenue && <div className="p-2">
-          <BarChart revenue="screen" changeFilter={changeScreenRevenueFilter} data={screenRevenue} />
+          <BarChart revenue="screen" changeFilter={changeScreenRevenueFilter} data={screenRevenue} period={revenueFilter.period}/>
         </div>}
       </div>
     </>
