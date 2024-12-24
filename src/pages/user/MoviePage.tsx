@@ -111,15 +111,18 @@ const MoviePage: React.FC = () => {
           )
       }
 
-      <ShowFilter
-        maxAllocatedDate={maxAllocatedDays }
-        bookingDate={new Date(movieDetails.release_date)}
-      />
+      {
+        !movieId?.includes('STR') &&
+        < ShowFilter
+          maxAllocatedDate={maxAllocatedDays}
+          bookingDate={new Date(movieDetails.release_date)}
+        />
+      }
 
       {
         theaterDetails &&
         <>
-        
+
           {theaterDetails.map((theater) => {
             return <div key={theater.theater.theater_name} className="w-full block sm:flex gap-8 lg:gap-12 p-4 md:p-6 lg:p-9 rounded-lg  bg-base-100 ">
               {/* Theater Name */}
